@@ -57,7 +57,9 @@ export function moveCapacity(state: GameState, excludeTableau: number | null): n
 export function canPickRun(state: GameState, ref: PileRef, depth: number): boolean {
   const pile = getPile(state, ref);
   if (pile.length === 0 || depth >= pile.length) return false;
-  if (ref.kind !== 'tableau') return depth === 0 && ref.kind !== 'stock' && ref.kind !== 'waste';
+  // Besides cascades, only cell cards can be picked up; foundation cards
+  // stay put ("worrying back" isn't allowed in standard FreeCell).
+  if (ref.kind !== 'tableau') return depth === 0 && ref.kind === 'cell';
   const start = pile.length - 1 - depth;
   for (let i = start + 1; i < pile.length; i++) {
     if (!fitsOnCascade(pile[i]!, pile[i - 1])) return false;
@@ -66,7 +68,7 @@ export function canPickRun(state: GameState, ref: PileRef, depth: number): boole
 }
 
 export function canMove(state: GameState, from: PileRef, to: PileRef, count: number): boolean {
-  if (from.kind === 'stock' || from.kind === 'waste') return false;
+  if (from.kind === 'stock' || from.kind === 'waste' || from.kind === 'foundation') return false;
   if (to.kind === 'stock' || to.kind === 'waste') return false;
   if (from.kind === to.kind && from.index === to.index) return false;
   const source = getPile(state, from);
@@ -191,6 +193,13 @@ export function findHint(state: GameState): Move | null {
       for (let depth = maxDepth; depth >= 0; depth--) {
         if (!canPickRun(state, from, depth)) continue;
         const count = depth + 1;
+        // A run that already continues a legal build gains nothing by moving
+        // sideways — skipping it prevents the hint from ping-ponging.
+        if (from.kind === 'tableau' && count < pile.length) {
+          const lead = pile[pile.length - count]!;
+          const beneath = pile[pile.length - count - 1]!;
+          if (fitsOnCascade(lead, beneath)) continue;
+        }
         for (let j = 0; j < state.tableau.length; j++) {
           const to: PileRef = { kind: 'tableau', index: j };
           const targetEmpty = state.tableau[j]!.length === 0;

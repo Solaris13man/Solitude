@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Privacy Policy — CardHearth';
+const description =
+  'CardHearth privacy policy: what we store (your game data, on your device), what we collect (nothing today), and how to contact us.';
+---
+
+<Layout title={title} description={description}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <header class="py-10">
+      <p class="text-sm font-bold opacity-70"><a href="/" class="hover:underline">← CardHearth</a></p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight">Privacy Policy</h1>
+      <p class="mt-2 text-sm opacity-70">Last updated: June 12, 2026</p>
+    </header>
+    <section class="text-sm leading-relaxed opacity-90">
+      <h2 class="mb-2 mt-4 text-lg font-bold">What we store on your device</h2>
+      <p class="mb-3">
+        CardHearth saves your in-progress games, settings (theme, card backs, sound preferences,
+        and similar), and play statistics (games played, wins, streaks, best times) in your
+        browser's local storage. This data never leaves your device, is not transmitted to us,
+        and is not linked to your identity. You can erase it at any time by clearing your
+        browser's site data for cardhearth.com.
+      </p>
+      <h2 class="mb-2 mt-4 text-lg font-bold">What we collect</h2>
+      <p class="mb-3">
+        Today: nothing. CardHearth has no accounts, no sign-up, and no tracking pixels. We do
+        not collect personal information.
+      </p>
+      <p class="mb-3">
+        In the future we may add privacy-respecting, aggregate analytics (to understand which
+        games people enjoy) and advertising to keep the site free. If we do, this policy will be
+        updated first, any advertising partners will be listed here, and where required you will
+        be asked for consent before any advertising cookies are set.
+      </p>
+      <h2 class="mb-2 mt-4 text-lg font-bold">Children</h2>
+      <p class="mb-3">
+        CardHearth is a general-audience site and does not knowingly collect personal
+        information from anyone, including children.
+      </p>
+      <h2 class="mb-2 mt-4 text-lg font-bold">Contact</h2>
+      <p class="mb-3">
+        Questions about this policy? Email
+        <a class="underline" href="mailto:hello@cardhearth.com">hello@cardhearth.com</a>.
+      </p>
+    </section>
+    <Footer />
+  </main>
+</Layout>

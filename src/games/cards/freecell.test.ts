@@ -103,6 +103,15 @@ describe('freecell moves', () => {
     expect(canMove(s, { kind: 'tableau', index: 0 }, { kind: 'tableau', index: 1 }, 3)).toBe(false);
   });
 
+  it('does not allow moving cards off foundations (no worrying back)', () => {
+    const s = emptyState();
+    s.foundations[0] = [card('H', 1), card('H', 2), card('H', 3)];
+    s.tableau[0] = [card('S', 4)];
+    expect(canMove(s, { kind: 'foundation', index: 0 }, { kind: 'tableau', index: 0 }, 1)).toBe(false);
+    expect(canMove(s, { kind: 'foundation', index: 0 }, { kind: 'cell', index: 0 }, 1)).toBe(false);
+    expect(canPickRun(s, { kind: 'foundation', index: 0 }, 0)).toBe(false);
+  });
+
   it('foundations build up by suit from the ace', () => {
     const s = emptyState();
     s.tableau[0] = [card('D', 1)];
@@ -176,5 +185,14 @@ describe('freecell hints', () => {
     const hint = findHint(s)!;
     expect(hint.type).toBe('move');
     if (hint.type === 'move') expect(hint.to.kind).toBe('tableau');
+  });
+
+  it('does not ping-pong a card already sitting on a legal build', () => {
+    const s = emptyState();
+    s.tableau[0] = [card('S', 10), card('H', 9)]; // H9 already builds on S10
+    s.tableau[1] = [card('C', 10)];
+    const hint = findHint(s);
+    const lateral = hint?.type === 'move' && hint.to.kind === 'tableau';
+    expect(lateral).toBe(false);
   });
 });

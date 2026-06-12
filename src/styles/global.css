@@ -195,9 +195,40 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .hud .hud-label {
-  opacity: 0.6;
+  opacity: 0.8;
   font-weight: 500;
   margin-right: 0.3rem;
+}
+.hud .hud-deal {
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* Visible mirror of important announcer messages */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 3000;
+  max-width: min(26rem, 90vw);
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.7rem;
+  background: rgb(20 24 20 / 0.92);
+  color: #f3f6f2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+  pointer-events: none;
+}
+@keyframes toast-rise {
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.toast.toast-in { animation: toast-rise 0.18s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .toast.toast-in { animation: none; }
 }
 
 .btn .btn-icon { width: 1rem; height: 1rem; flex: none; }
@@ -273,12 +304,21 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 
 /* ---------- board ---------- */
 
+.board-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* reserve space before JS sizes the board, so content below doesn't jump */
+  min-height: clamp(22rem, 55vh, 44rem);
+}
 .board {
   position: relative;
   width: 100%;
   user-select: none;
-  touch-action: none;
+  /* Swipes on felt/slots scroll the page; cards opt out below so drags
+     always win on them (no mobile scroll trap). */
+  touch-action: pan-x pan-y;
 }
+.card { touch-action: none; }
 
 .slot {
   position: absolute;
@@ -362,19 +402,23 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 :root[data-theme='dark'] .card-front { background: linear-gradient(160deg, #f4f4ee 0%, var(--card-front) 65%); }
 .card-front.card-red { color: var(--card-text-red); }
 
+/* Rank and suit sit side by side so the whole index stays visible within
+   the slim strip a fanned pile exposes (critical for reading 4-suit
+   Spider stacks). */
 .corner {
   position: absolute;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.06em;
   line-height: 1;
   font-weight: 700;
-  font-size: clamp(0.6rem, calc(var(--card-w) * 0.24), 1.5rem);
+  font-size: clamp(0.58rem, calc(var(--card-w) * 0.21), 1.3rem);
 }
 .corner b { font-style: normal; }
-.corner i { font-style: normal; font-size: 0.8em; }
-.corner-tl { top: 5%; left: 7%; }
-.corner-br { bottom: 5%; right: 7%; transform: rotate(180deg); }
+.corner i { font-style: normal; font-size: 0.92em; }
+.corner-tl { top: 5%; left: 6%; }
+.corner-br { bottom: 5%; right: 6%; transform: rotate(180deg); }
 
 /* number-card pips, laid out in the classic arrangement */
 .pip-spot {

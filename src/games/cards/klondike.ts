@@ -105,9 +105,12 @@ export function applyMove(state: GameState, move: Move): void {
       }
       state.recycles++;
       state.moves++;
-      // Standard scoring docks repeated passes through the deck.
-      if (state.variant === 1 || state.recycles > 3) {
+      // Standard scoring: -100 per pass in draw 1; -20 after the third pass
+      // in draw 3.
+      if (state.variant === 1) {
         state.score = Math.max(0, state.score - 100);
+      } else if (state.recycles > 3) {
+        state.score = Math.max(0, state.score - 20);
       }
       return;
     }
@@ -239,8 +242,20 @@ export function findHint(state: GameState): Move | null {
     }
   }
 
-  if (canDraw(state)) return { type: 'draw' };
-  if (canRecycle(state)) return { type: 'recycle' };
+  // Only suggest cycling the stock if some stock/waste card could actually
+  // be played right now — otherwise the game is effectively dead and the
+  // hint should say so (null) rather than suggest drawing forever.
+  if (canDraw(state) || canRecycle(state)) {
+    const cycling = [...state.stock, ...state.waste];
+    const useful = cycling.some((c) => {
+      const up = { ...c, faceUp: true };
+      if (state.foundations.some((f) => fitsOnFoundation(up, f))) return true;
+      return state.tableau.some((p) => fitsOnTableau(up, top(p)));
+    });
+    if (useful) {
+      return canDraw(state) ? { type: 'draw' } : { type: 'recycle' };
+    }
+  }
   return null;
 }
 

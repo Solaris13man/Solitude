@@ -1,4 +1,4 @@
-# Solitude — Classic Games
+# CardHearth (repo: Solitude) — Classic Games
 
 A fast, modern suite of public-domain classics that runs entirely in the
 browser: **Klondike**, **Spider** (1/2/4 suits), and **FreeCell**, with more
@@ -70,8 +70,8 @@ The `dist/` folder deploys to any static host.
 **Netlify:** new site from Git, build command `npm run build`, publish
 directory `dist`.
 
-Before going live, set your real domain as `site` in `astro.config.mjs` so
-canonical URLs resolve correctly.
+The production domain is `https://cardhearth.com` (set as `site` in
+`astro.config.mjs`); sitemap and canonical URLs are generated from it.
 
 ## Project layout
 
@@ -82,8 +82,8 @@ future chess or dominoes game adds a folder there, an entry in
 
 ```
 src/
-├─ pages/                  # One page per game (index = Klondike)
-│  ├─ index.astro
+├─ pages/                  # Menu (index) + one page per game + content pages
+│  ├─ index.astro          # Game menu landing page
 │  ├─ spider.astro
 │  └─ freecell.astro
 ├─ layouts/Layout.astro    # HTML shell + SEO meta

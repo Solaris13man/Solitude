@@ -319,17 +319,24 @@ describe('hints', () => {
   it('does not suggest shuffling a king between empty columns', () => {
     const s = emptyState();
     s.tableau[0] = [card('S', 13)];
-    s.stock = [card('D', 7, false)];
+    s.stock = [card('D', 12, false)]; // playable on the king once drawn
     const hint = findHint(s);
     expect(hint).toEqual({ type: 'draw' });
   });
 
-  it('falls back to recycle when stuck with an empty stock', () => {
+  it('falls back to recycle when a buried waste card is playable', () => {
     const s = emptyState();
-    s.waste = [card('D', 7)];
-    s.tableau[0] = [card('S', 13)];
+    s.waste = [card('D', 7), card('C', 2)]; // D7 fits S8 but is buried
+    s.tableau[0] = [card('S', 8)];
     const hint = findHint(s);
     expect(hint).toEqual({ type: 'recycle' });
+  });
+
+  it('reports a dead game instead of suggesting endless draws', () => {
+    const s = emptyState();
+    s.tableau[0] = [card('S', 13)];
+    s.stock = [card('C', 2, false)]; // fits nothing, ever
+    expect(findHint(s)).toBeNull();
   });
 });
 

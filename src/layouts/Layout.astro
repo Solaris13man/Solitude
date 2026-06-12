@@ -4,9 +4,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  /** Optional schema.org JSON-LD object(s) for this page. */
+  schema?: object | object[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, schema } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -19,7 +21,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CardHearth" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -27,6 +31,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="theme-color" content="#135c32" />
+    {
+      schema && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(schema)}
+        />
+      )
+    }
     <script is:inline>
       // Apply persisted display settings before first paint to avoid flashes.
       try {

@@ -2,12 +2,65 @@
 import Layout from '../layouts/Layout.astro';
 import GameShell from '../components/GameShell.astro';
 
-const title = 'Solitude — Play Klondike Solitaire Free Online';
+const title = 'Klondike Solitaire — Play Free Online (Draw 1 & Draw 3) | CardHearth';
 const description =
   'Play classic Klondike Solitaire free in your browser. Draw 1 or Draw 3, unlimited undo, hints, auto-finish, and smooth animations on desktop and mobile. No download, no sign-up.';
+
+const faq = [
+  {
+    q: 'Are all Klondike Solitaire games winnable?',
+    a: 'No. Roughly 80% of Klondike deals are theoretically winnable, but typical players win far fewer because some wins require perfect play. Draw 1 games are considerably easier to win than Draw 3. If a deal beats you, use the deal number to replay it and try a different line.',
+  },
+  {
+    q: 'What is the difference between Draw 1 and Draw 3?',
+    a: 'In Draw 1, one card is turned from the stock at a time and every stock card is reachable each pass — win rates around 30–45% are realistic. In Draw 3, cards turn over three at a time so only every third card is initially available, which makes planning your stock passes much more important. You can switch modes in Settings; the change applies to your next deal.',
+  },
+  {
+    q: 'How does Klondike scoring work?',
+    a: 'CardHearth uses standard scoring: 10 points for each card moved to a foundation, 5 points for waste-to-tableau moves and for flipping a face-down tableau card, and a 15-point penalty for moving a card off a foundation. Recycling the waste costs 100 points in Draw 1, and 20 points per pass after the third in Draw 3.',
+  },
+  {
+    q: 'Can I play the same deal again or share it?',
+    a: 'Yes. Every deal has a number (shown next to the timer). After a game you can replay the identical deal, and the Share button copies a challenge link — anyone who opens it gets exactly the same cards.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Klondike Solitaire',
+    url: 'https://cardhearth.com/klondike/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Klondike Solitaire', item: 'https://cardhearth.com/klondike/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="klondike"
     heading="Klondike Solitaire"
@@ -19,24 +72,53 @@ const description =
   >
     <h2 class="mb-2 text-lg font-bold">How to play Klondike Solitaire</h2>
     <p class="mb-3">
-      Build the four foundations from Ace to King, one per suit. On the tableau, stack cards in
-      descending order with alternating colors — drag cards or simply tap one to send it to the
-      best spot. Only Kings may be placed on empty columns. Draw from the stock when you're out
-      of moves, and recycle the waste pile when the stock runs dry.
+      Klondike is <em>the</em> solitaire — the patience game most people simply call "Solitaire."
+      The goal is to move all 52 cards onto the four <strong>foundations</strong>, building each
+      suit upward from Ace to King. On the seven <strong>tableau</strong> columns, build downward
+      in alternating colors: a red Nine goes on a black Ten, a black Queen on a red King. Any
+      face-up run can be moved between columns as a unit, and only Kings (alone or leading a run)
+      may be placed on empty columns.
     </p>
-    <h2 class="mb-2 text-lg font-bold">Tips &amp; shortcuts</h2>
     <p class="mb-3">
-      Flip face-down tableau cards as early as you can, and don't rush cards to the foundations —
-      you may still need them to build runs. Stuck? Use <strong>Hint</strong> (H). Made a mistake?
-      <strong>Undo</strong> is unlimited (Ctrl+Z). Press <strong>D</strong> or tap the stock to
-      draw, and <strong>N</strong> for a new deal. Switch between Draw&nbsp;1 and Draw&nbsp;3 in
-      Settings. When every card is face up, <strong>Auto-finish</strong> completes the game for you.
+      When you run out of moves, draw from the <strong>stock</strong> in the top-left corner.
+      Cards turn over into the waste pile — one at a time in Draw 1, three at a time in Draw 3 —
+      and when the stock is empty, tap it again to recycle the waste and keep going. Drag cards
+      where you want them, or simply <strong>tap a card</strong> to send it to the best available
+      spot (foundation first). Uncovering a face-down tableau card flips it automatically.
     </p>
-    <p class="opacity-75">
-      Solitude is free, runs entirely in your browser, and saves your games, settings and
-      statistics on your device. No account needed. Also try
-      <a class="underline" href="/spider">Spider</a> and
-      <a class="underline" href="/freecell">FreeCell</a>.
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      <strong>Flip face-down cards first.</strong> Every hidden card you reveal opens new options,
+      so when two moves are available, prefer the one that uncovers a card — and dig into the
+      tallest piles early, since they hide the most. <strong>Don't rush the foundations:</strong>
+      a Two or Three you bank too early may be exactly the card you need to park a run on later.
+      <strong>Empty columns are for Kings</strong> — but wait for the <em>right</em> King: one
+      with a Queen of the opposite color in sight beats one that strands a column.
+      <strong>In Draw 3, count your stock.</strong> Playing one card from the waste shifts which
+      cards surface on the next pass, so sometimes it pays to skip a playable card to reach a
+      better one next cycle.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Controls &amp; shortcuts</h2>
+    <p class="mb-3">
+      Stuck? <strong>Hint</strong> (H) highlights a useful move. <strong>Undo</strong> is
+      unlimited (U or Ctrl+Z), with redo on R. Press <strong>D</strong> or tap the stock to draw,
+      <strong>N</strong> for a new deal, and <strong>A</strong> to auto-finish once every card is
+      face up. Switch Draw 1 / Draw 3, themes, card backs, and left-handed layout in Settings.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      CardHearth is always free to play, runs entirely in your browser, and saves your games,
+      settings and statistics on your device. Also try
+      <a class="underline" href="/spider/">Spider Solitaire</a> and
+      <a class="underline" href="/freecell/">FreeCell</a>.
     </p>
   </GameShell>
 

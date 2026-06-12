@@ -2,12 +2,65 @@
 import Layout from '../layouts/Layout.astro';
 import GameShell from '../components/GameShell.astro';
 
-const title = 'Spider Solitaire — Play Free Online (1, 2 or 4 Suits)';
+const title = 'Spider Solitaire — Play Free Online (1, 2 or 4 Suits) | CardHearth';
 const description =
   'Play Spider Solitaire free in your browser with 1, 2 or 4 suits. Unlimited undo, hints, smooth animations, and full touch support. No download, no sign-up.';
+
+const faq = [
+  {
+    q: 'What is the difference between 1, 2 and 4 suit Spider?',
+    a: 'All three use 104 cards (two decks). In 1-suit Spider every card is a spade, so any descending stack moves together — ideal for learning. 2-suit adds hearts, and 4-suit uses all four suits; since only same-suit runs move as a unit, each added suit dramatically raises the difficulty. Most players win the majority of 1-suit games, while 4-suit wins are a real achievement.',
+  },
+  {
+    q: 'Why can I not deal new cards from the stock?',
+    a: 'Spider only lets you deal when every column has at least one card. Fill any empty columns first — then tap the stock to deal one card onto each of the ten columns.',
+  },
+  {
+    q: 'How does Spider Solitaire scoring work?',
+    a: 'CardHearth uses the classic convention: you start with 500 points, lose 1 point for every move (including stock deals), and gain 100 points for each completed King-to-Ace run. Completing all eight runs wins the game.',
+  },
+  {
+    q: 'Is every Spider Solitaire game winnable?',
+    a: 'No — deals are random, and especially at 4 suits some deals cannot be won even with perfect play. Unlimited undo lets you explore different lines, and the deal number lets you retry the exact same deal.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Spider Solitaire',
+    url: 'https://cardhearth.com/spider/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Spider Solitaire', item: 'https://cardhearth.com/spider/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="spider"
     heading="Spider Solitaire"
@@ -20,21 +73,41 @@ const description =
   >
     <h2 class="mb-2 text-lg font-bold">How to play Spider Solitaire</h2>
     <p class="mb-3">
-      Two full decks, ten columns. Build cards downward regardless of suit, but only runs of the
-      <em>same</em> suit move together — and when you complete a King-to-Ace run in one suit, it
-      flies off the board. Clear all eight runs to win. When you're stuck, tap the stock to deal
-      a fresh card onto every column (each column must have at least one card first).
+      Spider deals two full decks — 104 cards — across ten columns. Build cards downward
+      regardless of suit (any Nine on any Ten), but pay attention to suits anyway: only runs of
+      the <em>same</em> suit move together as a unit. Your goal is to assemble complete
+      King-to-Ace runs in a single suit; the moment one is finished, it flies off the board.
+      Clear all eight runs to win.
     </p>
-    <h2 class="mb-2 text-lg font-bold">Tips</h2>
     <p class="mb-3">
-      Start with <strong>1 suit</strong> to learn the flow, then graduate to 2 and 4. Prefer
-      same-suit builds whenever possible — mixed-suit stacks are quick fixes that cost mobility
-      later. Empty columns are gold: use them to untangle buried cards before dealing from the
-      stock, since each deal buries every column one card deeper.
+      When you run out of useful moves, tap the <strong>stock</strong> to deal a fresh card onto
+      every column — but every column must hold at least one card first, so plan empty columns
+      carefully before dealing. Drag cards or tap them to auto-move; tap-to-move prefers
+      same-suit placements because those keep your runs mobile.
     </p>
-    <p class="opacity-75">
-      Prefer the classics? Play <a class="underline" href="/">Klondike</a> or
-      <a class="underline" href="/freecell">FreeCell</a>.
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      Start with <strong>1 suit</strong> to learn the rhythm, then graduate to 2 and 4.
+      <strong>Prefer same-suit builds</strong> whenever you have the choice — an off-suit stack
+      is a quick fix that costs mobility later, because it can't move as a unit.
+      <strong>Empty columns are your most powerful tool:</strong> use them as workspace to
+      re-sort mixed stacks into single-suit runs, and try to empty a column before each stock
+      deal, since every deal buries all ten columns one card deeper. Expose face-down cards
+      early; each flip is new information and new options. And remember the deal clock:
+      with 50 cards in the stock you get exactly five deals, so make each one count.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Prefer the classics? Play <a class="underline" href="/klondike/">Klondike Solitaire</a> or
+      <a class="underline" href="/freecell/">FreeCell</a> — both free, right in your browser.
     </p>
   </GameShell>
 

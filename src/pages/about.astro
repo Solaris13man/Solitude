@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'About CardHearth';
+const description =
+  'CardHearth is a free, fast, no-nonsense home for classic card games — Klondike, Spider, and FreeCell — built with care for desktop and mobile.';
+---
+
+<Layout title={title} description={description}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <header class="py-10">
+      <p class="text-sm font-bold opacity-70"><a href="/" class="hover:underline">← CardHearth</a></p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight">About CardHearth</h1>
+    </header>
+    <section class="text-sm leading-relaxed opacity-90">
+      <p class="mb-3">
+        CardHearth is a home for the classic games people have played at kitchen tables for
+        generations — starting with Klondike Solitaire, Spider, and FreeCell, with more classics
+        on the way.
+      </p>
+      <p class="mb-3">
+        We built it because most places to play these games online feel a decade old: slow
+        pages, cluttered screens, and clunky controls. CardHearth loads instantly, plays
+        beautifully with mouse or touch, respects your attention, and works the same on a phone
+        as on a desktop. Unlimited undo, hints, auto-finish, statistics, streaks, and numbered
+        deals you can share with friends are all built in — free.
+      </p>
+      <p class="mb-3">
+        Your games, settings, and statistics are stored on your own device. There are no
+        accounts and nothing to install. All artwork, code, and sounds are original work; the
+        games themselves are traditional, public-domain classics.
+      </p>
+      <p class="mb-3">
+        Questions or suggestions? We'd love to hear them — reach us at
+        <a class="underline" href="mailto:hello@cardhearth.com">hello@cardhearth.com</a>.
+      </p>
+    </section>
+    <Footer />
+  </main>
+</Layout>

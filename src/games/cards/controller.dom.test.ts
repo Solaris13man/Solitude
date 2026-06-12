@@ -21,7 +21,9 @@ const PAGE_SCAFFOLD = `
   <span id="stat-time"></span>
   <span id="stat-moves"></span>
   <span id="stat-score"></span>
-  <div id="board" class="board"></div>
+  <span id="stat-deal"></span>
+  <div class="board-scroll"><div id="board" class="board"></div></div>
+  <div id="toast" hidden></div>
   <p id="announcer"></p>
   <dialog id="settings-dialog">
     <select id="set-variant"><option value="1">1</option><option value="3">3</option></select>
@@ -34,7 +36,8 @@ const PAGE_SCAFFOLD = `
     <input type="checkbox" id="set-sounds" />
   </dialog>
   <dialog id="stats-dialog"><dl id="stats-body"></dl></dialog>
-  <dialog id="win-dialog"><dl id="win-summary"></dl><button id="btn-play-again"></button></dialog>
+  <dialog id="win-dialog"><dl id="win-summary"></dl><button id="btn-share"></button><button id="btn-replay-deal"></button><button id="btn-play-again"></button></dialog>
+  <dialog id="newgame-dialog"><button id="btn-confirm-new"></button></dialog>
 `;
 
 function setUpPage(): void {
@@ -119,16 +122,20 @@ describe('game controller', () => {
     expect(settings.variants.klondike).toBe(3);
     expect((document.getElementById('variant-note') as HTMLElement).hidden).toBe(false);
     // New deal picks up the new mode: a draw should now move 3 cards.
+    // (the game hasn't started, so no confirmation is needed)
     document.getElementById('btn-new')!.click();
     tapStock();
     const saved = JSON.parse(localStorage.getItem('solitude.game.v2.klondike')!);
     expect(saved.state.waste.length).toBe(3);
   });
 
-  it('records an abandoned game as a loss in stats', () => {
+  it('asks for confirmation and records an abandoned game as a loss', () => {
     startGame(klondikeRules);
     tapStock();
     document.getElementById('btn-new')!.click();
+    // A started game is never abandoned silently: stats unchanged until confirmed.
+    expect(localStorage.getItem('solitude.stats.v2.klondike')).toBeNull();
+    document.getElementById('btn-confirm-new')!.click();
     const stats = JSON.parse(localStorage.getItem('solitude.stats.v2.klondike')!);
     expect(stats.gamesPlayed).toBe(1);
     expect(stats.gamesWon).toBe(0);

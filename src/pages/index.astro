@@ -1,20 +1,38 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import GameArt from '../components/GameArt.astro';
+import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
 
-const title = 'Solitude — Free Classic Card Games Online';
+const title = 'CardHearth — Free Solitaire & Classic Card Games Online';
 const description =
-  'Play Klondike Solitaire, Spider, and FreeCell free in your browser. Smooth animations, full touch support, unlimited undo — no download, no ads in your face, no sign-up.';
+  'Play free Solitaire online: Klondike, Spider, and FreeCell in your browser. Smooth animations, full touch support, unlimited undo — always free, no download, no sign-up.';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'CardHearth',
+    url: 'https://cardhearth.com/',
+    description,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'CardHearth',
+    url: 'https://cardhearth.com/',
+    logo: 'https://cardhearth.com/favicon.svg',
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} schema={schema}>
   <main class="mx-auto flex min-h-dvh w-full max-w-4xl flex-col px-4">
     <header class="py-10 text-center sm:py-14">
-      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">Solitude</h1>
+      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">CardHearth</h1>
       <p class="mx-auto mt-3 max-w-md text-base opacity-85">
-        Free classic card games, beautifully playable on any device. Pick a game to start —
-        your progress, stats and streaks are saved automatically.
+        Free solitaire and classic card games, beautifully playable on any device. Pick a game
+        to start — your progress, stats and streaks are saved automatically.
       </p>
     </header>
 
@@ -36,19 +54,26 @@ const description =
     </nav>
 
     <section class="mx-auto max-w-2xl py-12 text-sm leading-relaxed opacity-90">
-      <h2 class="mb-2 text-lg font-bold">Three classics, one place</h2>
+      <h2 class="mb-2 text-lg font-bold">Free solitaire, three ways</h2>
       <p class="mb-3">
-        <a class="underline" href="/klondike">Klondike</a> is the solitaire everyone knows —
-        build four foundations from Ace to King, in Draw&nbsp;1 or Draw&nbsp;3 mode.
-        <a class="underline" href="/spider">Spider</a> deals two full decks across ten columns;
-        assemble complete King-to-Ace runs in 1, 2 or 4-suit difficulty.
-        <a class="underline" href="/freecell">FreeCell</a> lays every card face up — with four
+        <a class="underline" href="/klondike/">Klondike Solitaire</a> is the classic everyone
+        knows — build four foundations from Ace to King, in Draw&nbsp;1 or Draw&nbsp;3 mode.
+        <a class="underline" href="/spider/">Spider Solitaire</a> deals two full decks across ten
+        columns; assemble complete King-to-Ace runs in 1, 2 or 4-suit difficulty.
+        <a class="underline" href="/freecell/">FreeCell</a> lays every card face up — with four
         spare cells and a clear head, nearly every deal can be won.
       </p>
+      <p class="mb-3">
+        Every game works with mouse, touch or keyboard, and comes with unlimited undo, hints,
+        auto-finish, and numbered deals you can replay or share to challenge a friend on the
+        exact same cards.
+      </p>
       <p class="opacity-75">
-        Every game works with mouse, touch or keyboard, supports unlimited undo and hints, and
-        runs entirely on your device — no account, no install. More classic games are on the way.
+        CardHearth runs entirely on your device — no account, no install, always free to play.
+        More classic games are on the way.
       </p>
     </section>
+
+    <Footer />
   </main>
 </Layout>

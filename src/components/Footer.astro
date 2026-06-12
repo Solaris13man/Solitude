@@ -1,0 +1,14 @@
+---
+import { GAMES } from '../games/registry';
+---
+
+<footer class="mt-auto border-t border-white/10 py-8 text-sm opacity-80">
+  <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4">
+    <nav class="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
+      {GAMES.map((game) => <a class="hover:underline" href={game.href}>{game.name}</a>)}
+      <a class="hover:underline" href="/about/">About</a>
+      <a class="hover:underline" href="/privacy/">Privacy</a>
+    </nav>
+    <p>© {new Date().getFullYear()} CardHearth. Free to play, made with care.</p>
+  </div>
+</footer>

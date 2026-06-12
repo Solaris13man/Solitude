@@ -189,6 +189,26 @@ describe('spider tap and hints', () => {
     });
   });
 
+  it('hint does not ping-pong a run already on a same-suit build', () => {
+    const s = emptyState();
+    s.tableau[0] = [card('S', 9), card('S', 8)]; // S8 already continues S9
+    s.tableau[1] = [card('H', 9)];
+    expect(findHint(s)).toBeNull();
+  });
+
+  it('hint upgrades an off-suit build to a same-suit one', () => {
+    const s = emptyState();
+    s.tableau[0] = [card('H', 9), card('S', 8)]; // S8 parked off-suit
+    s.tableau[1] = [card('S', 9)];
+    const hint = findHint(s);
+    expect(hint).toEqual({
+      type: 'move',
+      from: { kind: 'tableau', index: 0 },
+      to: { kind: 'tableau', index: 1 },
+      count: 1,
+    });
+  });
+
   it('hint falls back to dealing', () => {
     const s = emptyState();
     s.tableau.forEach((p) => p.push(card('S', 5)));

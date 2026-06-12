@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Page not found — CardHearth';
+const description = 'That page could not be found. Pick a free card game to play instead.';
+---
+
+<Layout title={title} description={description}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <header class="py-16 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight">404</h1>
+      <p class="mt-3 opacity-85">
+        That page seems to have been shuffled out of the deck.
+      </p>
+      <p class="mt-6">
+        <a class="btn btn-primary" href="/">Back to the games</a>
+      </p>
+    </header>
+    <Footer />
+  </main>
+</Layout>

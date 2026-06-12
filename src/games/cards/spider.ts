@@ -183,7 +183,15 @@ export function findHint(state: GameState): Move | null {
       if (!canPickRun(state, { kind: 'tableau', index: i }, depth)) break;
       const count = depth + 1;
       const lead = pile[pile.length - count]!;
-      const reveals = pile.length - count > 0;
+      const beneath = pile[pile.length - count - 1];
+      // Revealing means an actual face-down flip, not just "something below".
+      const reveals = !!beneath && !beneath.faceUp;
+      // The run already continues a same-suit build: any lateral move is a
+      // regression, so never suggest one (prevents hint ping-pong).
+      const onSameSuitBuild =
+        !!beneath && beneath.faceUp && beneath.suit === lead.suit && beneath.rank === lead.rank + 1;
+      if (onSameSuitBuild) continue;
+      const onAnyBuild = !!beneath && beneath.faceUp && beneath.rank === lead.rank + 1;
       for (let j = 0; j < state.tableau.length; j++) {
         if (j === i) continue;
         const from: PileRef = { kind: 'tableau', index: i };
@@ -191,6 +199,8 @@ export function findHint(state: GameState): Move | null {
         if (!canMove(state, from, to, count)) continue;
         const target = top(state.tableau[j]!);
         if (!target && !reveals) continue; // pointless shuffle to empty
+        // Already on an off-suit build: only a same-suit landing improves it.
+        if (onAnyBuild && (!target || target.suit !== lead.suit)) continue;
         candidates.push({
           move: { type: 'move', from, to, count },
           sameSuit: !!target && target.suit === lead.suit,

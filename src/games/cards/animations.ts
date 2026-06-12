@@ -78,7 +78,10 @@ export function winCascade(board: Board, state: GameState, enabled: boolean, onD
     if (stopped) return;
     const dt = Math.min(now - lastTime, 40);
     lastTime = now;
-    if (queue.length > 0 && now - lastLaunch > 110) {
+    // Big games (Spider's 104 cards) launch faster so the celebration
+    // doesn't outstay its welcome.
+    const cadence = queue.length + flying.length > 60 ? 55 : 110;
+    if (queue.length > 0 && now - lastLaunch > cadence) {
       lastLaunch = now;
       const next = queue.shift()!;
       next.el.style.transition = 'none';

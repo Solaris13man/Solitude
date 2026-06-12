@@ -76,8 +76,24 @@ class CardGameController {
       else if (!this.finished && this.state.moves > 0) this.resumeTimer();
     });
 
-    if (!this.tryResume()) {
+    // A shared deal link (?deal=SEED) always starts that exact deal.
+    const sharedSeed = this.seedFromUrl();
+    if (sharedSeed !== null) {
+      this.newGame(false, sharedSeed);
+      this.announce('Shared deal loaded.', true);
+    } else if (!this.tryResume()) {
       this.newGame(false);
+    }
+  }
+
+  private seedFromUrl(): number | null {
+    try {
+      const raw = new URLSearchParams(window.location.search).get('deal');
+      if (!raw) return null;
+      const seed = Number.parseInt(raw, 10);
+      return Number.isFinite(seed) && seed >= 0 ? seed >>> 0 : null;
+    } catch {
+      return null;
     }
   }
 
@@ -87,7 +103,16 @@ class CardGameController {
 
   // ----- game lifecycle -------------------------------------------------
 
-  private newGame(countAbandon: boolean): void {
+  /** Asks for confirmation first when a started game would be abandoned. */
+  private requestNewGame(): void {
+    if (this.state && this.state.moves > 0 && !this.finished) {
+      ($('newgame-dialog') as HTMLDialogElement).showModal();
+      return;
+    }
+    this.newGame(false);
+  }
+
+  private newGame(countAbandon: boolean, seed?: number): void {
     if (countAbandon && this.state && this.state.moves > 0 && !this.finished) {
       recordResult({
         game: this.ruleset.id,
@@ -98,7 +123,7 @@ class CardGameController {
         score: this.state.score,
       });
     }
-    this.state = this.ruleset.deal(randomSeed(), this.variant());
+    this.state = this.ruleset.deal(seed ?? randomSeed(), this.variant());
     this.history.clear();
     this.finished = false;
     this.autoFinishing = false;
@@ -126,7 +151,7 @@ class CardGameController {
       this.board.render();
       this.afterStateChange(false);
       if (this.state.moves > 0) this.resumeTimer();
-      this.announce('Game resumed.');
+      this.announce('Game resumed where you left off.', true);
       return true;
     } catch {
       return false;
@@ -174,25 +199,28 @@ class CardGameController {
   private updateHud(): void {
     $('stat-moves').textContent = String(this.state.moves);
     $('stat-score').textContent = String(this.state.score);
+    const dealEl = $opt('stat-deal');
+    if (dealEl) dealEl.textContent = `#${this.state.seed}`;
     this.updateClock();
-    ($('btn-undo') as HTMLButtonElement).disabled = !this.history.canUndo;
-    ($('btn-redo') as HTMLButtonElement).disabled = !this.history.canRedo;
+    // Once a game is won it stays won: undo/redo lock so the result can't be
+    // replayed for extra wins.
+    ($('btn-undo') as HTMLButtonElement).disabled = this.finished || !this.history.canUndo;
+    ($('btn-redo') as HTMLButtonElement).disabled = this.finished || !this.history.canRedo;
     $('btn-autofinish').hidden = !this.ruleset.isTriviallyWinnable(this.state);
   }
 
   private undo(): void {
-    if (this.autoFinishing) return;
+    if (this.autoFinishing || this.finished) return;
     const prev = this.history.undo(this.state);
     if (!prev) return;
     this.state = prev;
-    this.finished = false;
     this.sound.play('undo');
     this.afterStateChange(true);
     this.announce('Undid move.');
   }
 
   private redo(): void {
-    if (this.autoFinishing) return;
+    if (this.autoFinishing || this.finished) return;
     const next = this.history.redo(this.state);
     if (!next) return;
     this.state = next;
@@ -204,16 +232,16 @@ class CardGameController {
   private hint(): void {
     const move = this.ruleset.findHint(this.state);
     if (!move) {
-      this.announce('No moves available. Try undoing or start a new game.');
+      this.announce('No useful moves found. Try undoing, or start a new game.', true);
       return;
     }
     this.board.highlightMove(move, this.state);
-    if (move.type === 'draw') this.announce('Hint: draw from the stock.');
-    else if (move.type === 'recycle') this.announce('Hint: recycle the waste pile.');
+    if (move.type === 'draw') this.announce('Hint: draw from the stock.', true);
+    else if (move.type === 'recycle') this.announce('Hint: recycle the waste pile.', true);
     else {
       const pile = getPile(this.state, move.from);
       const card = pile[pile.length - move.count];
-      this.announce(card ? `Hint: move the ${cardName(card)}.` : 'Hint shown.');
+      this.announce(card ? `Hint: move the ${cardName(card)}.` : 'Hint shown.', true);
     }
   }
 
@@ -314,14 +342,18 @@ class CardGameController {
       this.doMove({ type: 'recycle' }, 'Recycled the waste pile.');
     } else if (this.state.stock.length > 0) {
       // Spider: dealing requires every column to be occupied.
-      this.announce('Fill every empty column before dealing new cards.');
+      this.announce('Fill every empty column before dealing new cards.', true);
     }
   }
 
   // ----- chrome ----------------------------------------------------------
 
   private bindToolbar(): void {
-    $('btn-new').addEventListener('click', () => this.newGame(true));
+    $('btn-new').addEventListener('click', () => this.requestNewGame());
+    $('btn-confirm-new').addEventListener('click', () => {
+      ($('newgame-dialog') as HTMLDialogElement).close();
+      this.newGame(true);
+    });
     $('btn-undo').addEventListener('click', () => this.undo());
     $('btn-redo').addEventListener('click', () => this.redo());
     $('btn-hint').addEventListener('click', () => this.hint());
@@ -330,6 +362,15 @@ class CardGameController {
       ($('win-dialog') as HTMLDialogElement).close();
       this.newGame(false);
     });
+    $opt('btn-replay-deal')?.addEventListener('click', () => {
+      ($('win-dialog') as HTMLDialogElement).close();
+      this.newGame(false, this.state.seed);
+      this.announce('Replaying the same deal.', true);
+    });
+    $opt('btn-share')?.addEventListener('click', () => void this.shareDeal());
+    // Re-show the final board if the win dialog is dismissed (the cascade
+    // hides cards as they fly off).
+    $opt('win-dialog')?.addEventListener('close', () => this.board.render());
     $('btn-stats').addEventListener('click', () => {
       this.renderStats();
       ($('stats-dialog') as HTMLDialogElement).showModal();
@@ -340,6 +381,24 @@ class CardGameController {
     document.querySelectorAll<HTMLButtonElement>('[data-close-dialog]').forEach((btn) => {
       btn.addEventListener('click', () => btn.closest('dialog')?.close());
     });
+  }
+
+  /** Share the current deal (same seed → same cards for everyone). */
+  private async shareDeal(): Promise<void> {
+    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
+    const text = this.finished
+      ? `I won ${this.ruleset.name} deal #${this.state.seed} in ${formatTime(this.elapsedMs())} with ${this.state.moves} moves. Can you beat it?`
+      : `Try ${this.ruleset.name} deal #${this.state.seed} on CardHearth!`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ text, url });
+        return;
+      }
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      this.announce('Challenge link copied to clipboard!', true);
+    } catch {
+      // user cancelled the share sheet, or clipboard unavailable
+    }
   }
 
   private renderStats(): void {
@@ -428,7 +487,7 @@ class CardGameController {
       }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       switch (e.key.toLowerCase()) {
-        case 'n': this.newGame(true); break;
+        case 'n': this.requestNewGame(); break;
         case 'u': this.undo(); break;
         case 'r': this.redo(); break;
         case 'h': this.hint(); break;
@@ -467,8 +526,26 @@ class CardGameController {
     $('stat-time').textContent = formatTime(this.elapsedMs());
   }
 
-  private announce(text: string): void {
+  private toastTimer = 0;
+
+  /**
+   * Announce to assistive tech, and — for messages sighted players need too
+   * (hints, blocked actions, resumes) — show a brief visible toast.
+   */
+  private announce(text: string, visible = false): void {
     $('announcer').textContent = text;
+    if (!visible) return;
+    const toast = $opt('toast');
+    if (!toast) return;
+    toast.textContent = text;
+    toast.hidden = false;
+    toast.classList.remove('toast-in');
+    void toast.offsetWidth;
+    toast.classList.add('toast-in');
+    window.clearTimeout(this.toastTimer);
+    this.toastTimer = window.setTimeout(() => {
+      toast.hidden = true;
+    }, 2800);
   }
 }
 

@@ -2,32 +2,101 @@
 import Layout from '../layouts/Layout.astro';
 import GameShell from '../components/GameShell.astro';
 
-const title = 'FreeCell Solitaire — Play Free Online';
+const title = 'FreeCell Solitaire — Play Free Online | CardHearth';
 const description =
   'Play FreeCell Solitaire free in your browser. Every card dealt face up, four free cells, unlimited undo and hints. Nearly every deal is winnable — no download, no sign-up.';
+
+const faq = [
+  {
+    q: 'Are all FreeCell games winnable?',
+    a: 'Very nearly. FreeCell is famous for being almost always solvable — well over 99% of random deals can be won with careful play, which is why FreeCell rewards patience and planning over luck. If you get stuck, undo is unlimited, and you can replay the exact same deal by its number.',
+  },
+  {
+    q: 'What are the free cells for?',
+    a: 'The four free cells in the top corner each hold a single card — they are temporary parking spaces. Use them to lift blocking cards out of the way, but sparingly: every occupied cell reduces how many cards you can move at once.',
+  },
+  {
+    q: 'Why can I only move a few cards at a time?',
+    a: 'Officially FreeCell moves one card at a time; moving a run is shorthand for a series of single moves through free cells and empty columns. The limit is (empty free cells + 1), doubled for each empty cascade — so with two free cells and one empty column you can move up to 6 cards, but moving to an empty column does not count that column itself.',
+  },
+  {
+    q: 'When should I send cards to the foundations?',
+    a: 'Aces and Twos can almost always go up immediately. After that, hold cards back if the opposite color might still need them for building — a banked red Five is useless when a black Six needs somewhere to go. The auto-finish button appears once the remaining game is provably safe.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'FreeCell Solitaire',
+    url: 'https://cardhearth.com/freecell/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'FreeCell Solitaire', item: 'https://cardhearth.com/freecell/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} schema={schema}>
   <GameShell gameId="freecell" heading="FreeCell Solitaire">
     <h2 class="mb-2 text-lg font-bold">How to play FreeCell</h2>
     <p class="mb-3">
-      All 52 cards are dealt face up into eight cascades. Build the foundations from Ace to King
-      by suit, stacking cascades downward in alternating colors along the way. The four
-      <strong>free cells</strong> in the top-left corner each hold a single card — they're your
-      workspace. You can move a run of cards only if you have enough free cells and empty
-      cascades to relay it: (free cells + 1) × 2 per empty cascade.
+      All 52 cards are dealt face up into eight cascades — nothing is hidden, so every game is a
+      pure puzzle. Build the four foundations from Ace to King by suit, stacking cascades
+      downward in alternating colors along the way. The four <strong>free cells</strong> in the
+      top corner each hold a single card: they're your workspace for digging out buried cards.
     </p>
-    <h2 class="mb-2 text-lg font-bold">Tips</h2>
     <p class="mb-3">
-      Almost every FreeCell deal can be won — patience beats luck here. Keep cells empty as long
-      as you can; a card parked in a cell is capacity you've spent. Dig out Aces and Deuces
-      early, and try to empty one cascade: an open column doubles the size of every run you can
-      move. When every cascade is in descending order, <strong>Auto-finish</strong> wraps up the
-      game for you.
+      You can move a run of cards only if you have the capacity to relay it:
+      <strong>(empty free cells + 1), doubled for each empty cascade</strong>. Moving a run
+      <em>onto</em> an empty cascade doesn't get to count that cascade. Drag cards anywhere, or
+      tap a card to send it to the best spot — foundations first.
     </p>
-    <p class="opacity-75">
-      Want more? Play <a class="underline" href="/">Klondike</a> or
-      <a class="underline" href="/spider">Spider</a>.
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      FreeCell rewards planning over luck — almost every deal can be won. <strong>Keep your
+      cells empty:</strong> a parked card is mobility you've spent, so before using a cell, check
+      whether a cascade move does the same job. <strong>Dig out Aces and Twos early</strong>,
+      since buried low cards are what strangle late-game options. <strong>Work toward an empty
+      cascade:</strong> one open column doubles every run you can move, and two will usually
+      break the game open. Look several moves ahead before committing — unlike Klondike, nothing
+      is hidden, so the information to plan a whole sequence is always on the table.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Want more? Play <a class="underline" href="/klondike/">Klondike Solitaire</a> or
+      <a class="underline" href="/spider/">Spider Solitaire</a> — both free, right in your browser.
     </p>
   </GameShell>
 

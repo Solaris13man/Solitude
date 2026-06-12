@@ -115,9 +115,23 @@ export class Board {
   computeMetrics(): void {
     const cfg = this.config;
     const n = cfg.tableauCount;
-    const boardW = this.container.clientWidth;
-    const gap = Math.max(4, Math.round(boardW * 0.012));
-    const cardW = Math.floor((boardW - gap * (n - 1)) / n);
+    // Measure the scroll wrapper (parent) so a previously widened board
+    // doesn't feed back into its own layout.
+    const availW = this.container.parentElement?.clientWidth || this.container.clientWidth;
+    let gap = Math.max(4, Math.round(availW * 0.012));
+    let cardW = Math.floor((availW - gap * (n - 1)) / n);
+    let boardW = availW;
+    // Touch floor: never shrink cards below a usable size (Spider's ten
+    // columns on a phone). The board grows instead and pans horizontally.
+    const MIN_CARD_W = 44;
+    if (cardW < MIN_CARD_W) {
+      cardW = MIN_CARD_W;
+      gap = 4;
+      boardW = n * cardW + (n - 1) * gap;
+      this.container.style.width = `${boardW}px`;
+    } else {
+      this.container.style.width = '';
+    }
     const cardH = Math.round(cardW * 1.4);
     const tableauTop = cardH + Math.round(gap * 2.5);
     const viewportAvail = Math.max(window.innerHeight - 220, 360);
@@ -246,6 +260,7 @@ export class Board {
 
     const place = (card: Card, p: Point, ref: PileRef, depth: number, movable: boolean) => {
       const el = this.ensureCardEl(card);
+      el.style.visibility = ''; // the win cascade hides exited cards
       const x = this.mirror(p.x);
       const prev = this.positions.get(card.id);
       const moved = !!prev && (Math.abs(prev.x - x) > 1 || Math.abs(prev.y - p.y) > 1);
