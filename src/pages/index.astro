@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = 'Solitude — Play Klondike Solitaire Free Online';
+const description =
+  'Play classic Klondike Solitaire free in your browser. Draw 1 or Draw 3, unlimited undo, hints, auto-finish, and smooth animations on desktop and mobile. No download, no sign-up.';
+---
+
+<Layout title={title} description={description}>
+  <div class="mx-auto flex min-h-dvh w-full max-w-4xl flex-col px-2 sm:px-4">
+    <header class="flex flex-wrap items-center justify-between gap-2 py-3">
+      <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">Solitude <span class="font-normal opacity-70">· Klondike Solitaire</span></h1>
+      <nav class="flex flex-wrap gap-1.5" aria-label="Game controls">
+        <button id="btn-new" class="btn" type="button">New</button>
+        <button id="btn-undo" class="btn" type="button" disabled>Undo</button>
+        <button id="btn-redo" class="btn" type="button" disabled>Redo</button>
+        <button id="btn-hint" class="btn" type="button">Hint</button>
+        <button id="btn-autofinish" class="btn btn-primary" type="button" hidden>Auto-finish ✨</button>
+        <button id="btn-stats" class="btn" type="button">Stats</button>
+        <button id="btn-settings" class="btn" type="button" aria-label="Settings">⚙</button>
+      </nav>
+    </header>
+
+    <div class="flex justify-center gap-6 pb-3 text-sm font-semibold tabular-nums opacity-90" role="status" aria-label="Game status">
+      <span>Time <span id="stat-time">0:00</span></span>
+      <span>Moves <span id="stat-moves">0</span></span>
+      <span>Score <span id="stat-score">0</span></span>
+    </div>
+
+    <div id="board" class="board" aria-label="Solitaire board"></div>
+
+    <p class="visually-hidden" id="announcer" aria-live="polite"></p>
+
+    <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
+      <h2 class="mb-2 text-lg font-bold">How to play Klondike Solitaire</h2>
+      <p class="mb-3">
+        Build the four foundations from Ace to King, one per suit. On the tableau, stack cards in
+        descending order with alternating colors — drag cards or simply tap one to send it to the
+        best spot. Only Kings may be placed on empty columns. Draw from the stock when you're out
+        of moves, and recycle the waste pile when the stock runs dry.
+      </p>
+      <h2 class="mb-2 text-lg font-bold">Tips &amp; shortcuts</h2>
+      <p class="mb-3">
+        Flip face-down tableau cards as early as you can, and don't rush cards to the foundations —
+        you may still need them to build runs. Stuck? Use <strong>Hint</strong> (H). Made a mistake?
+        <strong>Undo</strong> is unlimited (Ctrl+Z). Press <strong>D</strong> or tap the stock to
+        draw, and <strong>N</strong> for a new deal. Switch between Draw&nbsp;1 and Draw&nbsp;3 in
+        Settings. When every card is face up, <strong>Auto-finish</strong> completes the game for you.
+      </p>
+      <p class="opacity-75">
+        Solitude is free, runs entirely in your browser, and saves your game, settings and
+        statistics on your device. No account needed.
+      </p>
+    </section>
+  </div>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <h2 id="settings-title" class="mb-2 text-lg font-bold">Settings</h2>
+    <label class="field">Draw mode
+      <select id="set-draw">
+        <option value="1">Draw 1</option>
+        <option value="3">Draw 3</option>
+      </select>
+    </label>
+    <p id="draw-mode-note" class="text-xs opacity-70" hidden>Draw mode applies to your next deal.</p>
+    <label class="field">Theme
+      <select id="set-theme">
+        <option value="auto">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <label class="field">Felt color
+      <select id="set-felt">
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="slate">Slate</option>
+        <option value="crimson">Crimson</option>
+      </select>
+    </label>
+    <label class="field">Card back
+      <select id="set-cardback">
+        <option value="classic">Classic red</option>
+        <option value="royal">Royal blue</option>
+        <option value="mint">Mint</option>
+        <option value="midnight">Midnight</option>
+      </select>
+    </label>
+    <label class="field">Left-handed layout
+      <input type="checkbox" id="set-lefthand" />
+    </label>
+    <label class="field">Animations
+      <input type="checkbox" id="set-animations" />
+    </label>
+    <div class="mt-4 flex justify-end">
+      <button class="btn btn-primary" type="button" data-close-dialog>Done</button>
+    </div>
+  </dialog>
+
+  <dialog id="stats-dialog" aria-labelledby="stats-title">
+    <h2 id="stats-title" class="text-lg font-bold">Your statistics</h2>
+    <dl id="stats-body" class="stats-grid"></dl>
+    <div class="flex justify-end">
+      <button class="btn btn-primary" type="button" data-close-dialog>Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="win-dialog" aria-labelledby="win-title">
+    <h2 id="win-title" class="text-xl font-bold">🎉 You won!</h2>
+    <dl id="win-summary" class="stats-grid"></dl>
+    <div class="flex justify-end gap-2">
+      <button class="btn" type="button" data-close-dialog>Close</button>
+      <button id="btn-play-again" class="btn btn-primary" type="button">Play again</button>
+    </div>
+  </dialog>
+
+  <script>
+    import { startGame } from '../game/main';
+    startGame();
+  </script>
+</Layout>

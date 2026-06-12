@@ -1,0 +1,45 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-theme="auto" data-felt="green" data-cardback="classic">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="theme-color" content="#135c32" />
+    <script is:inline>
+      // Apply persisted display settings before first paint to avoid flashes.
+      try {
+        var s = JSON.parse(localStorage.getItem('solitude.settings.v1') || '{}');
+        var root = document.documentElement;
+        if (s.theme) root.dataset.theme = s.theme;
+        if (s.felt) root.dataset.felt = s.felt;
+        if (s.cardBack) root.dataset.cardback = s.cardBack;
+        if (s.animations === false) root.classList.add('no-animations');
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,144 @@
+import type { PileRef } from '../engine/klondike';
+import type { Board } from './board';
+
+export interface DragCallbacks {
+  /** A quick tap/click on a card (depth = cards above it... 0 = top card). */
+  onTap(ref: PileRef, depth: number): void;
+  /** Tap on the stock slot (draw or recycle). */
+  onStock(): void;
+  /** Can the run starting `depth` cards from the top of `ref` be picked up? */
+  canPick(ref: PileRef, depth: number): boolean;
+  /** Attempt the move on drop; return true if it was applied. */
+  onDrop(from: PileRef, count: number, to: PileRef): boolean;
+  /** Called after a failed drop so the controller can re-render (snap back). */
+  onSnapBack(): void;
+  /** Elements of the run being dragged. */
+  runElements(ref: PileRef, count: number): HTMLElement[];
+}
+
+const TAP_DISTANCE = 8;
+const TAP_TIME = 400;
+
+/**
+ * Unified pointer handling (mouse, touch, pen). A press that moves less than
+ * TAP_DISTANCE within TAP_TIME is a tap (auto-move); anything else drags the
+ * picked-up run with the pointer and drops it on the pile under the cursor.
+ */
+export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
+  interface DragSession {
+    pointerId: number;
+    ref: PileRef;
+    depth: number;
+    startX: number;
+    startY: number;
+    startTime: number;
+    dragging: boolean;
+    els: HTMLElement[];
+    origins: { x: number; y: number }[];
+  }
+  let session: DragSession | null = null;
+
+  const container = board.container;
+
+  container.addEventListener('pointerdown', (e) => {
+    if (session || e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    const slot = target.closest<HTMLElement>('.slot-stock');
+    if (slot) return; // handled on click/keydown for taps
+    const cardEl = target.closest<HTMLElement>('.card');
+    if (!cardEl) return;
+    const located = board.refOf(cardEl);
+    if (!located) return;
+    // Stock cards aren't pickable, but a tap on them still draws (handled in
+    // onTap by the controller), so the session proceeds with an empty run.
+    e.preventDefault();
+    const count = located.depth + 1;
+    const pickable = callbacks.canPick(located.ref, located.depth);
+    const els = pickable ? callbacks.runElements(located.ref, count) : [];
+    session = {
+      pointerId: e.pointerId,
+      ref: located.ref,
+      depth: located.depth,
+      startX: e.clientX,
+      startY: e.clientY,
+      startTime: performance.now(),
+      dragging: false,
+      els,
+      origins: els.map((el) => {
+        const id = el.dataset.id!;
+        return board.positionOf(id);
+      }),
+    };
+    container.setPointerCapture(e.pointerId);
+  });
+
+  container.addEventListener('pointermove', (e) => {
+    if (!session || e.pointerId !== session.pointerId) return;
+    const dx = e.clientX - session.startX;
+    const dy = e.clientY - session.startY;
+    if (!session.dragging) {
+      if (Math.hypot(dx, dy) < TAP_DISTANCE) return;
+      if (session.els.length === 0) return; // not pickable: can still be a tap, never a drag
+      session.dragging = true;
+      for (const el of session.els) el.classList.add('dragging');
+    }
+    for (let i = 0; i < session.els.length; i++) {
+      const o = session.origins[i]!;
+      session.els[i]!.style.transform = `translate3d(${o.x + dx}px, ${o.y + dy}px, 0)`;
+    }
+  });
+
+  const finish = (e: PointerEvent, cancelled: boolean) => {
+    if (!session || e.pointerId !== session.pointerId) return;
+    const s = session;
+    session = null;
+    try {
+      container.releasePointerCapture(e.pointerId);
+    } catch {
+      // capture may already be released
+    }
+    if (!s.dragging) {
+      const quick =
+        performance.now() - s.startTime < TAP_TIME &&
+        Math.hypot(e.clientX - s.startX, e.clientY - s.startY) < TAP_DISTANCE;
+      if (!cancelled && quick) callbacks.onTap(s.ref, s.depth);
+      return;
+    }
+    for (const el of s.els) el.classList.remove('dragging');
+    if (!cancelled) {
+      // Drop point: the center of the lead (first) dragged card.
+      const lead = s.els[0]!;
+      const rect = lead.getBoundingClientRect();
+      const p = board.toBoardCoords(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      const target = board.dropTargetAt(p.x, p.y);
+      if (target && callbacks.onDrop(s.ref, s.depth + 1, target)) return;
+    }
+    callbacks.onSnapBack();
+  };
+
+  container.addEventListener('pointerup', (e) => finish(e, false));
+  container.addEventListener('pointercancel', (e) => finish(e, true));
+
+  // Stock slot: tap or keyboard activation draws/recycles.
+  const stockSlot = board.slotElement('stock');
+  if (stockSlot) {
+    stockSlot.addEventListener('click', () => callbacks.onStock());
+    stockSlot.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        callbacks.onStock();
+      }
+    });
+  }
+
+  // Keyboard activation of a focused card = same as a tap.
+  container.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const cardEl = (e.target as HTMLElement).closest<HTMLElement>('.card');
+    if (!cardEl) return;
+    const located = board.refOf(cardEl);
+    if (!located || located.ref.kind === 'stock') return;
+    e.preventDefault();
+    callbacks.onTap(located.ref, located.depth);
+  });
+}
