@@ -1,4 +1,6 @@
-import type { DrawMode } from './engine/klondike';
+
+
+export type GameId = string;
 
 export interface Stats {
   gamesPlayed: number;
@@ -6,12 +8,12 @@ export interface Stats {
   currentStreak: number;
   bestStreak: number;
   totalMoves: number;
-  /** Best win time in ms, per draw mode. */
-  bestTimeMs: { d1: number | null; d3: number | null };
+  /** Best win time in ms, keyed by variant ("v1", "v3", "v0", …). */
+  bestTimeMs: Record<string, number | null>;
   bestScore: number;
 }
 
-const KEY = 'solitude.stats.v1';
+const keyFor = (game: GameId) => `solitude.stats.v2.${game}`;
 
 const DEFAULT_STATS: Stats = {
   gamesPlayed: 0,
@@ -19,44 +21,41 @@ const DEFAULT_STATS: Stats = {
   currentStreak: 0,
   bestStreak: 0,
   totalMoves: 0,
-  bestTimeMs: { d1: null, d3: null },
+  bestTimeMs: {},
   bestScore: 0,
 };
 
-export function loadStats(): Stats {
+export function loadStats(game: GameId): Stats {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return { ...DEFAULT_STATS, bestTimeMs: { ...DEFAULT_STATS.bestTimeMs } };
+    const raw = localStorage.getItem(keyFor(game));
+    if (!raw) return { ...DEFAULT_STATS, bestTimeMs: {} };
     const parsed = JSON.parse(raw) as Partial<Stats>;
-    return {
-      ...DEFAULT_STATS,
-      ...parsed,
-      bestTimeMs: { ...DEFAULT_STATS.bestTimeMs, ...(parsed.bestTimeMs ?? {}) },
-    };
+    return { ...DEFAULT_STATS, ...parsed, bestTimeMs: { ...(parsed.bestTimeMs ?? {}) } };
   } catch {
-    return { ...DEFAULT_STATS, bestTimeMs: { ...DEFAULT_STATS.bestTimeMs } };
+    return { ...DEFAULT_STATS, bestTimeMs: {} };
   }
 }
 
-export function saveStats(stats: Stats): void {
+export function saveStats(game: GameId, stats: Stats): void {
   try {
-    localStorage.setItem(KEY, JSON.stringify(stats));
+    localStorage.setItem(keyFor(game), JSON.stringify(stats));
   } catch {
     // Storage may be unavailable (private mode); stats just won't persist.
   }
 }
 
 export interface GameResult {
+  game: GameId;
+  variant: number;
   won: boolean;
   elapsedMs: number;
   moves: number;
   score: number;
-  drawMode: DrawMode;
 }
 
 /** Record a finished (won) or abandoned (lost) game and return updated stats. */
 export function recordResult(result: GameResult): Stats {
-  const stats = loadStats();
+  const stats = loadStats(result.game);
   stats.gamesPlayed++;
   stats.totalMoves += result.moves;
   if (result.won) {
@@ -64,15 +63,15 @@ export function recordResult(result: GameResult): Stats {
     stats.currentStreak++;
     stats.bestStreak = Math.max(stats.bestStreak, stats.currentStreak);
     stats.bestScore = Math.max(stats.bestScore, result.score);
-    const key = result.drawMode === 1 ? 'd1' : 'd3';
+    const key = `v${result.variant}`;
     const prev = stats.bestTimeMs[key];
-    if (prev === null || result.elapsedMs < prev) {
+    if (prev === null || prev === undefined || result.elapsedMs < prev) {
       stats.bestTimeMs[key] = result.elapsedMs;
     }
   } else {
     stats.currentStreak = 0;
   }
-  saveStats(stats);
+  saveStats(result.game, stats);
   return stats;
 }
 

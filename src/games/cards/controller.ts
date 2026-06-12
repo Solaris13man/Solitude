@@ -1,38 +1,28 @@
-import {
-  type GameState,
-  type Move,
-  type PileRef,
-  applyMove,
-  autoMoveFor,
-  canDraw,
-  canMove,
-  canRecycle,
-  deal,
-  deserialize,
-  getPile,
-  isTriviallyWinnable,
-  isWon,
-  serialize,
-} from './engine/klondike';
-import { cardName } from './engine/deck';
-import { History } from './engine/history';
-import { nextAutoCompleteMove } from './engine/autocomplete';
-import { findHint } from './ui/hints';
-import { Board } from './ui/board';
-import { attachDragDrop } from './ui/dragdrop';
-import { animateDeal, winCascade } from './ui/animations';
-import { SoundPlayer } from './ui/sound';
-import { randomSeed } from './engine/rng';
+import { History } from '../../lib/history';
+import { SoundPlayer } from '../../lib/sound';
+import { formatTime, loadStats, recordResult, winRate } from '../../lib/stats';
 import {
   type Settings,
   applySettings,
   loadSettings,
   reducedMotion,
   saveSettings,
-} from './themes';
-import { formatTime, loadStats, recordResult, winRate } from './stats';
-
-const SAVE_KEY = 'solitude.game.v1';
+} from '../../lib/settings';
+import {
+  type GameState,
+  type Move,
+  type PileRef,
+  type Ruleset,
+  cloneState,
+  deserialize,
+  getPile,
+  serialize,
+} from './types';
+import { cardName } from './deck';
+import { randomSeed } from './rng';
+import { Board } from './board';
+import { attachDragDrop } from './dragdrop';
+import { animateDeal, winCascade } from './animations';
 
 function $(id: string): HTMLElement {
   const el = document.getElementById(id);
@@ -40,23 +30,41 @@ function $(id: string): HTMLElement {
   return el;
 }
 
-class Game {
+function $opt(id: string): HTMLElement | null {
+  return document.getElementById(id);
+}
+
+/** Generic controller for any card Ruleset (Klondike, Spider, FreeCell, …). */
+class CardGameController {
+  private ruleset: Ruleset;
+  private saveKey: string;
   private state!: GameState;
-  private history = new History();
+  private history = new History<GameState>(cloneState);
   private settings: Settings;
   private board: Board;
+  private sound = new SoundPlayer();
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
   private autoFinishing = false;
-  private sound = new SoundPlayer();
 
-  constructor() {
+  constructor(ruleset: Ruleset) {
+    this.ruleset = ruleset;
+    this.saveKey = `solitude.game.v2.${ruleset.id}`;
     this.settings = loadSettings();
     applySettings(this.settings);
     this.sound.enabled = this.settings.sounds;
-    this.board = new Board($('board'));
-    this.board.setOptions({ leftHand: this.settings.leftHand });
+    this.board = new Board($('board'), {
+      tableauCount: ruleset.tableauCount,
+      foundationCount: ruleset.foundationCount,
+      cellCount: ruleset.cellCount,
+      hasStock: ruleset.hasStock,
+      hasWaste: ruleset.hasWaste,
+    });
+    this.board.setOptions({
+      leftHand: this.settings.leftHand,
+      canPick: (ref, depth) => this.canPick(ref, depth),
+    });
     this.bindInteractions();
     this.bindToolbar();
     this.bindSettingsDialog();
@@ -73,21 +81,27 @@ class Game {
     }
   }
 
+  private variant(): number {
+    return this.settings.variants[this.ruleset.id] ?? this.ruleset.defaultVariant;
+  }
+
   // ----- game lifecycle -------------------------------------------------
 
   private newGame(countAbandon: boolean): void {
     if (countAbandon && this.state && this.state.moves > 0 && !this.finished) {
       recordResult({
+        game: this.ruleset.id,
+        variant: this.state.variant,
         won: false,
         elapsedMs: this.elapsedMs(),
         moves: this.state.moves,
         score: this.state.score,
-        drawMode: this.state.drawMode,
       });
     }
-    this.state = deal(randomSeed(), this.settings.drawMode);
+    this.state = this.ruleset.deal(randomSeed(), this.variant());
     this.history.clear();
     this.finished = false;
+    this.autoFinishing = false;
     this.accumulatedMs = 0;
     this.runningSince = null;
     this.board.reset();
@@ -100,10 +114,12 @@ class Game {
 
   private tryResume(): boolean {
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
+      const raw = localStorage.getItem(this.saveKey);
       if (!raw) return false;
       const saved = deserialize(raw);
-      if (!saved || isWon(saved.state)) return false;
+      if (!saved || saved.state.game !== this.ruleset.id || this.ruleset.isWon(saved.state)) {
+        return false;
+      }
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.board.setState(this.state);
@@ -120,9 +136,9 @@ class Game {
   private persist(): void {
     try {
       if (this.finished) {
-        localStorage.removeItem(SAVE_KEY);
+        localStorage.removeItem(this.saveKey);
       } else {
-        localStorage.setItem(SAVE_KEY, serialize(this.state, this.elapsedMs()));
+        localStorage.setItem(this.saveKey, serialize(this.state, this.elapsedMs()));
       }
     } catch {
       // storage unavailable; the game just won't survive a reload
@@ -135,7 +151,7 @@ class Game {
     if (this.finished) return;
     if (this.state.moves === 0) this.resumeTimer();
     this.history.push(this.state);
-    applyMove(this.state, move);
+    this.ruleset.applyMove(this.state, move);
     if (this.runningSince === null) this.resumeTimer();
     if (move.type === 'draw') this.sound.play('flip');
     else if (move.type === 'recycle') this.sound.play('shuffle');
@@ -150,7 +166,7 @@ class Game {
     this.board.render();
     this.updateHud();
     if (persist) this.persist();
-    if (isWon(this.state)) {
+    if (this.ruleset.isWon(this.state)) {
       this.onWin();
     }
   }
@@ -161,7 +177,7 @@ class Game {
     this.updateClock();
     ($('btn-undo') as HTMLButtonElement).disabled = !this.history.canUndo;
     ($('btn-redo') as HTMLButtonElement).disabled = !this.history.canRedo;
-    $('btn-autofinish').hidden = !isTriviallyWinnable(this.state);
+    $('btn-autofinish').hidden = !this.ruleset.isTriviallyWinnable(this.state);
   }
 
   private undo(): void {
@@ -186,7 +202,7 @@ class Game {
   }
 
   private hint(): void {
-    const move = findHint(this.state);
+    const move = this.ruleset.findHint(this.state);
     if (!move) {
       this.announce('No moves available. Try undoing or start a new game.');
       return;
@@ -202,11 +218,11 @@ class Game {
   }
 
   private autoFinish(): void {
-    if (this.autoFinishing || !isTriviallyWinnable(this.state)) return;
+    if (this.autoFinishing || !this.ruleset.isTriviallyWinnable(this.state)) return;
     this.autoFinishing = true;
     const stepDelay = reducedMotion(this.settings) ? 0 : 130;
     const step = () => {
-      const move = nextAutoCompleteMove(this.state);
+      const move = this.ruleset.nextAutoCompleteMove(this.state);
       if (!move) {
         this.autoFinishing = false;
         return;
@@ -225,14 +241,14 @@ class Game {
     this.persist();
     const elapsed = this.elapsedMs();
     const stats = recordResult({
+      game: this.ruleset.id,
+      variant: this.state.variant,
       won: true,
       elapsedMs: elapsed,
       moves: this.state.moves,
       score: this.state.score,
-      drawMode: this.state.drawMode,
     });
-    const key = this.state.drawMode === 1 ? 'd1' : 'd3';
-    const best = stats.bestTimeMs[key];
+    const best = stats.bestTimeMs[`v${this.state.variant}`];
     $('win-summary').innerHTML = [
       `<dt>Time</dt><dd>${formatTime(elapsed)}${best === elapsed ? ' — new best!' : ''}</dd>`,
       `<dt>Moves</dt><dd>${this.state.moves}</dd>`,
@@ -254,12 +270,12 @@ class Game {
       onStock: () => this.handleStock(),
       canPick: (ref, depth) => this.canPick(ref, depth),
       onDrop: (from, count, to) => {
-        if (!canMove(this.state, from, to, count)) return false;
+        if (!this.ruleset.canMove(this.state, from, to, count)) return false;
         this.doMove({ type: 'move', from, to, count });
         return true;
       },
       onDragOver: (from, count, target) => {
-        const legal = !!target && canMove(this.state, from, target, count);
+        const legal = !!target && this.ruleset.canMove(this.state, from, target, count);
         this.board.setDropHint(legal ? target : null);
       },
       onSnapBack: () => this.board.render(),
@@ -269,12 +285,7 @@ class Game {
 
   private canPick(ref: PileRef, depth: number): boolean {
     if (this.finished || this.autoFinishing) return false;
-    if (ref.kind === 'stock') return false;
-    const pile = getPile(this.state, ref);
-    if (pile.length === 0) return false;
-    if (ref.kind !== 'tableau') return depth === 0;
-    const card = pile[pile.length - 1 - depth];
-    return !!card && card.faceUp;
+    return this.ruleset.canPickRun(this.state, ref, depth);
   }
 
   private handleTap(ref: PileRef, depth: number): void {
@@ -286,21 +297,24 @@ class Game {
     if (!this.canPick(ref, depth)) return;
     const pile = getPile(this.state, ref);
     const card = pile[pile.length - 1 - depth];
-    const move = autoMoveFor(this.state, ref, depth);
+    const move = this.ruleset.autoMoveFor(this.state, ref, depth);
     if (!move) {
       if (card) this.board.shakeCard(card.id);
       return;
     }
-    const dest = move.type === 'move' && move.to.kind === 'foundation' ? 'foundation' : 'tableau';
+    const dest = move.type === 'move' ? move.to.kind : 'tableau';
     this.doMove(move, card ? `Moved ${cardName(card)} to ${dest}.` : undefined);
   }
 
   private handleStock(): void {
     if (this.finished || this.autoFinishing) return;
-    if (canDraw(this.state)) {
+    if (this.ruleset.canDraw(this.state)) {
       this.doMove({ type: 'draw' });
-    } else if (canRecycle(this.state)) {
+    } else if (this.ruleset.canRecycle(this.state)) {
       this.doMove({ type: 'recycle' }, 'Recycled the waste pile.');
+    } else if (this.state.stock.length > 0) {
+      // Spider: dealing requires every column to be occupied.
+      this.announce('Fill every empty column before dealing new cards.');
     }
   }
 
@@ -329,22 +343,34 @@ class Game {
   }
 
   private renderStats(): void {
-    const s = loadStats();
+    const s = loadStats(this.ruleset.id);
+    const bestTimes =
+      this.ruleset.variants.length > 0
+        ? this.ruleset.variants.map((v) => {
+            const t = s.bestTimeMs[`v${v.value}`];
+            return `<dt>Best time (${v.label})</dt><dd>${t == null ? '—' : formatTime(t)}</dd>`;
+          })
+        : [
+            `<dt>Best time</dt><dd>${
+              s.bestTimeMs[`v${this.ruleset.defaultVariant}`] == null
+                ? '—'
+                : formatTime(s.bestTimeMs[`v${this.ruleset.defaultVariant}`]!)
+            }</dd>`,
+          ];
     $('stats-body').innerHTML = [
       `<dt>Games played</dt><dd>${s.gamesPlayed}</dd>`,
       `<dt>Games won</dt><dd>${s.gamesWon}</dd>`,
       `<dt>Win rate</dt><dd>${winRate(s)}%</dd>`,
       `<dt>Current streak</dt><dd>${s.currentStreak}</dd>`,
       `<dt>Best streak</dt><dd>${s.bestStreak}</dd>`,
-      `<dt>Best time (Draw 1)</dt><dd>${s.bestTimeMs.d1 === null ? '—' : formatTime(s.bestTimeMs.d1)}</dd>`,
-      `<dt>Best time (Draw 3)</dt><dd>${s.bestTimeMs.d3 === null ? '—' : formatTime(s.bestTimeMs.d3)}</dd>`,
+      ...bestTimes,
       `<dt>Best score</dt><dd>${s.bestScore}</dd>`,
       `<dt>Total moves</dt><dd>${s.totalMoves}</dd>`,
     ].join('');
   }
 
   private bindSettingsDialog(): void {
-    const draw = $('set-draw') as HTMLSelectElement;
+    const variant = $opt('set-variant') as HTMLSelectElement | null;
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
@@ -352,7 +378,7 @@ class Game {
     const anim = $('set-animations') as HTMLInputElement;
     const snd = $('set-sounds') as HTMLInputElement;
 
-    draw.value = String(this.settings.drawMode);
+    if (variant) variant.value = String(this.variant());
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
     back.value = this.settings.cardBack;
@@ -362,26 +388,31 @@ class Game {
 
     const update = () => {
       const prevSounds = this.settings.sounds;
+      const variants = { ...this.settings.variants };
+      if (variant) variants[this.ruleset.id] = Number(variant.value);
       this.settings = {
-        drawMode: draw.value === '3' ? 3 : 1,
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
         leftHand: left.checked,
         animations: anim.checked,
         sounds: snd.checked,
+        variants,
       };
       saveSettings(this.settings);
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
-      this.board.setOptions({ leftHand: this.settings.leftHand });
+      this.board.setOptions({
+        leftHand: this.settings.leftHand,
+        canPick: (ref, depth) => this.canPick(ref, depth),
+      });
       this.board.resize();
-      $('draw-mode-note').hidden = this.settings.drawMode === this.state.drawMode;
+      const note = $opt('variant-note');
+      if (note) note.hidden = this.variant() === this.state.variant;
     };
-    for (const el of [draw, theme, felt, back, left, anim]) {
-      el.addEventListener('change', update);
-    }
+    const controls = [theme, felt, back, left, anim, snd, ...(variant ? [variant] : [])];
+    for (const el of controls) el.addEventListener('change', update);
   }
 
   private bindKeyboard(): void {
@@ -441,6 +472,6 @@ class Game {
   }
 }
 
-export function startGame(): void {
-  new Game();
+export function startGame(ruleset: Ruleset): void {
+  new CardGameController(ruleset);
 }

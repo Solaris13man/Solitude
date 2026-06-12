@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from 'vitest';
-import { startGame } from './main';
+import { startGame } from './controller';
+import { klondikeRules } from './klondike';
 
 /**
  * Integration smoke test: the controller wired to the same element ids the
@@ -23,8 +24,8 @@ const PAGE_SCAFFOLD = `
   <div id="board" class="board"></div>
   <p id="announcer"></p>
   <dialog id="settings-dialog">
-    <select id="set-draw"><option value="1">1</option><option value="3">3</option></select>
-    <p id="draw-mode-note" hidden></p>
+    <select id="set-variant"><option value="1">1</option><option value="3">3</option></select>
+    <p id="variant-note" hidden></p>
     <select id="set-theme"><option value="auto">auto</option><option value="light">light</option><option value="dark">dark</option></select>
     <select id="set-felt"><option value="green">green</option><option value="blue">blue</option><option value="slate">slate</option><option value="crimson">crimson</option></select>
     <select id="set-cardback"><option value="classic">classic</option><option value="royal">royal</option><option value="mint">mint</option><option value="midnight">midnight</option></select>
@@ -61,22 +62,22 @@ beforeEach(() => {
 
 describe('game controller', () => {
   it('boots, deals a game, and renders 52 cards', () => {
-    startGame();
+    startGame(klondikeRules);
     expect(document.querySelectorAll('#board .card')).toHaveLength(52);
     expect(document.getElementById('stat-moves')!.textContent).toBe('0');
   });
 
   it('drawing from the stock updates state, HUD, and save', () => {
-    startGame();
+    startGame(klondikeRules);
     tapStock();
     expect(document.getElementById('stat-moves')!.textContent).toBe('1');
-    const saved = JSON.parse(localStorage.getItem('solitude.game.v1')!);
+    const saved = JSON.parse(localStorage.getItem('solitude.game.v2.klondike')!);
     expect(saved.state.moves).toBe(1);
     expect(saved.state.waste.length).toBe(1);
   });
 
   it('undo and redo round-trip through the buttons', () => {
-    startGame();
+    startGame(klondikeRules);
     tapStock();
     const undoBtn = document.getElementById('btn-undo') as HTMLButtonElement;
     const redoBtn = document.getElementById('btn-redo') as HTMLButtonElement;
@@ -89,46 +90,46 @@ describe('game controller', () => {
   });
 
   it('resumes a saved game on reload', () => {
-    startGame();
+    startGame(klondikeRules);
     tapStock();
     tapStock();
-    const savedBefore = localStorage.getItem('solitude.game.v1')!;
+    const savedBefore = localStorage.getItem('solitude.game.v2.klondike')!;
     // Simulate a reload: fresh DOM, same storage.
     setUpPage();
-    startGame();
+    startGame(klondikeRules);
     expect(document.getElementById('stat-moves')!.textContent).toBe('2');
-    expect(localStorage.getItem('solitude.game.v1')).not.toBeNull();
+    expect(localStorage.getItem('solitude.game.v2.klondike')).not.toBeNull();
     expect(JSON.parse(savedBefore).state.moves).toBe(2);
     expect(document.getElementById('announcer')!.textContent).toContain('resumed');
   });
 
   it('hint announces and highlights without changing state', () => {
-    startGame();
+    startGame(klondikeRules);
     document.getElementById('btn-hint')!.click();
     expect(document.getElementById('stat-moves')!.textContent).toBe('0');
     expect(document.getElementById('announcer')!.textContent).toMatch(/^Hint/);
   });
 
   it('changing draw mode persists settings and flags next-deal note', () => {
-    startGame();
-    const draw = document.getElementById('set-draw') as HTMLSelectElement;
+    startGame(klondikeRules);
+    const draw = document.getElementById('set-variant') as HTMLSelectElement;
     draw.value = '3';
     draw.dispatchEvent(new Event('change', { bubbles: true }));
     const settings = JSON.parse(localStorage.getItem('solitude.settings.v1')!);
-    expect(settings.drawMode).toBe(3);
-    expect((document.getElementById('draw-mode-note') as HTMLElement).hidden).toBe(false);
+    expect(settings.variants.klondike).toBe(3);
+    expect((document.getElementById('variant-note') as HTMLElement).hidden).toBe(false);
     // New deal picks up the new mode: a draw should now move 3 cards.
     document.getElementById('btn-new')!.click();
     tapStock();
-    const saved = JSON.parse(localStorage.getItem('solitude.game.v1')!);
+    const saved = JSON.parse(localStorage.getItem('solitude.game.v2.klondike')!);
     expect(saved.state.waste.length).toBe(3);
   });
 
   it('records an abandoned game as a loss in stats', () => {
-    startGame();
+    startGame(klondikeRules);
     tapStock();
     document.getElementById('btn-new')!.click();
-    const stats = JSON.parse(localStorage.getItem('solitude.stats.v1')!);
+    const stats = JSON.parse(localStorage.getItem('solitude.stats.v2.klondike')!);
     expect(stats.gamesPlayed).toBe(1);
     expect(stats.gamesWon).toBe(0);
     expect(stats.currentStreak).toBe(0);

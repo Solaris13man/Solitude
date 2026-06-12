@@ -1,4 +1,4 @@
-import type { PileRef } from '../engine/klondike';
+import type { PileRef } from './types';
 import type { Board } from './board';
 
 export interface DragCallbacks {

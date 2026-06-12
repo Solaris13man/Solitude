@@ -1,38 +1,47 @@
-import type { DrawMode } from './engine/klondike';
-
 export type ThemeMode = 'auto' | 'light' | 'dark';
 export type Felt = 'green' | 'blue' | 'slate' | 'crimson';
 export type CardBack = 'classic' | 'royal' | 'mint' | 'midnight';
 
 export interface Settings {
-  drawMode: DrawMode;
   theme: ThemeMode;
   felt: Felt;
   cardBack: CardBack;
   leftHand: boolean;
   animations: boolean;
   sounds: boolean;
+  /** Per-game variant choice (Klondike draw count, Spider suit count, …). */
+  variants: Record<string, number>;
 }
 
 const KEY = 'solitude.settings.v1';
 
 export const DEFAULT_SETTINGS: Settings = {
-  drawMode: 1,
   theme: 'auto',
   felt: 'green',
   cardBack: 'classic',
   leftHand: false,
   animations: true,
   sounds: true,
+  variants: {},
 };
 
 export function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return { ...DEFAULT_SETTINGS };
-    return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<Settings>) };
+    if (!raw) return { ...DEFAULT_SETTINGS, variants: {} };
+    const parsed = JSON.parse(raw) as Partial<Settings> & { drawMode?: number };
+    const settings: Settings = {
+      ...DEFAULT_SETTINGS,
+      ...parsed,
+      variants: { ...(parsed.variants ?? {}) },
+    };
+    // Migrate the pre-suite Klondike draw-mode field.
+    if (parsed.drawMode !== undefined && settings.variants['klondike'] === undefined) {
+      settings.variants['klondike'] = parsed.drawMode;
+    }
+    return settings;
   } catch {
-    return { ...DEFAULT_SETTINGS };
+    return { ...DEFAULT_SETTINGS, variants: {} };
   }
 }
 

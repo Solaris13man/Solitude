@@ -87,6 +87,34 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+.game-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+.game-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--chrome-text);
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.game-nav-link:hover { background: rgb(255 255 255 / 0.2); }
+.game-nav-link.active {
+  background: #ffd95e;
+  border-color: #ffd95e;
+  color: #43320a;
+}
+.game-nav-link:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
+
 .hud {
   display: flex;
   justify-content: center;

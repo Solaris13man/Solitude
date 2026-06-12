@@ -1,0 +1,24 @@
+---
+import { GAMES } from '../games/registry';
+
+interface Props {
+  current: string;
+}
+
+const { current } = Astro.props;
+---
+
+<nav class="game-nav" aria-label="Games">
+  {
+    GAMES.map((game) => (
+      <a
+        href={game.href}
+        class:list={['game-nav-link', { active: game.id === current }]}
+        aria-current={game.id === current ? 'page' : undefined}
+        title={game.tagline}
+      >
+        {game.name}
+      </a>
+    ))
+  }
+</nav>

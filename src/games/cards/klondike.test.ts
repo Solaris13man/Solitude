@@ -1,23 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import type { Card, Rank, Suit } from './deck';
+import { type GameState, cloneState, deserialize, serialize } from './types';
 import {
-  type GameState,
   applyMove,
   canMove,
   canRecycle,
-  cloneState,
   deal,
-  deserialize,
+  findHint,
   fitsOnFoundation,
   fitsOnTableau,
   foundationTargetFor,
   isTriviallyWinnable,
   isWon,
-  serialize,
+  nextAutoCompleteMove,
 } from './klondike';
-import { History } from './history';
-import { nextAutoCompleteMove } from './autocomplete';
-import { findHint } from '../ui/hints';
+import { History } from '../../lib/history';
 
 function card(suit: Suit, rank: number, faceUp = true): Card {
   return { id: `${suit}${rank}`, suit, rank: rank as Rank, faceUp };
@@ -25,10 +22,12 @@ function card(suit: Suit, rank: number, faceUp = true): Card {
 
 function emptyState(): GameState {
   return {
+    game: 'klondike' as const,
     seed: 0,
-    drawMode: 1,
+    variant: 1,
     stock: [],
     waste: [],
+    cells: [],
     foundations: [[], [], [], []],
     tableau: [[], [], [], [], [], [], []],
     moves: 0,
@@ -263,7 +262,7 @@ describe('foundationTargetFor', () => {
 describe('history', () => {
   it('undo and redo round-trip', () => {
     const s = deal(5, 1);
-    const h = new History();
+    const h = new History<GameState>(cloneState);
     const before = cloneState(s);
     h.push(s);
     applyMove(s, { type: 'draw' });
@@ -279,7 +278,7 @@ describe('history', () => {
 
   it('new moves clear the redo stack', () => {
     const s = deal(5, 1);
-    const h = new History();
+    const h = new History<GameState>(cloneState);
     h.push(s);
     applyMove(s, { type: 'draw' });
     const undone = h.undo(s)!;
@@ -347,6 +346,7 @@ describe('serialization', () => {
 
   it('rejects garbage', () => {
     expect(deserialize('not json')).toBeNull();
+    expect(deserialize('{"v":1}')).toBeNull();
     expect(deserialize('{"v":2}')).toBeNull();
   });
 });

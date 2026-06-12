@@ -4,12 +4,21 @@ import {
   type Card,
   cardName,
   isRed,
-} from '../engine/deck';
-import type { GameState, Move, PileRef } from '../engine/klondike';
+} from './deck';
+import { type GameState, type Move, type PileRef, getPile } from './types';
 
 export interface Point {
   x: number;
   y: number;
+}
+
+/** Pile counts and presence flags that shape the board for one game. */
+export interface BoardConfig {
+  tableauCount: number;
+  foundationCount: number;
+  cellCount: number;
+  hasStock: boolean;
+  hasWaste: boolean;
 }
 
 export interface BoardMetrics {
@@ -24,6 +33,7 @@ export interface BoardMetrics {
   wasteFan: number;
   stock: Point;
   waste: Point;
+  cells: Point[];
   foundations: Point[];
   tableau: Point[];
 }
@@ -63,6 +73,8 @@ function frontMarkup(card: Card): string {
 
 export interface BoardOptions {
   leftHand: boolean;
+  /** Game-specific pickup rule; drives the movable/focusable styling. */
+  canPick?: (ref: PileRef, depth: number) => boolean;
 }
 
 /**
@@ -82,8 +94,11 @@ export class Board {
   private dropHintEl: HTMLElement | null = null;
   private dropHintKey: string | null = null;
 
-  constructor(container: HTMLElement) {
+  readonly config: BoardConfig;
+
+  constructor(container: HTMLElement, config: BoardConfig) {
     this.container = container;
+    this.config = config;
     this.computeMetrics();
     this.mountSlots();
   }
@@ -98,9 +113,11 @@ export class Board {
   }
 
   computeMetrics(): void {
+    const cfg = this.config;
+    const n = cfg.tableauCount;
     const boardW = this.container.clientWidth;
     const gap = Math.max(4, Math.round(boardW * 0.012));
-    const cardW = Math.floor((boardW - gap * 6) / 7);
+    const cardW = Math.floor((boardW - gap * (n - 1)) / n);
     const cardH = Math.round(cardW * 1.4);
     const tableauTop = cardH + Math.round(gap * 2.5);
     const viewportAvail = Math.max(window.innerHeight - 220, 360);
@@ -111,6 +128,8 @@ export class Board {
     const boardH = tableauTop + cardH + fanSpace;
 
     const colX = (i: number) => i * (cardW + gap);
+    // Top row: stock, waste, cells on the left; foundations right-aligned.
+    const cellStart = (cfg.hasStock ? 1 : 0) + (cfg.hasWaste ? 1 : 0);
     this.metrics = {
       cardW,
       cardH,
@@ -123,8 +142,12 @@ export class Board {
       wasteFan: Math.round(cardW * 0.24),
       stock: { x: colX(0), y: 0 },
       waste: { x: colX(1), y: 0 },
-      foundations: [3, 4, 5, 6].map((i) => ({ x: colX(i), y: 0 })),
-      tableau: Array.from({ length: 7 }, (_, i) => ({ x: colX(i), y: tableauTop })),
+      cells: Array.from({ length: cfg.cellCount }, (_, i) => ({ x: colX(cellStart + i), y: 0 })),
+      foundations: Array.from({ length: cfg.foundationCount }, (_, i) => ({
+        x: colX(n - cfg.foundationCount + i),
+        y: 0,
+      })),
+      tableau: Array.from({ length: n }, (_, i) => ({ x: colX(i), y: tableauTop })),
     };
     this.container.style.height = `${boardH}px`;
     this.container.style.setProperty('--card-w', `${cardW}px`);
@@ -141,16 +164,22 @@ export class Board {
       this.slotEls.set(key, el);
       return el;
     };
-    const stock = make('stock', 'Stock. Activate to draw.', 'slot-stock');
-    stock.setAttribute('role', 'button');
-    stock.tabIndex = 0;
-    stock.innerHTML = '<span class="slot-glyph" aria-hidden="true">↺</span>';
-    make('waste', 'Waste pile');
-    for (let i = 0; i < 4; i++) {
+    const cfg = this.config;
+    if (cfg.hasStock) {
+      const stock = make('stock', 'Stock. Activate to draw.', 'slot-stock');
+      stock.setAttribute('role', 'button');
+      stock.tabIndex = 0;
+      stock.innerHTML = '<span class="slot-glyph" aria-hidden="true">↺</span>';
+    }
+    if (cfg.hasWaste) make('waste', 'Waste pile');
+    for (let i = 0; i < cfg.cellCount; i++) {
+      make(`cell-${i}`, `Free cell ${i + 1}`, 'slot-cell');
+    }
+    for (let i = 0; i < cfg.foundationCount; i++) {
       const el = make(`foundation-${i}`, `Foundation ${i + 1}`, 'slot-foundation');
       el.innerHTML = '<span class="slot-glyph" aria-hidden="true">A</span>';
     }
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < cfg.tableauCount; i++) {
       make(`tableau-${i}`, `Tableau column ${i + 1}`);
     }
     this.layoutSlots();
@@ -159,11 +188,12 @@ export class Board {
   private layoutSlots(): void {
     const m = this.metrics;
     const place = (key: string, p: Point) => {
-      const el = this.slotEls.get(key)!;
-      el.style.transform = `translate3d(${this.mirror(p.x)}px, ${p.y}px, 0)`;
+      const el = this.slotEls.get(key);
+      if (el) el.style.transform = `translate3d(${this.mirror(p.x)}px, ${p.y}px, 0)`;
     };
     place('stock', m.stock);
     place('waste', m.waste);
+    m.cells.forEach((p, i) => place(`cell-${i}`, p));
     m.foundations.forEach((p, i) => place(`foundation-${i}`, p));
     m.tableau.forEach((p, i) => place(`tableau-${i}`, p));
   }
@@ -261,16 +291,28 @@ export class Board {
       place(card, p, { kind: 'stock', index: 0 }, state.stock.length - 1 - i, false);
     });
 
+    const pickable = (ref: PileRef, depth: number, fallback: boolean): boolean =>
+      this.options.canPick ? this.options.canPick(ref, depth) : fallback;
+
     const wn = state.waste.length;
     state.waste.forEach((card, i) => {
-      const fanIdx = state.drawMode === 3 ? Math.max(0, i - (wn - 3)) : 0;
+      const fanIdx = state.game === 'klondike' && state.variant === 3 ? Math.max(0, i - (wn - 3)) : 0;
       const p = { x: m.waste.x + fanIdx * m.wasteFan, y: m.waste.y };
-      place(card, p, { kind: 'waste', index: 0 }, wn - 1 - i, i === wn - 1);
+      const ref: PileRef = { kind: 'waste', index: 0 };
+      place(card, p, ref, wn - 1 - i, i === wn - 1 && pickable(ref, 0, true));
+    });
+
+    state.cells.forEach((pile, ci) => {
+      const ref: PileRef = { kind: 'cell', index: ci };
+      pile.forEach((card, i) => {
+        place(card, m.cells[ci]!, ref, pile.length - 1 - i, i === pile.length - 1 && pickable(ref, 0, true));
+      });
     });
 
     state.foundations.forEach((pile, fi) => {
+      const ref: PileRef = { kind: 'foundation', index: fi };
       pile.forEach((card, i) => {
-        place(card, m.foundations[fi]!, { kind: 'foundation', index: fi }, pile.length - 1 - i, i === pile.length - 1);
+        place(card, m.foundations[fi]!, ref, pile.length - 1 - i, i === pile.length - 1 && pickable(ref, 0, true));
       });
     });
 
@@ -283,25 +325,29 @@ export class Board {
       const need = faceDown * m.fanDown + Math.max(0, faceUp - 1) * m.fanUp;
       const scale = need > avail ? avail / need : 1;
       let y = base.y;
+      const ref: PileRef = { kind: 'tableau', index: ti };
       pile.forEach((card, i) => {
-        const movable = card.faceUp;
-        place(card, { x: base.x, y }, { kind: 'tableau', index: ti }, pile.length - 1 - i, movable);
+        const depth = pile.length - 1 - i;
+        place(card, { x: base.x, y }, ref, depth, pickable(ref, depth, card.faceUp));
         y += (card.faceUp ? m.fanUp : m.fanDown) * scale;
       });
     });
 
     // Stock slot doubles as the recycle button.
-    const stockSlot = this.slotEls.get('stock')!;
-    const canRecycleNow = state.stock.length === 0 && state.waste.length > 0;
-    stockSlot.classList.toggle('recyclable', canRecycleNow);
-    stockSlot.setAttribute(
-      'aria-label',
-      state.stock.length > 0
-        ? `Stock, ${state.stock.length} cards. Activate to draw.`
-        : canRecycleNow
-          ? 'Stock empty. Activate to recycle the waste pile.'
-          : 'Stock empty.',
-    );
+    const stockSlot = this.slotEls.get('stock');
+    if (stockSlot) {
+      const canRecycleNow =
+        state.game === 'klondike' && state.stock.length === 0 && state.waste.length > 0;
+      stockSlot.classList.toggle('recyclable', canRecycleNow);
+      stockSlot.setAttribute(
+        'aria-label',
+        state.stock.length > 0
+          ? `Stock, ${state.stock.length} cards. Activate to draw.`
+          : canRecycleNow
+            ? 'Stock empty. Activate to recycle the waste pile.'
+            : 'Stock empty.',
+      );
+    }
   }
 
   /** Re-layout after a container resize. */
@@ -323,21 +369,22 @@ export class Board {
 
   /** Which pile a board-relative point falls on (for drops). */
   dropTargetAt(x: number, y: number): PileRef | null {
+    const cfg = this.config;
     const m = this.metrics;
-    const inColumnOf = (px: number): number => {
-      const stride = m.cardW + m.gap;
-      const col = Math.floor((px + m.gap / 2) / stride);
-      return Math.min(6, Math.max(0, col));
-    };
-    const col = inColumnOf(x);
+    const n = cfg.tableauCount;
+    const stride = m.cardW + m.gap;
+    const physical = Math.min(n - 1, Math.max(0, Math.floor((x + m.gap / 2) / stride)));
+    const col = this.options.leftHand ? n - 1 - physical : physical;
     if (y < m.tableauTop - m.gap) {
-      // Top row: only foundations accept drops.
-      const fCols = [3, 4, 5, 6];
-      const idx = fCols.indexOf(this.options.leftHand ? 6 - col : col);
-      if (idx >= 0) return { kind: 'foundation', index: idx };
+      // Top row: cells and foundations accept drops; stock/waste don't.
+      const fStart = n - cfg.foundationCount;
+      if (col >= fStart) return { kind: 'foundation', index: col - fStart };
+      const cellStart = (cfg.hasStock ? 1 : 0) + (cfg.hasWaste ? 1 : 0);
+      const cellIdx = col - cellStart;
+      if (cellIdx >= 0 && cellIdx < cfg.cellCount) return { kind: 'cell', index: cellIdx };
       return null;
     }
-    return { kind: 'tableau', index: this.options.leftHand ? 6 - col : col };
+    return { kind: 'tableau', index: col };
   }
 
   /** Convert client (viewport) coordinates to board-relative coordinates. */
@@ -348,11 +395,7 @@ export class Board {
 
   /** The elements of the run being moved: `count` cards from the top of `ref`'s pile. */
   runElements(state: GameState, ref: PileRef, count: number): HTMLElement[] {
-    const pile =
-      ref.kind === 'waste' ? state.waste
-      : ref.kind === 'foundation' ? state.foundations[ref.index]!
-      : ref.kind === 'tableau' ? state.tableau[ref.index]!
-      : state.stock;
+    const pile = getPile(state, ref);
     return pile
       .slice(pile.length - count)
       .map((c) => this.cardEls.get(c.id))
@@ -370,12 +413,11 @@ export class Board {
     this.dropHintEl = null;
     this.dropHintKey = key;
     if (!ref || !this.state) return;
-    const pile =
-      ref.kind === 'foundation' ? this.state.foundations[ref.index]! : this.state.tableau[ref.index]!;
+    const pile = getPile(this.state, ref);
     const topCard = pile[pile.length - 1];
     const el = topCard
       ? this.cardEls.get(topCard.id)
-      : this.slotEls.get(ref.kind === 'foundation' ? `foundation-${ref.index}` : `tableau-${ref.index}`);
+      : this.slotEls.get(`${ref.kind}-${ref.index}`);
     if (el) {
       el.classList.add('drop-ok');
       this.dropHintEl = el;
@@ -401,15 +443,12 @@ export class Board {
       els.push(...this.runElements(state, { kind: 'stock', index: 0 }, Math.min(1, state.stock.length)));
     } else {
       els.push(...this.runElements(state, move.from, move.count));
-      const toPile =
-        move.to.kind === 'foundation' ? state.foundations[move.to.index]! : state.tableau[move.to.index]!;
+      const toPile = getPile(state, move.to);
       if (toPile.length > 0) {
         const el = this.cardEls.get(toPile[toPile.length - 1]!.id);
         if (el) els.push(el);
       } else {
-        const slot = this.slotEls.get(
-          move.to.kind === 'foundation' ? `foundation-${move.to.index}` : `tableau-${move.to.index}`,
-        );
+        const slot = this.slotEls.get(`${move.to.kind}-${move.to.index}`);
         if (slot) els.push(slot);
       }
     }

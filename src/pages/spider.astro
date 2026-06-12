@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Spider Solitaire — Play Free Online (1, 2 or 4 Suits)';
+const description =
+  'Play Spider Solitaire free in your browser with 1, 2 or 4 suits. Unlimited undo, hints, smooth animations, and full touch support. No download, no sign-up.';
+---
+
+<Layout title={title} description={description}>
+  <GameShell
+    gameId="spider"
+    heading="Spider Solitaire"
+    variantLabel="Suits"
+    variantOptions={[
+      { value: 1, label: '1 suit (easy)' },
+      { value: 2, label: '2 suits (medium)' },
+      { value: 4, label: '4 suits (hard)' },
+    ]}
+  >
+    <h2 class="mb-2 text-lg font-bold">How to play Spider Solitaire</h2>
+    <p class="mb-3">
+      Two full decks, ten columns. Build cards downward regardless of suit, but only runs of the
+      <em>same</em> suit move together — and when you complete a King-to-Ace run in one suit, it
+      flies off the board. Clear all eight runs to win. When you're stuck, tap the stock to deal
+      a fresh card onto every column (each column must have at least one card first).
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Tips</h2>
+    <p class="mb-3">
+      Start with <strong>1 suit</strong> to learn the flow, then graduate to 2 and 4. Prefer
+      same-suit builds whenever possible — mixed-suit stacks are quick fixes that cost mobility
+      later. Empty columns are gold: use them to untangle buried cards before dealing from the
+      stock, since each deal buries every column one card deeper.
+    </p>
+    <p class="opacity-75">
+      Prefer the classics? Play <a class="underline" href="/">Klondike</a> or
+      <a class="underline" href="/freecell">FreeCell</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { spiderRules } from '../games/cards/spider';
+    startGame(spiderRules);
+  </script>
+</Layout>

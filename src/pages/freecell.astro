@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'FreeCell Solitaire — Play Free Online';
+const description =
+  'Play FreeCell Solitaire free in your browser. Every card dealt face up, four free cells, unlimited undo and hints. Nearly every deal is winnable — no download, no sign-up.';
+---
+
+<Layout title={title} description={description}>
+  <GameShell gameId="freecell" heading="FreeCell Solitaire">
+    <h2 class="mb-2 text-lg font-bold">How to play FreeCell</h2>
+    <p class="mb-3">
+      All 52 cards are dealt face up into eight cascades. Build the foundations from Ace to King
+      by suit, stacking cascades downward in alternating colors along the way. The four
+      <strong>free cells</strong> in the top-left corner each hold a single card — they're your
+      workspace. You can move a run of cards only if you have enough free cells and empty
+      cascades to relay it: (free cells + 1) × 2 per empty cascade.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Tips</h2>
+    <p class="mb-3">
+      Almost every FreeCell deal can be won — patience beats luck here. Keep cells empty as long
+      as you can; a card parked in a cell is capacity you've spent. Dig out Aces and Deuces
+      early, and try to empty one cascade: an open column doubles the size of every run you can
+      move. When every cascade is in descending order, <strong>Auto-finish</strong> wraps up the
+      game for you.
+    </p>
+    <p class="opacity-75">
+      Want more? Play <a class="underline" href="/">Klondike</a> or
+      <a class="underline" href="/spider">Spider</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { freecellRules } from '../games/cards/freecell';
+    startGame(freecellRules);
+  </script>
+</Layout>

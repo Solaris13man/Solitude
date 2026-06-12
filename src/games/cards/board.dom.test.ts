@@ -1,7 +1,15 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from 'vitest';
-import { deal, applyMove, canDraw } from '../engine/klondike';
-import { Board } from './board';
+import { deal, applyMove, canDraw } from './klondike';
+import { Board, type BoardConfig } from './board';
+
+const KLONDIKE_CONFIG: BoardConfig = {
+  tableauCount: 7,
+  foundationCount: 4,
+  cellCount: 0,
+  hasStock: true,
+  hasWaste: true,
+};
 
 function makeContainer(): HTMLElement {
   const el = document.createElement('div');
@@ -22,7 +30,7 @@ beforeEach(() => {
 describe('Board (DOM)', () => {
   it('mounts 13 slots and renders 52 card elements', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     const state = deal(42, 1);
     board.setState(state);
     board.render();
@@ -33,7 +41,7 @@ describe('Board (DOM)', () => {
 
   it('marks only legal pickups as movable/focusable', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     const state = deal(42, 1);
     board.setState(state);
     board.render();
@@ -49,7 +57,7 @@ describe('Board (DOM)', () => {
 
   it('re-renders after a draw without duplicating elements', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     const state = deal(7, 3);
     board.setState(state);
     board.render();
@@ -62,7 +70,7 @@ describe('Board (DOM)', () => {
 
   it('identifies cards from their elements (refOf round-trip)', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     const state = deal(3, 1);
     board.setState(state);
     board.render();
@@ -75,7 +83,7 @@ describe('Board (DOM)', () => {
 
   it('maps drop coordinates to piles', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     const state = deal(3, 1);
     board.setState(state);
     board.render();
@@ -92,7 +100,7 @@ describe('Board (DOM)', () => {
 
   it('mirrors drop targets in left-hand layout', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     board.setOptions({ leftHand: true });
     board.resize();
     const state = deal(3, 1);
@@ -110,7 +118,7 @@ describe('Board (DOM)', () => {
 
   it('compresses tall tableau fans to stay inside the board', () => {
     const container = makeContainer();
-    const board = new Board(container);
+    const board = new Board(container, KLONDIKE_CONFIG);
     const state = deal(11, 1);
     // Build an artificially tall pile.
     const tall = state.tableau[0]!;

@@ -33,13 +33,40 @@ export function createDeck(): Card[] {
   return deck;
 }
 
-/** Fisher–Yates shuffle driven by the seeded PRNG. Returns a new array. */
-export function shuffledDeck(seed: number): Card[] {
-  const deck = createDeck();
+/** Fisher–Yates shuffle of any card list driven by the seeded PRNG. */
+export function shuffle(cards: Card[], seed: number): Card[] {
+  const deck = cards.slice();
   const rng = mulberry32(seed);
   for (let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [deck[i], deck[j]] = [deck[j]!, deck[i]!];
+  }
+  return deck;
+}
+
+/** A shuffled standard 52-card deck. */
+export function shuffledDeck(seed: number): Card[] {
+  return shuffle(createDeck(), seed);
+}
+
+/**
+ * A multi-deck pack for Spider: 104 cards built from `suits`, repeated to
+ * fill 8 suit-sets. Ids get a copy suffix so they stay unique.
+ */
+export function createSpiderDeck(suits: Suit[]): Card[] {
+  const copies = 8 / suits.length;
+  const deck: Card[] = [];
+  for (let copy = 0; copy < copies; copy++) {
+    for (const suit of suits) {
+      for (let rank = 1; rank <= 13; rank++) {
+        deck.push({
+          id: `${suit}${rank}-${copy}`,
+          suit,
+          rank: rank as Rank,
+          faceUp: false,
+        });
+      }
+    }
   }
   return deck;
 }

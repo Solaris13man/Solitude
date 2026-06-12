@@ -1,4 +1,4 @@
-import type { GameState } from '../engine/klondike';
+import type { GameState } from './types';
 import type { Board } from './board';
 
 /**
@@ -51,7 +51,7 @@ export function winCascade(board: Board, state: GameState, enabled: boolean, onD
   const queue: { el: HTMLElement; x: number; y: number }[] = [];
   // Peel foundations top-down, interleaving piles like the classic effect.
   for (let depth = 12; depth >= 0; depth--) {
-    for (let f = 0; f < 4; f++) {
+    for (let f = 0; f < state.foundations.length; f++) {
       const card = state.foundations[f]![depth];
       if (!card) continue;
       const el = board.cardElement(card.id);

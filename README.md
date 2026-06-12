@@ -1,14 +1,15 @@
-# Solitude — Klondike Solitaire
+# Solitude — Classic Games
 
-A fast, modern, public-domain Klondike Solitaire that runs entirely in the
-browser. Static site, no backend, no accounts — stats, settings, and the
-in-progress game persist in `localStorage`.
+A fast, modern suite of public-domain classics that runs entirely in the
+browser: **Klondike**, **Spider** (1/2/4 suits), and **FreeCell**, with more
+game families (dominoes, board games) planned. Static site, no backend, no
+accounts — stats, settings, and in-progress games persist in `localStorage`.
 
 Built with [Astro](https://astro.build), TypeScript, and Tailwind CSS. The
-game UI is plain DOM + CSS transitions (no canvas), with one pointer-events
+card UI is plain DOM + CSS transitions (no canvas), with one pointer-events
 code path for mouse, touch, and pen.
 
-## Features (Milestone 1)
+## Features
 
 - Full Klondike rules engine: Draw 1 / Draw 3, alternating-color tableau
   builds, same-suit foundations, Kings to empty columns, win detection
@@ -74,26 +75,40 @@ canonical URLs resolve correctly.
 
 ## Project layout
 
+The structure is deliberately not card-centric: `src/lib/` holds services any
+game can use, and each engine family lives under `src/games/<family>/`. A
+future chess or dominoes game adds a folder there, an entry in
+`src/games/registry.ts`, and a page — nothing else changes.
+
 ```
 src/
-├─ pages/index.astro       # Home — plays Klondike immediately
+├─ pages/                  # One page per game (index = Klondike)
+│  ├─ index.astro
+│  ├─ spider.astro
+│  └─ freecell.astro
 ├─ layouts/Layout.astro    # HTML shell + SEO meta
+├─ components/
+│  ├─ GameShell.astro      # Shared chrome: toolbar, HUD, dialogs, board host
+│  └─ GameNav.astro        # Game switcher menu (driven by the registry)
 ├─ styles/global.css       # Tailwind + card/board CSS
-└─ game/
-   ├─ engine/              # Pure rules logic (unit-tested, no DOM)
-   │  ├─ rng.ts            # Seeded PRNG (mulberry32)
-   │  ├─ deck.ts           # Card model + Fisher–Yates shuffle
-   │  ├─ klondike.ts       # Deal, legal moves, scoring, win detection
-   │  ├─ history.ts        # Undo/redo
-   │  └─ autocomplete.ts   # Auto-finish move generator
-   ├─ ui/
-   │  ├─ board.ts          # DOM rendering + layout + hit-testing
-   │  ├─ dragdrop.ts       # Pointer-events drag / tap handling
-   │  ├─ animations.ts     # Deal stagger + win cascade
-   │  └─ hints.ts          # Legal-move suggestion
-   ├─ stats.ts             # localStorage stats
-   ├─ themes.ts            # Settings + theming
-   └─ main.ts              # Controller wiring it all together
+├─ lib/                    # Game-agnostic services
+│  ├─ history.ts           # Generic snapshot undo/redo
+│  ├─ stats.ts             # Per-game localStorage stats
+│  ├─ settings.ts          # Settings + theming
+│  └─ sound.ts             # Synthesized WebAudio effects
+└─ games/
+   ├─ registry.ts          # Site-wide game catalogue (menu, links)
+   └─ cards/               # The card-game family
+      ├─ types.ts          # Shared card state + the Ruleset interface
+      ├─ rng.ts            # Seeded PRNG (mulberry32)
+      ├─ deck.ts           # Card model + Fisher–Yates shuffle
+      ├─ klondike.ts       # Rules + hints + auto-complete (one per game)
+      ├─ spider.ts
+      ├─ freecell.ts
+      ├─ board.ts          # Config-driven DOM rendering + hit-testing
+      ├─ dragdrop.ts       # Pointer-events drag / tap handling
+      ├─ animations.ts     # Deal stagger + win cascade
+      └─ controller.ts     # Generic controller for any card Ruleset
 ```
 
 ## License & assets
