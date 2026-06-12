@@ -1,0 +1,73 @@
+---
+/**
+ * Original SVG artwork for the game menu cards. Each scene is a stylized
+ * depiction of the game it links to — drawn by hand for this project.
+ */
+interface Props {
+  game: string;
+}
+
+const { game } = Astro.props;
+---
+
+{
+  game === 'klondike' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Fanned playing cards" class="art">
+      <g transform="translate(76 78) rotate(-16)">
+        <rect x="-28" y="-39" width="56" height="78" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-20" y="-22" font-size="13" font-weight="700" fill="#c2273a">Q</text>
+        <text x="0" y="12" font-size="30" text-anchor="middle" fill="#c2273a">♦</text>
+      </g>
+      <g transform="translate(120 68)">
+        <rect x="-28" y="-39" width="56" height="78" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-20" y="-22" font-size="13" font-weight="700" fill="#1d2230">A</text>
+        <text x="0" y="12" font-size="30" text-anchor="middle" fill="#1d2230">♠</text>
+      </g>
+      <g transform="translate(164 78) rotate(16)">
+        <rect x="-28" y="-39" width="56" height="78" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-20" y="-22" font-size="13" font-weight="700" fill="#c2273a">K</text>
+        <text x="0" y="12" font-size="30" text-anchor="middle" fill="#c2273a">♥</text>
+      </g>
+    </svg>
+  )
+}
+{
+  game === 'spider' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A descending run of spades" class="art">
+      <rect x="38" y="26" width="50" height="70" rx="6" fill="#8c1f26" stroke="#fff" stroke-opacity="0.5" />
+      <rect x="34" y="30" width="50" height="70" rx="6" fill="#a32934" stroke="#fff" stroke-opacity="0.6" />
+      <rect x="156" y="26" width="50" height="70" rx="6" fill="#8c1f26" stroke="#fff" stroke-opacity="0.5" />
+      <rect x="152" y="30" width="50" height="70" rx="6" fill="#a32934" stroke="#fff" stroke-opacity="0.6" />
+      <g>
+        <rect x="93" y="8" width="54" height="76" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="100" y="24" font-size="12" font-weight="700" fill="#1d2230">K♠</text>
+        <rect x="93" y="34" width="54" height="76" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="100" y="50" font-size="12" font-weight="700" fill="#1d2230">Q♠</text>
+        <rect x="93" y="60" width="54" height="76" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="100" y="76" font-size="12" font-weight="700" fill="#1d2230">J♠</text>
+        <text x="120" y="112" font-size="26" text-anchor="middle" fill="#1d2230">♠</text>
+      </g>
+    </svg>
+  )
+}
+{
+  game === 'freecell' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Free cells and an ace" class="art">
+      <g fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="2">
+        <rect x="26" y="14" width="40" height="56" rx="5" />
+        <rect x="76" y="14" width="40" height="56" rx="5" />
+        <rect x="126" y="14" width="40" height="56" rx="5" />
+        <rect x="176" y="14" width="40" height="56" rx="5" />
+      </g>
+      <g transform="translate(96 47) rotate(-6)">
+        <rect x="-20" y="-28" width="40" height="56" rx="5" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="0" y="8" font-size="20" text-anchor="middle" fill="#1d2230">♣</text>
+      </g>
+      <g transform="translate(120 100) rotate(5)">
+        <rect x="-26" y="-34" width="52" height="68" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-18" y="-18" font-size="12" font-weight="700" fill="#c2273a">A</text>
+        <text x="0" y="10" font-size="26" text-anchor="middle" fill="#c2273a">♥</text>
+      </g>
+    </svg>
+  )
+}

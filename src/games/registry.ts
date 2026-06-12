@@ -16,7 +16,7 @@ export const GAMES: GameInfo[] = [
   {
     id: 'klondike',
     name: 'Klondike',
-    href: '/',
+    href: '/klondike',
     tagline: 'The classic solitaire',
     category: 'cards',
   },

@@ -20,9 +20,14 @@ const { gameId, heading, variantLabel, variantOptions } = Astro.props;
 <div class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4">
   <header class="flex flex-wrap items-center justify-between gap-2 py-3">
     <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
-      Solitude <span class="font-normal opacity-70">· {heading}</span>
+      <a href="/" class="no-underline hover:underline">Solitude</a>
+      <span class="font-normal opacity-70">· {heading}</span>
     </h1>
     <nav class="flex flex-wrap gap-1.5" aria-label="Game controls">
+      <a href="/" class="btn" aria-label="Back to the game menu">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
+        <span class="btn-label">Home</span>
+      </a>
       <button id="btn-new" class="btn" type="button" aria-label="New game">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v5h-5"/></svg>
         <span class="btn-label">New</span>

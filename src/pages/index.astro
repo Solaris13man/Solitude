@@ -1,48 +1,54 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import GameShell from '../components/GameShell.astro';
+import GameArt from '../components/GameArt.astro';
+import { GAMES } from '../games/registry';
 
-const title = 'Solitude — Play Klondike Solitaire Free Online';
+const title = 'Solitude — Free Classic Card Games Online';
 const description =
-  'Play classic Klondike Solitaire free in your browser. Draw 1 or Draw 3, unlimited undo, hints, auto-finish, and smooth animations on desktop and mobile. No download, no sign-up.';
+  'Play Klondike Solitaire, Spider, and FreeCell free in your browser. Smooth animations, full touch support, unlimited undo — no download, no ads in your face, no sign-up.';
 ---
 
 <Layout title={title} description={description}>
-  <GameShell
-    gameId="klondike"
-    heading="Klondike Solitaire"
-    variantLabel="Draw mode"
-    variantOptions={[
-      { value: 1, label: 'Draw 1' },
-      { value: 3, label: 'Draw 3' },
-    ]}
-  >
-    <h2 class="mb-2 text-lg font-bold">How to play Klondike Solitaire</h2>
-    <p class="mb-3">
-      Build the four foundations from Ace to King, one per suit. On the tableau, stack cards in
-      descending order with alternating colors — drag cards or simply tap one to send it to the
-      best spot. Only Kings may be placed on empty columns. Draw from the stock when you're out
-      of moves, and recycle the waste pile when the stock runs dry.
-    </p>
-    <h2 class="mb-2 text-lg font-bold">Tips &amp; shortcuts</h2>
-    <p class="mb-3">
-      Flip face-down tableau cards as early as you can, and don't rush cards to the foundations —
-      you may still need them to build runs. Stuck? Use <strong>Hint</strong> (H). Made a mistake?
-      <strong>Undo</strong> is unlimited (Ctrl+Z). Press <strong>D</strong> or tap the stock to
-      draw, and <strong>N</strong> for a new deal. Switch between Draw&nbsp;1 and Draw&nbsp;3 in
-      Settings. When every card is face up, <strong>Auto-finish</strong> completes the game for you.
-    </p>
-    <p class="opacity-75">
-      Solitude is free, runs entirely in your browser, and saves your games, settings and
-      statistics on your device. No account needed. Also try
-      <a class="underline" href="/spider">Spider</a> and
-      <a class="underline" href="/freecell">FreeCell</a>.
-    </p>
-  </GameShell>
+  <main class="mx-auto flex min-h-dvh w-full max-w-4xl flex-col px-4">
+    <header class="py-10 text-center sm:py-14">
+      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">Solitude</h1>
+      <p class="mx-auto mt-3 max-w-md text-base opacity-85">
+        Free classic card games, beautifully playable on any device. Pick a game to start —
+        your progress, stats and streaks are saved automatically.
+      </p>
+    </header>
 
-  <script>
-    import { startGame } from '../games/cards/controller';
-    import { klondikeRules } from '../games/cards/klondike';
-    startGame(klondikeRules);
-  </script>
+    <nav class="menu-grid" aria-label="Choose a game">
+      {
+        GAMES.map((game) => (
+          <a href={game.href} class="menu-card">
+            <span class="menu-art" aria-hidden="true">
+              <GameArt game={game.id} />
+            </span>
+            <span class="menu-card-body">
+              <span class="menu-card-name">{game.name}</span>
+              <span class="menu-card-tag">{game.tagline}</span>
+              <span class="menu-card-play">Play now →</span>
+            </span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <section class="mx-auto max-w-2xl py-12 text-sm leading-relaxed opacity-90">
+      <h2 class="mb-2 text-lg font-bold">Three classics, one place</h2>
+      <p class="mb-3">
+        <a class="underline" href="/klondike">Klondike</a> is the solitaire everyone knows —
+        build four foundations from Ace to King, in Draw&nbsp;1 or Draw&nbsp;3 mode.
+        <a class="underline" href="/spider">Spider</a> deals two full decks across ten columns;
+        assemble complete King-to-Ace runs in 1, 2 or 4-suit difficulty.
+        <a class="underline" href="/freecell">FreeCell</a> lays every card face up — with four
+        spare cells and a clear head, nearly every deal can be won.
+      </p>
+      <p class="opacity-75">
+        Every game works with mouse, touch or keyboard, supports unlimited undo and hints, and
+        runs entirely on your device — no account, no install. More classic games are on the way.
+      </p>
+    </section>
+  </main>
 </Layout>
