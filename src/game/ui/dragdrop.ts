@@ -10,6 +10,8 @@ export interface DragCallbacks {
   canPick(ref: PileRef, depth: number): boolean;
   /** Attempt the move on drop; return true if it was applied. */
   onDrop(from: PileRef, count: number, to: PileRef): boolean;
+  /** Live drop-target feedback while dragging; target is null between piles. */
+  onDragOver(from: PileRef, count: number, target: PileRef | null): void;
   /** Called after a failed drop so the controller can re-render (snap back). */
   onSnapBack(): void;
   /** Elements of the run being dragged. */
@@ -86,6 +88,10 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
       const o = session.origins[i]!;
       session.els[i]!.style.transform = `translate3d(${o.x + dx}px, ${o.y + dy}px, 0)`;
     }
+    const lead = session.els[0]!;
+    const rect = lead.getBoundingClientRect();
+    const p = board.toBoardCoords(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    callbacks.onDragOver(session.ref, session.depth + 1, board.dropTargetAt(p.x, p.y));
   });
 
   const finish = (e: PointerEvent, cancelled: boolean) => {

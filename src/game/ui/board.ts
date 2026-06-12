@@ -28,6 +28,39 @@ export interface BoardMetrics {
   tableau: Point[];
 }
 
+/** Classic pip positions for number cards: [x%, y%, flipped]. */
+const PIP_LAYOUTS: Record<number, [number, number, boolean][]> = {
+  2: [[50, 20, false], [50, 80, true]],
+  3: [[50, 20, false], [50, 50, false], [50, 80, true]],
+  4: [[32, 20, false], [68, 20, false], [32, 80, true], [68, 80, true]],
+  5: [[32, 20, false], [68, 20, false], [50, 50, false], [32, 80, true], [68, 80, true]],
+  6: [[32, 20, false], [68, 20, false], [32, 50, false], [68, 50, false], [32, 80, true], [68, 80, true]],
+  7: [[32, 20, false], [68, 20, false], [50, 35, false], [32, 50, false], [68, 50, false], [32, 80, true], [68, 80, true]],
+  8: [[32, 20, false], [68, 20, false], [50, 35, false], [32, 50, false], [68, 50, false], [50, 65, true], [32, 80, true], [68, 80, true]],
+  9: [[32, 20, false], [68, 20, false], [32, 40, false], [68, 40, false], [50, 50, false], [32, 60, true], [68, 60, true], [32, 80, true], [68, 80, true]],
+  10: [[32, 20, false], [68, 20, false], [50, 30, false], [32, 40, false], [68, 40, false], [32, 60, true], [68, 60, true], [50, 70, true], [32, 80, true], [68, 80, true]],
+};
+
+function frontMarkup(card: Card): string {
+  const sym = SUIT_SYMBOLS[card.suit];
+  if (card.rank === 1) {
+    return `<span class="pip-ace">${sym}</span>`;
+  }
+  if (card.rank > 10) {
+    return `
+      <span class="court-frame"></span>
+      <span class="court-letter">${RANK_LABELS[card.rank]}</span>
+      <span class="court-suit court-suit-tl">${sym}</span>
+      <span class="court-suit court-suit-br">${sym}</span>`;
+  }
+  return PIP_LAYOUTS[card.rank]!
+    .map(
+      ([x, y, flip]) =>
+        `<span class="pip-spot${flip ? ' pip-flip' : ''}" style="left:${x}%;top:${y}%">${sym}</span>`,
+    )
+    .join('');
+}
+
 export interface BoardOptions {
   leftHand: boolean;
 }
@@ -45,6 +78,9 @@ export class Board {
   private state: GameState | null = null;
   private positions = new Map<string, Point>();
   private options: BoardOptions = { leftHand: false };
+  private zResetTimers = new Map<string, number>();
+  private dropHintEl: HTMLElement | null = null;
+  private dropHintKey: string | null = null;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -155,7 +191,7 @@ export class Board {
       <div class="card-inner">
         <div class="card-face card-front card-${color}" aria-hidden="true">
           <span class="corner corner-tl"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
-          <span class="pip">${card.rank > 10 ? RANK_LABELS[card.rank] : SUIT_SYMBOLS[card.suit]}</span>
+          ${frontMarkup(card)}
           <span class="corner corner-br"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
         </div>
         <div class="card-face card-back" aria-hidden="true"></div>
@@ -176,11 +212,30 @@ export class Board {
     const m = this.metrics;
     let z = 1;
 
+    this.setDropHint(null);
+
     const place = (card: Card, p: Point, ref: PileRef, depth: number, movable: boolean) => {
       const el = this.ensureCardEl(card);
       const x = this.mirror(p.x);
+      const prev = this.positions.get(card.id);
+      const moved = !!prev && (Math.abs(prev.x - x) > 1 || Math.abs(prev.y - p.y) > 1);
       el.style.transform = `translate3d(${x}px, ${p.y}px, 0)`;
-      el.style.zIndex = String(z++);
+      const baseZ = z++;
+      el.style.zIndex = String(baseZ);
+      // Cards travelling to a new pile glide above everything else for the
+      // duration of the transition, instead of sliding under taller piles.
+      if (moved && !el.classList.contains('dragging')) {
+        el.style.zIndex = String(1000 + baseZ);
+        const pending = this.zResetTimers.get(card.id);
+        if (pending) window.clearTimeout(pending);
+        this.zResetTimers.set(
+          card.id,
+          window.setTimeout(() => {
+            el.style.zIndex = String(baseZ);
+            this.zResetTimers.delete(card.id);
+          }, 280),
+        );
+      }
       el.classList.toggle('face-up', card.faceUp);
       el.classList.toggle('movable', movable);
       el.dataset.kind = ref.kind;
@@ -200,7 +255,10 @@ export class Board {
     };
 
     state.stock.forEach((card, i) => {
-      place(card, m.stock, { kind: 'stock', index: 0 }, state.stock.length - 1 - i, false);
+      // Slight stepped offset so a full stock visibly has depth.
+      const lift = Math.min(3, Math.floor(i / 8));
+      const p = { x: m.stock.x - lift, y: m.stock.y - lift };
+      place(card, p, { kind: 'stock', index: 0 }, state.stock.length - 1 - i, false);
     });
 
     const wn = state.waste.length;
@@ -299,6 +357,39 @@ export class Board {
       .slice(pile.length - count)
       .map((c) => this.cardEls.get(c.id))
       .filter((el): el is HTMLElement => !!el);
+  }
+
+  /**
+   * Live feedback while dragging: outline the pile the run would drop onto.
+   * Pass null to clear. No-ops when the target hasn't changed.
+   */
+  setDropHint(ref: PileRef | null): void {
+    const key = ref ? `${ref.kind}-${ref.index}` : null;
+    if (key === this.dropHintKey) return;
+    this.dropHintEl?.classList.remove('drop-ok');
+    this.dropHintEl = null;
+    this.dropHintKey = key;
+    if (!ref || !this.state) return;
+    const pile =
+      ref.kind === 'foundation' ? this.state.foundations[ref.index]! : this.state.tableau[ref.index]!;
+    const topCard = pile[pile.length - 1];
+    const el = topCard
+      ? this.cardEls.get(topCard.id)
+      : this.slotEls.get(ref.kind === 'foundation' ? `foundation-${ref.index}` : `tableau-${ref.index}`);
+    if (el) {
+      el.classList.add('drop-ok');
+      this.dropHintEl = el;
+    }
+  }
+
+  /** Wiggle a card that has nowhere to go (invalid tap feedback). */
+  shakeCard(id: string): void {
+    const el = this.cardEls.get(id);
+    if (!el) return;
+    el.classList.remove('shake');
+    void el.offsetWidth;
+    el.classList.add('shake');
+    window.setTimeout(() => el.classList.remove('shake'), 350);
   }
 
   /** Briefly highlight the elements involved in a move (hint display). */

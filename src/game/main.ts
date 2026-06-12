@@ -247,6 +247,10 @@ class Game {
         this.doMove({ type: 'move', from, to, count });
         return true;
       },
+      onDragOver: (from, count, target) => {
+        const legal = !!target && canMove(this.state, from, target, count);
+        this.board.setDropHint(legal ? target : null);
+      },
       onSnapBack: () => this.board.render(),
       runElements: (ref, count) => this.board.runElements(this.state, ref, count),
     });
@@ -269,10 +273,13 @@ class Game {
       return;
     }
     if (!this.canPick(ref, depth)) return;
-    const move = autoMoveFor(this.state, ref, depth);
-    if (!move) return;
     const pile = getPile(this.state, ref);
     const card = pile[pile.length - 1 - depth];
+    const move = autoMoveFor(this.state, ref, depth);
+    if (!move) {
+      if (card) this.board.shakeCard(card.id);
+      return;
+    }
     const dest = move.type === 'move' && move.to.kind === 'foundation' ? 'foundation' : 'tableau';
     this.doMove(move, card ? `Moved ${cardName(card)} to ${dest}.` : undefined);
   }
