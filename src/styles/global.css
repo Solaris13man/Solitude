@@ -23,9 +23,29 @@
 :root[data-felt='slate'] { --felt: #3d4757; --felt-edge: #2b323e; --chrome-bg: #232a34; }
 :root[data-felt='crimson'] { --felt: #8a2433; --felt-edge: #631823; --chrome-bg: #511620; }
 
-:root[data-cardback='royal'] { --back-a: #2c4a9a; --back-b: #1c2f66; }
-:root[data-cardback='mint'] { --back-a: #2e8b6a; --back-b: #1d5c46; }
-:root[data-cardback='midnight'] { --back-a: #3a3f55; --back-b: #20232f; }
+/* card-back patterns are tiny generative SVG tiles (original artwork) */
+:root {
+  --back-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 0 24 12 12 24 0 12Z' fill='none' stroke='white' stroke-opacity='0.2'/%3E%3Ccircle cx='12' cy='12' r='1.5' fill='white' fill-opacity='0.25'/%3E%3C/svg%3E");
+  --back-pattern-size: 24px 24px;
+}
+:root[data-cardback='royal'] {
+  --back-a: #2c4a9a;
+  --back-b: #1c2f66;
+  --back-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cg fill='none' stroke='white' stroke-opacity='0.18'%3E%3Ccircle cx='14' cy='0' r='10'/%3E%3Ccircle cx='14' cy='28' r='10'/%3E%3Ccircle cx='0' cy='14' r='10'/%3E%3Ccircle cx='28' cy='14' r='10'/%3E%3C/g%3E%3Ccircle cx='14' cy='14' r='2.5' fill='white' fill-opacity='0.16'/%3E%3C/svg%3E");
+  --back-pattern-size: 28px 28px;
+}
+:root[data-cardback='mint'] {
+  --back-a: #2e8b6a;
+  --back-b: #1d5c46;
+  --back-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='16'%3E%3Cpath d='M0 8a6 6 0 0 1 12 0M12 8a6 6 0 0 1 12 0M-6 16a6 6 0 0 1 12 0M6 16a6 6 0 0 1 12 0M18 16a6 6 0 0 1 12 0' fill='none' stroke='white' stroke-opacity='0.2'/%3E%3C/svg%3E");
+  --back-pattern-size: 24px 16px;
+}
+:root[data-cardback='midnight'] {
+  --back-a: #3a3f55;
+  --back-b: #20232f;
+  --back-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='white'%3E%3Ccircle cx='8' cy='10' r='1' fill-opacity='0.4'/%3E%3Ccircle cx='30' cy='6' r='0.8' fill-opacity='0.3'/%3E%3Ccircle cx='20' cy='24' r='1.3' fill-opacity='0.35'/%3E%3Ccircle cx='34' cy='32' r='0.9' fill-opacity='0.3'/%3E%3Ccircle cx='12' cy='34' r='0.8' fill-opacity='0.35'/%3E%3Cpath d='M26 13l1 2.2 2.2 1-2.2 1-1 2.2-1-2.2-2.2-1 2.2-1z' fill-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
+  --back-pattern-size: 40px 40px;
+}
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme='auto'] {
@@ -194,9 +214,14 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   width: var(--card-w);
   height: var(--card-h);
   perspective: 600px;
-  transition: transform 0.22s cubic-bezier(0.33, 1, 0.5, 1);
+  /* slight overshoot so cards "land" rather than stop dead */
+  transition: transform 0.28s cubic-bezier(0.3, 1.25, 0.55, 1);
   will-change: transform;
   cursor: default;
+}
+/* released from a drag: a stronger spring as the run settles into place */
+.card.settling {
+  transition: transform 0.4s cubic-bezier(0.26, 1.55, 0.45, 1);
 }
 .card.movable { cursor: grab; }
 @media (hover: hover) {
@@ -305,10 +330,8 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .card-back {
   transform: rotateY(180deg);
   border: 1px solid rgb(0 0 0 / 0.25);
-  background:
-    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.10) 0 6px, transparent 6px 12px),
-    repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.08) 0 6px, transparent 6px 12px),
-    linear-gradient(155deg, var(--back-a), var(--back-b));
+  background-image: var(--back-pattern), linear-gradient(155deg, var(--back-a), var(--back-b));
+  background-size: var(--back-pattern-size), cover;
   box-shadow: inset 0 0 0 max(2px, calc(var(--card-w) * 0.045)) rgb(255 255 255 / 0.85);
 }
 
@@ -344,12 +367,13 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .card, .card-inner { transition: none; }
+  .card, .card-inner, .card.settling { transition: none; }
   .card.hint .card-inner, .slot.hint { animation: none; outline: 3px solid #ffd95e; }
   .card.shake .card-inner { animation: none; }
 }
 .no-animations .card,
-.no-animations .card-inner { transition: none; }
+.no-animations .card-inner,
+.no-animations .card.settling { transition: none; }
 .no-animations .card.hint .card-inner,
 .no-animations .slot.hint { animation: none; outline: 3px solid #ffd95e; }
 .no-animations .card.shake .card-inner { animation: none; }

@@ -233,7 +233,7 @@ export class Board {
           window.setTimeout(() => {
             el.style.zIndex = String(baseZ);
             this.zResetTimers.delete(card.id);
-          }, 280),
+          }, 430),
         );
       }
       el.classList.toggle('face-up', card.faceUp);

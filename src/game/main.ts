@@ -21,6 +21,7 @@ import { findHint } from './ui/hints';
 import { Board } from './ui/board';
 import { attachDragDrop } from './ui/dragdrop';
 import { animateDeal, winCascade } from './ui/animations';
+import { SoundPlayer } from './ui/sound';
 import { randomSeed } from './engine/rng';
 import {
   type Settings,
@@ -48,10 +49,12 @@ class Game {
   private runningSince: number | null = null;
   private finished = false;
   private autoFinishing = false;
+  private sound = new SoundPlayer();
 
   constructor() {
     this.settings = loadSettings();
     applySettings(this.settings);
+    this.sound.enabled = this.settings.sounds;
     this.board = new Board($('board'));
     this.board.setOptions({ leftHand: this.settings.leftHand });
     this.bindInteractions();
@@ -91,6 +94,7 @@ class Game {
     this.board.setState(this.state);
     animateDeal(this.board, this.state, !reducedMotion(this.settings));
     this.afterStateChange(false);
+    if (countAbandon) this.sound.play('shuffle');
     this.announce('New game dealt.');
   }
 
@@ -133,6 +137,10 @@ class Game {
     this.history.push(this.state);
     applyMove(this.state, move);
     if (this.runningSince === null) this.resumeTimer();
+    if (move.type === 'draw') this.sound.play('flip');
+    else if (move.type === 'recycle') this.sound.play('shuffle');
+    else if (move.to.kind === 'foundation') this.sound.play('foundation');
+    else this.sound.play('place');
     this.afterStateChange(true);
     if (announceText) this.announce(announceText);
   }
@@ -162,6 +170,7 @@ class Game {
     if (!prev) return;
     this.state = prev;
     this.finished = false;
+    this.sound.play('undo');
     this.afterStateChange(true);
     this.announce('Undid move.');
   }
@@ -171,6 +180,7 @@ class Game {
     const next = this.history.redo(this.state);
     if (!next) return;
     this.state = next;
+    this.sound.play('undo');
     this.afterStateChange(true);
     this.announce('Redid move.');
   }
@@ -229,6 +239,7 @@ class Game {
       `<dt>Score</dt><dd>${this.state.score}</dd>`,
       `<dt>Streak</dt><dd>${stats.currentStreak}</dd>`,
     ].join('');
+    this.sound.play('win');
     this.announce(`You won in ${formatTime(elapsed)} with ${this.state.moves} moves!`);
     winCascade(this.board, this.state, !reducedMotion(this.settings), () => {
       ($('win-dialog') as HTMLDialogElement).showModal();
@@ -339,6 +350,7 @@ class Game {
     const back = $('set-cardback') as HTMLSelectElement;
     const left = $('set-lefthand') as HTMLInputElement;
     const anim = $('set-animations') as HTMLInputElement;
+    const snd = $('set-sounds') as HTMLInputElement;
 
     draw.value = String(this.settings.drawMode);
     theme.value = this.settings.theme;
@@ -346,8 +358,10 @@ class Game {
     back.value = this.settings.cardBack;
     left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
+    snd.checked = this.settings.sounds;
 
     const update = () => {
+      const prevSounds = this.settings.sounds;
       this.settings = {
         drawMode: draw.value === '3' ? 3 : 1,
         theme: theme.value as Settings['theme'],
@@ -355,9 +369,12 @@ class Game {
         cardBack: back.value as Settings['cardBack'],
         leftHand: left.checked,
         animations: anim.checked,
+        sounds: snd.checked,
       };
       saveSettings(this.settings);
       applySettings(this.settings);
+      this.sound.enabled = this.settings.sounds;
+      if (this.settings.sounds && !prevSounds) this.sound.play('place');
       this.board.setOptions({ leftHand: this.settings.leftHand });
       this.board.resize();
       $('draw-mode-note').hidden = this.settings.drawMode === this.state.drawMode;

@@ -110,7 +110,12 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
       if (!cancelled && quick) callbacks.onTap(s.ref, s.depth);
       return;
     }
-    for (const el of s.els) el.classList.remove('dragging');
+    for (const el of s.els) {
+      el.classList.remove('dragging');
+      // Springier easing while the released run settles into place.
+      el.classList.add('settling');
+      window.setTimeout(() => el.classList.remove('settling'), 450);
+    }
     if (!cancelled) {
       // Drop point: the center of the lead (first) dragged card.
       const lead = s.els[0]!;

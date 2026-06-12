@@ -30,6 +30,7 @@ const PAGE_SCAFFOLD = `
     <select id="set-cardback"><option value="classic">classic</option><option value="royal">royal</option><option value="mint">mint</option><option value="midnight">midnight</option></select>
     <input type="checkbox" id="set-lefthand" />
     <input type="checkbox" id="set-animations" />
+    <input type="checkbox" id="set-sounds" />
   </dialog>
   <dialog id="stats-dialog"><dl id="stats-body"></dl></dialog>
   <dialog id="win-dialog"><dl id="win-summary"></dl><button id="btn-play-again"></button></dialog>

@@ -11,6 +11,7 @@ export interface Settings {
   cardBack: CardBack;
   leftHand: boolean;
   animations: boolean;
+  sounds: boolean;
 }
 
 const KEY = 'solitude.settings.v1';
@@ -22,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   cardBack: 'classic',
   leftHand: false,
   animations: true,
+  sounds: true,
 };
 
 export function loadSettings(): Settings {
