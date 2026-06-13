@@ -18,6 +18,8 @@ interface Props {
   scoreLabel?: string;
   /** Hide card-specific settings (card back, left-handed) for non-card games. */
   cardSettings?: boolean;
+  /** Show the Mahjong tile-design picker in Settings. */
+  tileSettings?: boolean;
   /** Visible breadcrumb trail (matches the page's BreadcrumbList schema). */
   breadcrumb?: { name: string; href: string }[];
   /** Optional link to this game's in-depth strategy guide. */
@@ -31,6 +33,7 @@ const {
   variantOptions,
   scoreLabel = 'Score',
   cardSettings = true,
+  tileSettings = false,
   breadcrumb,
   guide,
 } = Astro.props;
@@ -201,6 +204,19 @@ const {
       <option value="midnight">Midnight</option>
     </select>
   </label>
+  {
+    tileSettings && (
+      <label class="field">Tile design
+        <select id="set-tileset">
+          <option value="china">China</option>
+          <option value="japan">Japan</option>
+          <option value="korea">Korea</option>
+          <option value="india">India</option>
+          <option value="medieval">Medieval</option>
+        </select>
+      </label>
+    )
+  }
   {
     cardSettings && (
       <label class="field">Left-handed layout

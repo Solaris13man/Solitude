@@ -357,6 +357,7 @@ class G2048Controller {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
+        tileSet: this.settings.tileSet,
         leftHand: left ? left.checked : this.settings.leftHand,
         animations: anim.checked,
         sounds: snd.checked,

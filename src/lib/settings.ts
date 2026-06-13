@@ -1,11 +1,14 @@
 export type ThemeMode = 'auto' | 'light' | 'dark';
 export type Felt = 'green' | 'blue' | 'slate' | 'crimson';
 export type CardBack = 'classic' | 'royal' | 'mint' | 'midnight';
+export type TileSet = 'china' | 'japan' | 'korea' | 'india' | 'medieval';
 
 export interface Settings {
   theme: ThemeMode;
   felt: Felt;
   cardBack: CardBack;
+  /** Mahjong tile artwork set. */
+  tileSet: TileSet;
   leftHand: boolean;
   animations: boolean;
   sounds: boolean;
@@ -19,6 +22,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: 'auto',
   felt: 'green',
   cardBack: 'classic',
+  tileSet: 'china',
   leftHand: false,
   animations: true,
   sounds: true,
@@ -59,6 +63,7 @@ export function applySettings(settings: Settings): void {
   root.dataset.theme = settings.theme;
   root.dataset.felt = settings.felt;
   root.dataset.cardback = settings.cardBack;
+  root.dataset.tileset = settings.tileSet;
   root.classList.toggle('no-animations', !settings.animations);
 }
 

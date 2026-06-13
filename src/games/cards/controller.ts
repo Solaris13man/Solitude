@@ -533,6 +533,7 @@ class CardGameController {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
+        tileSet: this.settings.tileSet,
         leftHand: left.checked,
         animations: anim.checked,
         sounds: snd.checked,

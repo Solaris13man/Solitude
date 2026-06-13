@@ -1142,6 +1142,25 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   cursor: default;
   transition: transform 0.15s ease, opacity 0.25s ease;
 }
+/* Premium image tiles: the artwork provides the body, bevel and shadow, so
+   strip the CSS tile chrome and hide the glyph fallback while the img loads. */
+.tile:has(.tile-img) {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.tile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.tile:has(.tile-img) .tile-corner,
+.tile:has(.tile-img) .tile-glyph { display: none; }
+.tile:has(.tile-img).tile-selected { filter: none; }
+
 .tile.tile-free { cursor: pointer; }
 @media (hover: hover) {
   .tile.tile-free:hover { filter: brightness(1.05); }

@@ -360,6 +360,7 @@ class MahjongController {
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
+    const tileset = $opt('set-tileset') as HTMLSelectElement | null;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
     const anim = $('set-animations') as HTMLInputElement;
     const snd = $('set-sounds') as HTMLInputElement;
@@ -368,6 +369,7 @@ class MahjongController {
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
     back.value = this.settings.cardBack;
+    if (tileset) tileset.value = this.settings.tileSet;
     if (left) left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
     snd.checked = this.settings.sounds;
@@ -382,6 +384,7 @@ class MahjongController {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
+        tileSet: (tileset ? tileset.value : this.settings.tileSet) as Settings['tileSet'],
         leftHand: left ? left.checked : this.settings.leftHand,
         animations: anim.checked,
         sounds: snd.checked,
@@ -390,10 +393,12 @@ class MahjongController {
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
+      // Repaint the board so a tile-design change shows immediately.
+      if (this.state) this.board.render(this.state, this.selected);
       const note = $opt('variant-note');
       if (note) note.hidden = this.layoutVariant() === this.state.variant;
     };
-    const controls = [theme, felt, back, anim, snd, ...(left ? [left] : []), ...(variant ? [variant] : [])];
+    const controls = [theme, felt, back, anim, snd, ...(tileset ? [tileset] : []), ...(left ? [left] : []), ...(variant ? [variant] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

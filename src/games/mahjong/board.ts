@@ -1,5 +1,16 @@
 import { type MahjongState, type TileSlot, isFree, layoutOf } from './engine';
 
+/** The active tile-art set, from the persisted setting (applied to <html>). */
+function currentTileSet(): string {
+  if (typeof document === 'undefined') return 'china';
+  return document.documentElement.dataset.tileset || 'china';
+}
+
+/** Image path for a tile face in the current set; `sel` is the selected art. */
+function tileSrc(kind: string, sel: boolean): string {
+  return `/tiles/${currentTileSet()}/${sel ? 'sel/' : ''}${kind}.png`;
+}
+
 /** Visual faces for each tile kind: corner label + main glyph + color. */
 function face(kind: string): { corner: string; glyph: string; cls: string } {
   const n = kind.slice(1);
@@ -55,9 +66,20 @@ export class MahjongBoard {
       el.type = 'button';
       const f = face(tile.kind);
       el.className = `tile ${f.cls}`;
-      el.innerHTML = `
-        <span class="tile-corner">${f.corner}</span>
-        <span class="tile-glyph">${f.glyph}</span>`;
+      // Premium artwork as an <img>; if it ever fails to load, the img is
+      // removed and the CSS tile body + glyph below take over (the :has()
+      // rules in CSS hide the glyph only while the image is present).
+      const img = document.createElement('img');
+      img.className = 'tile-img';
+      img.alt = '';
+      img.draggable = false;
+      img.src = tileSrc(tile.kind, false);
+      img.addEventListener('error', () => img.remove(), { once: true });
+      el.appendChild(img);
+      el.insertAdjacentHTML(
+        'beforeend',
+        `<span class="tile-corner">${f.corner}</span><span class="tile-glyph">${f.glyph}</span>`,
+      );
       el.addEventListener('click', () => this.onTap(i));
       this.container.appendChild(el);
       this.tileEls.push(el);
@@ -80,7 +102,8 @@ export class MahjongBoard {
   computeMetrics(): void {
     const availW = this.container.clientWidth || 700;
     this.tileW = Math.min(Math.floor(availW / (this.widthUnits() + 0.6)), 64);
-    this.tileH = Math.round(this.tileW * 1.32);
+    // Match the artwork aspect (150×188) so image tiles sit flush.
+    this.tileH = Math.round(this.tileW * (188 / 150));
     const lift = Math.max(3, Math.round(this.tileW * 0.09));
     const boardH = this.heightUnits() * this.tileH + lift * (this.maxZ() + 1) + 8;
     this.container.style.height = `${boardH}px`;
@@ -119,6 +142,13 @@ export class MahjongBoard {
       el.classList.toggle('tile-selected', i === selected);
       el.tabIndex = free ? 0 : -1;
       el.setAttribute('aria-label', `${describeKind(tile.kind)}${free ? '' : ', blocked'}`);
+      // Reflect the current tile set + selected artwork (re-pointing is a
+      // no-op when the URL is unchanged, so it's cheap to call every render).
+      const img = el.querySelector<HTMLImageElement>('img.tile-img');
+      if (img) {
+        const want = tileSrc(tile.kind, i === selected);
+        if (!img.src.endsWith(want)) img.src = want;
+      }
     });
   }
 
