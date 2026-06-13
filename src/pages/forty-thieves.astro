@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Forty Thieves Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play Forty Thieves Solitaire free in your browser — the famous two-deck challenge: ten columns, eight foundations, build down in suit, single-card moves. Unlimited undo, hints, no sign-up.';
+
+const faq = [
+  {
+    q: 'Why is Forty Thieves so hard?',
+    a: 'It uses two full decks (104 cards), you build down strictly in suit, and you can only move one card at a time — no group moves. The stock deals one card to the waste with no recycling. That combination makes it one of the most demanding solitaires, with realistic win rates around 10%.',
+  },
+  {
+    q: 'What are the rules?',
+    a: 'Ten columns are dealt four cards each, all face-up. Build them down in suit (a 9♠ on a 10♠) one card at a time; an empty column accepts any single card. Build the eight foundations up from Ace to King by suit. Draw from the stock to the waste when you are stuck. You win when all 104 cards reach the foundations.',
+  },
+  {
+    q: 'Any tips for winning?',
+    a: 'Get cards onto foundations early to free space, keep an empty column in reserve when you can, and think hard before committing the waste card — there is no recycle, so every stock card matters. Unlimited undo lets you test a line and take it back.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Forty Thieves Solitaire',
+    url: 'https://cardhearth.com/forty-thieves/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/forty-thieves.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Forty Thieves', item: 'https://cardhearth.com/forty-thieves/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="fortythieves" heading="Forty Thieves">
+    <h2 class="mb-2 text-lg font-bold">How to play Forty Thieves</h2>
+    <p class="mb-3">
+      Forty Thieves (also called Napoleon at St Helena) is the classic <strong>two-deck</strong>
+      grind for players who want a real fight. Ten columns are dealt four face-up cards each; the
+      rest form the <strong>stock</strong>. Your job is to build all eight
+      <strong>foundations</strong> up from Ace to King by suit — 104 cards in total.
+    </p>
+    <p class="mb-3">
+      On the tableau you build <strong>down in suit</strong> (a 9♠ only on a 10♠), and you move
+      <strong>one card at a time</strong> — no group moves. An empty column will accept any single
+      card. When you run out of moves, tap the stock to turn one card to the
+      <strong>waste</strong>; there is <strong>no recycling</strong>, so the stock is a
+      one-way resource.
+    </p>
+    <p class="mb-3">
+      <strong>Strategy:</strong> bank cards to foundations early to open up space, try to keep a
+      column empty as a manoeuvring slot, and never flip a stock card on autopilot — once the
+      stock is gone, it's gone. This is a low-win-rate game, so lean on unlimited
+      <strong>Undo</strong> (U) and the <strong>Hint</strong> (H) to learn the lines.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Want another tough deal? Try <a class="underline" href="/spider/">Spider (4 Suits)</a> or
+      the all-skill <a class="underline" href="/freecell/">FreeCell</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { fortyThievesRules } from '../games/cards/fortythieves';
+    startGame(fortyThievesRules);
+  </script>
+</Layout>

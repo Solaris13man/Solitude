@@ -101,10 +101,11 @@ describe('daily rotation', () => {
     const { dailyGame, DAILY_ROTATION, dailyNumber } = await import('./daily');
     const day1 = dailyGame(at('2026-06-13T12:00:00Z'));
     expect(day1).toBe(DAILY_ROTATION[0]);
-    // wraps after the rotation length
-    const wrap = dailyGame(at('2026-06-27T12:00:00Z')); // day 15 → index 0
-    expect(dailyNumber(at('2026-06-27T12:00:00Z'))).toBe(15);
-    expect(wrap).toBe(DAILY_ROTATION[0]);
+    // wraps after the rotation length (length-agnostic so adding games is safe)
+    const wrapDayNum = DAILY_ROTATION.length + 1;
+    const wrapDate = new Date(Date.UTC(2026, 5, 13) + (wrapDayNum - 1) * 86_400_000);
+    expect(dailyNumber(wrapDate)).toBe(wrapDayNum);
+    expect(dailyGame(wrapDate)).toBe(DAILY_ROTATION[0]);
     const day2 = dailyGame(at('2026-06-14T12:00:00Z'));
     expect(day2).toBe(DAILY_ROTATION[1]);
   });

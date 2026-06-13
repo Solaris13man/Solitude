@@ -107,6 +107,63 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'yukon' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Overlapping columns of face-up cards" class="art">
+      {[78, 138].map((x) =>
+        [0, 1, 2, 3, 4].map((i) => (
+          <rect x={x - 24} y={12 + i * 19} width="48" height="62" rx="5" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        ))
+      )}
+      <text x="60" y="120" font-size="12" font-weight="700" fill="#1d2230">10♠</text>
+      <text x="120" y="120" font-size="12" font-weight="700" fill="#c2273a">9♥</text>
+    </svg>
+  )
+}
+{
+  game === 'scorpion' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A same-suit run of spades" class="art">
+      {[0, 1, 2, 3].map((i) => (
+        <rect x="95" y={12 + i * 24} width="50" height="70" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      ))}
+      <text x="102" y="30" font-size="12" font-weight="700" fill="#1d2230">K♠</text>
+      <text x="102" y="54" font-size="12" font-weight="700" fill="#1d2230">Q♠</text>
+      <text x="102" y="78" font-size="12" font-weight="700" fill="#1d2230">J♠</text>
+      <text x="120" y="116" font-size="28" text-anchor="middle" fill="#1d2230">♠</text>
+    </svg>
+  )
+}
+{
+  game === 'fortythieves' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Two-deck Forty Thieves" class="art">
+      {[0, 1, 2].map((i) => (
+        <rect x={30 + i * 3} y={16 + i * 3} width="42" height="60" rx="5" fill="#a32934" stroke="#fff" stroke-opacity="0.5" />
+      ))}
+      {[0, 1, 2, 3, 4].map((c) =>
+        [0, 1].map((r) => (
+          <rect x={92 + c * 28} y={20 + r * 22} width="26" height="36" rx="3.5" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        ))
+      )}
+      <text x="142" y="122" font-size="13" font-weight="800" text-anchor="middle" fill="#ffd95e">×2 decks</text>
+    </svg>
+  )
+}
+{
+  game === 'eightoff' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Eight free cells and a card" class="art">
+      <g fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="2">
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+          <rect x={14 + i * 27} y="14" width="22" height="32" rx="4" />
+        ))}
+      </g>
+      <g transform="translate(120 92) rotate(-4)">
+        <rect x="-24" y="-32" width="48" height="64" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-16" y="-14" font-size="12" font-weight="700" fill="#1d2230">8</text>
+        <text x="0" y="12" font-size="24" text-anchor="middle" fill="#1d2230">♠</text>
+      </g>
+    </svg>
+  )
+}
+{
   game === 'mahjong' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="Stacked mahjong tiles" class="art">
       {[

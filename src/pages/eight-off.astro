@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Eight Off Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play Eight Off Solitaire free in your browser — a FreeCell variant with eight free cells and suit-building, so almost every deal is winnable with clean play. Unlimited undo, hints, no sign-up.';
+
+const faq = [
+  {
+    q: 'How is Eight Off different from FreeCell?',
+    a: 'Eight Off gives you eight free cells instead of four, and the tableau builds down in suit (a 9♠ on a 10♠) rather than by alternating colour. Empty columns can only be filled by a King. The extra cells make it gentler than FreeCell — almost every deal is winnable.',
+  },
+  {
+    q: 'How many cards can I move at once?',
+    a: 'A same-suit run can be moved as a unit, limited by your free space: (empty free cells + 1) × 2 to the power of (empty columns). With eight cells you usually have plenty of room.',
+  },
+  {
+    q: 'How do I win?',
+    a: 'Build all four foundations up from Ace to King by suit. Because every card is face-up from the start, Eight Off is pure planning — a loss is almost always a misplay rather than a bad deal.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Eight Off Solitaire',
+    url: 'https://cardhearth.com/eight-off/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/eight-off.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Eight Off', item: 'https://cardhearth.com/eight-off/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="eightoff" heading="Eight Off Solitaire">
+    <h2 class="mb-2 text-lg font-bold">How to play Eight Off Solitaire</h2>
+    <p class="mb-3">
+      Eight Off is a friendlier member of the FreeCell family. Every card is dealt face-up across
+      eight columns, you get <strong>eight free cells</strong> for temporary storage (four start
+      filled), and you build the four <strong>foundations</strong> up from Ace to King by suit.
+    </p>
+    <p class="mb-3">
+      The tableau builds <strong>down in suit</strong> (a 9♠ on a 10♠), not by alternating colour.
+      Each free cell holds one card, and an <strong>empty column accepts only a King</strong>. A
+      same-suit run can be slid as a group as long as you have the free space for it — the more
+      cells and empty columns you keep open, the more cards you can shift at once.
+    </p>
+    <p class="mb-3">
+      <strong>Strategy:</strong> with everything visible, Eight Off rewards reading ahead. Keep
+      free cells empty whenever you can, work an empty column open early, and don't bury a card
+      you'll need to receive a run. Almost every deal is solvable, so a loss is a puzzle to learn
+      from — <strong>Undo</strong> (U) is unlimited and <strong>Hint</strong> (H) nudges you along.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Prefer the classic? Play <a class="underline" href="/freecell/">FreeCell</a>, or take on
+      <a class="underline" href="/forty-thieves/">Forty Thieves</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { eightOffRules } from '../games/cards/eightoff';
+    startGame(eightOffRules);
+  </script>
+</Layout>

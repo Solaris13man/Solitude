@@ -47,6 +47,11 @@ export const DAILY_ROTATION: DailyEntry[] = [
   { game: 'golf', variant: 0, label: 'Golf', path: '/golf/' },
   { game: 'spider', variant: 2, label: 'Spider (2 Suits)', path: '/spider/' },
   { game: 'mahjong', variant: 7, label: 'Mahjong (Diamond)', path: '/mahjong/' },
+  { game: 'yukon', variant: 0, label: 'Yukon', path: '/yukon/' },
+  { game: 'freecell', variant: 0, label: 'FreeCell', path: '/freecell/' },
+  { game: 'scorpion', variant: 0, label: 'Scorpion', path: '/scorpion/' },
+  { game: 'eightoff', variant: 0, label: 'Eight Off', path: '/eight-off/' },
+  { game: 'fortythieves', variant: 0, label: 'Forty Thieves', path: '/forty-thieves/' },
 ];
 
 const KEY = 'solitude.daily.v1.klondike';

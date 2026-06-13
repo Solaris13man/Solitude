@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Yukon Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play Yukon Solitaire free in your browser — Klondike’s tougher cousin with every card face-up, no stock, and the freedom to move any group of cards. Unlimited undo, hints, no sign-up.';
+
+const faq = [
+  {
+    q: 'How is Yukon different from Klondike?',
+    a: 'In Yukon every tableau card is dealt face-up except the buried ones, there is no stock or waste, and — crucially — you can move ANY face-up card together with every card piled on top of it, even if that group is not an ordered sequence. Only the bottom card of the group needs to fit its destination.',
+  },
+  {
+    q: 'How do I build and win?',
+    a: 'Build the tableau down in alternating colours (a red 9 on a black 10) and the four foundations up by suit from Ace to King. Move groups around to dig out the face-down cards and free the Aces. You win when all 52 cards reach the foundations.',
+  },
+  {
+    q: 'Are all Yukon games winnable?',
+    a: 'A high proportion of Yukon deals are winnable with careful play, but not all — some buried cards can be impossible to free. Use unlimited undo to explore lines, and replay the numbered deal to try a different approach.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Yukon Solitaire',
+    url: 'https://cardhearth.com/yukon/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/yukon.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Yukon Solitaire', item: 'https://cardhearth.com/yukon/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="yukon" heading="Yukon Solitaire">
+    <h2 class="mb-2 text-lg font-bold">How to play Yukon Solitaire</h2>
+    <p class="mb-3">
+      Yukon is Klondike's bolder cousin. All seven columns are dealt face-up at the top — there's
+      <strong>no stock and no waste pile</strong>, so every card you need is already on the table.
+      The goal is the same: build the four <strong>foundations</strong> up from Ace to King by suit.
+    </p>
+    <p class="mb-3">
+      On the tableau you build <strong>down in alternating colours</strong> (a red Nine on a black
+      Ten). The signature Yukon rule is that you can pick up <strong>any face-up card along with
+      every card stacked on top of it</strong> — the group does not have to be in order. Only the
+      card you're placing has to fit. That freedom is powerful: use it to shuffle groups aside and
+      dig out the face-down cards, which flip automatically when exposed. Empty columns can only be
+      filled by a King (and whatever rides on it).
+    </p>
+    <p class="mb-3">
+      <strong>Strategy:</strong> uncovering face-down cards is everything, so favour moves that flip
+      one. Don't rush cards to the foundations — a low card left on the tableau is often the anchor
+      you need for a colour-alternating run. Think before you bury a card under a big group.
+      Stuck? <strong>Hint</strong> (H) finds a useful move, <strong>Undo</strong> (U) is unlimited,
+      and <strong>A</strong> auto-finishes once the board is fully sorted.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Like a challenge with no luck involved? Try <a class="underline" href="/freecell/">FreeCell</a>
+      and <a class="underline" href="/scorpion/">Scorpion</a>, or the classic
+      <a class="underline" href="/klondike/">Klondike</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { yukonRules } from '../games/cards/yukon';
+    startGame(yukonRules);
+  </script>
+</Layout>

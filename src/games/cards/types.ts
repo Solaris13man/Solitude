@@ -1,6 +1,6 @@
 import type { Card } from './deck';
 
-export type GameId = 'klondike' | 'spider' | 'freecell' | 'golf';
+export type GameId = 'klondike' | 'spider' | 'freecell' | 'golf' | 'yukon' | 'scorpion' | 'fortythieves' | 'eightoff';
 
 export type PileKind = 'stock' | 'waste' | 'foundation' | 'tableau' | 'cell';
 

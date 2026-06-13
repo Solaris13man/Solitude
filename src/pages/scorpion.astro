@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Scorpion Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play Scorpion Solitaire free in your browser — a Spider-flavoured challenge where you build down in suit, move any pile of cards, and clear all four King-to-Ace runs. Unlimited undo, hints, no sign-up.';
+
+const faq = [
+  {
+    q: 'How do you play Scorpion Solitaire?',
+    a: 'Build the seven columns down in the same suit (a 9♠ goes on a 10♠). You can move any face-up card together with everything on top of it, in any order — only the card you place has to match. Assemble each suit into a full King-to-Ace run and it is swept away. Clear all four suits to win.',
+  },
+  {
+    q: 'What is the stock for?',
+    a: 'After you have made all the moves you can, the three-card stock deals one card face-up onto each of the first three columns. There is no recycling, so spend those three cards wisely.',
+  },
+  {
+    q: 'Is Scorpion harder than Spider?',
+    a: 'It is a different kind of hard. Scorpion lets you move tangled groups freely, but everything must ultimately resolve into same-suit runs, and the buried face-down cards make planning essential. Unlimited undo helps you experiment.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Scorpion Solitaire',
+    url: 'https://cardhearth.com/scorpion/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/scorpion.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Scorpion Solitaire', item: 'https://cardhearth.com/scorpion/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="scorpion" heading="Scorpion Solitaire">
+    <h2 class="mb-2 text-lg font-bold">How to play Scorpion Solitaire</h2>
+    <p class="mb-3">
+      Scorpion crosses Spider with Yukon. You have seven columns and you build them
+      <strong>down in suit</strong> — a 9♠ only goes on a 10♠. Like Yukon, you may pick up
+      <strong>any face-up card together with every card on top of it</strong>, tangled order and
+      all; only the card you set down has to match. Untangle those piles into complete
+      <strong>King-to-Ace runs of one suit</strong>, and each finished run is swept off to a
+      foundation. Clear all four suits to win.
+    </p>
+    <p class="mb-3">
+      The columns start with some cards face-down; expose and flip them by moving the cards above.
+      When you've exhausted your moves, tap the <strong>stock</strong> — its three cards deal one
+      onto each of the first three columns. There's no recycle, so those are your only reserves.
+    </p>
+    <p class="mb-3">
+      <strong>Strategy:</strong> work toward same-suit joins, because only same-suit runs complete.
+      Prioritise moves that flip a face-down card, and try to keep one column workable. Hold the
+      stock deal until you genuinely can't progress — it can bury as much as it frees.
+      <strong>Hint</strong> (H) suggests a move and <strong>Undo</strong> (U) is unlimited.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Enjoy untangling? Try <a class="underline" href="/spider/">Spider Solitaire</a> and
+      <a class="underline" href="/yukon/">Yukon</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { scorpionRules } from '../games/cards/scorpion';
+    startGame(scorpionRules);
+  </script>
+</Layout>

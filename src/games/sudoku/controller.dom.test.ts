@@ -34,6 +34,7 @@ const PAGE_SCAFFOLD = `
     <p id="variant-note" hidden></p>
     <select id="set-theme"><option value="auto">auto</option><option value="light">light</option><option value="dark">dark</option></select>
     <select id="set-felt"><option value="green">green</option></select>
+    <select id="set-surface"><option value="felt">felt</option></select>
     <select id="set-cardback"><option value="classic">classic</option></select>
     <input type="checkbox" id="set-animations" />
     <input type="checkbox" id="set-sounds" />
