@@ -1,0 +1,184 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Solitaire & Card Game Glossary: Key Terms Explained | CardHearth';
+const description =
+  'A clear, beginner-friendly glossary of solitaire and card-game terms: foundation, tableau, stock, waste, build down, free cells, cascade, supermoves, redeals and more — explained in plain language.';
+const updated = '2026-06-13';
+const heading = 'Solitaire & Card Game Glossary';
+const subtitle =
+  'The vocabulary behind every patience game — defined plainly, so the rules and strategy guides make sense.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Solitaire & Card Game Glossary', href: '/guides/solitaire-glossary/' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Solitaire & Card Game Glossary: Key Terms Explained',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/solitaire-glossary/',
+    image: 'https://cardhearth.com/og.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/', label: 'Browse all games' }}
+>
+  <p>
+    Solitaire games share a surprising amount of vocabulary, but the same word can mean slightly
+    different things from one game to the next. This glossary defines the terms you'll meet across
+    CardHearth — from the parts of the layout to the moves that win games — in plain language, with
+    notes on where each one matters most.
+  </p>
+
+  <h2>The layout</h2>
+  <p>
+    <strong>Foundation</strong> — the destination piles where you build a complete suit, almost
+    always from Ace up to King. Clearing every card to the foundations is how you win in
+    <a href="/klondike/">Klondike</a>, <a href="/spider/">Spider</a>,
+    <a href="/freecell/">FreeCell</a> and most other patience games. There are usually four, one
+    per suit (Spider uses eight).
+  </p>
+  <p>
+    <strong>Tableau</strong> — the main playing area, the grid of columns where most of the work
+    happens. You rearrange cards here to free hidden ones and assemble sequences before sending
+    them to the foundations.
+  </p>
+  <p>
+    <strong>Stock</strong> — the face-down pile of undealt cards you draw from when you run out of
+    moves in the tableau. In <a href="/klondike/">Klondike</a> you flip the stock into the waste; in
+    <a href="/spider/">Spider</a> a stock click deals a new row across all columns.
+  </p>
+  <p>
+    <strong>Waste (Talon)</strong> — the face-up pile of cards turned over from the stock. Only the
+    top card of the waste is playable. "Talon" is the older name for the same pile; the two terms
+    are interchangeable.
+  </p>
+  <p>
+    <strong>Pile / Column</strong> — a single stack of cards. In the tableau these are usually
+    called columns; "pile" is the more general word and also covers the stock, waste and
+    foundations.
+  </p>
+
+  <h2>Cards and sequences</h2>
+  <p>
+    <strong>Run / Sequence</strong> — a group of cards in consecutive rank order, such as
+    9-8-7-6. Whether a run can be moved as a group depends on the game's building rules (see below).
+  </p>
+  <p>
+    <strong>Build down</strong> — placing cards in descending rank (a Seven on an Eight). Tableau
+    play in Klondike, FreeCell and Spider is built down. <strong>Build up</strong> — placing cards
+    in ascending rank (Ace, Two, Three…), which is how the foundations are built in nearly every
+    game.
+  </p>
+  <p>
+    <strong>Alternating colour</strong> — a building rule where each card must be the opposite
+    colour of the one beneath it (a red card on a black card). This is the tableau rule in
+    <a href="/klondike/">Klondike</a> and <a href="/freecell/">FreeCell</a>.
+  </p>
+  <p>
+    <strong>Same-suit build</strong> — a building rule where cards must match suit to form a
+    movable sequence. <a href="/spider/">Spider</a> uses this: you can always stack by rank, but
+    only a same-suit run lifts as a single unit, and completing a King-to-Ace same-suit run removes
+    it from play.
+  </p>
+  <p>
+    <strong>Face-up / Face-down</strong> — whether a card's value is visible. Face-down cards hide
+    information; revealing them is usually the most valuable thing you can do. FreeCell deals every
+    card face-up, which is why it's almost always solvable, while Klondike and Spider keep many
+    cards hidden.
+  </p>
+
+  <h2>Special spaces and moves</h2>
+  <p>
+    <strong>Free cell</strong> — a single-card holding space, the signature feature of
+    <a href="/freecell/">FreeCell</a>. Each of the four free cells parks one card temporarily, giving
+    you room to manoeuvre. The more free cells (and empty columns) you have open, the larger the run
+    you can effectively move at once.
+  </p>
+  <p>
+    <strong>Cascade</strong> — another name for a tableau column, especially in FreeCell, where the
+    eight columns of overlapping face-up cards are called cascades.
+  </p>
+  <p>
+    <strong>Supermove</strong> — moving a whole sequence of cards in one action even when the game
+    technically only allows one card to move at a time. It works because the program shuffles cards
+    through your empty spaces behind the scenes. The number of cards you can move at once is
+    <strong>(1 + free cells) × 2^(empty columns)</strong>: with all four FreeCell free cells open
+    and no empty columns you can move five cards, and each empty column doubles that capacity.
+  </p>
+  <p>
+    <strong>Deal</strong> — the initial layout of cards at the start of a game, and also the act of
+    dealing more cards (as when you click the stock in Spider to deal a fresh row).
+  </p>
+  <p>
+    <strong>Recycle / Redeal</strong> — turning the waste back into the stock to go through it
+    again once you've exhausted it. Some games allow unlimited redeals, some limit them, and some
+    allow none. The redeal rule has a big effect on how winnable a game is.
+  </p>
+
+  <h2>Game features and helpers</h2>
+  <p>
+    <strong>Auto-finish</strong> — a one-click action that sends every remaining card to the
+    foundations once the outcome is certain, saving you the tedious clicks at the end of a won game.
+  </p>
+  <p>
+    <strong>Hint</strong> — a suggested legal move when you're stuck. Hints point out an available
+    play but won't always pick the <em>best</em> one, so treat them as a nudge rather than a
+    solver.
+  </p>
+  <p>
+    <strong>Seed / Deal number</strong> — the identifier that fixes how a deal is shuffled. Because
+    every CardHearth deal has a number, the same seed always produces the same layout, so you can
+    replay an exact hand, retry a different line, or share a deal with a friend to race the same
+    cards.
+  </p>
+  <p>
+    A few game-specific words are worth knowing too: <strong>peaks</strong> are the pyramids of
+    cards you clear in <a href="/tripeaks/">TriPeaks</a> by playing cards one rank above or below
+    the waste; <strong>matching pairs</strong> that add to 13 are the heart of
+    <a href="/pyramid/">Pyramid</a>; and in <a href="/golf/">Golf</a> you build a single waste pile
+    up or down by one rank regardless of suit, aiming to clear the tableau in as few "strokes" as
+    possible.
+  </p>
+
+  <h2>Keep going</h2>
+  <p>
+    Now that the vocabulary makes sense, the strategy guides will read a lot more clearly. Try
+    <a href="/guides/how-to-win-klondike-solitaire/">How to win Klondike Solitaire</a> or
+    <a href="/guides/freecell-strategy/">FreeCell strategy</a> next, and browse the
+    <a href="/guides/">guides hub</a> for the rest of the CardHearth library.
+  </p>
+</Article>

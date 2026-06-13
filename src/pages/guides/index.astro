@@ -87,6 +87,24 @@ const COMPARISONS = [
   },
 ];
 
+const REFERENCE = [
+  {
+    href: '/guides/solitaire-glossary/',
+    title: 'Solitaire & Card Game Glossary',
+    blurb: 'Foundation, tableau, free cell, supermove — every term explained simply.',
+  },
+  {
+    href: '/guides/history-of-solitaire/',
+    title: 'The History of Solitaire',
+    blurb: 'From 18th-century patience to the Windows game played by millions.',
+  },
+  {
+    href: '/guides/are-solitaire-games-winnable/',
+    title: 'Are Solitaire Games Winnable?',
+    blurb: 'The honest, game-by-game answer — and what CardHearth guarantees.',
+  },
+];
+
 const schema = [
   {
     '@context': 'https://schema.org',
@@ -138,11 +156,25 @@ const schema = [
       </div>
     </section>
 
-    <section class="pb-10">
+    <section class="pb-8">
       <h2 class="guide-section-title">Compare &amp; choose</h2>
       <div class="guide-grid">
         {
           COMPARISONS.map((g) => (
+            <a class="guide-card" href={g.href}>
+              <h3>{g.title}</h3>
+              <p>{g.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="pb-10">
+      <h2 class="guide-section-title">Background &amp; reference</h2>
+      <div class="guide-grid">
+        {
+          REFERENCE.map((g) => (
             <a class="guide-card" href={g.href}>
               <h3>{g.title}</h3>
               <p>{g.blurb}</p>

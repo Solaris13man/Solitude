@@ -1,0 +1,216 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Are Solitaire Games Always Winnable? The Honest Answer | CardHearth';
+const description =
+  'Not every solitaire deal can be won — but it depends heavily on the game. An honest, game-by-game look at winnability for Klondike, Spider, FreeCell, Pyramid, TriPeaks, Golf, Sudoku and Mahjong, plus the fairness guarantees CardHearth makes.';
+const updated = '2026-06-13';
+const heading = 'Are Solitaire Games Always Winnable?';
+const subtitle =
+  'A straight answer, game by game — so you can tell a genuinely unbeatable deal from a move you wish you had back.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Are Solitaire Games Winnable?', href: '/guides/are-solitaire-games-winnable/' },
+];
+
+const faq = [
+  {
+    q: 'Are all Klondike games winnable?',
+    a: 'No. With perfect play, roughly 80% of Draw 1 deals are theoretically winnable, but a meaningful share are genuinely impossible no matter how you play. Draw 3 is harder still. Real-world win rates are also much lower than the theoretical ceiling, because perfect play is hard — so most losses are a mix of an unlucky deal and an imperfect line.',
+  },
+  {
+    q: 'Is FreeCell always winnable?',
+    a: 'Almost. Nearly every FreeCell deal is solvable. Of the classic 32,000 numbered Microsoft deals, only game #11982 has been proven unsolvable. So in practice a FreeCell loss is nearly always a misplay rather than a bad deal — which makes it the best game to practise clean, deliberate play.',
+  },
+  {
+    q: 'Do CardHearth Sudoku puzzles ever need guessing?',
+    a: 'No. Every CardHearth Sudoku has exactly one solution and can be solved by pure logic, step by step, with no guessing required. If you are stuck, there is always a logical next move to find — never a coin flip.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Are Solitaire Games Always Winnable? The Honest Answer',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/are-solitaire-games-winnable/',
+    image: 'https://cardhearth.com/og.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/', label: 'Browse all games' }}
+>
+  <p>
+    It's one of the most common — and most reasonable — questions players ask: <em>was that game
+    even possible to win?</em> The honest answer is that it depends entirely on which game you're
+    playing, and that's worth understanding properly. There are really two different questions
+    hiding inside "is this winnable?"
+  </p>
+  <p>
+    The first is: <strong>is this particular deal solvable at all?</strong> That's a fact about
+    the shuffle — some arrangements of cards simply cannot be cleared by anyone. The second is:
+    <strong>did I play well enough to win the deals that were winnable?</strong> That's about your
+    decisions. Most frustration comes from confusing the two — blaming the deal for a misplay, or
+    blaming yourself for a deal that never had a solution. Here's the truth, game by game.
+  </p>
+
+  <h2>Winnability, game by game</h2>
+
+  <h3>Klondike</h3>
+  <p>
+    Classic <a href="/klondike/">Klondike</a> is part skill, part luck. With perfect play, roughly
+    <strong>80% of Draw 1 deals are theoretically winnable</strong> — but real win rates are far
+    lower, because perfect play means seeing every consequence in advance, which almost nobody
+    does. <a href="/klondike-draw-3/">Draw 3</a> is harder, since only every third stock card is
+    initially reachable. And crucially, <strong>some deals are genuinely unwinnable</strong> no
+    matter how flawlessly you play. So if you lose a Klondike game, it could be a bad deal — or it
+    could be a line you'd take back with hindsight. Our
+    <a href="/guides/how-to-win-klondike-solitaire/">how to win Klondike</a> and
+    <a href="/guides/klondike-draw-1-vs-draw-3/">Draw 1 vs Draw 3</a> guides cover how to give
+    yourself the best chance.
+  </p>
+
+  <h3>Spider</h3>
+  <p>
+    <a href="/spider/">Spider</a> winnability depends heavily on how many suits you play with and
+    on the choices you make. One-suit deals are forgiving; <a href="/spider-2-suits/">two suits</a>
+    and especially <a href="/spider-4-suits/">four suits</a> demand careful sequencing and leave
+    far less room for error. Spider deals are <strong>not pre-screened for solvability</strong>, so
+    a given hand may or may not be beatable — and even a winnable one can be lost by committing to
+    the wrong order of plays early. The <a href="/guides/spider-solitaire-strategy/">Spider
+    strategy guide</a> and <a href="/guides/spider-1-2-4-suits/">1, 2 and 4 suits</a> breakdown
+    explain how to keep your options open.
+  </p>
+
+  <h3>FreeCell</h3>
+  <p>
+    <a href="/freecell/">FreeCell</a> is the standout: <strong>almost every deal is winnable.</strong>
+    Because all cards are dealt face-up, there's no hidden information — the puzzle is fully open
+    from the start. Of the classic 32,000 numbered Microsoft deals, only <strong>game #11982 has
+    been proven unsolvable</strong>. That single exception is famous precisely because it's so rare.
+    The practical upshot is liberating: a FreeCell loss is nearly always a <strong>misplay, not a
+    bad deal</strong>. That makes it the ideal game for practising clean, deliberate decision-making
+    — see the <a href="/guides/freecell-strategy/">FreeCell strategy guide</a> and our
+    <a href="/guides/freecell-vs-klondike/">FreeCell vs Klondike comparison</a>.
+  </p>
+
+  <h3>Pyramid, TriPeaks and Golf</h3>
+  <p>
+    <a href="/pyramid/">Pyramid</a>, <a href="/tripeaks/">TriPeaks</a> and
+    <a href="/golf/">Golf</a> are a different breed. They depend heavily on the shuffle and on a
+    limited stock, and <strong>many deals simply cannot be cleared</strong> no matter how well you
+    play — the cards you need may be buried where you can never reach them in time. That isn't a
+    flaw; it's the nature of these games, and a big part of why a fully cleared board feels so
+    satisfying. Skill still matters a great deal — good order of play wins many marginal hands —
+    but accept that some deals were never going to fall. Our
+    <a href="/guides/pyramid-solitaire-strategy/">Pyramid</a>,
+    <a href="/guides/tripeaks-solitaire-strategy/">TriPeaks</a> and
+    <a href="/guides/golf-solitaire-strategy/">Golf</a> strategy guides help you win as many of
+    the winnable ones as possible.
+  </p>
+
+  <h3>Sudoku — guaranteed solvable by logic</h3>
+  <p>
+    Here CardHearth makes a firm promise. <strong>Every CardHearth <a href="/sudoku/">Sudoku</a>
+    has a unique solution and can be solved by pure logic, with no guessing required.</strong>
+    Whatever the difficulty, there is always a logical next step to find — you'll never reach a
+    point where the only option is to flip a coin. If you're stuck, the answer is a technique you
+    haven't spotted yet, not bad luck. Learn the methods in our
+    <a href="/guides/sudoku-solving-techniques/">solving techniques guide</a> and see how the tiers
+    differ in the <a href="/guides/sudoku-difficulty-levels/">difficulty levels guide</a>.
+  </p>
+
+  <h3>Mahjong — guaranteed solvable by construction</h3>
+  <p>
+    Our <a href="/mahjong/">Mahjong</a> games carry a similar guarantee. <strong>Every CardHearth
+    Mahjong layout is built by reverse-construction</strong> — the tiles are placed by working
+    backward from a fully cleared board, so a complete solution is guaranteed to exist. That said,
+    "solvable" is not the same as "automatic": you can still <strong>strand yourself</strong> by
+    removing the wrong matching pair and burying a tile you needed. The deal is always beatable;
+    winning it is up to your choices. The <a href="/guides/mahjong-solitaire-strategy/">Mahjong
+    strategy guide</a> shows how to avoid painting yourself into a corner.
+  </p>
+
+  <h2>What CardHearth guarantees</h2>
+  <p>
+    We think you deserve to know exactly where you stand, so here's what we promise:
+  </p>
+  <ul>
+    <li><strong>Sudoku is always solvable by logic.</strong> Unique solution, no guessing, ever —
+      at every difficulty.</li>
+    <li><strong>Mahjong is always solvable by construction.</strong> Each layout is built backward
+      from a cleared board, so a full solution always exists.</li>
+    <li><strong>Unlimited undo</strong> on every game. Explore a line, and if it dead-ends, take it
+      back and try another — that's the fastest way to learn whether a deal was the problem or your
+      plan was.</li>
+    <li><strong>Replay the same deal.</strong> Because every deal is numbered, you can run the exact
+      same hand again to test a different approach, or share it with a friend. If you beat it on the
+      second try with smarter play, you've just proven the deal was winnable all along.</li>
+  </ul>
+  <p>
+    Together, undo and replay are the honest way to settle the "was that winnable?" question for
+    games like Klondike and Spider, where deals aren't pre-screened — and for FreeCell, they make
+    it almost certain you can find the solution that was there the whole time.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Want a game where every deal is guaranteed beatable? Try <a href="/sudoku/">Sudoku</a> or
+    <a href="/mahjong/">Mahjong</a>. Prefer a near-certain solve that rewards careful thought? Play
+    <a href="/freecell/">FreeCell</a>. Or test your skill against the luck of the shuffle in
+    <a href="/klondike/">Klondike</a>, <a href="/spider/">Spider</a>,
+    <a href="/pyramid/">Pyramid</a>, <a href="/tripeaks/">TriPeaks</a> and
+    <a href="/golf/">Golf</a>. Whatever you pick, our <a href="/guides/">guides hub</a> has a
+    strategy walkthrough to help you win more of the deals that can be won.
+  </p>
+</Article>
