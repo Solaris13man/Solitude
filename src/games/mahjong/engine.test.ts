@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ARENA,
+  BRIDGE,
+  BUTTERFLY,
   CROSS,
+  DIAMOND,
   FORTRESS,
   LAYOUTS,
   TURTLE,
@@ -52,7 +56,15 @@ describe('mahjong layouts', () => {
     expect(CROSS).toHaveLength(74);
     expect(ZIGGURAT).toHaveLength(132);
     expect(FORTRESS).toHaveLength(128);
-    for (const l of LAYOUTS) expect(l.slots.length % 2).toBe(0);
+    expect(BRIDGE).toHaveLength(134);
+    expect(BUTTERFLY).toHaveLength(142);
+    expect(DIAMOND).toHaveLength(88);
+    expect(ARENA).toHaveLength(102);
+    expect(LAYOUTS).toHaveLength(8);
+    for (const l of LAYOUTS) {
+      expect(l.slots.length % 2).toBe(0);
+      expect(l.slots.length).toBeLessThanOrEqual(144);
+    }
   });
 
   it('no two slots collide within a layout', () => {

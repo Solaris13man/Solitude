@@ -117,6 +117,61 @@ export const FORTRESS: TileSlot[] = (() => {
   return slots;
 })();
 
+/** A row of `w` tiles centered within a formation `maxW` tiles wide. */
+function centeredRow(w: number, maxW: number, y: number, z: number): TileSlot[] {
+  const out: TileSlot[] = [];
+  const x0 = maxW - w;
+  for (let i = 0; i < w; i++) out.push({ x: x0 + i * 2, y, z });
+  return out;
+}
+
+/** Bridge: two towers joined by a high deck. 134 tiles. */
+export const BRIDGE: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  slots.push(...block(0, 26, 0, 10, 0));
+  slots.push(...block(0, 6, 2, 8, 1));
+  slots.push(...block(20, 26, 2, 8, 1));
+  slots.push(...block(0, 4, 4, 6, 2));
+  slots.push(...block(22, 26, 4, 6, 2));
+  for (const x of range(8, 18)) slots.push({ x, y: 5, z: 2 });
+  return slots;
+})();
+
+/** Butterfly: two thick wings and a slim body. 142 tiles. */
+export const BUTTERFLY: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  slots.push(...block(0, 10, 0, 12, 0));
+  slots.push(...block(16, 26, 0, 12, 0));
+  slots.push(...block(12, 14, 4, 8, 0));
+  slots.push(...block(2, 8, 2, 10, 1));
+  slots.push(...block(18, 24, 2, 10, 1));
+  slots.push(...block(4, 6, 4, 8, 2));
+  slots.push(...block(20, 22, 4, 8, 2));
+  return slots;
+})();
+
+/** Diamond: a rhombus that narrows to a point, stepped twice. 88 tiles. */
+export const DIAMOND: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  const widths0 = [2, 4, 6, 8, 10, 10, 8, 6, 4, 2];
+  widths0.forEach((w, r) => slots.push(...centeredRow(w, 10, r * 2, 0)));
+  const widths1 = [2, 4, 6, 6, 4, 2];
+  widths1.forEach((w, r) => slots.push(...centeredRow(w, 10, 4 + r * 2, 1)));
+  slots.push(...centeredRow(2, 10, 8, 2), ...centeredRow(2, 10, 10, 2));
+  return slots;
+})();
+
+/** Arena: an outer wall, a moat, and a raised center stage. 102 tiles. */
+export const ARENA: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  slots.push(...ring(0, 26, 0, 12, 0));
+  slots.push(...block(6, 20, 4, 8, 0));
+  slots.push(...ring(4, 22, 2, 10, 1));
+  slots.push(...block(10, 16, 4, 8, 2));
+  slots.push({ x: 12, y: 6, z: 3 }, { x: 14, y: 6, z: 3 });
+  return slots;
+})();
+
 export interface MahjongLayout {
   value: number;
   label: string;
@@ -128,6 +183,10 @@ export const LAYOUTS: MahjongLayout[] = [
   { value: 2, label: 'Cross (74 tiles)', slots: CROSS },
   { value: 3, label: 'Ziggurat (132 tiles)', slots: ZIGGURAT },
   { value: 4, label: 'Fortress (128 tiles)', slots: FORTRESS },
+  { value: 5, label: 'Bridge (134 tiles)', slots: BRIDGE },
+  { value: 6, label: 'Butterfly (142 tiles)', slots: BUTTERFLY },
+  { value: 7, label: 'Diamond (88 tiles)', slots: DIAMOND },
+  { value: 8, label: 'Arena (102 tiles)', slots: ARENA },
 ];
 
 export function layoutOf(variant: number): MahjongLayout {
