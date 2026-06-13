@@ -12,7 +12,7 @@ let initialized = false;
 export function initAnalytics(): void {
   if (initialized || typeof window === 'undefined') return;
   initialized = true;
-  const { provider, domain, measurementId } = SITE_CONFIG.analytics;
+  const { provider, domain } = SITE_CONFIG.analytics;
   if (provider === 'plausible') {
     const s = document.createElement('script');
     s.defer = true;
@@ -27,19 +27,10 @@ export function initAnalytics(): void {
         ((w.plausible as unknown as { q: unknown[] }).q =
           (w.plausible as unknown as { q?: unknown[] }).q || []).push(args);
       };
-  } else if (provider === 'ga' && measurementId) {
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-    document.head.appendChild(s);
-    const w = window as unknown as { dataLayer?: unknown[]; gtag?: (...a: unknown[]) => void };
-    w.dataLayer = w.dataLayer || [];
-    w.gtag = function (...args: unknown[]) {
-      w.dataLayer!.push(args);
-    };
-    w.gtag('js', new Date());
-    w.gtag('config', measurementId);
   }
+  // GA4 (provider === 'ga') loads gtag.js and runs `config` directly from the
+  // canonical snippet in <head> (see Layout.astro), so Google's installation
+  // check finds it. Nothing to load here — track() just forwards to gtag.
 }
 
 /** Record a product event. Safe to call anywhere; no-op until configured. */

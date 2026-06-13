@@ -16,6 +16,8 @@ const { title, description, schema, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
 const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient;
+const ga = SITE_CONFIG.analytics;
+const gaLive = ga.provider === 'ga' && !!ga.measurementId;
 ---
 
 <!doctype html>
@@ -43,6 +45,15 @@ const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#135c32" />
+    {
+      gaLive && (
+        <>
+          {/* Google tag (gtag.js) */}
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga.measurementId}`} />
+          <script is:inline set:html={`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${ga.measurementId}');`} />
+        </>
+      )
+    }
     {
       adsLive && (
         <script
