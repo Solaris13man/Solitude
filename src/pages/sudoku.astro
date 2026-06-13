@@ -1,0 +1,132 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Sudoku — Play Free Online (Easy to Expert) | CardHearth';
+const description =
+  'Play free Sudoku online with four difficulty levels, pencil marks, unlimited undo, hints, and mistake tracking. Every puzzle has a unique solution — no download, no sign-up.';
+
+const faq = [
+  {
+    q: 'Do CardHearth Sudoku puzzles have unique solutions?',
+    a: 'Yes — every puzzle is generated and then verified by a solver to have exactly one solution, at every difficulty. If logic alone seems to run out, there is always a deduction available; no guessing is ever required.',
+  },
+  {
+    q: 'What changes between Easy, Medium, Hard and Expert?',
+    a: 'The number of starting clues: Easy begins around 40 givens, Medium around 34, Hard around 29, and Expert around 25. Fewer clues mean longer deduction chains and heavier use of pencil marks.',
+  },
+  {
+    q: 'How do pencil marks (notes) work?',
+    a: 'Toggle Notes on the number pad (or press P), then tap digits to mark candidates in a square. Notes are tidied up automatically: placing a digit clears that candidate from the same row, column and box.',
+  },
+  {
+    q: 'Can I share a puzzle with a friend?',
+    a: 'Yes. Every puzzle has a number shown next to the timer, and the Share button copies a link that opens the identical puzzle at the same difficulty — first to finish wins.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Sudoku',
+    url: 'https://cardhearth.com/sudoku/',
+    description,
+    genre: 'Puzzle',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Sudoku', item: 'https://cardhearth.com/sudoku/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="sudoku"
+    heading="Sudoku"
+    variantLabel="Difficulty"
+    variantOptions={[
+      { value: 1, label: 'Easy' },
+      { value: 2, label: 'Medium' },
+      { value: 3, label: 'Hard' },
+      { value: 4, label: 'Expert' },
+    ]}
+    scoreLabel="Mistakes"
+    cardSettings={false}
+  >
+    <div slot="after-board" class="numpad" role="group" aria-label="Number input">
+      {Array.from({ length: 9 }, (_, i) => (
+        <button class="numpad-btn" type="button" data-num={i + 1}>{i + 1}</button>
+      ))}
+      <button id="numpad-notes" class="numpad-btn" type="button" aria-pressed="false" title="Toggle notes (P)">✎</button>
+      <button id="numpad-erase" class="numpad-btn" type="button" aria-label="Erase square" title="Erase">⌫</button>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">How to play Sudoku</h2>
+    <p class="mb-3">
+      Fill the 9×9 grid so every row, every column, and every 3×3 box contains the digits 1
+      through 9 exactly once. Tap a square, then tap a number — or use your keyboard: arrows to
+      move, digits to fill, Backspace to erase. Bold numbers are the puzzle's given clues and
+      can't be changed; conflicts light up red the moment two matching digits share a row,
+      column or box.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Notes, hints &amp; mistakes</h2>
+    <p class="mb-3">
+      Toggle <strong>Notes</strong> (✎ or P) to pencil candidate digits into empty squares —
+      placing a real digit automatically erases that candidate from the squares it rules out.
+      <strong>Hint</strong> (H) reveals the correct digit for your selected square. The
+      <strong>Mistakes</strong> counter ticks up whenever an entry disagrees with the unique
+      solution, so you always know how clean your solve was. Undo is unlimited.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy basics</h2>
+    <p class="mb-3">
+      Start with scanning: pick a digit that appears often and check which rows, columns and
+      boxes still need it — intersections with one empty square are free wins. When scanning
+      stalls, switch to pencil marks and hunt for <em>naked singles</em> (a square with one
+      candidate) and <em>hidden singles</em> (a digit with one home in a row, column or box).
+      Harder puzzles reward working box by box and keeping notes scrupulously current.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Need a change of pace? Deal yourself some
+      <a class="underline" href="/klondike/">Klondike Solitaire</a>,
+      <a class="underline" href="/spider/">Spider</a>, or
+      <a class="underline" href="/freecell/">FreeCell</a> — or defend your streak in the
+      <a class="underline" href="/daily-challenge/">Daily Challenge</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startSudoku } from '../games/sudoku/controller';
+    startSudoku();
+  </script>
+</Layout>

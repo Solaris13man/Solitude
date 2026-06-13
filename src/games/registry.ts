@@ -35,6 +35,13 @@ export const GAMES: GameInfo[] = [
     category: 'cards',
   },
   {
+    id: 'sudoku',
+    name: 'Sudoku',
+    href: '/sudoku/',
+    tagline: 'Pure logic, four difficulties, pencil marks included',
+    category: 'puzzle',
+  },
+  {
     id: 'daily',
     name: 'Daily Challenge',
     href: '/daily-challenge/',

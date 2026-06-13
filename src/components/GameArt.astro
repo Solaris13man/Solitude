@@ -51,6 +51,35 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'sudoku' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A sudoku grid" class="art">
+      <rect x="75" y="13" width="108" height="108" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      <g stroke="#1d2230" stroke-opacity="0.18">
+        <path d="M87 13v108M99 13v108M123 13v108M135 13v108M159 13v108M171 13v108" />
+        <path d="M75 25h108M75 37h108M75 61h108M75 73h108M75 97h108M75 109h108" />
+      </g>
+      <g stroke="#1d2230" stroke-opacity="0.55" stroke-width="2">
+        <path d="M111 13v108M147 13v108M75 49h108M75 85h108" />
+      </g>
+      <g font-size="10" font-weight="700" fill="#1d2230">
+        <text x="78.5" y="22.5">5</text>
+        <text x="114.5" y="22.5">7</text>
+        <text x="162.5" y="34.5">1</text>
+        <text x="90.5" y="58.5">9</text>
+        <text x="138.5" y="70.5">4</text>
+        <text x="78.5" y="94.5">3</text>
+        <text x="150.5" y="106.5">8</text>
+      </g>
+      <g font-size="10" font-weight="700" fill="#2c5fa8">
+        <text x="126.5" y="46.5">2</text>
+        <text x="102.5" y="82.5">6</text>
+        <text x="174.5" y="118.5">5</text>
+      </g>
+      <rect x="123" y="37" width="12" height="12" fill="#ffd95e" fill-opacity="0.45" />
+    </svg>
+  )
+}
+{
   game === 'daily' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="A calendar page with a playing card" class="art">
       <rect x="60" y="22" width="92" height="92" rx="10" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />

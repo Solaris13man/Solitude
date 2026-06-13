@@ -1,8 +1,9 @@
 # CardHearth (repo: Solitude) — Classic Games
 
 A fast, modern suite of public-domain classics that runs entirely in the
-browser: **Klondike**, **Spider** (1/2/4 suits), and **FreeCell**, with more
-game families (dominoes, board games) planned. Static site, no backend, no
+browser: **Klondike**, **Spider** (1/2/4 suits), **FreeCell**, a **Daily
+Challenge**, and **Sudoku**, with more game families (dominoes, board games)
+planned. Static site, no backend, no
 accounts — stats, settings, and in-progress games persist in `localStorage`.
 
 Built with [Astro](https://astro.build), TypeScript, and Tailwind CSS. The
@@ -98,6 +99,7 @@ src/
 │  └─ sound.ts             # Synthesized WebAudio effects
 └─ games/
    ├─ registry.ts          # Site-wide game catalogue (menu, links)
+   ├─ sudoku/              # The puzzle family: engine + grid UI + controller
    └─ cards/               # The card-game family
       ├─ types.ts          # Shared card state + the Ruleset interface
       ├─ rng.ts            # Seeded PRNG (mulberry32)

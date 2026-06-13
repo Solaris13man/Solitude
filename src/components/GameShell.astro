@@ -13,9 +13,20 @@ interface Props {
   /** Options for the per-game mode select; omit when the game has none. */
   variantLabel?: string;
   variantOptions?: VariantOption[];
+  /** HUD label for the third stat (defaults to Score; Sudoku uses Mistakes). */
+  scoreLabel?: string;
+  /** Hide card-specific settings (card back, left-handed) for non-card games. */
+  cardSettings?: boolean;
 }
 
-const { gameId, heading, variantLabel, variantOptions } = Astro.props;
+const {
+  gameId,
+  heading,
+  variantLabel,
+  variantOptions,
+  scoreLabel = 'Score',
+  cardSettings = true,
+} = Astro.props;
 ---
 
 <div class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4">
@@ -67,13 +78,15 @@ const { gameId, heading, variantLabel, variantOptions } = Astro.props;
   <div class="hud" role="status" aria-label="Game status">
     <span><span class="hud-label">Time</span><span id="stat-time">0:00</span></span>
     <span><span class="hud-label">Moves</span><span id="stat-moves">0</span></span>
-    <span><span class="hud-label">Score</span><span id="stat-score">0</span></span>
+    <span><span class="hud-label">{scoreLabel}</span><span id="stat-score">0</span></span>
     <span class="hud-deal" title="Deal number — share it to challenge a friend on the same cards"><span id="stat-deal">#0</span></span>
   </div>
 
   <div class="board-scroll">
     <div id="board" class="board" aria-label="Game board"></div>
   </div>
+
+  <slot name="after-board" />
 
   <p class="visually-hidden" id="announcer" aria-live="polite"></p>
   <!-- aria-hidden: the live region above already announces the same text -->
@@ -120,7 +133,7 @@ const { gameId, heading, variantLabel, variantOptions } = Astro.props;
       <option value="crimson">Crimson</option>
     </select>
   </label>
-  <label class="field">Card back
+  <label class="field" hidden={!cardSettings}>Card back
     <select id="set-cardback">
       <option value="classic">Classic red</option>
       <option value="royal">Royal blue</option>
@@ -128,9 +141,13 @@ const { gameId, heading, variantLabel, variantOptions } = Astro.props;
       <option value="midnight">Midnight</option>
     </select>
   </label>
-  <label class="field">Left-handed layout
-    <input type="checkbox" id="set-lefthand" />
-  </label>
+  {
+    cardSettings && (
+      <label class="field">Left-handed layout
+        <input type="checkbox" id="set-lefthand" />
+      </label>
+    )
+  }
   <label class="field">Animations
     <input type="checkbox" id="set-animations" />
   </label>

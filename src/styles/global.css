@@ -550,6 +550,117 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .no-animations .slot.hint { animation: none; outline: 3px solid #ffd95e; }
 .no-animations .card.shake .card-inner { animation: none; }
 
+/* ---------- sudoku ---------- */
+
+.board-scroll:has(.sudoku-grid) {
+  min-height: auto;
+  overflow-x: visible;
+}
+.board.sudoku-host {
+  touch-action: auto;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+}
+
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: min(100%, 60vh, 34rem);
+  aspect-ratio: 1;
+  border: 3px solid #1d2230;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-front);
+}
+.sudoku-cell {
+  position: relative;
+  border: 1px solid rgb(29 34 48 / 0.18);
+  background: var(--card-front);
+  color: #2c5fa8;
+  font-size: clamp(0.9rem, 4.2vmin, 1.6rem);
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+}
+/* heavier 3x3 box borders */
+.sudoku-cell:nth-child(9n + 4),
+.sudoku-cell:nth-child(9n + 7) { border-left: 2px solid rgb(29 34 48 / 0.55); }
+.sudoku-cell:nth-child(n + 28):nth-child(-n + 36),
+.sudoku-cell:nth-child(n + 55):nth-child(-n + 63) { border-top: 2px solid rgb(29 34 48 / 0.55); }
+
+.sudoku-cell.given {
+  color: var(--card-text-black);
+  font-weight: 800;
+}
+.sudoku-cell.peer { background: rgb(44 95 168 / 0.08); }
+.sudoku-cell.same { background: rgb(44 95 168 / 0.22); }
+.sudoku-cell.selected {
+  background: rgb(255 217 94 / 0.45);
+  outline: 2px solid #d7a800;
+  outline-offset: -2px;
+}
+.sudoku-cell.conflict { background: rgb(194 39 58 / 0.22); color: var(--card-text-red); }
+.sudoku-cell.conflict.given { color: var(--card-text-red); }
+.sudoku-cell:focus-visible { outline: 3px solid #d7a800; outline-offset: -3px; }
+
+.sudoku-notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  font-size: 0.55em;
+  font-weight: 600;
+  color: rgb(29 34 48 / 0.6);
+}
+.sudoku-notes i {
+  font-style: normal;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+@keyframes sudoku-solved {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(255 217 94 / 0); }
+  50% { box-shadow: 0 0 0 10px rgb(255 217 94 / 0.7); }
+}
+.sudoku-grid.solved { animation: sudoku-solved 0.8s ease-in-out 2; }
+.no-animations .sudoku-grid.solved,
+.reduced-motion .sudoku-grid.solved { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sudoku-grid.solved { animation: none; }
+}
+
+.numpad {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.9rem auto 0;
+  max-width: 34rem;
+}
+.numpad-btn {
+  flex: 1 1 0;
+  min-width: 2.4rem;
+  min-height: 2.9rem;
+  border-radius: 0.55rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--chrome-text);
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  cursor: pointer;
+}
+.numpad-btn:hover { background: rgb(255 255 255 / 0.22); }
+.numpad-btn:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
+.numpad-btn.active {
+  background: #ffd95e;
+  border-color: #ffd95e;
+  color: #43320a;
+}
+
 /* ---------- a11y helpers ---------- */
 
 .visually-hidden {
