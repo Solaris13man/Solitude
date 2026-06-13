@@ -59,7 +59,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="spider" heading="Spider — 2 Suits">
+  <GameShell
+    gameId="spider"
+    heading="Spider — 2 Suits"
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Spider', href: '/spider/' }, { name: '2 Suits', href: '/spider-2-suits/' }]}
+  >
     <h2 class="mb-2 text-lg font-bold">Two suits, twice the thinking</h2>
     <p class="mb-3">
       2 suit Spider deals 104 cards — spades and hearts — across ten columns. Build downward in

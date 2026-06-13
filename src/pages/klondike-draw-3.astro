@@ -59,7 +59,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="klondike" heading="Klondike Draw 3">
+  <GameShell
+    gameId="klondike"
+    heading="Klondike Draw 3"
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Klondike', href: '/klondike/' }, { name: 'Draw 3', href: '/klondike-draw-3/' }]}
+  >
     <h2 class="mb-2 text-lg font-bold">Klondike Solitaire, the hard way</h2>
     <p class="mb-3">
       This is classic Klondike with the <strong>three-card draw</strong>: tapping the stock turns

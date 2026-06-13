@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Expert Minesweeper — Play Free Online (30×16, 99 Mines) | CardHearth';
+const description =
+  'Play Expert Minesweeper free online: the classic 30×16 board with 99 mines. Safe first click, flags, chording, unlimited undo, best-time tracking. No download, no sign-up.';
+
+const faq = [
+  { q: 'What is Expert Minesweeper?', a: 'The largest classic board: 30 columns by 16 rows with 99 mines — about a 20% mine density. It rewards fast, confident pattern reading and is the standard benchmark for serious Minesweeper times.' },
+  { q: 'Is my first click safe on Expert?', a: 'Always. Mines are placed after your first click, excluding that square and its neighbours, so you open into a safe area every game — and the same board can be replayed by its number.' },
+  { q: 'How do I flag and chord on a big board?', a: 'Right-click (or long-press, or the Flag-mode button) to flag a mine. Tap a revealed number that already has its full count of flags to "chord" — opening all its other neighbours at once, the key to fast Expert clears.' },
+];
+
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Expert Minesweeper', url: 'https://cardhearth.com/minesweeper-expert/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Minesweeper', item: 'https://cardhearth.com/minesweeper/' }, { '@type': 'ListItem', position: 3, name: 'Expert', item: 'https://cardhearth.com/minesweeper-expert/' } ] },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="minesweeper"
+    heading="Expert Minesweeper"
+    scoreLabel="Mines"
+    cardSettings={false}
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Minesweeper', href: '/minesweeper/' }, { name: 'Expert', href: '/minesweeper-expert/' }]}
+  >
+    <div slot="after-board" class="ms-modebar" role="group" aria-label="Input mode">
+      <span class="ms-mode-hint">Tap to open · switch on Flag mode to mark mines</span>
+      <button id="flag-toggle" class="numpad-btn ms-flag-toggle" type="button" aria-pressed="false" title="Toggle flag mode (F)">⚑ Flag mode</button>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">Expert Minesweeper: 30×16, 99 mines</h2>
+    <p class="mb-3">
+      The full-size classic and the benchmark for fast times. Read every number — it counts the
+      mines touching that square — open what you can prove is safe, flag what you can prove is a
+      mine, and clear all 480 squares without detonating one. Your first click is always safe.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Going fast on Expert</h2>
+    <p class="mb-3">
+      Speed on Expert comes from <strong>chording</strong> and pattern recognition, not careful
+      clicking. Learn the staples — a <strong>1-2-1</strong> along a wall puts mines under the
+      1s; <strong>1-2-2-1</strong> puts them under the 2s — and chord the instant a number's flags
+      match its count. Work the open frontier rather than hunting in fresh territory, and only
+      guess when logic genuinely runs out (prefer the guess that touches the most numbers).
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {faq.map((f) => (<details class="faq mb-2"><summary class="cursor-pointer font-semibold">{f.q}</summary><p class="mt-2 opacity-90">{f.a}</p></details>))}
+    <p class="mt-6 opacity-75">New to it? Start on <a class="underline" href="/minesweeper/">Easy or Medium Minesweeper</a>. Or switch to <a class="underline" href="/sudoku/">Sudoku</a>.</p>
+  </GameShell>
+
+  <script>
+    import { startMinesweeper } from '../games/minesweeper/controller';
+    startMinesweeper({ forceVariant: 3 });
+  </script>
+</Layout>

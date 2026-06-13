@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Easy Sudoku — Play Free Online | CardHearth';
+const description =
+  'Play easy Sudoku free online — gentle puzzles solvable with simple logic, perfect for beginners or a relaxed break. Pencil marks, mistake counter, unlimited undo. No sign-up.';
+
+const faq = [
+  { q: 'What makes a Sudoku "easy"?', a: 'Easy puzzles start with around 40 of the 81 squares filled and only ever require the simplest techniques — scanning for a square where just one digit fits, or a digit with only one home in a row, column or box. No advanced steps, and never any guessing.' },
+  { q: 'Is easy Sudoku good for beginners?', a: 'Yes — it is the best place to learn. Every easy puzzle here is guaranteed solvable by pure logic, so if you are stuck there is always a deduction to find, never a coin to flip. Use the hint button if you want a nudge.' },
+  { q: 'How do pencil marks help?', a: 'Tap Notes (or press P) and mark the candidate digits in a square. As you place real numbers, matching candidates are cleared automatically from the same row, column and box.' },
+];
+
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Easy Sudoku', url: 'https://cardhearth.com/sudoku-easy/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Sudoku', item: 'https://cardhearth.com/sudoku/' }, { '@type': 'ListItem', position: 3, name: 'Easy', item: 'https://cardhearth.com/sudoku-easy/' } ] },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="sudoku"
+    heading="Easy Sudoku"
+    scoreLabel="Mistakes"
+    cardSettings={false}
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Sudoku', href: '/sudoku/' }, { name: 'Easy', href: '/sudoku-easy/' }]}
+  >
+    <div slot="after-board" class="numpad" role="group" aria-label="Number input">
+      {Array.from({ length: 9 }, (_, i) => (<button class="numpad-btn" type="button" data-num={i + 1}>{i + 1}</button>))}
+      <button id="numpad-notes" class="numpad-btn" type="button" aria-pressed="false" title="Toggle notes (P)">✎</button>
+      <button id="numpad-erase" class="numpad-btn" type="button" aria-label="Erase square" title="Erase">⌫</button>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">Easy Sudoku, for a relaxed solve</h2>
+    <p class="mb-3">
+      A gentle introduction to Sudoku: fill the 9×9 grid so every row, column and 3×3 box holds
+      the digits 1–9 once each. Easy boards begin with plenty of clues and only ever need the two
+      simplest techniques — so they flow quickly and never require guessing. Tap a square and a
+      number, or use the keyboard.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Tips for beginners</h2>
+    <p class="mb-3">
+      Scan one digit at a time: pick a number, look across the rows, columns and boxes that still
+      need it, and place it wherever only one square remains. When a square has just one possible
+      digit, it's yours. Lean on pencil marks and the hint button freely — easy mode is for
+      learning the rhythm before you step up to
+      <a class="underline" href="/sudoku-hard/">Hard</a> and
+      <a class="underline" href="/sudoku-expert/">Expert</a>.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {faq.map((f) => (<details class="faq mb-2"><summary class="cursor-pointer font-semibold">{f.q}</summary><p class="mt-2 opacity-90">{f.a}</p></details>))}
+    <p class="mt-6 opacity-75">Ready for more? Try <a class="underline" href="/sudoku/">standard Sudoku</a> or the harder <a class="underline" href="/sudoku-hard/">Hard</a> and <a class="underline" href="/sudoku-expert/">Expert</a> boards.</p>
+  </GameShell>
+
+  <script>
+    import { startSudoku } from '../games/sudoku/controller';
+    startSudoku({ forceVariant: 1 });
+  </script>
+</Layout>

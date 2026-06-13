@@ -18,6 +18,8 @@ interface Props {
   scoreLabel?: string;
   /** Hide card-specific settings (card back, left-handed) for non-card games. */
   cardSettings?: boolean;
+  /** Visible breadcrumb trail (matches the page's BreadcrumbList schema). */
+  breadcrumb?: { name: string; href: string }[];
 }
 
 const {
@@ -27,6 +29,7 @@ const {
   variantOptions,
   scoreLabel = 'Score',
   cardSettings = true,
+  breadcrumb,
 } = Astro.props;
 ---
 
@@ -73,6 +76,23 @@ const {
   </header>
 
   <GameNav current={gameId} />
+
+  {
+    breadcrumb && breadcrumb.length > 0 && (
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        {breadcrumb.map((c, i) => (
+          <>
+            {i > 0 && <span class="breadcrumb-sep" aria-hidden="true">›</span>}
+            {i < breadcrumb.length - 1 ? (
+              <a href={c.href}>{c.name}</a>
+            ) : (
+              <span aria-current="page">{c.name}</span>
+            )}
+          </>
+        ))}
+      </nav>
+    )
+  }
 
   <!-- Populated by the controller only when a game runs as today's daily. -->
   <div id="daily-banner" class="daily-banner" hidden></div>

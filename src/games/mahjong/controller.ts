@@ -50,8 +50,10 @@ class MahjongController {
   private toastTimer = 0;
   private daily = new DailyMode(GAME_ID);
   private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
+  private forceVariant?: number;
 
-  constructor() {
+  constructor(forceVariant?: number) {
+    this.forceVariant = forceVariant;
     this.settings = loadSettings();
     applySettings(this.settings);
     this.sound.enabled = this.settings.sounds;
@@ -80,7 +82,7 @@ class MahjongController {
   }
 
   private layoutVariant(): number {
-    return this.settings.variants[GAME_ID] ?? 1;
+    return this.forceVariant ?? this.settings.variants[GAME_ID] ?? 1;
   }
 
   private sharedDealFromUrl(): { seed: number; variant?: number } | null {
@@ -138,6 +140,7 @@ class MahjongController {
       const saved = deserialize(raw);
       if (!saved || isWon(saved.state)) return false;
       if (this.daily.active && !this.daily.isToday(saved.state.seed)) return false;
+      if (this.forceVariant !== undefined && saved.state.variant !== this.forceVariant) return false;
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.board.mount(this.state);
@@ -449,6 +452,6 @@ class MahjongController {
   }
 }
 
-export function startMahjong(): void {
-  new MahjongController();
+export function startMahjong(options: { forceVariant?: number } = {}): void {
+  new MahjongController(options.forceVariant);
 }

@@ -10,6 +10,8 @@ export interface GameInfo {
   tagline: string;
   /** Engine family; future entries might be 'dominoes', 'board', 'puzzle'… */
   category: 'cards' | 'dominoes' | 'board' | 'puzzle';
+  /** Variant landing pages surfaced under this game (for SEO + navigation). */
+  variants?: { label: string; href: string }[];
 }
 
 export const GAMES: GameInfo[] = [
@@ -19,6 +21,7 @@ export const GAMES: GameInfo[] = [
     href: '/klondike/',
     tagline: 'The classic solitaire',
     category: 'cards',
+    variants: [{ label: 'Draw 3', href: '/klondike-draw-3/' }],
   },
   {
     id: 'spider',
@@ -26,6 +29,10 @@ export const GAMES: GameInfo[] = [
     href: '/spider/',
     tagline: 'Build suit runs across ten columns',
     category: 'cards',
+    variants: [
+      { label: '2 Suits', href: '/spider-2-suits/' },
+      { label: '4 Suits', href: '/spider-4-suits/' },
+    ],
   },
   {
     id: 'freecell',
@@ -61,6 +68,11 @@ export const GAMES: GameInfo[] = [
     href: '/sudoku/',
     tagline: 'Pure logic, four difficulties, pencil marks included',
     category: 'puzzle',
+    variants: [
+      { label: 'Easy', href: '/sudoku-easy/' },
+      { label: 'Hard', href: '/sudoku-hard/' },
+      { label: 'Expert', href: '/sudoku-expert/' },
+    ],
   },
   {
     id: 'mahjong',
@@ -68,6 +80,7 @@ export const GAMES: GameInfo[] = [
     href: '/mahjong/',
     tagline: 'Match free tiles and dismantle the turtle — every deal solvable',
     category: 'puzzle',
+    variants: [{ label: 'Turtle', href: '/mahjong-turtle/' }],
   },
   {
     id: 'minesweeper',
@@ -75,6 +88,7 @@ export const GAMES: GameInfo[] = [
     href: '/minesweeper/',
     tagline: 'Read the numbers, dodge the mines',
     category: 'puzzle',
+    variants: [{ label: 'Expert', href: '/minesweeper-expert/' }],
   },
   {
     id: '2048',

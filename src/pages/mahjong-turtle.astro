@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Turtle Mahjong Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play the classic Turtle layout of Mahjong Solitaire free online: 144 tiles in five layers, every deal guaranteed solvable. Match free tiles, undo, hints. No download, no sign-up.';
+
+const faq = [
+  { q: 'What is the Turtle layout?', a: 'The Turtle is the original, best-known Mahjong Solitaire formation: 144 tiles stacked into five layers shaped like a turtle. It is the layout most people picture when they think of Mahjong Solitaire.' },
+  { q: 'Is every Turtle board winnable?', a: 'Yes. CardHearth builds each board by reverse construction — laying pairs into the formation in a solvable order — so a winning path always exists. If you get stuck, undo a few moves and choose a different pair.' },
+  { q: 'Which tiles can I match?', a: 'Any two free tiles of the same kind. A tile is free when nothing rests on top of it and one long side (left or right) is open. Flowers match any flower, seasons match any season.' },
+];
+
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Turtle Mahjong Solitaire', url: 'https://cardhearth.com/mahjong-turtle/', description, genre: 'Tile-matching puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Mahjong', item: 'https://cardhearth.com/mahjong/' }, { '@type': 'ListItem', position: 3, name: 'Turtle', item: 'https://cardhearth.com/mahjong-turtle/' } ] },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="mahjong"
+    heading="Turtle Mahjong"
+    scoreLabel="Pairs left"
+    cardSettings={false}
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Mahjong', href: '/mahjong/' }, { name: 'Turtle', href: '/mahjong-turtle/' }]}
+  >
+    <h2 class="mb-2 text-lg font-bold">The classic Turtle, every board solvable</h2>
+    <p class="mb-3">
+      This is Mahjong Solitaire as you know it: the 144-tile <strong>Turtle</strong> in five
+      layers. Tap two matching <strong>free</strong> tiles — nothing on top, a left or right side
+      open — to clear them, and dismantle the whole turtle. Flowers match any flower and seasons
+      any season; everything else matches its exact twin.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy</h2>
+    <p class="mb-3">
+      Work top-down and outside-in: the apex tile and the long row-ends unlock the most beneath
+      them. When three or four copies of a kind are free at once, take the pair that frees the
+      biggest stacks. Peel layered piles early so you never strand a matching pair on top of
+      itself — and remember undo is unlimited, since the board is always winnable.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {faq.map((f) => (<details class="faq mb-2"><summary class="cursor-pointer font-semibold">{f.q}</summary><p class="mt-2 opacity-90">{f.a}</p></details>))}
+    <p class="mt-6 opacity-75">Want a different shape? <a class="underline" href="/mahjong/">Mahjong</a> offers eight layouts — Cross, Pyramid, Fortress and more.</p>
+  </GameShell>
+
+  <script>
+    import { startMahjong } from '../games/mahjong/controller';
+    startMahjong({ forceVariant: 1 });
+  </script>
+</Layout>

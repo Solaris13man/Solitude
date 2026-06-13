@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Expert Sudoku — Play Free Online | CardHearth';
+const description =
+  'Play expert Sudoku free online — the toughest boards with the fewest clues, for seasoned solvers. Still 100% logic-solvable, never guesswork. Pencil marks, unlimited undo. No sign-up.';
+
+const faq = [
+  { q: 'How hard is expert Sudoku?', a: 'Expert boards start from the fewest clues (around 25) and lean on the full technique set — singles, locked candidates and naked pairs woven together. They reward patience and clean candidate tracking.' },
+  { q: 'Is expert Sudoku still solvable without guessing?', a: 'Yes. Every expert board here is verified solvable by logic before it is dealt, so a deductive path always exists — no guessing, no dead ends. That is the difference between a fair hard puzzle and a frustrating one.' },
+  { q: 'What is the best way to approach an expert board?', a: 'Fill in complete pencil marks first, then look for the cracks: a locked candidate or naked pair that triggers a cascade of singles. Take it one elimination at a time.' },
+];
+
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Expert Sudoku', url: 'https://cardhearth.com/sudoku-expert/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Sudoku', item: 'https://cardhearth.com/sudoku/' }, { '@type': 'ListItem', position: 3, name: 'Expert', item: 'https://cardhearth.com/sudoku-expert/' } ] },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="sudoku"
+    heading="Expert Sudoku"
+    scoreLabel="Mistakes"
+    cardSettings={false}
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Sudoku', href: '/sudoku/' }, { name: 'Expert', href: '/sudoku-expert/' }]}
+  >
+    <div slot="after-board" class="numpad" role="group" aria-label="Number input">
+      {Array.from({ length: 9 }, (_, i) => (<button class="numpad-btn" type="button" data-num={i + 1}>{i + 1}</button>))}
+      <button id="numpad-notes" class="numpad-btn" type="button" aria-pressed="false" title="Toggle notes (P)">✎</button>
+      <button id="numpad-erase" class="numpad-btn" type="button" aria-label="Erase square" title="Erase">⌫</button>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">Expert Sudoku, no guessing required</h2>
+    <p class="mb-3">
+      The toughest tier: minimal clues and deduction chains that test seasoned solvers. The one
+      promise we keep at every level — including this one — is that the board is always solvable
+      by pure logic. No expert puzzle here will ever force you to guess.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Cracking the hardest boards</h2>
+    <p class="mb-3">
+      Complete, accurate pencil marks are non-negotiable. From there it's pattern hunting:
+      locked candidates to thin out a line, naked pairs to free a unit, and the singles those
+      eliminations expose. Expert is a marathon of small certainties — trust the logic, never the
+      dice.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {faq.map((f) => (<details class="faq mb-2"><summary class="cursor-pointer font-semibold">{f.q}</summary><p class="mt-2 opacity-90">{f.a}</p></details>))}
+    <p class="mt-6 opacity-75">Need to warm up first? Play <a class="underline" href="/sudoku-hard/">Hard</a>, <a class="underline" href="/sudoku/">standard</a>, or <a class="underline" href="/sudoku-easy/">Easy</a> Sudoku.</p>
+  </GameShell>
+
+  <script>
+    import { startSudoku } from '../games/sudoku/controller';
+    startSudoku({ forceVariant: 4 });
+  </script>
+</Layout>

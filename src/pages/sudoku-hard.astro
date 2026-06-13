@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Hard Sudoku — Play Free Online | CardHearth';
+const description =
+  'Play hard Sudoku free online — fewer clues and tougher deductions, but always solvable by logic with no guessing. Pencil marks, mistake counter, unlimited undo. No sign-up.';
+
+const faq = [
+  { q: 'What makes a Sudoku "hard"?', a: 'Hard puzzles start with fewer given clues (around 29) and need techniques beyond simple scanning — notably locked candidates, where a digit confined to one line within a box lets you eliminate it elsewhere. Every hard puzzle here is still guaranteed solvable by logic alone.' },
+  { q: 'Do hard puzzles ever require guessing?', a: 'No. CardHearth verifies every generated board is solvable by deduction within the hard technique set, so a logical next step always exists — you never have to guess and backtrack.' },
+  { q: 'Any tips for hard Sudoku?', a: 'Keep pencil marks meticulous. Hunt for locked candidates and naked pairs to chip away at possibilities, and work box by box rather than rushing a single line.' },
+];
+
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Hard Sudoku', url: 'https://cardhearth.com/sudoku-hard/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Sudoku', item: 'https://cardhearth.com/sudoku/' }, { '@type': 'ListItem', position: 3, name: 'Hard', item: 'https://cardhearth.com/sudoku-hard/' } ] },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="sudoku"
+    heading="Hard Sudoku"
+    scoreLabel="Mistakes"
+    cardSettings={false}
+    breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Sudoku', href: '/sudoku/' }, { name: 'Hard', href: '/sudoku-hard/' }]}
+  >
+    <div slot="after-board" class="numpad" role="group" aria-label="Number input">
+      {Array.from({ length: 9 }, (_, i) => (<button class="numpad-btn" type="button" data-num={i + 1}>{i + 1}</button>))}
+      <button id="numpad-notes" class="numpad-btn" type="button" aria-pressed="false" title="Toggle notes (P)">✎</button>
+      <button id="numpad-erase" class="numpad-btn" type="button" aria-label="Erase square" title="Erase">⌫</button>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">Hard Sudoku for confident solvers</h2>
+    <p class="mb-3">
+      Fewer clues, longer deduction chains. Hard boards demand more than scanning — but like
+      every Sudoku here, they're guaranteed solvable by logic, so there's always a real next move
+      to find. Fill each row, column and 3×3 box with 1–9.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Techniques that unlock hard boards</h2>
+    <p class="mb-3">
+      Beyond singles, watch for <strong>locked candidates</strong>: when a digit's only spots in
+      a box all sit in one row or column, it can't appear elsewhere in that line — eliminate it
+      and new singles appear. <strong>Naked pairs</strong> (two squares in a unit sharing the
+      same two candidates) clear those digits from the rest of the unit. Disciplined pencil marks
+      make both jump out.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {faq.map((f) => (<details class="faq mb-2"><summary class="cursor-pointer font-semibold">{f.q}</summary><p class="mt-2 opacity-90">{f.a}</p></details>))}
+    <p class="mt-6 opacity-75">Too tough, or not tough enough? Drop to <a class="underline" href="/sudoku/">standard</a> or <a class="underline" href="/sudoku-easy/">Easy</a>, or climb to <a class="underline" href="/sudoku-expert/">Expert</a>.</p>
+  </GameShell>
+
+  <script>
+    import { startSudoku } from '../games/sudoku/controller';
+    startSudoku({ forceVariant: 3 });
+  </script>
+</Layout>

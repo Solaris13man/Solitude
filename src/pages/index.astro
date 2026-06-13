@@ -82,6 +82,20 @@ const schema = [
                 </a>
               ))}
             </div>
+            {
+              GAMES.filter((g) => g.category === section.key && g.variants?.length).length > 0 && (
+                <ul class="menu-variants">
+                  {GAMES.filter((g) => g.category === section.key && g.variants?.length).map((g) => (
+                    <li>
+                      <span class="menu-variants-game">{g.name}:</span>
+                      {g.variants!.map((v) => (
+                        <a href={v.href}>{v.label}</a>
+                      ))}
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
           </>
         ))
       }
