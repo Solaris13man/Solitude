@@ -41,7 +41,7 @@ These are mostly submission forms. Use the boilerplate above.
 | Product Hunt | producthunt.com | One-shot launch (see §B). |
 | BetaList | betalist.com | If you frame it as a recent launch. |
 | SaaSHub | saashub.com | Has free-tools / alternatives listings. |
-| GitHub "awesome" lists | github.com (search `awesome pwa`, `awesome html5 games`, `awesome web games`) | **Only if the repo is public.** Open a PR adding CardHearth. Real do-follow links. |
+| GitHub "awesome" lists | github.com (search `awesome pwa`, `awesome html5 games`, `awesome web games`) | **Skip — the repo is private.** These lists generally want an open-source project; not worth open-sourcing just for the links. |
 
 **Paste-ready AlternativeTo submission:**
 > **Name:** CardHearth
@@ -130,8 +130,7 @@ Find articles ranking for "best free solitaire sites", "best free sudoku online"
 
 ## E. Your own profiles & cross-posts  (free · do once)
 
-- **GitHub repo** (if public): set the description to the one-liner, add topics (`solitaire`, `sudoku`, `mahjong`, `pwa`, `astro`, `games`), link cardhearth.com in the About sidebar.
-- **Founder story cross-posts:** publish the story on cardhearth.com first, then cross-post (with a canonical link back) to **dev.to**, **Hashnode**, and **Medium**.
+- **Founder story cross-posts:** the story is live at cardhearth.com/about/ — cross-post it (with a canonical link back) to **dev.to**, **Hashnode**, and **Medium**.
 - **Reddit/HN profile**, **Product Hunt maker profile**: link the site.
 - **X/Bluesky/Mastodon:** a short thread version of the founder story with a screenshot of the Daily Challenge calendar.
 
@@ -139,7 +138,7 @@ Find articles ranking for "best free solitaire sites", "best free sudoku online"
 
 ## Suggested order of operations
 
-1. **Now:** AlternativeTo, Slant, Appscope, itch.io, GitHub topics (if public). Baseline links, no timing risk.
+1. **Now:** AlternativeTo, Slant, Appscope, itch.io. Baseline links, no timing risk.
 2. **Publish the founder story** on the site (it anchors everything below).
 3. **Launch week:** Product Hunt + Show HN + Indie Hackers, same week, founder story as the narrative.
 4. **Ongoing (spread out):** the relevant subreddits/forums, value-first.
