@@ -2,6 +2,20 @@ import { type MinesweeperState } from './engine';
 
 const NUMBER_CLASSES = ['', 'ms-1', 'ms-2', 'ms-3', 'ms-4', 'ms-5', 'ms-6', 'ms-7', 'ms-8'];
 
+const FLAG_SVG =
+  '<svg class="ms-icon" viewBox="0 0 24 24" aria-hidden="true">' +
+  '<ellipse cx="9" cy="20" rx="5.6" ry="1.5" fill="#2c2f3a"/>' +
+  '<rect x="8.1" y="3.6" width="1.8" height="15" rx="0.9" fill="#2c2f3a"/>' +
+  '<path d="M9 4.2 19 8 9 11.8Z" fill="#c2273a"/></svg>';
+
+const MINE_SVG =
+  '<svg class="ms-icon" viewBox="0 0 24 24" aria-hidden="true">' +
+  '<g stroke="#1d2230" stroke-width="2.2" stroke-linecap="round">' +
+  '<line x1="12" y1="3.5" x2="12" y2="20.5"/><line x1="3.5" y1="12" x2="20.5" y2="12"/>' +
+  '<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></g>' +
+  '<circle cx="12" cy="12" r="5.6" fill="#1d2230"/>' +
+  '<circle cx="10" cy="10" r="1.5" fill="#fff" opacity="0.65"/></svg>';
+
 export interface MinesweeperTaps {
   onReveal(index: number): void;
   onFlag(index: number): void;
@@ -78,7 +92,7 @@ export class MinesweeperBoard {
       const row = Math.floor(i / state.width) + 1;
       const col = (i % state.width) + 1;
       if (open && state.mine[i]) {
-        cell.textContent = '✸';
+        cell.innerHTML = MINE_SVG;
         cell.className = 'ms-cell ms-open ms-mine';
         cell.setAttribute('aria-label', `Row ${row} column ${col}, mine`);
       } else if (open) {
@@ -87,7 +101,7 @@ export class MinesweeperBoard {
         cell.className = `ms-cell ms-open ${n > 0 ? NUMBER_CLASSES[n] : ''}`.trim();
         cell.setAttribute('aria-label', `Row ${row} column ${col}, ${n} adjacent mines`);
       } else {
-        cell.textContent = flagged ? '⚑' : '';
+        cell.innerHTML = flagged ? FLAG_SVG : '';
         cell.setAttribute(
           'aria-label',
           `Row ${row} column ${col}, ${flagged ? 'flagged' : 'hidden'}`,
