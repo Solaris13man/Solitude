@@ -253,6 +253,59 @@ body {
 }
 .game-nav-link:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
 
+/* ---------- collapsible instructions + relocated game switcher ---------- */
+
+.instructions {
+  margin: 1.75rem auto 0;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 14px;
+  background: rgb(0 0 0 / 0.18);
+}
+.instructions-summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.85rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--chrome-text);
+}
+.instructions-summary::-webkit-details-marker { display: none; }
+.instructions-summary::after {
+  content: '';
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  opacity: 0.65;
+}
+.instructions[open] .instructions-summary::after { transform: rotate(-135deg); }
+.instructions-summary:focus-visible {
+  outline: 3px solid #ffd95e;
+  outline-offset: 2px;
+  border-radius: 14px;
+}
+.instructions-body { padding: 0 1.2rem 1.3rem; }
+
+.more-games {
+  margin: 1.5rem auto 0;
+  text-align: center;
+}
+.more-games-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+  margin-bottom: 0.7rem;
+}
+
 .hud {
   display: flex;
   justify-content: center;

@@ -75,8 +75,6 @@ const {
     </nav>
   </header>
 
-  <GameNav current={gameId} />
-
   {
     breadcrumb && breadcrumb.length > 0 && (
       <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -114,8 +112,16 @@ const {
   <!-- aria-hidden: the live region above already announces the same text -->
   <div id="toast" class="toast" aria-hidden="true" hidden></div>
 
-  <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
-    <slot />
+  <details class="instructions mx-auto w-full max-w-2xl">
+    <summary class="instructions-summary">How to play, tips &amp; FAQ</summary>
+    <div class="instructions-body text-sm leading-relaxed opacity-90">
+      <slot />
+    </div>
+  </details>
+
+  <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
+    <h2 class="more-games-title">More games</h2>
+    <GameNav current={gameId} />
   </section>
 
   <AdSlot slot="in-content" />
