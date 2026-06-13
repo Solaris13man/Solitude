@@ -62,7 +62,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="pyramid" heading="Pyramid">
+  <GameShell
+    gameId="pyramid"
+    heading="Pyramid"
+    guide={{ href: '/guides/pyramid-solitaire-strategy/', label: 'Pyramid strategy guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play Pyramid Solitaire</h2>
     <p class="mb-3">
       Twenty-eight cards form a seven-row pyramid, all face up. Tap two exposed cards whose

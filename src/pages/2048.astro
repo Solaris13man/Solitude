@@ -62,7 +62,12 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="2048" heading="2048" cardSettings={false}>
+  <GameShell
+    gameId="2048"
+    heading="2048"
+    cardSettings={false}
+    guide={{ href: '/guides/2048-strategy/', label: '2048 strategy guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play 2048</h2>
     <p class="mb-3">
       Swipe in any direction — or use the <strong>arrow keys / WASD</strong> — and every tile

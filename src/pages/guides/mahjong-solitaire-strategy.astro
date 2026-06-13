@@ -1,0 +1,195 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Mahjong Solitaire Strategy & Tips | CardHearth';
+const description =
+  'A clear, practical guide to winning Mahjong Solitaire. Learn what makes a tile free, how to pick the right pair, how to avoid dead ends, and how flower and season tiles match.';
+const updated = '2026-06-13';
+const heading = 'Mahjong Solitaire Strategy';
+const subtitle =
+  'Every CardHearth deal is solvable — so winning is about not getting greedy. Here is how to pick the right pairs and never strand yourself.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Mahjong Solitaire Strategy', href: '/guides/mahjong-solitaire-strategy/' },
+];
+
+const faq = [
+  {
+    q: 'Are all CardHearth Mahjong games winnable?',
+    a: 'Yes — every CardHearth deal is built by reverse-construction, laying tiles down as solvable pairs, so a complete solution always exists. But "solvable" is not the same as "automatically won." If you remove the wrong pairs you can still strand the remaining tiles in a dead end. When that happens, undo and try a different removal order rather than starting over.',
+  },
+  {
+    q: 'What makes a tile selectable or free?',
+    a: 'A tile is free if it has no tile resting on top of it AND at least one of its left or right edges is open. If a tile is buried under another, or boxed in on both sides, it is blocked and cannot be matched until you clear what is pinning it. You win by matching free pairs until the whole layout is gone.',
+  },
+  {
+    q: 'Do flower and season tiles match each other?',
+    a: 'Almost. The four flower tiles all match one another, and the four season tiles all match one another — you do not need an identical twin for these. But flowers and seasons do not mix: a flower only pairs with another flower, and a season only with another season. Every other tile must be matched to its exact identical partner.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Mahjong Solitaire Strategy & Tips',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/mahjong-solitaire-strategy/',
+    image: 'https://cardhearth.com/og/mahjong.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/mahjong/', label: 'Play Mahjong Solitaire' }}
+>
+  <p>
+    Mahjong Solitaire is a tile-matching puzzle, not the four-player Mahjong game — you play it
+    alone, against a layout of stacked tiles. It looks relaxing, and it is, but there is real
+    skill underneath. The difference between players who clear the board and players who get stuck
+    is almost never luck. It is the order in which they remove tiles. This guide explains how to
+    read the board and pick the right pairs. If the game is new to you, the quickest way to learn
+    is to <a href="/mahjong/">play a hand</a> with hints turned on.
+  </p>
+
+  <h2>The goal, in one sentence</h2>
+  <p>
+    Remove every tile from the layout by matching pairs of identical tiles that are
+    <strong>free</strong>. A tile is free when it has <strong>no tile on top of it</strong> and at
+    least one of its <strong>left or right sides is open</strong>. Match two free, identical tiles
+    and both vanish; clear the entire layout and you win. There are <strong>four copies</strong> of
+    every tile, so each kind is removed as two separate pairs.
+  </p>
+  <p>
+    Two groups behave differently: the four <strong>flower</strong> tiles all match each other, and
+    the four <strong>season</strong> tiles all match each other — you do not need an exact twin for
+    these. Flowers and seasons never mix, though. Every other tile demands its identical partner.
+  </p>
+
+  <h2>Why CardHearth deals are always solvable — but still losable</h2>
+  <p>
+    Here is the most important thing to understand. CardHearth builds every Mahjong deal by
+    <strong>reverse-construction</strong>: it lays the tiles down as pairs in a guaranteed-solvable
+    order, so a complete solution always exists. You will never be handed an impossible board. But
+    that does <em>not</em> mean you can remove pairs at random. If you take the wrong two tiles, you
+    can lock the remaining copies and reach a dead end on a board that was perfectly winnable. So
+    your entire strategy reduces to one idea: <strong>don't get greedy</strong>. Think before every
+    match.
+  </p>
+
+  <h2>Five principles that clear the board</h2>
+
+  <h3>1. Before removing a pair, ask what it frees</h3>
+  <p>
+    Every match you make opens up the tiles that were touching it. Prefer the match that
+    <strong>unlocks the most blocked tiles</strong> — especially ones that were pinned on both
+    sides or buried underneath. A pair that frees nothing useful is a pair you usually want to
+    leave for later.
+  </p>
+
+  <h3>2. When a tile appears three or four times, choose carefully</h3>
+  <p>
+    With four copies of each tile in play, you will often see three or four of the same kind
+    available at once. This is the classic trap. Removing the <strong>wrong two</strong> can box in
+    the remaining copies so they can never be matched. Look at where all four sit, and remove the
+    pair that keeps the others reachable — or wait until it is clear which two are safe to take.
+  </p>
+
+  <h3>3. Work from the most blocking tiles downward</h3>
+  <p>
+    Tiles at the top of stacks and along the long <strong>centre spine</strong> pin huge numbers of
+    tiles beneath and beside them. Prioritise clearing those. Every tile you peel off the top or the
+    spine releases several others, where a match buried in a low corner frees almost nothing.
+  </p>
+
+  <h3>4. Keep matches in reserve</h3>
+  <p>
+    When you have more than one safe pair to take, you do not have to take them all immediately.
+    Holding a known match in reserve keeps your options open — it is a guaranteed move you can fall
+    back on while you work elsewhere. Flexibility is what prevents dead ends.
+  </p>
+
+  <h3>5. Use Hint and unlimited Undo</h3>
+  <p>
+    Because every deal is solvable, a dead end is never the board's fault — it means an earlier
+    removal closed off the path. On CardHearth, <em>Undo</em> is unlimited, so when you get stuck,
+    step back through your moves and try a different order rather than restarting. <em>Hint</em>
+    will point out an available match when you genuinely cannot find one.
+  </p>
+
+  <h2>Common mistakes that lose games</h2>
+  <ul>
+    <li><strong>Greedily clearing any available pair</strong> — the number-one way to strand a
+      solvable board.</li>
+    <li><strong>Removing all four of a kind in the wrong order</strong>, locking the last two.</li>
+    <li><strong>Taking matches that free nothing useful</strong> while blocking tiles stay buried.</li>
+    <li><strong>Ignoring the centre spine</strong>, which pins more tiles than anything else.</li>
+    <li><strong>Forgetting undo exists</strong> — explore a line and take it back if it dead-ends.</li>
+  </ul>
+
+  <h2>Layouts: Turtle and beyond</h2>
+  <p>
+    The classic <a href="/mahjong-turtle/"><strong>Turtle</strong></a> layout — with its raised
+    centre spine and sloping shell — is the one most people picture, and it is a great place to
+    practise reading which tiles block which. CardHearth offers multiple layouts beyond the Turtle,
+    each with its own blocking patterns, so the same principles apply but the priorities shift. Once
+    you can spot the spine and the top-of-stack tiles on one layout, you will read the rest quickly.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Ready to clear a board? <a href="/mahjong/">Play Mahjong Solitaire</a> now, or try the
+    <a href="/mahjong-turtle/">Turtle layout</a> for the classic challenge. If you enjoy this kind
+    of think-ahead puzzle, our <a href="/guides/sudoku-solving-techniques/">Sudoku solving
+    techniques</a> reward the same patient logic, and the
+    <a href="/guides/best-free-solitaire-and-puzzle-games/">best free solitaire and puzzle games</a>
+    roundup — along with our <a href="/guides/">guides hub</a> — covers the whole CardHearth library.
+  </p>
+</Article>

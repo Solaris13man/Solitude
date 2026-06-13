@@ -58,7 +58,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="golf" heading="Golf">
+  <GameShell
+    gameId="golf"
+    heading="Golf"
+    guide={{ href: '/guides/golf-solitaire-strategy/', label: 'Golf strategy guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play Golf Solitaire</h2>
     <p class="mb-3">
       Seven columns of five cards, all face up, and a waste pile below. Tap (or drag) the bottom
