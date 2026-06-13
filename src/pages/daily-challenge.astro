@@ -86,6 +86,27 @@ const schema = [
       <dl class="daily-hero-stats" id="daily-hero-stats"></dl>
     </section>
 
+    <section class="daily-calendar" aria-label="Daily Challenge calendar">
+      <div class="cal-head">
+        <button id="cal-prev" class="btn" type="button" aria-label="Previous year">‹</button>
+        <h2 id="cal-year" class="cal-year">Calendar</h2>
+        <button id="cal-next" class="btn" type="button" aria-label="Next year">›</button>
+      </div>
+      <p class="cal-intro">
+        Missed a day? Play any past Daily Challenge to fill in your calendar. Complete every day of
+        a calendar year to earn the <strong>Perfect Year</strong> badge. Future days stay locked
+        until their date.
+      </p>
+      <p id="cal-progress" class="cal-progress"></p>
+      <div id="cal-grid" class="cal-months"></div>
+      <ul class="cal-legend">
+        <li><span class="cal-key cal-key-solved"></span> Solved</li>
+        <li><span class="cal-key cal-key-open"></span> Playable</li>
+        <li><span class="cal-key cal-key-today"></span> Today</li>
+        <li><span class="cal-key cal-key-locked"></span> Locked</li>
+      </ul>
+    </section>
+
     <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
       <h2 class="mb-2 text-lg font-bold">One game. Everyone. Every day.</h2>
       <p class="mb-3">
@@ -173,6 +194,97 @@ const schema = [
         `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
         `<dt>Days solved</dt><dd>${totalDailySolves(record)}</dd>`,
       ].join('');
+    }
+  </script>
+
+  <script>
+    import {
+      dailyGame,
+      dailyYearProgress,
+      loadDaily,
+      utcDateKey,
+      DAILY_EPOCH_UTC,
+    } from '../lib/daily';
+
+    const gridEl = document.getElementById('cal-grid');
+    const yearEl = document.getElementById('cal-year');
+    const progressEl = document.getElementById('cal-progress');
+    const prevBtn = document.getElementById('cal-prev') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('cal-next') as HTMLButtonElement | null;
+
+    if (gridEl && yearEl && progressEl && prevBtn && nextBtn) {
+      const DAY_MS = 86_400_000;
+      const calRecord = loadDaily();
+      const now = new Date();
+      const todayKey = utcDateKey(now);
+      const todayUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+      const epochYear = new Date(DAILY_EPOCH_UTC).getUTCFullYear();
+      const currentYear = now.getUTCFullYear();
+      let viewYear = currentYear;
+
+      const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+      const WD = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+      function monthHtml(year: number, month: number): string {
+        const first = new Date(Date.UTC(year, month, 1));
+        const firstWeekday = first.getUTCDay();
+        const days = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+        const name = first.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'long' });
+        let cells = '';
+        for (let i = 0; i < firstWeekday; i++) cells += '<span class="cal-day cal-blank"></span>';
+        for (let d = 1; d <= days; d++) {
+          const dayUTC = Date.UTC(year, month, d);
+          const key = utcDateKey(new Date(dayUTC));
+          if (dayUTC < DAILY_EPOCH_UTC) {
+            cells += `<span class="cal-day cal-pre" aria-hidden="true">${d}</span>`;
+          } else if (key > todayKey) {
+            cells += `<span class="cal-day cal-future" title="Unlocks ${key}" aria-label="${name} ${d}: locked">${d}</span>`;
+          } else {
+            const entry = dailyGame(new Date(dayUTC));
+            const solved = !!calRecord.days[key];
+            const cls =
+              'cal-day cal-open' +
+              (solved ? ' cal-solved' : '') +
+              (key === todayKey ? ' cal-today' : '');
+            const label = `${entry.label}${solved ? ' — solved ✓' : ''}`;
+            cells += `<a class="${cls}" href="${entry.path}?daily=${key}" title="${esc(label)}" aria-label="${name} ${d}: ${esc(label)}">${d}</a>`;
+          }
+        }
+        const head = WD.map((w) => `<span class="cal-wd">${w}</span>`).join('');
+        return `<div class="cal-month"><h3 class="cal-month-name">${name}</h3><div class="cal-grid">${head}${cells}</div></div>`;
+      }
+
+      function render() {
+        yearEl!.textContent = String(viewYear);
+        const p = dailyYearProgress(calRecord, viewYear, now);
+        const fullyElapsed = Date.UTC(viewYear, 11, 31) < todayUTC;
+        progressEl!.textContent =
+          p.available === 0
+            ? 'No Daily Challenges in this year yet.'
+            : `${p.solved} of ${p.available} solved` +
+              (fullyElapsed && p.available > 0 && p.solved === p.available
+                ? ' · Perfect Year! 🏵️'
+                : '');
+        let html = '';
+        for (let m = 0; m < 12; m++) html += monthHtml(viewYear, m);
+        gridEl!.innerHTML = html;
+        prevBtn!.disabled = viewYear <= epochYear;
+        nextBtn!.disabled = viewYear >= currentYear;
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (viewYear > epochYear) {
+          viewYear--;
+          render();
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (viewYear < currentYear) {
+          viewYear++;
+          render();
+        }
+      });
+      render();
     }
   </script>
 </Layout>

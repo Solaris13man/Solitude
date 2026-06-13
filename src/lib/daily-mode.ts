@@ -4,11 +4,12 @@ import {
   currentDailyStreak,
   dailyGame,
   dailyNumber,
+  dailySeed,
   formatCountdown,
-  isDailyRequest,
   loadDaily,
   msUntilNextDaily,
   recordDailyWin,
+  requestedDailyDate,
   totalDailySolves,
   utcDateKey,
 } from './daily';
@@ -20,28 +21,36 @@ import { track } from './analytics';
  * makes one of these with its game id; when `active`, it supplies the day's
  * seed/variant, a `.daily` save slot, the on-page banner, the win record, and
  * the share text — so every game gets an identical daily experience without
- * duplicating the plumbing.
+ * duplicating the plumbing. The day can be today (?daily=1) or an archived
+ * date (?daily=YYYY-MM-DD); future/pre-launch dates never activate.
  */
 export class DailyMode {
   readonly entry: DailyEntry;
   readonly active: boolean;
   readonly seed: number;
   readonly variant: number;
+  /** The UTC date this daily is for (today or an archived day); null if off. */
+  readonly date: Date | null;
+  /** True when this is a past day's challenge rather than today's. */
+  readonly isArchive: boolean;
 
   constructor(gameId: string) {
-    this.entry = dailyGame();
-    this.active = isDailyRequest() && this.entry.game === gameId;
-    this.seed = this.entry.game === gameId ? dailySeedNow() : 0;
+    this.date = requestedDailyDate();
+    const refDate = this.date ?? new Date();
+    this.entry = dailyGame(refDate);
+    this.active = this.date !== null && this.entry.game === gameId;
+    this.seed = this.active ? dailySeed(refDate) : 0;
     this.variant = this.entry.variant;
+    this.isArchive = this.active && utcDateKey(refDate) !== utcDateKey(new Date());
   }
 
   get saveSuffix(): string {
     return this.active ? '.daily' : '';
   }
 
-  /** True if `stateSeed` is today's daily deal (guards stale saves). */
+  /** True if `stateSeed` is this daily's deal (guards stale saves). */
   isToday(stateSeed: number): boolean {
-    return this.active && stateSeed === dailySeedNow();
+    return this.active && stateSeed === this.seed;
   }
 
   /** Reveal and populate the banner host that GameShell always renders. */
@@ -49,6 +58,7 @@ export class DailyMode {
     const host = document.getElementById('daily-banner');
     if (!host) return;
     host.hidden = false;
+    if (this.isArchive) host.classList.add('daily-banner-archive');
     host.innerHTML =
       '<span id="daily-title" class="daily-banner-title"></span>' +
       '<span id="daily-status" class="daily-banner-status"></span>';
@@ -56,48 +66,60 @@ export class DailyMode {
   }
 
   refreshBanner(): void {
-    if (!this.active) return;
+    if (!this.active || !this.date) return;
     const titleEl = document.getElementById('daily-title');
     const statusEl = document.getElementById('daily-status');
-    const now = new Date();
+    const dateLabel = this.date.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      year: this.isArchive ? 'numeric' : undefined,
+      month: 'long',
+      day: 'numeric',
+    });
     if (titleEl) {
-      const date = now.toLocaleDateString('en-US', {
-        timeZone: 'UTC',
-        month: 'long',
-        day: 'numeric',
-      });
-      titleEl.textContent = `Daily #${dailyNumber(now)} · ${this.entry.label} · ${date}`;
+      const prefix = this.isArchive ? 'Archived Daily' : 'Daily';
+      titleEl.textContent = `${prefix} #${dailyNumber(this.date)} · ${this.entry.label} · ${dateLabel}`;
     }
     if (statusEl) {
       const record = loadDaily();
-      const today = record.days[utcDateKey(now)];
-      const countdown = formatCountdown(msUntilNextDaily(now));
-      const streak = currentDailyStreak(record, now);
-      statusEl.textContent = today
-        ? `Solved in ${formatTime(today.timeMs)} ✓ · Streak ${streak} 🔥 · Next in ${countdown}`
-        : `Today's challenge for everyone · Streak ${streak} · Next in ${countdown}`;
+      const solved = record.days[utcDateKey(this.date)];
+      if (this.isArchive) {
+        statusEl.textContent = solved
+          ? `Solved in ${formatTime(solved.timeMs)} ✓ · Catching up on a missed day`
+          : `A challenge you missed — solve it to fill in your calendar`;
+      } else {
+        const countdown = formatCountdown(msUntilNextDaily());
+        const streak = currentDailyStreak(record);
+        statusEl.textContent = solved
+          ? `Solved in ${formatTime(solved.timeMs)} ✓ · Streak ${streak} 🔥 · Next in ${countdown}`
+          : `Today's challenge for everyone · Streak ${streak} · Next in ${countdown}`;
+      }
     }
   }
 
   /** Record a solve into the daily history; returns the current streak. */
   recordSolve(timeMs: number, moves: number, score: number, game: string): number {
-    const record = recordDailyWin(utcDateKey(), { timeMs, moves, score, game });
-    track('daily_solved', { game, seconds: Math.round(timeMs / 1000) });
+    const dateKey = utcDateKey(this.date ?? new Date());
+    const record = recordDailyWin(dateKey, { timeMs, moves, score, game });
+    track('daily_solved', { game, seconds: Math.round(timeMs / 1000), archive: this.isArchive });
     this.refreshBanner();
     return currentDailyStreak(record);
   }
 
-  /** A challenge link to today's daily (everyone gets the same one). */
+  /** A challenge link to this daily (everyone gets the same one). */
   shareText(solved: boolean, elapsedMs: number): { url: string; text: string } {
-    const url = `${window.location.origin}/daily-challenge/`;
+    const ref = this.date ?? new Date();
+    const url = this.isArchive
+      ? `${window.location.origin}${this.entry.path}?daily=${utcDateKey(ref)}`
+      : `${window.location.origin}/daily-challenge/`;
+    const num = dailyNumber(ref);
     const text = solved
-      ? `CardHearth Daily #${dailyNumber()} (${this.entry.label}) solved in ${formatTime(elapsedMs)}. Same challenge for everyone — can you beat it?`
-      : `Today's CardHearth Daily Challenge: ${this.entry.label}, the same for everyone. Can you solve it?`;
+      ? `CardHearth Daily #${num} (${this.entry.label}) solved in ${formatTime(elapsedMs)}. Same challenge for everyone — can you beat it?`
+      : `CardHearth Daily Challenge #${num}: ${this.entry.label}, the same for everyone. Can you solve it?`;
     return { url, text };
   }
 
   dealLabel(): string {
-    return `Daily #${dailyNumber()}`;
+    return `Daily #${dailyNumber(this.date ?? new Date())}`;
   }
 
   /** A "Daily Challenge" section for the stats dialog (recent solves). */
@@ -117,9 +139,4 @@ export class DailyMode {
       ),
     ].join('');
   }
-}
-
-function dailySeedNow(): number {
-  const date = new Date();
-  return date.getUTCFullYear() * 10_000 + (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
 }

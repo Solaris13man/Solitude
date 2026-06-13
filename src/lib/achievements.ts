@@ -1,6 +1,12 @@
 import { GAMES } from '../games/registry';
 import { type Stats, loadStats, variantStats } from './stats';
-import { bestDailyStreak, currentDailyStreak, loadDaily, totalDailySolves } from './daily';
+import {
+  bestDailyStreak,
+  currentDailyStreak,
+  hasCompletedDailyYear,
+  loadDaily,
+  totalDailySolves,
+} from './daily';
 
 /**
  * Achievements / badges. Pure logic over the per-game stats and the daily
@@ -36,6 +42,8 @@ export interface PlayerSnapshot {
   dailyCurrentStreak: number;
   dailyBestStreak: number;
   dailySolved: number;
+  /** Solved every daily of a fully-elapsed calendar year. */
+  completedFullYear: boolean;
   /** Did this (game, variant) get at least one win? key `${game}:${variant}`. */
   variantWins: Set<string>;
 }
@@ -55,6 +63,7 @@ export function snapshot(): PlayerSnapshot {
     dailyCurrentStreak: 0,
     dailyBestStreak: 0,
     dailySolved: 0,
+    completedFullYear: false,
     variantWins: new Set(),
   };
   for (const game of GAME_IDS) {
@@ -76,6 +85,7 @@ export function snapshot(): PlayerSnapshot {
   snap.dailyCurrentStreak = currentDailyStreak(daily);
   snap.dailyBestStreak = bestDailyStreak(daily);
   snap.dailySolved = totalDailySolves(daily);
+  snap.completedFullYear = hasCompletedDailyYear(daily);
   return snap;
 }
 
@@ -97,6 +107,7 @@ export const BADGES: Badge[] = [
   { id: 'daily-7', name: 'Dedicated', description: 'A 7-day daily streak.', icon: '🗓️', earned: (s) => s.dailyBestStreak >= 7 },
   { id: 'daily-30', name: 'Devoted', description: 'A 30-day daily streak.', icon: '💎', earned: (s) => s.dailyBestStreak >= 30 },
   { id: 'daily-50', name: 'Daily Habit', description: 'Solve 50 daily challenges.', icon: '☀️', earned: (s) => s.dailySolved >= 50 },
+  { id: 'perfect-year', name: 'Perfect Year', description: 'Solve every Daily Challenge in a calendar year.', icon: '🏵️', earned: (s) => s.completedFullYear },
   { id: 'spider-slayer', name: 'Spider Slayer', description: 'Win 4-suit Spider.', icon: '🕷️', earned: (s) => wonVariant(s, 'spider', 4) },
   { id: 'logician', name: 'Logician', description: 'Win a Hard or Expert Sudoku.', icon: '🔢', earned: (s) => wonVariant(s, 'sudoku', 3) || wonVariant(s, 'sudoku', 4) },
   { id: 'bomb-squad', name: 'Bomb Squad', description: 'Win Expert Minesweeper.', icon: '💣', earned: (s) => wonVariant(s, 'minesweeper', 3) },

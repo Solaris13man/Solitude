@@ -113,6 +113,68 @@ body {
   color: #ffd95e;
 }
 
+/* ---------- daily challenge calendar ---------- */
+
+.daily-calendar { width: 100%; max-width: 64rem; margin: 0 auto; padding: 0.5rem 0 1rem; }
+.cal-head { display: flex; align-items: center; justify-content: center; gap: 1rem; }
+.cal-year { font-size: 1.5rem; font-weight: 800; min-width: 5rem; text-align: center; }
+.cal-intro { max-width: 42rem; margin: 0.7rem auto 0; text-align: center; font-size: 0.9rem; opacity: 0.82; }
+.cal-progress { text-align: center; font-weight: 700; color: #ffd95e; margin-top: 0.5rem; min-height: 1.2rem; }
+.cal-months {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.cal-month {
+  background: rgb(0 0 0 / 0.18);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 12px;
+  padding: 0.7rem;
+}
+.cal-month-name { font-size: 0.85rem; font-weight: 700; text-align: center; margin-bottom: 0.4rem; opacity: 0.85; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-wd { font-size: 0.6rem; text-align: center; opacity: 0.45; padding-bottom: 0.2rem; }
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  border-radius: 5px;
+  color: var(--chrome-text);
+}
+.cal-blank { visibility: hidden; }
+.cal-pre { opacity: 0.16; }
+.cal-future { opacity: 0.3; }
+a.cal-open {
+  background: rgb(255 255 255 / 0.08);
+  text-decoration: none;
+  transition: background-color 0.12s ease, transform 0.12s ease;
+}
+a.cal-open:hover { background: rgb(255 255 255 / 0.22); transform: scale(1.08); }
+a.cal-solved { background: #2e8b57; color: #fff; font-weight: 700; }
+a.cal-solved:hover { background: #36a266; }
+a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800; }
+.cal-open:focus-visible { outline: 3px solid #ffd95e; outline-offset: 1px; }
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 1.1rem 0 0;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+.cal-legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.cal-key { width: 0.9rem; height: 0.9rem; border-radius: 4px; display: inline-block; }
+.cal-key-solved { background: #2e8b57; }
+.cal-key-open { background: rgb(255 255 255 / 0.18); }
+.cal-key-today { outline: 2px solid #ffd95e; outline-offset: -2px; }
+.cal-key-locked { background: rgb(255 255 255 / 0.06); }
+
 /* ---------- menu (landing) page ---------- */
 
 .menu-grid {

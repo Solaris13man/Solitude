@@ -66,13 +66,33 @@ export function dailyGame(date = new Date()): DailyEntry {
   return DAILY_ROTATION[((idx % DAILY_ROTATION.length) + DAILY_ROTATION.length) % DAILY_ROTATION.length]!;
 }
 
-/** True when the current page was opened as today's daily (?daily=1). */
-export function isDailyRequest(): boolean {
+/**
+ * The daily the current page was opened for, from `?daily=`:
+ *   ?daily=1 (or `today`)  → today's challenge
+ *   ?daily=YYYY-MM-DD      → that day's archived challenge
+ * Returns null when there's no daily request, or when the date is invalid,
+ * in the future, or before the Daily Challenge launched (no challenge existed).
+ */
+export function requestedDailyDate(): Date | null {
   try {
-    return new URLSearchParams(window.location.search).get('daily') === '1';
+    const raw = new URLSearchParams(window.location.search).get('daily');
+    if (!raw) return null;
+    if (raw === '1' || raw === 'today') return new Date();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
+    const d = new Date(`${raw}T00:00:00Z`);
+    if (Number.isNaN(d.getTime())) return null;
+    if (raw > utcDateKey()) return null; // future dates can't be played
+    const dayUTC = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+    if (dayUTC < DAILY_EPOCH_UTC) return null; // before the daily existed
+    return d;
   } catch {
-    return false;
+    return null;
   }
+}
+
+/** True when the current page was opened as a daily (today or an archive). */
+export function isDailyRequest(): boolean {
+  return requestedDailyDate() !== null;
 }
 
 /** Everyone's seed for the given UTC day: the integer YYYYMMDD. */
@@ -182,4 +202,60 @@ export function bestDailyStreak(record: DailyRecord): number {
 
 export function totalDailySolves(record: DailyRecord): number {
   return Object.keys(record.days).length;
+}
+
+/** First and last UTC midnight (ms) for which a daily existed in `year`,
+ *  bounded by the launch epoch and by `today` (no future days). Returns null
+ *  if the year has no playable daily days yet. */
+export function dailyYearRange(
+  year: number,
+  today = new Date(),
+): { start: number; end: number } | null {
+  const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const start = Math.max(Date.UTC(year, 0, 1), DAILY_EPOCH_UTC);
+  const end = Math.min(Date.UTC(year, 11, 31), todayUTC);
+  if (end < start) return null;
+  return { start, end };
+}
+
+/** How many dailies have existed (so far) in `year`, and how many are solved. */
+export function dailyYearProgress(
+  record: DailyRecord,
+  year: number,
+  today = new Date(),
+): { solved: number; available: number } {
+  const range = dailyYearRange(year, today);
+  if (!range) return { solved: 0, available: 0 };
+  let available = 0;
+  let solved = 0;
+  for (let t = range.start; t <= range.end; t += DAY_MS) {
+    available++;
+    if (record.days[utcDateKey(new Date(t))]) solved++;
+  }
+  return { solved, available };
+}
+
+/**
+ * True once every daily of some fully-elapsed calendar year has been solved.
+ * A year only counts when it's entirely in the past (its Dec 31 is before
+ * today), and "every daily" means every day from the launch epoch (or Jan 1)
+ * through Dec 31 of that year.
+ */
+export function hasCompletedDailyYear(record: DailyRecord, today = new Date()): boolean {
+  const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const startYear = new Date(DAILY_EPOCH_UTC).getUTCFullYear();
+  for (let year = startYear; year <= today.getUTCFullYear(); year++) {
+    if (Date.UTC(year, 11, 31) >= todayUTC) continue; // year not fully elapsed
+    const range = dailyYearRange(year, today);
+    if (!range) continue;
+    let complete = true;
+    for (let t = range.start; t <= range.end; t += DAY_MS) {
+      if (!record.days[utcDateKey(new Date(t))]) {
+        complete = false;
+        break;
+      }
+    }
+    if (complete) return true;
+  }
+  return false;
 }
