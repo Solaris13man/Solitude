@@ -1,0 +1,247 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Sudoku Solving Techniques: From Singles to X-Wing | CardHearth';
+const description =
+  'A practical, accurate guide to solving Sudoku by pure logic — pencil marks, naked and hidden singles, locked candidates, naked and hidden pairs, and the X-Wing. No guessing, ever.';
+const updated = '2026-06-13';
+const heading = 'Sudoku Solving Techniques';
+const subtitle =
+  'A ladder of logical techniques — from the everyday single to the X-Wing — explained clearly enough to use, with the reasoning behind each one.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Sudoku Solving Techniques', href: '/guides/sudoku-solving-techniques/' },
+];
+
+const faq = [
+  {
+    q: 'Do you ever have to guess in Sudoku?',
+    a: 'No — not in a fair puzzle. A well-made Sudoku has exactly one solution that can be reached entirely by logic, with no point where you must guess and backtrack. Every CardHearth puzzle is guaranteed to have a unique solution and to be solvable by pure deduction, so if you are tempted to guess, there is always a logical step you have not spotted yet.',
+  },
+  {
+    q: 'What is the difference between a naked single and a hidden single?',
+    a: 'A naked single is a cell that has only one candidate left — you look at the cell and see one possibility. A hidden single is a digit that has only one place it can go within a row, column, or box, even though that cell still shows several candidates. Naked singles are about the cell; hidden singles are about the digit. Hidden singles are the most common everyday move in real solving.',
+  },
+  {
+    q: 'What is the hardest technique I need on CardHearth?',
+    a: 'The X-Wing, and only on Expert puzzles. Easy puzzles need nothing beyond singles, Hard puzzles add locked candidates and naked pairs, and Expert can require hidden pairs and the X-Wing. You never need anything more exotic, because every puzzle is generated to be solvable by exactly this ladder of techniques.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Sudoku Solving Techniques: From Singles to X-Wing',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/sudoku-solving-techniques/',
+    image: 'https://cardhearth.com/og/sudoku.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/sudoku/', label: 'Play Sudoku' }}
+>
+  <p>
+    Sudoku is a pure logic puzzle. Despite the grid of numbers, no arithmetic is involved — and,
+    crucially, no luck. A well-made puzzle has exactly one solution that can be reached by
+    reasoning alone, with no point where you are forced to guess and hope. Every
+    <a href="/sudoku/">CardHearth Sudoku</a> is guaranteed to be like this: one unique answer,
+    solvable start to finish by deduction. So if you ever feel like guessing, the right response
+    is to find the logical step you have missed. This guide gives you the ladder of techniques to
+    do exactly that, in the order you will actually reach for them.
+  </p>
+
+  <h2>The foundation: pencil marks</h2>
+  <p>
+    Almost every technique below rests on <strong>candidates</strong> — the small "pencil marks"
+    you note in a cell to record which digits could still legally go there. A candidate survives
+    only if that digit does not already appear in the cell's row, its column, or its 3×3 box. Once
+    a cell's candidate list is accurate, the puzzle starts to reveal its own structure: cells with
+    a single candidate, digits with a single home, and patterns that let you cross out candidates
+    elsewhere. On CardHearth you can toggle candidates on; even when you fill them in by hand, the
+    habit of thinking in candidates is what turns a hard puzzle from "stuck" into "solvable."
+  </p>
+
+  <h2>The technique ladder</h2>
+
+  <h3>1. Naked single</h3>
+  <p>
+    A <strong>naked single</strong> is the simplest move there is: a cell whose candidate list has
+    been whittled down to exactly one digit. If a cell can only be a 7, write the 7. Then update
+    the candidates in that cell's row, column, and box — filling one cell often creates the next
+    naked single, and a chain of them can carry you a long way. Use this whenever you have just
+    placed a digit or eliminated candidates.
+  </p>
+
+  <h3>2. Hidden single</h3>
+  <p>
+    A <strong>hidden single</strong> is the most important everyday technique. Instead of asking
+    "what can go in this cell?", you ask "where can this digit go in this unit?" — where a unit is
+    a row, a column, or a box. If a digit has only one cell left in a unit where it is still a
+    legal candidate, it <em>must</em> go there, even if that cell still shows several other
+    candidates. Scan one digit at a time across each box: if eight of the nine cells are blocked
+    for that digit, the ninth is forced. This single idea solves most of an Easy puzzle and a
+    great deal of harder ones.
+  </p>
+
+  <h3>3. Locked candidates (pointing and claiming)</h3>
+  <p>
+    Sometimes a digit's candidates inside one box are all confined to a single row or column. That
+    is a <strong>locked candidate</strong>, and it cuts both ways:
+  </p>
+  <ul>
+    <li>
+      <strong>Pointing:</strong> if every spot for a digit within a box lies in one row (or
+      column), that digit must end up in that row inside this box — so you can eliminate it from
+      the rest of that row in the <em>other</em> boxes.
+    </li>
+    <li>
+      <strong>Claiming:</strong> the reverse — if every spot for a digit within a row (or column)
+      lies in a single box, you can eliminate that digit from the other cells of that box.
+    </li>
+  </ul>
+  <p>
+    Neither places a digit directly; both remove candidates, which then unlocks singles. Reach for
+    this when scanning for singles stalls.
+  </p>
+
+  <h3>4. Naked pairs (and triples)</h3>
+  <p>
+    A <strong>naked pair</strong> is two cells in the same unit that share the exact same two
+    candidates — say both can only be {'{4, 9}'}. You do not yet know which is the 4 and which is
+    the 9, but you know those two digits are used up by those two cells. So you can safely
+    eliminate 4 and 9 from every other cell in that unit. The same logic extends to a
+    <strong>naked triple</strong>: three cells in a unit that between them use only three
+    candidates (each cell need not show all three) lock those digits to those cells, clearing them
+    elsewhere in the unit. These eliminations frequently expose a hidden single you could not see
+    before.
+  </p>
+
+  <h3>5. Hidden pairs</h3>
+  <p>
+    A <strong>hidden pair</strong> is the dual of the naked pair. Here, two digits can each go in
+    only the same two cells of a unit — but those cells also carry other candidates that hide the
+    pattern. Because those two digits must occupy those two cells between them, every
+    <em>other</em> candidate in those two cells can be deleted. For example, if 2 and 6 can only
+    live in cells A and B of a row, then A and B become a {'{2, 6}'} pair and any other candidates
+    in A or B are crossed out. Spotting hidden pairs takes a deliberate digit-by-digit scan of the
+    unit, which is why they tend to show up only on the hardest puzzles.
+  </p>
+
+  <h3>6. X-Wing</h3>
+  <p>
+    The <strong>X-Wing</strong> is the first true "fish" pattern, and the toughest technique you
+    will ever need here. Look at a single candidate digit — say 5. Find <strong>two rows</strong>
+    in which that digit has exactly two possible cells each, and where those cells fall in the
+    <strong>same two columns</strong>. Those four cells form the corners of a rectangle. Whichever
+    way the 5s resolve, one of the two columns gets its 5 from the top row and the other from the
+    bottom row — so in both columns, the 5 is committed to one of these two rows. That means 5 can
+    be eliminated from those two columns everywhere else. The pattern works identically with rows
+    and columns swapped: two columns that confine the digit to the same two rows let you clear it
+    from those rows elsewhere. The X-Wing places nothing on its own; like locked candidates, it is
+    an elimination that breaks a puzzle back open.
+  </p>
+
+  <h2>How the techniques map to CardHearth difficulties</h2>
+  <p>
+    Our difficulty tiers are defined by exactly which rung of this ladder a puzzle can require —
+    never by adding luck or removing the unique solution.
+  </p>
+  <ul>
+    <li>
+      <a href="/sudoku-easy/"><strong>Easy</strong></a> — solvable with naked and hidden singles
+      alone. No candidate bookkeeping strictly required.
+    </li>
+    <li>
+      <a href="/sudoku-hard/"><strong>Hard</strong></a> — adds locked candidates (pointing and
+      claiming) and naked pairs. You will want pencil marks here.
+    </li>
+    <li>
+      <a href="/sudoku-expert/"><strong>Expert</strong></a> — can require hidden pairs and the
+      X-Wing. Still pure logic, just deeper patterns.
+    </li>
+  </ul>
+  <p>
+    Whatever the tier, the guarantee holds: one solution, reachable by deduction. The standard
+    <a href="/sudoku/">Sudoku</a> game mixes these tiers as you play.
+  </p>
+
+  <h2>Habits of fast solvers</h2>
+  <ul>
+    <li>
+      <strong>Scan systematically.</strong> Sweep boxes, then rows, then columns for one digit at
+      a time, looking for hidden singles, before you reach for anything fancier.
+    </li>
+    <li>
+      <strong>Fill candidates only when scanning stalls.</strong> Marking up the whole grid too
+      early is slow and error-prone; let the easy placements go first, then pencil in candidates
+      where you are stuck.
+    </li>
+    <li>
+      <strong>Attack the most-constrained units first.</strong> A row, column, or box that is
+      already mostly full is where forced placements hide — start where the grid is densest.
+    </li>
+    <li>
+      <strong>Never guess.</strong> If nothing moves, you have missed an elimination, not run out
+      of logic. Re-scan for locked candidates and pairs; the puzzle always yields.
+    </li>
+  </ul>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    The fastest way to internalise this ladder is to climb it in order: <a href="/sudoku/">play a
+    Sudoku</a> and consciously name the technique behind each move. When you want a different kind
+    of planning challenge, our <a href="/guides/how-to-win-klondike-solitaire/">how to win
+    Klondike Solitaire</a> guide rewards forward thinking in a very different way, and the
+    <a href="/guides/">guides hub</a> covers the whole CardHearth library.
+  </p>
+</Article>

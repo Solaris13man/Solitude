@@ -20,6 +20,8 @@ interface Props {
   cardSettings?: boolean;
   /** Visible breadcrumb trail (matches the page's BreadcrumbList schema). */
   breadcrumb?: { name: string; href: string }[];
+  /** Optional link to this game's in-depth strategy guide. */
+  guide?: { href: string; label: string };
 }
 
 const {
@@ -30,6 +32,7 @@ const {
   scoreLabel = 'Score',
   cardSettings = true,
   breadcrumb,
+  guide,
 } = Astro.props;
 ---
 
@@ -137,6 +140,14 @@ const {
       }
     } catch (e) {}
   </script>
+
+  {
+    guide && (
+      <p class="game-guide-link">
+        <a class="guide-cta" href={guide.href}>📖 {guide.label}</a>
+      </p>
+    )
+  }
 
   <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
     <h2 class="more-games-title">More games</h2>

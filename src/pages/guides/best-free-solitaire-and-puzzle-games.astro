@@ -1,0 +1,138 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'The Best Free Solitaire & Puzzle Games to Play Online | CardHearth';
+const description =
+  'A friendly tour of the best free solitaire and puzzle games you can play in your browser — Klondike, Spider, FreeCell, Sudoku, Mahjong, Minesweeper, 2048 and more. No download, no sign-up.';
+const updated = '2026-06-13';
+const heading = 'The Best Free Solitaire & Puzzle Games';
+const subtitle =
+  'Every game on CardHearth is free, runs in your browser, and needs no sign-up. Here is which one to play depending on your mood.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Best Free Solitaire & Puzzle Games', href: '/guides/best-free-solitaire-and-puzzle-games/' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'The Best Free Solitaire & Puzzle Games to Play Online',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/best-free-solitaire-and-puzzle-games/',
+    image: 'https://cardhearth.com/og.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/', label: 'Browse all games' }}
+>
+  <p>
+    There are a lot of places to play classic games online, and most of them feel a decade old —
+    slow pages, cluttered screens, pop-ups everywhere. CardHearth is the opposite: every game
+    loads instantly, plays beautifully with a mouse or a finger, and is genuinely free with no
+    account required. Below is a quick tour of the whole library so you can pick the right game
+    for the moment.
+  </p>
+
+  <h2>Solitaire (card games)</h2>
+
+  <h3><a href="/klondike/">Klondike Solitaire</a></h3>
+  <p>
+    The one most people mean by "Solitaire." Move every card to the foundations, building
+    alternating-colour runs along the way. Forgiving, endlessly replayable, and the best place to
+    start. New to it? Read <a href="/guides/how-to-win-klondike-solitaire/">how to win Klondike</a>.
+  </p>
+
+  <h3><a href="/spider/">Spider Solitaire</a></h3>
+  <p>
+    Build same-suit runs from King down to Ace across ten columns. The 2-suit game is a great
+    middle challenge; 4-suit is for experts. Our <a href="/guides/spider-solitaire-strategy/">Spider
+    strategy guide</a> shows how to keep columns open and avoid tangles.
+  </p>
+
+  <h3><a href="/freecell/">FreeCell</a></h3>
+  <p>
+    Every card is on the table from the start, so it's pure planning — and almost every deal is
+    winnable. If you like a puzzle you can actually solve with thought rather than luck, this is
+    your game. See the <a href="/guides/freecell-strategy/">FreeCell strategy guide</a>.
+  </p>
+
+  <h3>Quick rounds: <a href="/pyramid/">Pyramid</a>, <a href="/tripeaks/">TriPeaks</a> &amp; <a href="/golf/">Golf</a></h3>
+  <p>
+    Three lighter solitaires for a short break. Pyramid has you pairing cards that sum to
+    thirteen; TriPeaks rewards long streaks as you clear three peaks; Golf is a fast "play up or
+    down" race to empty the course. Perfect for a few minutes between tasks.
+  </p>
+
+  <h2>Puzzles</h2>
+
+  <h3><a href="/sudoku/">Sudoku</a></h3>
+  <p>
+    Pure logic across four difficulties, with pencil marks built in. Every CardHearth puzzle is
+    guaranteed solvable without guessing. Learn the full ladder of methods in our
+    <a href="/guides/sudoku-solving-techniques/">Sudoku techniques guide</a>.
+  </p>
+
+  <h3><a href="/mahjong/">Mahjong Solitaire</a></h3>
+  <p>
+    Match free pairs of tiles to dismantle the layout. Every CardHearth deal is built to be
+    solvable, so a stuck board is a puzzle to read — not a dead end you were handed.
+  </p>
+
+  <h3><a href="/minesweeper/">Minesweeper</a> &amp; <a href="/2048/">2048</a></h3>
+  <p>
+    Two modern classics. Minesweeper is a game of deduction — read the numbers, flag the mines,
+    and (on CardHearth) take back a misclick with undo. 2048 is the addictive slide-and-merge
+    tile chase. Both are one click away, free.
+  </p>
+
+  <h2>A new game every day</h2>
+  <p>
+    Want variety without choosing? The <a href="/daily-challenge/">Daily Challenge</a> serves one
+    hand-picked game each day — the same for everyone — and tracks your streak. It's the easiest
+    way to keep a daily habit and discover games you might not have tried.
+  </p>
+
+  <h2>Why play on CardHearth</h2>
+  <ul>
+    <li><strong>Free, with no sign-up</strong> and nothing to install.</li>
+    <li><strong>Fast and clean</strong> — no clutter, works the same on phone and desktop.</li>
+    <li><strong>Generous features</strong> — unlimited undo, hints, statistics, streaks, themes,
+      and numbered deals you can replay or share with a friend.</li>
+    <li><strong>Your progress stays on your device</strong> unless you choose otherwise.</li>
+  </ul>
+  <p>
+    Pick something above, or just <a href="/">browse the full menu</a> and start playing. For
+    strategy on the bigger games, the <a href="/guides/">guides hub</a> has you covered.
+  </p>
+</Article>

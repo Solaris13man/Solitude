@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from './Footer.astro';
+
+interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  subtitle?: string;
+  /** ISO date the guide was last reviewed; shown and used in schema. */
+  updated?: string;
+  schema?: object | object[];
+  breadcrumb: Crumb[];
+  /** Primary call-to-action: usually "play the game this guide is about". */
+  cta?: { href: string; label: string };
+}
+
+const { title, description, heading, subtitle, updated, schema, breadcrumb, cta } =
+  Astro.props;
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      {
+        breadcrumb.map((c, i) => (
+          <>
+            {i > 0 && <span class="breadcrumb-sep" aria-hidden="true">›</span>}
+            {i < breadcrumb.length - 1 ? (
+              <a href={c.href}>{c.name}</a>
+            ) : (
+              <span aria-current="page">{c.name}</span>
+            )}
+          </>
+        ))
+      }
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h1>
+      {subtitle && <p class="mt-3 text-lg opacity-80">{subtitle}</p>}
+      {
+        updated && (
+          <p class="mt-3 text-xs uppercase tracking-wide opacity-55">
+            Last reviewed {new Date(updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+        )
+      }
+      {
+        cta && (
+          <p class="mt-5">
+            <a class="guide-cta" href={cta.href}>▶ {cta.label}</a>
+          </p>
+        )
+      }
+    </header>
+
+    <article class="prose py-4">
+      <slot />
+    </article>
+
+    {
+      cta && (
+        <p class="py-6">
+          <a class="guide-cta" href={cta.href}>▶ {cta.label}</a>
+        </p>
+      )
+    }
+
+    <Footer />
+  </main>
+</Layout>

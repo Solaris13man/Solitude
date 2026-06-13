@@ -62,7 +62,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="freecell" heading="FreeCell Solitaire">
+  <GameShell
+    gameId="freecell"
+    heading="FreeCell Solitaire"
+    guide={{ href: '/guides/freecell-strategy/', label: 'FreeCell strategy guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play FreeCell</h2>
     <p class="mb-3">
       All 52 cards are dealt face up into eight cascades — nothing is hidden, so every game is a
