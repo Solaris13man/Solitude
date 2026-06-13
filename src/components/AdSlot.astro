@@ -2,26 +2,27 @@
 import { SITE_CONFIG } from '../lib/site-config';
 
 interface Props {
-  /** Slot label, e.g. "in-content". Used for the AdSense slot id mapping. */
+  /** Slot label, used as the DOM data-slot for the refresh helper. */
   slot?: string;
 }
 
 const { slot = 'in-content' } = Astro.props;
 const { ads, showAdPlaceholders } = SITE_CONFIG;
+const live = ads.enabled && !!ads.adsenseClient && !!ads.inContentSlot;
 // Render nothing at all unless ads are live or placeholders are explicitly on.
-const visible = ads.enabled || showAdPlaceholders;
+const visible = live || showAdPlaceholders;
 ---
 
 {
   visible && (
-    <aside class="ad-slot" aria-label="Advertisement" data-slot={slot}>
+    <aside class="ad-slot" aria-label="Advertisement" data-ad-zone={slot}>
       <span class="ad-slot-tag">Advertisement</span>
-      {ads.enabled && ads.adsenseClient ? (
+      {live ? (
         <ins
           class="adsbygoogle"
           style="display:block"
           data-ad-client={ads.adsenseClient}
-          data-ad-slot={slot}
+          data-ad-slot={ads.inContentSlot}
           data-ad-format="auto"
           data-full-width-responsive="true"
         />
@@ -32,14 +33,11 @@ const visible = ads.enabled || showAdPlaceholders;
   )
 }
 
+{/* Request a fill for any ad units on the page (loader lives in Layout). */}
 {
-  ads.enabled && ads.adsenseClient && (
-    <script
-      is:inline
-      async
-      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ads.adsenseClient}`}
-      crossorigin="anonymous"
-    />
-    <script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  live && (
+    <script is:inline>
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   )
 }

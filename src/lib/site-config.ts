@@ -16,6 +16,19 @@ export interface SiteConfig {
     enabled: boolean;
     /** Google AdSense publisher id, e.g. "ca-pub-XXXXXXXXXXXXXXXX". */
     adsenseClient: string;
+    /**
+     * The numeric ad-unit slot id from your AdSense dashboard for the
+     * in-content unit (the string of digits in the unit's code).
+     */
+    inContentSlot: string;
+    /**
+     * Refresh the ad unit once when a game finishes. A finished game is a
+     * genuine user-driven content change (AdSense forbids timed/auto
+     * refresh), but enable this only deliberately — some publishers prefer
+     * to leave it off, and premium networks handle refresh better. Off by
+     * default.
+     */
+    refreshOnGameEnd: boolean;
   };
   accounts: {
     /**
@@ -42,6 +55,8 @@ export const SITE_CONFIG: SiteConfig = {
   ads: {
     enabled: false,
     adsenseClient: '',
+    inContentSlot: '',
+    refreshOnGameEnd: false,
   },
   accounts: {
     enabled: false,
