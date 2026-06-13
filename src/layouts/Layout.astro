@@ -24,6 +24,8 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="CardHearth" />
@@ -60,5 +62,15 @@ const ogImage = new URL('/og.png', Astro.site);
   </head>
   <body>
     <slot />
+    <script>
+      import { initAnalytics } from '../lib/analytics';
+      initAnalytics();
+      // Register the service worker for installability + fast repeat loads.
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>

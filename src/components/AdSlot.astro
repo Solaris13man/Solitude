@@ -1,0 +1,45 @@
+---
+import { SITE_CONFIG } from '../lib/site-config';
+
+interface Props {
+  /** Slot label, e.g. "in-content". Used for the AdSense slot id mapping. */
+  slot?: string;
+}
+
+const { slot = 'in-content' } = Astro.props;
+const { ads, showAdPlaceholders } = SITE_CONFIG;
+// Render nothing at all unless ads are live or placeholders are explicitly on.
+const visible = ads.enabled || showAdPlaceholders;
+---
+
+{
+  visible && (
+    <aside class="ad-slot" aria-label="Advertisement" data-slot={slot}>
+      <span class="ad-slot-tag">Advertisement</span>
+      {ads.enabled && ads.adsenseClient ? (
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client={ads.adsenseClient}
+          data-ad-slot={slot}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      ) : (
+        <div class="ad-slot-placeholder">Ad space</div>
+      )}
+    </aside>
+  )
+}
+
+{
+  ads.enabled && ads.adsenseClient && (
+    <script
+      is:inline
+      async
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ads.adsenseClient}`}
+      crossorigin="anonymous"
+    />
+    <script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  )
+}

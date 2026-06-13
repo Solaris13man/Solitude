@@ -74,8 +74,9 @@ const schema = [
       { value: 3, label: 'Expert (30×16, 99 mines)' },
     ]}
   >
-    <div slot="after-board" class="numpad" role="group" aria-label="Input mode">
-      <button id="flag-toggle" class="numpad-btn" type="button" aria-pressed="false" title="Toggle flag mode (F)">⚑ Flag mode</button>
+    <div slot="after-board" class="ms-modebar" role="group" aria-label="Input mode">
+      <span class="ms-mode-hint">Tap to open · switch on Flag mode to mark mines</span>
+      <button id="flag-toggle" class="numpad-btn ms-flag-toggle" type="button" aria-pressed="false" title="Toggle flag mode (F)">⚑ Flag mode</button>
     </div>
 
     <h2 class="mb-2 text-lg font-bold">How to play Minesweeper</h2>

@@ -132,6 +132,136 @@ export function countSolutions(grid: number[], limit = 2): number {
   return found;
 }
 
+/** The 27 units (9 rows, 9 columns, 9 boxes) as arrays of cell indexes. */
+const UNITS: number[][] = (() => {
+  const units: number[][] = [];
+  for (let r = 0; r < 9; r++) units.push(Array.from({ length: 9 }, (_, c) => r * 9 + c));
+  for (let c = 0; c < 9; c++) units.push(Array.from({ length: 9 }, (_, r) => r * 9 + c));
+  for (let b = 0; b < 9; b++) {
+    const br = Math.floor(b / 3) * 3;
+    const bc = (b % 3) * 3;
+    const cells: number[] = [];
+    for (let dr = 0; dr < 3; dr++) for (let dc = 0; dc < 3; dc++) cells.push((br + dr) * 9 + bc + dc);
+    units.push(cells);
+  }
+  return units;
+})();
+
+/** Pointing & claiming: when a digit's candidates inside one unit are all
+ *  confined to a single other unit, eliminate it from the rest of that other
+ *  unit. Returns true if any candidate was removed. */
+function lockedCandidates(grid: number[], cand: number[]): boolean {
+  let changed = false;
+  const eliminate = (bit: number, keep: (i: number) => boolean, scope: (i: number) => boolean) => {
+    for (let i = 0; i < 81; i++) {
+      if (!grid[i] && scope(i) && !keep(i) && cand[i]! & bit) {
+        cand[i]! &= ~bit;
+        changed = true;
+      }
+    }
+  };
+  for (const unit of UNITS) {
+    for (let d = 1; d <= 9; d++) {
+      const bit = 1 << (d - 1);
+      const spots = unit.filter((i) => !grid[i] && cand[i]! & bit);
+      if (spots.length < 2) continue;
+      const r0 = rowOf(spots[0]!);
+      const c0 = colOf(spots[0]!);
+      const b0 = boxOf(spots[0]!);
+      // pointing: confined to one box within a row/col → clear rest of box
+      if (spots.every((i) => boxOf(i) === b0)) {
+        eliminate(bit, (i) => spots.includes(i), (i) => boxOf(i) === b0);
+      }
+      // claiming: confined to one row within a box → clear rest of row
+      if (spots.every((i) => rowOf(i) === r0)) {
+        eliminate(bit, (i) => spots.includes(i), (i) => rowOf(i) === r0);
+      }
+      if (spots.every((i) => colOf(i) === c0)) {
+        eliminate(bit, (i) => spots.includes(i), (i) => colOf(i) === c0);
+      }
+    }
+  }
+  return changed;
+}
+
+/** Naked pairs: two cells in a unit sharing the same two candidates remove
+ *  those candidates from the rest of the unit. */
+function nakedPairs(grid: number[], cand: number[]): boolean {
+  let changed = false;
+  for (const unit of UNITS) {
+    const empties = unit.filter((i) => !grid[i]);
+    for (let a = 0; a < empties.length; a++) {
+      for (let b = a + 1; b < empties.length; b++) {
+        const ia = empties[a]!;
+        const ib = empties[b]!;
+        if (cand[ia] !== cand[ib] || popCount(cand[ia]!) !== 2) continue;
+        for (const i of empties) {
+          if (i !== ia && i !== ib && cand[i]! & cand[ia]!) {
+            cand[i]! &= ~cand[ia]!;
+            changed = true;
+          }
+        }
+      }
+    }
+  }
+  return changed;
+}
+
+/**
+ * Can the puzzle be solved by deduction alone (no guessing), using only
+ * techniques up to `maxLevel`? 1 = singles, 2 = + locked candidates,
+ * 3 = + naked pairs. This is what makes generated puzzles fair.
+ */
+export function logicalSolvable(givens: number[], maxLevel: number): boolean {
+  const grid = givens.slice();
+  const cand = new Array<number>(81).fill(0);
+  const recompute = () => {
+    for (let i = 0; i < 81; i++) cand[i] = grid[i] ? 0 : candidates(grid, i);
+  };
+  recompute();
+  let filled = grid.filter((v) => v).length;
+  while (filled < 81) {
+    let progress = false;
+    for (let i = 0; i < 81; i++) {
+      if (grid[i]) continue;
+      if (cand[i] === 0) return false; // contradiction
+      if (popCount(cand[i]!) === 1) {
+        grid[i] = Math.round(Math.log2(cand[i]!)) + 1;
+        filled++;
+        progress = true;
+      }
+    }
+    if (progress) {
+      recompute();
+      continue;
+    }
+    for (const unit of UNITS) {
+      for (let d = 1; d <= 9; d++) {
+        const bit = 1 << (d - 1);
+        let spot = -1;
+        let count = 0;
+        for (const i of unit) if (!grid[i] && cand[i]! & bit) { spot = i; count++; }
+        if (count === 1 && grid[spot] === 0) {
+          grid[spot] = d;
+          filled++;
+          progress = true;
+        }
+      }
+    }
+    if (progress) {
+      recompute();
+      continue;
+    }
+    if (maxLevel >= 2 && lockedCandidates(grid, cand)) continue;
+    if (maxLevel >= 3 && nakedPairs(grid, cand)) continue;
+    break;
+  }
+  return filled === 81;
+}
+
+/** Hardest technique tier a difficulty is allowed to require. */
+const MAX_TECHNIQUE: Record<number, number> = { 1: 1, 2: 1, 3: 2, 4: 3 };
+
 export function deal(seed: number, difficulty: number): SudokuState {
   const variant = difficulty >= 1 && difficulty <= 4 ? Math.floor(difficulty) : 1;
   const rng = mulberry32(seed);
@@ -139,12 +269,16 @@ export function deal(seed: number, difficulty: number): SudokuState {
   fillGrid(solution, rng);
   const puzzle = solution.slice();
   const target = TARGET_GIVENS[variant]!;
+  const maxLevel = MAX_TECHNIQUE[variant]!;
   let givenCount = 81;
   for (const i of shuffled(Array.from({ length: 81 }, (_, k) => k), rng)) {
     if (givenCount <= target) break;
     const backup = puzzle[i]!;
     puzzle[i] = 0;
-    if (countSolutions(puzzle.slice()) !== 1) {
+    // Keep the removal only if the puzzle stays uniquely solvable AND
+    // solvable by deduction within this difficulty's technique budget —
+    // so no generated puzzle ever requires guessing.
+    if (countSolutions(puzzle.slice()) !== 1 || !logicalSolvable(puzzle, maxLevel)) {
       puzzle[i] = backup;
     } else {
       givenCount--;

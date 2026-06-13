@@ -74,6 +74,20 @@ class MinesweeperController {
     } else if (!this.tryResume()) {
       this.newGame(false);
     }
+    this.onboard();
+  }
+
+  /** First-time tip so phone players discover flagging. */
+  private onboard(): void {
+    try {
+      if (localStorage.getItem('solitude.minesweeper.onboarded')) return;
+      localStorage.setItem('solitude.minesweeper.onboarded', '1');
+    } catch {
+      // ignore storage failures
+    }
+    window.setTimeout(() => {
+      this.announce('Tap to open a square. Use Flag mode (⚑) — or long-press — to mark a mine.', true);
+    }, 600);
   }
 
   private difficulty(): number {

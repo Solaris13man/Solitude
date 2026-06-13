@@ -7,6 +7,7 @@ import {
   deserialize,
   hintTarget,
   isWon,
+  logicalSolvable,
   revealCell,
   serialize,
   setCell,
@@ -40,6 +41,27 @@ describe('sudoku generation', () => {
       const s = deal(seed, 3);
       expect(countSolutions(s.givens.slice())).toBe(1);
     }
+  });
+
+  it('every difficulty is solvable by logic alone — no guessing required', () => {
+    // The technique budget per difficulty: easy/medium = singles only,
+    // hard = + locked candidates, expert = + naked pairs.
+    const maxLevel: Record<number, number> = { 1: 1, 2: 1, 3: 2, 4: 3 };
+    for (const variant of [1, 2, 3, 4]) {
+      for (const seed of [3, 88, 4242]) {
+        const s = deal(seed, variant);
+        expect(logicalSolvable(s.givens, maxLevel[variant]!)).toBe(true);
+      }
+    }
+  });
+
+  it('a puzzle needing guessing is rejected at the easy technique budget', () => {
+    // A famously hard 17-clue puzzle is uniquely solvable but not by singles.
+    const hard17 =
+      '000000010400000000020000000000050407008000300001090000300400200050100000000806000';
+    const grid = hard17.split('').map(Number);
+    expect(countSolutions(grid.slice())).toBe(1);
+    expect(logicalSolvable(grid, 1)).toBe(false);
   });
 
   it('givens match the solution and harder deals have fewer clues', () => {

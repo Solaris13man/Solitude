@@ -6,19 +6,34 @@ interface Props {
 }
 
 const { current } = Astro.props;
+
+// Group games so the switcher stays scannable as the catalog grows.
+const sections = [
+  { key: 'cards', label: 'Cards' },
+  { key: 'puzzle', label: 'Puzzles' },
+] as const;
 ---
 
 <nav class="game-nav" aria-label="Games">
   {
-    GAMES.map((game) => (
-      <a
-        href={game.href}
-        class:list={['game-nav-link', { active: game.id === current }]}
-        aria-current={game.id === current ? 'page' : undefined}
-        title={game.tagline}
-      >
-        {game.name}
-      </a>
-    ))
+    sections.map((section) => {
+      const games = GAMES.filter((g) => g.category === section.key);
+      if (games.length === 0) return null;
+      return (
+        <div class="game-nav-group">
+          <span class="game-nav-label">{section.label}</span>
+          {games.map((game) => (
+            <a
+              href={game.href}
+              class:list={['game-nav-link', { active: game.id === current }]}
+              aria-current={game.id === current ? 'page' : undefined}
+              title={game.tagline}
+            >
+              {game.name}
+            </a>
+          ))}
+        </div>
+      );
+    })
   }
 </nav>

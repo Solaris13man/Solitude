@@ -1,3 +1,5 @@
+import { track } from './analytics';
+
 export type GameId = string;
 
 /** Stats are tracked separately per variant (e.g. Draw 1 vs Draw 3), so a
@@ -99,6 +101,13 @@ export function recordResult(result: GameResult): Stats {
   }
   stats.variants[key] = v;
   saveStats(result.game, stats);
+  // Single choke point for every game's outcome — one analytics hook covers
+  // all 11 games' win/loss tracking.
+  track(result.won ? 'game_won' : 'game_lost', {
+    game: result.game,
+    variant: result.variant,
+    seconds: Math.round(result.elapsedMs / 1000),
+  });
   return stats;
 }
 

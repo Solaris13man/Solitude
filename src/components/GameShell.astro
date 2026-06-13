@@ -1,6 +1,7 @@
 ---
 import GameNav from './GameNav.astro';
 import Footer from './Footer.astro';
+import AdSlot from './AdSlot.astro';
 
 interface VariantOption {
   value: number;
@@ -96,6 +97,8 @@ const {
     <slot />
   </section>
 
+  <AdSlot slot="in-content" />
+
   <Footer />
 </div>
 
@@ -125,7 +128,7 @@ const {
       <option value="dark">Dark</option>
     </select>
   </label>
-  <label class="field">Felt color
+  <label class="field">{cardSettings ? 'Felt color' : 'Background'}
     <select id="set-felt">
       <option value="green">Green</option>
       <option value="blue">Blue</option>
@@ -179,12 +182,12 @@ const {
 </dialog>
 
 <dialog id="newgame-dialog" aria-labelledby="newgame-title">
-  <p id="newgame-title" class="dialog-title">Start a new game?</p>
+  <p id="newgame-title" class="dialog-title">Start a fresh game?</p>
   <p class="my-3 text-sm opacity-80">
-    Your current game will be abandoned and counted as a loss, ending your streak.
+    You haven't finished this one yet — starting fresh will reset your current win streak.
   </p>
   <div class="flex justify-end gap-2">
     <button class="btn" type="button" data-close-dialog>Keep playing</button>
-    <button id="btn-confirm-new" class="btn btn-primary" type="button">New game</button>
+    <button id="btn-confirm-new" class="btn btn-primary" type="button">Start fresh</button>
   </div>
 </dialog>

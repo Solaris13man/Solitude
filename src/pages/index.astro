@@ -4,9 +4,12 @@ import GameArt from '../components/GameArt.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
 
-const title = 'CardHearth — Free Solitaire & Classic Card Games Online';
+const title = 'CardHearth — Free Solitaire & Puzzle Games Online';
 const description =
-  'Play free Solitaire online: Klondike, Spider, and FreeCell in your browser. Smooth animations, full touch support, unlimited undo — always free, no download, no sign-up.';
+  'Play free Solitaire, Sudoku, Mahjong, 2048, Minesweeper and more in your browser. Smooth animations, full touch support, unlimited undo — always free, no download, no sign-up.';
+
+const cardCount = GAMES.filter((g) => g.category === 'cards').length;
+const puzzleCount = GAMES.filter((g) => g.category === 'puzzle').length;
 
 const schema = [
   {
@@ -23,16 +26,31 @@ const schema = [
     url: 'https://cardhearth.com/',
     logo: 'https://cardhearth.com/logo.png',
   },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'CardHearth free online games',
+    url: 'https://cardhearth.com/',
+    description,
+    hasPart: GAMES.map((g) => ({
+      '@type': 'VideoGame',
+      name: g.name,
+      url: `https://cardhearth.com${g.href}`,
+    })),
+  },
 ];
 ---
 
 <Layout title={title} description={description} schema={schema}>
   <main class="mx-auto flex min-h-dvh w-full max-w-4xl flex-col px-4">
     <header class="py-10 text-center sm:py-14">
-      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">CardHearth</h1>
+      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
+        Free Solitaire &amp; Puzzle Games
+      </h1>
       <p class="mx-auto mt-3 max-w-md text-base opacity-85">
-        Free solitaire and classic card games, beautifully playable on any device. Pick a game
-        to start — your progress, stats and streaks are saved automatically.
+        CardHearth is {cardCount + puzzleCount} classic games — solitaire, Sudoku, Mahjong and
+        more — beautifully playable on any device. Pick one to start; your progress, stats and
+        streaks save automatically.
       </p>
     </header>
 
@@ -64,25 +82,27 @@ const schema = [
     </nav>
 
     <section class="mx-auto max-w-2xl py-12 text-sm leading-relaxed opacity-90">
-      <h2 class="mb-2 text-lg font-bold">Free solitaire, three ways</h2>
+      <h2 class="mb-2 text-lg font-bold">Solitaire, puzzles, and classics — all free</h2>
       <p class="mb-3">
-        <a class="underline" href="/klondike/">Klondike Solitaire</a> is the classic everyone
-        knows — build four foundations from Ace to King, in Draw&nbsp;1 or Draw&nbsp;3 mode.
-        <a class="underline" href="/spider/">Spider Solitaire</a> deals two full decks across ten
-        columns; assemble complete King-to-Ace runs in 1, 2 or 4-suit difficulty.
-        <a class="underline" href="/freecell/">FreeCell</a> lays every card face up — with four
-        spare cells and a clear head, nearly every deal can be won.
+        The card table runs deep: <a class="underline" href="/klondike/">Klondike</a> (Draw 1 or
+        Draw 3), <a class="underline" href="/spider/">Spider</a> in 1, 2 or 4 suits,
+        <a class="underline" href="/freecell/">FreeCell</a>, plus
+        <a class="underline" href="/pyramid/">Pyramid</a>,
+        <a class="underline" href="/tripeaks/">TriPeaks</a> and
+        <a class="underline" href="/golf/">Golf</a>. On the puzzle side there's
+        <a class="underline" href="/sudoku/">Sudoku</a> (four difficulties, every puzzle solvable
+        by logic), <a class="underline" href="/mahjong/">Mahjong</a> with eight layouts and a
+        guaranteed-winnable promise, classic <a class="underline" href="/minesweeper/">Minesweeper</a>,
+        and <a class="underline" href="/2048/">2048</a>.
       </p>
       <p class="mb-3">
-        Every game works with mouse, touch or keyboard, and comes with unlimited undo, hints,
-        auto-finish, and numbered deals you can replay or share to challenge a friend on the
-        exact same cards. And once a day there's the
-        <a class="underline" href="/daily-challenge/">Daily Challenge</a> — one deal, identical
-        for everyone, with a streak to defend.
+        Every game works with mouse, touch or keyboard, with unlimited undo, hints, and numbered
+        deals you can replay or share to challenge a friend on the exact same board. And once a
+        day there's the <a class="underline" href="/daily-challenge/">Daily Challenge</a> — one
+        deal, identical for everyone, with a streak to defend.
       </p>
       <p class="opacity-75">
         CardHearth runs entirely on your device — no account, no install, always free to play.
-        More classic games are on the way.
       </p>
     </section>
 

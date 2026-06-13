@@ -60,6 +60,8 @@ export class MinesweeperBoard {
       cell.addEventListener('pointerup', cancel);
       cell.addEventListener('pointercancel', cancel);
       cell.addEventListener('pointerleave', cancel);
+      // A scroll/drag must not trip the long-press flag.
+      cell.addEventListener('pointermove', cancel);
       grid.appendChild(cell);
       this.cells.push(cell);
     }
