@@ -1,0 +1,107 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Daily Solitaire Challenge — A New Deal Every Day | CardHearth';
+const description =
+  'Play the CardHearth Daily Challenge: one Klondike Solitaire deal per day, identical for every player worldwide. Solve it, keep your streak alive, and challenge your friends — free, no sign-up.';
+
+const faq = [
+  {
+    q: 'How does the Daily Challenge work?',
+    a: 'Every day there is one Klondike Solitaire deal (Draw 1), and it is exactly the same for every player in the world — the cards are derived from the date itself. Solve it to extend your daily streak. A new deal arrives at midnight UTC.',
+  },
+  {
+    q: 'Is the daily deal the same for everyone?',
+    a: 'Yes. The shuffle is generated from the calendar date, so your deal is identical to everyone else’s. That makes times and move counts directly comparable — share yours and see who solves it faster.',
+  },
+  {
+    q: 'What happens to my streak if I miss a day?',
+    a: 'Your current streak resets when a day passes without a solve, but your best streak and your history of solved days are kept. Your streak survives until midnight UTC, so there is always time to keep it alive today.',
+  },
+  {
+    q: 'Can every daily deal be won?',
+    a: 'Not necessarily — daily deals are honest random Klondike deals, and roughly one in five Klondike games cannot be won even with perfect play. Unlimited undo is fair game; part of the fun is figuring out whether today’s deal will yield at all.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'CardHearth Daily Solitaire Challenge',
+    url: 'https://cardhearth.com/daily-challenge/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Daily Challenge', item: 'https://cardhearth.com/daily-challenge/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="daily" heading="Daily Challenge">
+    <div slot="banner" class="daily-banner">
+      <span id="daily-title" class="daily-banner-title">Daily Challenge</span>
+      <span id="daily-status" class="daily-banner-status">One deal a day, the same for everyone.</span>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">One deal. Everyone. Every day.</h2>
+    <p class="mb-3">
+      The Daily Challenge serves a single Klondike Solitaire deal (Draw 1) each day — and because
+      the cards are generated from the date itself, <strong>every player in the world gets the
+      identical deal</strong>. Your time and move count mean something here: they're directly
+      comparable with anyone else who played today. Solve it before midnight UTC to extend your
+      <strong>daily streak</strong>, then share your result and dare a friend to beat it.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">How streaks work</h2>
+    <p class="mb-3">
+      Solve the daily deal on consecutive days and your streak grows; miss a day and it resets
+      (your best streak and full history are always kept — check the Stats panel). Unlimited
+      undo and hints are fair game: the challenge is finishing, and the bragging rights are in
+      the time. If you solve it twice, your faster time is kept.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Warm up first on <a class="underline" href="/klondike/">Klondike Solitaire</a>, or try
+      <a class="underline" href="/spider/">Spider</a> and
+      <a class="underline" href="/freecell/">FreeCell</a> while you wait for tomorrow's deal.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { klondikeRules } from '../games/cards/klondike';
+    startGame(klondikeRules, { daily: true, forceVariant: 1 });
+  </script>
+</Layout>

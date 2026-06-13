@@ -51,6 +51,24 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'daily' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A calendar page with a playing card" class="art">
+      <rect x="60" y="22" width="92" height="92" rx="10" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      <rect x="60" y="22" width="92" height="26" rx="10" fill="#c2273a" />
+      <rect x="60" y="38" width="92" height="10" fill="#c2273a" />
+      <circle cx="82" cy="22" r="4" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      <circle cx="130" cy="22" r="4" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      <text x="106" y="92" font-size="34" font-weight="700" text-anchor="middle" fill="#1d2230">13</text>
+      <g transform="translate(170 78) rotate(12)">
+        <rect x="-26" y="-36" width="52" height="72" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-18" y="-18" font-size="12" font-weight="700" fill="#c2273a">A</text>
+        <text x="0" y="10" font-size="26" text-anchor="middle" fill="#c2273a">♦</text>
+      </g>
+      <text x="44" y="40" font-size="16" fill="#ffd95e">★</text>
+    </svg>
+  )
+}
+{
   game === 'freecell' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="Free cells and an ace" class="art">
       <g fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="2">

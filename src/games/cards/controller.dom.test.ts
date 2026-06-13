@@ -24,6 +24,8 @@ const PAGE_SCAFFOLD = `
   <span id="stat-deal"></span>
   <div class="board-scroll"><div id="board" class="board"></div></div>
   <div id="toast" hidden></div>
+  <span id="daily-title"></span>
+  <span id="daily-status"></span>
   <p id="announcer"></p>
   <dialog id="settings-dialog">
     <select id="set-variant"><option value="1">1</option><option value="3">3</option></select>
@@ -61,6 +63,22 @@ beforeEach(() => {
   (Element.prototype as any).setPointerCapture ??= () => {};
   (Element.prototype as any).releasePointerCapture ??= () => {};
   setUpPage();
+});
+
+describe('daily challenge mode', () => {
+  it('deals the date-derived seed and saves under its own key', async () => {
+    const { dailySeed, dailyNumber } = await import('../../lib/daily');
+    startGame(klondikeRules, { daily: true, forceVariant: 1 });
+    tapStock();
+    const saved = JSON.parse(localStorage.getItem('solitude.game.v2.klondike.daily')!);
+    expect(saved.state.seed).toBe(dailySeed());
+    expect(saved.state.variant).toBe(1);
+    expect(document.getElementById('stat-deal')!.textContent).toBe(`Daily #${dailyNumber()}`);
+    expect(document.getElementById('daily-title')!.textContent).toContain('Daily Challenge #');
+    expect(document.getElementById('daily-status')!.textContent).toContain('Next deal in');
+    // the regular klondike save is untouched
+    expect(localStorage.getItem('solitude.game.v2.klondike')).toBeNull();
+  });
 });
 
 describe('game controller', () => {

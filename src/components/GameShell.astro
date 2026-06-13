@@ -62,6 +62,8 @@ const { gameId, heading, variantLabel, variantOptions } = Astro.props;
 
   <GameNav current={gameId} />
 
+  <slot name="banner" />
+
   <div class="hud" role="status" aria-label="Game status">
     <span><span class="hud-label">Time</span><span id="stat-time">0:00</span></span>
     <span><span class="hud-label">Moves</span><span id="stat-moves">0</span></span>

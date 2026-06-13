@@ -152,6 +152,27 @@ body {
   .menu-card:hover { transform: none; }
 }
 
+.daily-banner {
+  margin: 0 auto 0.8rem;
+  max-width: 36rem;
+  text-align: center;
+  padding: 0.55rem 1.2rem;
+  border-radius: 0.8rem;
+  background: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(255 217 94 / 0.35);
+}
+.daily-banner .daily-banner-title {
+  display: block;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.daily-banner .daily-banner-status {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-top: 0.15rem;
+}
+
 .game-nav {
   display: flex;
   justify-content: center;

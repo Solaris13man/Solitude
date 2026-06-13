@@ -34,4 +34,11 @@ export const GAMES: GameInfo[] = [
     tagline: 'Every deal is open — and almost all are winnable',
     category: 'cards',
   },
+  {
+    id: 'daily',
+    name: 'Daily Challenge',
+    href: '/daily-challenge/',
+    tagline: 'One deal a day, the same for everyone — keep your streak alive',
+    category: 'cards',
+  },
 ];
