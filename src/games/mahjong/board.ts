@@ -1,4 +1,4 @@
-import { TURTLE, type MahjongState, isFree } from './engine';
+import { type MahjongState, type TileSlot, isFree, layoutOf } from './engine';
 
 /** Visual faces for each tile kind: corner label + main glyph + color. */
 function face(kind: string): { corner: string; glyph: string; cls: string } {
@@ -34,6 +34,7 @@ export class MahjongBoard {
   readonly container: HTMLElement;
   private onTap: (index: number) => void;
   private tileEls: HTMLElement[] = [];
+  private slots: TileSlot[] = [];
   private tileW = 44;
   private tileH = 58;
 
@@ -48,6 +49,7 @@ export class MahjongBoard {
   mount(state: MahjongState): void {
     for (const el of this.tileEls) el.remove();
     this.tileEls = [];
+    this.slots = layoutOf(state.variant).slots;
     state.tiles.forEach((tile, i) => {
       const el = document.createElement('button');
       el.type = 'button';
@@ -63,13 +65,24 @@ export class MahjongBoard {
     this.computeMetrics();
   }
 
+  private widthUnits(): number {
+    return this.slots.length ? Math.max(...this.slots.map((s) => s.x)) / 2 + 1 : 15;
+  }
+
+  private heightUnits(): number {
+    return this.slots.length ? Math.max(...this.slots.map((s) => s.y)) / 2 + 1 : 8;
+  }
+
+  private maxZ(): number {
+    return this.slots.length ? Math.max(...this.slots.map((s) => s.z)) : 4;
+  }
+
   computeMetrics(): void {
     const availW = this.container.clientWidth || 700;
-    // formation spans 30 half-tiles wide (x 0..28 + tile width)
-    this.tileW = Math.min(Math.floor(availW / 15.6), 64);
+    this.tileW = Math.min(Math.floor(availW / (this.widthUnits() + 0.6)), 64);
     this.tileH = Math.round(this.tileW * 1.32);
     const lift = Math.max(3, Math.round(this.tileW * 0.09));
-    const boardH = 8 * this.tileH + lift * 5 + 8;
+    const boardH = this.heightUnits() * this.tileH + lift * (this.maxZ() + 1) + 8;
     this.container.style.height = `${boardH}px`;
     this.container.style.setProperty('--tile-w', `${this.tileW}px`);
     this.container.style.setProperty('--tile-h', `${this.tileH}px`);
@@ -79,12 +92,13 @@ export class MahjongBoard {
   private layout(): void {
     const availW = this.container.clientWidth || 700;
     const lift = Math.max(3, Math.round(this.tileW * 0.09));
-    const ox = Math.max(0, (availW - 15 * this.tileW) / 2);
-    TURTLE.forEach((slot, i) => {
+    const ox = Math.max(0, (availW - this.widthUnits() * this.tileW) / 2);
+    const oy = lift * this.maxZ() + 4;
+    this.slots.forEach((slot, i) => {
       const el = this.tileEls[i];
       if (!el) return;
       const x = ox + (slot.x / 2) * this.tileW + slot.z * lift;
-      const y = (slot.y / 2) * this.tileH - slot.z * lift + lift * 4 + 4;
+      const y = (slot.y / 2) * this.tileH - slot.z * lift + oy;
       el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       el.style.zIndex = String(slot.z * 1000 + slot.y * 30 + slot.x);
     });

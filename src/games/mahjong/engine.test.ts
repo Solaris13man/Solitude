@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CROSS,
+  FORTRESS,
+  LAYOUTS,
   TURTLE,
+  ZIGGURAT,
   cloneState,
   deal,
   deserialize,
@@ -39,6 +43,63 @@ describe('mahjong layout and tile set', () => {
     expect(matches('f1', 's1')).toBe(false);
     expect(matches('d3', 'd3')).toBe(true);
     expect(matches('d3', 'b3')).toBe(false);
+  });
+});
+
+describe('mahjong layouts', () => {
+  it('all layouts have even, expected sizes', () => {
+    expect(TURTLE).toHaveLength(144);
+    expect(CROSS).toHaveLength(74);
+    expect(ZIGGURAT).toHaveLength(132);
+    expect(FORTRESS).toHaveLength(128);
+    for (const l of LAYOUTS) expect(l.slots.length % 2).toBe(0);
+  });
+
+  it('no two slots collide within a layout', () => {
+    for (const l of LAYOUTS) {
+      for (let a = 0; a < l.slots.length; a++) {
+        for (let b = a + 1; b < l.slots.length; b++) {
+          const sa = l.slots[a]!;
+          const sb = l.slots[b]!;
+          const collide =
+            sa.z === sb.z && Math.abs(sa.x - sb.x) < 2 && Math.abs(sa.y - sb.y) < 2;
+          expect(collide).toBe(false);
+        }
+      }
+    }
+  });
+
+  it('every layout deals winnable boards with a legal tile pool', () => {
+    for (const l of LAYOUTS) {
+      const s = deal(11, l.value);
+      expect(s.tiles).toHaveLength(l.slots.length);
+      expect(s.variant).toBe(l.value);
+      // never more than four copies of a kind, flowers/seasons unique
+      const counts = new Map<string, number>();
+      for (const t of s.tiles) counts.set(t.kind, (counts.get(t.kind) ?? 0) + 1);
+      for (const [kind, n] of counts) {
+        expect(n).toBeLessThanOrEqual(kind.startsWith('f') || kind.startsWith('s') ? 1 : 4);
+      }
+      // construction replay proves winnability
+      const { kinds, solution } = generateDeal(11, l.value);
+      expect(solution).toHaveLength(l.slots.length / 2);
+      const state = {
+        game: 'mahjong' as const,
+        seed: 11,
+        variant: l.value,
+        tiles: kinds.map((kind) => ({ kind, removed: false })),
+        moves: 0,
+        score: 0,
+      };
+      for (const [a, b] of solution) {
+        expect(isFree(state, a)).toBe(true);
+        expect(isFree(state, b)).toBe(true);
+        expect(matches(state.tiles[a]!.kind, state.tiles[b]!.kind)).toBe(true);
+        state.tiles[a]!.removed = true;
+        state.tiles[b]!.removed = true;
+      }
+      expect(isWon(state)).toBe(true);
+    }
   });
 });
 

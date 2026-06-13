@@ -27,6 +27,30 @@ export interface MahjongState {
   score: number;
 }
 
+const range = (from: number, to: number) => {
+  const out: number[] = [];
+  for (let x = from; x <= to; x += 2) out.push(x);
+  return out;
+};
+
+/** Filled rectangle of slots on one layer. */
+function block(x0: number, x1: number, y0: number, y1: number, z: number): TileSlot[] {
+  const out: TileSlot[] = [];
+  for (const y of range(y0, y1)) for (const x of range(x0, x1)) out.push({ x, y, z });
+  return out;
+}
+
+/** Hollow rectangle (perimeter only) on one layer. */
+function ring(x0: number, x1: number, y0: number, y1: number, z: number): TileSlot[] {
+  const out: TileSlot[] = [];
+  for (const y of range(y0, y1)) {
+    for (const x of range(x0, x1)) {
+      if (y === y0 || y === y1 || x === x0 || x === x1) out.push({ x, y, z });
+    }
+  }
+  return out;
+}
+
 /** The classic Turtle: 144 slots across five layers. */
 export const TURTLE: TileSlot[] = (() => {
   const slots: TileSlot[] = [];
@@ -62,6 +86,54 @@ export const TURTLE: TileSlot[] = (() => {
   return slots;
 })();
 
+/** Cross: two crossing bars, stepped layers. 74 tiles. */
+export const CROSS: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  slots.push(...block(0, 26, 6, 8, 0));
+  for (const y of [0, 2, 4, 10, 12, 14]) for (const x of [12, 14]) slots.push({ x, y, z: 0 });
+  slots.push(...block(6, 20, 6, 8, 1));
+  for (const y of [2, 4, 10, 12]) for (const x of [12, 14]) slots.push({ x, y, z: 1 });
+  slots.push(...block(10, 16, 6, 8, 2));
+  slots.push({ x: 12, y: 7, z: 3 }, { x: 14, y: 7, z: 3 });
+  return slots;
+})();
+
+/** Ziggurat: a stepped square pyramid. 132 tiles. */
+export const ZIGGURAT: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  slots.push(...block(0, 22, 0, 10, 0));
+  slots.push(...block(2, 20, 2, 8, 1));
+  slots.push(...block(4, 18, 4, 6, 2));
+  for (const x of [8, 10, 12, 14]) slots.push({ x, y: 5, z: 3 });
+  return slots;
+})();
+
+/** Fortress: a filled courtyard with rising walls. 128 tiles. */
+export const FORTRESS: TileSlot[] = (() => {
+  const slots: TileSlot[] = [];
+  slots.push(...block(0, 22, 0, 12, 0));
+  slots.push(...ring(2, 20, 2, 10, 1));
+  slots.push(...ring(4, 18, 4, 8, 2));
+  return slots;
+})();
+
+export interface MahjongLayout {
+  value: number;
+  label: string;
+  slots: TileSlot[];
+}
+
+export const LAYOUTS: MahjongLayout[] = [
+  { value: 1, label: 'Turtle (144 tiles)', slots: TURTLE },
+  { value: 2, label: 'Cross (74 tiles)', slots: CROSS },
+  { value: 3, label: 'Ziggurat (132 tiles)', slots: ZIGGURAT },
+  { value: 4, label: 'Fortress (128 tiles)', slots: FORTRESS },
+];
+
+export function layoutOf(variant: number): MahjongLayout {
+  return LAYOUTS.find((l) => l.value === variant) ?? LAYOUTS[0]!;
+}
+
 /** 4 copies of 34 matchable kinds + 4 unique flowers + 4 unique seasons. */
 export function tileKinds(): string[] {
   const kinds: string[] = [];
@@ -93,13 +165,13 @@ function overlaps(a: TileSlot, b: TileSlot): boolean {
 }
 
 /** Free given a set of occupied slot indexes. */
-function freeIn(occupied: boolean[], index: number): boolean {
-  const slot = TURTLE[index]!;
+function freeIn(slots: TileSlot[], occupied: boolean[], index: number): boolean {
+  const slot = slots[index]!;
   let leftBlocked = false;
   let rightBlocked = false;
-  for (let i = 0; i < TURTLE.length; i++) {
+  for (let i = 0; i < slots.length; i++) {
     if (!occupied[i] || i === index) continue;
-    const other = TURTLE[i]!;
+    const other = slots[i]!;
     if (other.z === slot.z + 1 && overlaps(other, slot)) return false;
     if (other.z === slot.z && Math.abs(other.y - slot.y) < 2) {
       if (other.x === slot.x - 2) leftBlocked = true;
@@ -111,7 +183,27 @@ function freeIn(occupied: boolean[], index: number): boolean {
 
 export function isFree(state: MahjongState, index: number): boolean {
   if (state.tiles[index]!.removed) return false;
-  return freeIn(state.tiles.map((t) => !t.removed), index);
+  return freeIn(layoutOf(state.variant).slots, state.tiles.map((t) => !t.removed), index);
+}
+
+/**
+ * Canonical pair order, used to size the tile pool to smaller layouts: one
+ * pair of every kind first (interleaved across suits), then the duplicates.
+ * Flowers and seasons pair within their groups.
+ */
+function pairPool(count: number): [string, string][] {
+  const order: [string, string][] = [];
+  const onePass = (fs: [string, string], ss: [string, string]) => {
+    for (let n = 1; n <= 9; n++) {
+      for (const s of ['d', 'b', 'c']) order.push([`${s}${n}`, `${s}${n}`]);
+    }
+    for (const w of ['wE', 'wS', 'wW', 'wN']) order.push([w, w]);
+    for (const g of ['gR', 'gG', 'gW']) order.push([g, g]);
+    order.push(fs, ss);
+  };
+  onePass(['f1', 'f2'], ['s1', 's2']);
+  onePass(['f3', 'f4'], ['s3', 's4']);
+  return order.slice(0, count);
 }
 
 /**
@@ -120,40 +212,36 @@ export function isFree(state: MahjongState, index: number): boolean {
  * tile pair. Replaying the removals in order solves the deal, so the deal
  * is winnable by construction.
  */
-export function generateDeal(seed: number): { kinds: string[]; solution: [number, number][] } {
+export function generateDeal(
+  seed: number,
+  variant = 1,
+): { kinds: string[]; solution: [number, number][] } {
+  const slots = layoutOf(variant).slots;
   for (let attempt = 0; attempt < 60; attempt++) {
     const rng = mulberry32((seed + attempt * 0x9e3779b9) >>> 0);
-    const result = tryGenerate(rng);
+    const result = tryGenerate(slots, rng);
     if (result) return result;
   }
   throw new Error('mahjong deal generation failed');
 }
 
-function tryGenerate(rng: Rng): { kinds: string[]; solution: [number, number][] } | null {
-  // Shuffle matchable pairs of kinds.
-  const kindList = tileKinds();
-  const pairs: [string, string][] = [];
-  const pool = new Map<string, number>();
-  for (const k of kindList) pool.set(k, (pool.get(k) ?? 0) + 1);
-  // Build 72 pairs: identical kinds pair up; flowers together, seasons together.
-  for (const [kind, count] of pool) {
-    if (kind.startsWith('f') || kind.startsWith('s')) continue;
-    for (let i = 0; i < count / 2; i++) pairs.push([kind, kind]);
-  }
-  pairs.push(['f1', 'f2'], ['f3', 'f4'], ['s1', 's2'], ['s3', 's4']);
-  // shuffle pair order
+function tryGenerate(
+  slots: TileSlot[],
+  rng: Rng,
+): { kinds: string[]; solution: [number, number][] } | null {
+  const pairs = pairPool(slots.length / 2);
   for (let i = pairs.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [pairs[i], pairs[j]] = [pairs[j]!, pairs[i]!];
   }
 
-  const occupied = TURTLE.map(() => true);
-  const kinds = new Array<string>(TURTLE.length).fill('');
+  const occupied = slots.map(() => true);
+  const kinds = new Array<string>(slots.length).fill('');
   const solution: [number, number][] = [];
   for (const [ka, kb] of pairs) {
     const free: number[] = [];
-    for (let i = 0; i < TURTLE.length; i++) {
-      if (occupied[i] && freeIn(occupied, i)) free.push(i);
+    for (let i = 0; i < slots.length; i++) {
+      if (occupied[i] && freeIn(slots, occupied, i)) free.push(i);
     }
     if (free.length < 2) return null;
     const ai = Math.floor(rng() * free.length);
@@ -169,12 +257,13 @@ function tryGenerate(rng: Rng): { kinds: string[]; solution: [number, number][] 
   return { kinds, solution };
 }
 
-export function deal(seed: number): MahjongState {
-  const { kinds } = generateDeal(seed);
+export function deal(seed: number, variant = 1): MahjongState {
+  const layout = layoutOf(variant);
+  const { kinds } = generateDeal(seed, layout.value);
   return {
     game: 'mahjong',
     seed,
-    variant: 0,
+    variant: layout.value,
     tiles: kinds.map((kind) => ({ kind, removed: false })),
     moves: 0,
     score: 0,
@@ -214,10 +303,11 @@ export function tilesLeft(state: MahjongState): number {
 
 /** A matching free pair, or null when the position is dead. */
 export function hint(state: MahjongState): [number, number] | null {
+  const slots = layoutOf(state.variant).slots;
   const free: number[] = [];
   const occupied = state.tiles.map((t) => !t.removed);
-  for (let i = 0; i < TURTLE.length; i++) {
-    if (occupied[i] && freeIn(occupied, i)) free.push(i);
+  for (let i = 0; i < slots.length; i++) {
+    if (occupied[i] && freeIn(slots, occupied, i)) free.push(i);
   }
   for (let a = 0; a < free.length; a++) {
     for (let b = a + 1; b < free.length; b++) {
@@ -243,7 +333,10 @@ export function deserialize(json: string): SerializedMahjong | null {
   try {
     const data = JSON.parse(json) as SerializedMahjong;
     if (data.v !== 1 || data.state?.game !== 'mahjong') return null;
-    if (!Array.isArray(data.state.tiles) || data.state.tiles.length !== TURTLE.length) return null;
+    const layout = layoutOf(data.state.variant);
+    if (!Array.isArray(data.state.tiles) || data.state.tiles.length !== layout.slots.length) {
+      return null;
+    }
     return data;
   } catch {
     return null;

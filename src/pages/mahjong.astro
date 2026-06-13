@@ -62,7 +62,19 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="mahjong" heading="Mahjong" scoreLabel="Pairs left" cardSettings={false}>
+  <GameShell
+    gameId="mahjong"
+    heading="Mahjong"
+    scoreLabel="Pairs left"
+    cardSettings={false}
+    variantLabel="Layout"
+    variantOptions={[
+      { value: 1, label: 'Turtle (144 tiles)' },
+      { value: 2, label: 'Cross (74 tiles)' },
+      { value: 3, label: 'Ziggurat (132 tiles)' },
+      { value: 4, label: 'Fortress (128 tiles)' },
+    ]}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play Mahjong Solitaire</h2>
     <p class="mb-3">
       One hundred forty-four tiles stack into the classic five-layer
@@ -71,6 +83,14 @@ const schema = [
       tiles (dots ●, bamboo ❚, characters 万), winds and dragons match their exact twin;
       <strong>any flower matches any flower</strong>, and any season any season. Clear all 72
       pairs to dismantle the turtle.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Four layouts</h2>
+    <p class="mb-3">
+      Switch formations in Settings: the classic <strong>Turtle</strong> (144 tiles, five
+      layers), the quick <strong>Cross</strong> (74 tiles — a good first game), the broad
+      stepped <strong>Ziggurat</strong> (132), and the wall-ringed <strong>Fortress</strong>
+      (128), whose tall edges hide their tiles until the walls come down. Every layout deals
+      solvable boards, and each keeps its own statistics.
     </p>
     <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
     <p class="mb-3">

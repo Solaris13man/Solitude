@@ -10,12 +10,14 @@ import {
 import { randomSeed } from '../cards/rng';
 import { MahjongBoard } from './board';
 import {
+  LAYOUTS,
   type MahjongState,
   cloneState,
   deal,
   deserialize,
   hint,
   isWon,
+  layoutOf,
   serialize,
   tap,
   tilesLeft,
@@ -62,21 +64,28 @@ class MahjongController {
 
     const shared = this.sharedDealFromUrl();
     if (shared !== null) {
-      this.newGame(false, shared);
+      this.newGame(false, shared.seed, shared.variant);
       this.announce('Shared deal loaded.', true);
     } else if (!this.tryResume()) {
       this.newGame(false);
     }
   }
 
-  private sharedDealFromUrl(): number | null {
+  private layoutVariant(): number {
+    return this.settings.variants[GAME_ID] ?? 1;
+  }
+
+  private sharedDealFromUrl(): { seed: number; variant?: number } | null {
     try {
-      const raw = new URLSearchParams(window.location.search).get('deal');
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get('deal');
       if (!raw) return null;
       const seed = Number.parseInt(raw, 10);
       if (!Number.isFinite(seed) || seed < 0) return null;
+      const mode = Number.parseInt(params.get('mode') ?? '', 10);
+      const variant = LAYOUTS.some((l) => l.value === mode) ? mode : undefined;
       window.history.replaceState(null, '', window.location.pathname);
-      return seed >>> 0;
+      return { seed: seed >>> 0, variant };
     } catch {
       return null;
     }
@@ -90,18 +99,18 @@ class MahjongController {
     this.newGame(false);
   }
 
-  private newGame(countAbandon: boolean, seed?: number): void {
+  private newGame(countAbandon: boolean, seed?: number, variantOverride?: number): void {
     if (countAbandon && this.state && this.state.moves > 0 && !this.finished) {
       recordResult({
         game: GAME_ID,
-        variant: 0,
+        variant: this.state.variant,
         won: false,
         elapsedMs: this.elapsedMs(),
         moves: this.state.moves,
         score: this.state.score,
       });
     }
-    this.state = deal(seed ?? randomSeed());
+    this.state = deal(seed ?? randomSeed(), variantOverride ?? this.layoutVariant());
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -225,15 +234,16 @@ class MahjongController {
     const elapsed = this.elapsedMs();
     const stats = recordResult({
       game: GAME_ID,
-      variant: 0,
+      variant: this.state.variant,
       won: true,
       elapsedMs: elapsed,
       moves: this.state.moves,
       score: this.state.score,
     });
-    const v = variantStats(stats, 0);
+    const v = variantStats(stats, this.state.variant);
     $('win-summary').innerHTML = [
       `<dt>Time</dt><dd>${formatTime(elapsed)}${v.bestTimeMs === elapsed ? ' — new best!' : ''}</dd>`,
+      `<dt>Layout</dt><dd>${layoutOf(this.state.variant).label.replace(/ \(.*\)/, '')}</dd>`,
       `<dt>Pairs matched</dt><dd>${this.state.moves}</dd>`,
       `<dt>Streak</dt><dd>${v.currentStreak}</dd>`,
     ].join('');
@@ -259,7 +269,7 @@ class MahjongController {
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
-      this.newGame(false, this.state.seed);
+      this.newGame(false, this.state.seed, this.state.variant);
       this.announce('Replaying the same deal.', true);
     });
     $opt('btn-share')?.addEventListener('click', () => void this.shareDeal());
@@ -276,7 +286,7 @@ class MahjongController {
   }
 
   private async shareDeal(): Promise<void> {
-    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
+    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}&mode=${this.state.variant}`;
     const text = this.finished
       ? `I cleared Mahjong deal #${this.state.seed} in ${formatTime(this.elapsedMs())}. Can you beat it?`
       : `Try Mahjong deal #${this.state.seed} on CardHearth!`;
@@ -294,18 +304,27 @@ class MahjongController {
 
   private renderStats(): void {
     const stats = loadStats(GAME_ID);
-    const v = variantStats(stats, 0);
-    $('stats-body').innerHTML = [
-      `<dt>Games played</dt><dd>${v.gamesPlayed}</dd>`,
-      `<dt>Games won</dt><dd>${v.gamesWon}</dd>`,
-      `<dt>Win rate</dt><dd>${winRate(v)}%</dd>`,
-      `<dt>Current streak</dt><dd>${v.currentStreak}</dd>`,
-      `<dt>Best streak</dt><dd>${v.bestStreak}</dd>`,
-      `<dt>Best time</dt><dd>${v.bestTimeMs === null ? '—' : formatTime(v.bestTimeMs)}</dd>`,
-    ].join('');
+    const current = this.layoutVariant();
+    const tried = LAYOUTS.filter(
+      (l) => l.value === current || variantStats(stats, l.value).gamesPlayed > 0,
+    ).sort((a, b) => (a.value === current ? -1 : b.value === current ? 1 : 0));
+    $('stats-body').innerHTML = tried
+      .map((l) => {
+        const v = variantStats(stats, l.value);
+        return [
+          `<dt class="stats-section">${l.label.replace(/ \(.*\)/, '')}</dt><dd class="stats-section"></dd>`,
+          `<dt>Games played</dt><dd>${v.gamesPlayed}</dd>`,
+          `<dt>Games won</dt><dd>${v.gamesWon}</dd>`,
+          `<dt>Win rate</dt><dd>${winRate(v)}%</dd>`,
+          `<dt>Current streak</dt><dd>${v.currentStreak}</dd>`,
+          `<dt>Best time</dt><dd>${v.bestTimeMs === null ? '—' : formatTime(v.bestTimeMs)}</dd>`,
+        ].join('');
+      })
+      .join('');
   }
 
   private bindSettingsDialog(): void {
+    const variant = $opt('set-variant') as HTMLSelectElement | null;
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
@@ -313,6 +332,7 @@ class MahjongController {
     const anim = $('set-animations') as HTMLInputElement;
     const snd = $('set-sounds') as HTMLInputElement;
 
+    if (variant) variant.value = String(this.layoutVariant());
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
     back.value = this.settings.cardBack;
@@ -322,8 +342,11 @@ class MahjongController {
 
     const update = () => {
       const prevSounds = this.settings.sounds;
+      const variants = { ...this.settings.variants };
+      if (variant) variants[GAME_ID] = Number(variant.value);
       this.settings = {
         ...this.settings,
+        variants,
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
@@ -335,8 +358,10 @@ class MahjongController {
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
+      const note = $opt('variant-note');
+      if (note) note.hidden = this.layoutVariant() === this.state.variant;
     };
-    const controls = [theme, felt, back, anim, snd, ...(left ? [left] : [])];
+    const controls = [theme, felt, back, anim, snd, ...(left ? [left] : []), ...(variant ? [variant] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 
