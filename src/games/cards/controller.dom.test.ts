@@ -134,11 +134,11 @@ describe('game controller', () => {
     tapStock();
     document.getElementById('btn-new')!.click();
     // A started game is never abandoned silently: stats unchanged until confirmed.
-    expect(localStorage.getItem('solitude.stats.v2.klondike')).toBeNull();
+    expect(localStorage.getItem('solitude.stats.v3.klondike')).toBeNull();
     document.getElementById('btn-confirm-new')!.click();
-    const stats = JSON.parse(localStorage.getItem('solitude.stats.v2.klondike')!);
-    expect(stats.gamesPlayed).toBe(1);
-    expect(stats.gamesWon).toBe(0);
-    expect(stats.currentStreak).toBe(0);
+    const stats = JSON.parse(localStorage.getItem('solitude.stats.v3.klondike')!);
+    expect(stats.variants.v1.gamesPlayed).toBe(1);
+    expect(stats.variants.v1.gamesWon).toBe(0);
+    expect(stats.variants.v1.currentStreak).toBe(0);
   });
 });

@@ -1,0 +1,101 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Klondike Solitaire Draw 3 — Play Free Online | CardHearth';
+const description =
+  'Play Klondike Solitaire Draw 3 (turn three) free in your browser — the tougher classic where the stock turns three cards at a time. Unlimited undo, hints, no download.';
+
+const faq = [
+  {
+    q: 'How is Draw 3 different from regular solitaire?',
+    a: 'The rules on the board are identical — the difference is the stock. Draw 3 (also called "turn three") flips three cards at a time and only the top of the three is playable, so on any one pass just a third of the stock is reachable. Playing or holding waste cards shifts which cards surface on the next pass, which adds a planning layer Draw 1 does not have.',
+  },
+  {
+    q: 'How much harder is Draw 3 to win?',
+    a: 'Considerably. Skilled players win perhaps 15–25% of Draw 3 games versus 30–45% in Draw 1, because key cards can cycle out of phase and never surface. Unlimited passes through the stock (as played here) keep it fair; unlimited undo lets you experiment with stock timing.',
+  },
+  {
+    q: 'Does scoring change in Draw 3?',
+    a: 'Card scoring is the same; the recycle penalty differs. Draw 1 docks 100 points each time the waste is recycled, while Draw 3 allows three free passes and then docks 20 points per recycle after that.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Klondike Solitaire Draw 3',
+    url: 'https://cardhearth.com/klondike-draw-3/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Klondike Solitaire', item: 'https://cardhearth.com/klondike/' },
+      { '@type': 'ListItem', position: 3, name: 'Draw 3', item: 'https://cardhearth.com/klondike-draw-3/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="klondike" heading="Klondike Draw 3">
+    <h2 class="mb-2 text-lg font-bold">Klondike Solitaire, the hard way</h2>
+    <p class="mb-3">
+      This is classic Klondike with the <strong>three-card draw</strong>: tapping the stock turns
+      over three cards at once, and only the top one is playable. Everything else is the
+      solitaire you know — build the four foundations from Ace to King by suit, stack the
+      tableau in descending alternating colors, Kings to empty columns.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy for the three-card draw</h2>
+    <p class="mb-3">
+      Draw 3 is won and lost in the stock. The order of the waste never changes on its own — it
+      only shifts when you <em>play</em> a card from it, which moves every later card one
+      position and changes which cards surface next pass. So before grabbing a playable waste
+      card, ask what it does to the cards behind it: sometimes deliberately skipping a play
+      brings a more important card to the surface on the next cycle. Early on, prioritize
+      flipping face-down tableau cards and keep your first pass through the stock exploratory —
+      knowing what's buried is worth more than a quick foundation point.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Easier pace? Play <a class="underline" href="/klondike/">Klondike Draw 1</a>. Want a
+      different challenge? Try <a class="underline" href="/spider/">Spider Solitaire</a> or
+      <a class="underline" href="/freecell/">FreeCell</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { klondikeRules } from '../games/cards/klondike';
+    startGame(klondikeRules, { forceVariant: 3 });
+  </script>
+</Layout>

@@ -105,11 +105,11 @@ export function applyMove(state: GameState, move: Move): void {
       }
       state.recycles++;
       state.moves++;
-      // Standard scoring: -100 per pass in draw 1; -20 after the third pass
-      // in draw 3.
+      // Standard scoring: -100 per pass in draw 1; -20 per pass after the
+      // third in draw 3.
       if (state.variant === 1) {
         state.score = Math.max(0, state.score - 100);
-      } else if (state.recycles > 3) {
+      } else if (state.recycles >= 3) {
         state.score = Math.max(0, state.score - 20);
       }
       return;
@@ -254,6 +254,26 @@ export function findHint(state: GameState): Move | null {
     });
     if (useful) {
       return canDraw(state) ? { type: 'draw' } : { type: 'recycle' };
+    }
+    // Last resort before declaring the game dead: worrying a foundation card
+    // back to the tableau is legal and can unlock a stock/waste card.
+    for (let fi = 0; fi < state.foundations.length; fi++) {
+      const card = top(state.foundations[fi]!);
+      if (!card) continue;
+      const enables = cycling.some(
+        (c) => isRed(c.suit) !== isRed(card.suit) && c.rank === card.rank - 1,
+      );
+      if (!enables) continue;
+      for (let ti = 0; ti < state.tableau.length; ti++) {
+        if (fitsOnTableau(card, top(state.tableau[ti]!))) {
+          return {
+            type: 'move',
+            from: { kind: 'foundation', index: fi },
+            to: { kind: 'tableau', index: ti },
+            count: 1,
+          };
+        }
+      }
     }
   }
   return null;

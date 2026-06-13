@@ -38,7 +38,8 @@ const schema = [
     operatingSystem: 'Any',
     playMode: 'SinglePlayer',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
   },
   {
     '@context': 'https://schema.org',
@@ -103,7 +104,9 @@ const schema = [
       Stuck? <strong>Hint</strong> (H) highlights a useful move. <strong>Undo</strong> is
       unlimited (U or Ctrl+Z), with redo on R. Press <strong>D</strong> or tap the stock to draw,
       <strong>N</strong> for a new deal, and <strong>A</strong> to auto-finish once every card is
-      face up. Switch Draw 1 / Draw 3, themes, card backs, and left-handed layout in Settings.
+      face up. Themes, card backs, and a left-handed layout live in Settings. Prefer the
+      tougher three-card stock? <a class="underline" href="/klondike-draw-3/">Klondike Draw 3</a>
+      has its own table.
     </p>
     <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
     {

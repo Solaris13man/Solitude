@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Spider Solitaire 2 Suits — Play Free Online | CardHearth';
+const description =
+  'Play 2 suit Spider Solitaire free in your browser — the perfect middle step between easy 1-suit and expert 4-suit Spider. Unlimited undo, hints, no download.';
+
+const faq = [
+  {
+    q: 'Is 2 suit Spider a good step up from 1 suit?',
+    a: 'It is the classic next step. With spades and hearts in play, descending stacks still come together quickly, but only same-suit runs move as a unit — so every off-suit placement now has a real cost. Most players win regularly at 2 suits once they learn to keep suits separated.',
+  },
+  {
+    q: 'How do the two decks split between suits?',
+    a: 'The 104 cards are four complete sets of spades and four of hearts. You need to assemble eight King-to-Ace runs — each in a single suit — to win.',
+  },
+  {
+    q: 'What is the most common 2-suit mistake?',
+    a: 'Burying a growing same-suit run under an off-suit card "just for now." Off-suit placements are sometimes necessary, but make them on stacks you have already written off, and keep at least one column clean for your best suit.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Spider Solitaire 2 Suits',
+    url: 'https://cardhearth.com/spider-2-suits/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Spider Solitaire', item: 'https://cardhearth.com/spider/' },
+      { '@type': 'ListItem', position: 3, name: '2 Suits', item: 'https://cardhearth.com/spider-2-suits/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="spider" heading="Spider — 2 Suits">
+    <h2 class="mb-2 text-lg font-bold">Two suits, twice the thinking</h2>
+    <p class="mb-3">
+      2 suit Spider deals 104 cards — spades and hearts — across ten columns. Build downward in
+      any suit, but remember only <strong>same-suit runs move together</strong>: a ♠9 on a ♠10
+      travels as a pair; a ♥9 on a ♠10 is stuck until the ♥9 moves on its own. Complete eight
+      King-to-Ace single-suit runs to clear the board.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips for 2 suits</h2>
+    <p class="mb-3">
+      Think of the board as two parallel games: try to dedicate columns to a suit and resist
+      mixing them just because a move is legal. Off-suit placements are <em>loans</em> — you'll
+      have to move that card again before anything beneath it is useful, so take them on piles
+      that are already messy. Empty a column before each stock deal if you can, and use it to
+      flip the suit of a stack: move the mixed top onto the empty column, rebuild it in suit,
+      and recover the cards underneath.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Still learning? Start with <a class="underline" href="/spider/">1 suit Spider</a>. Ready
+      for the summit? <a class="underline" href="/spider-4-suits/">4 suit Spider</a> awaits.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { spiderRules } from '../games/cards/spider';
+    startGame(spiderRules, { forceVariant: 2 });
+  </script>
+</Layout>

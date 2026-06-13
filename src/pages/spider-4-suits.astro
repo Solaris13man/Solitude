@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Spider Solitaire 4 Suits — Play Free Online | CardHearth';
+const description =
+  'Play 4 suit Spider Solitaire free in your browser — the expert version of Spider with all four suits in play. Unlimited undo, hints, deal numbers, no download.';
+
+const faq = [
+  {
+    q: 'How hard is 4 suit Spider Solitaire really?',
+    a: 'It is widely considered one of the hardest popular solitaires. Only same-suit runs move together, and with all four suits across two decks, win rates for strong players are commonly in the single digits to low teens without undo. Generous use of undo to explore lines is considered fair play here.',
+  },
+  {
+    q: 'Are some 4-suit deals impossible?',
+    a: 'Yes — a meaningful share of random 4-suit deals cannot be won even with perfect play. If a deal keeps beating you, note its number from the HUD: you can replay it to try new lines, or share it to see if a friend fares better.',
+  },
+  {
+    q: 'What separates good 4-suit players?',
+    a: 'Discipline about empty columns. Experts treat an open column as the most valuable object in the game — they spend several moves to create one, use it to re-sort mixed stacks into suits, and almost never deal from the stock while a promising dig is available.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Spider Solitaire 4 Suits',
+    url: 'https://cardhearth.com/spider-4-suits/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Spider Solitaire', item: 'https://cardhearth.com/spider/' },
+      { '@type': 'ListItem', position: 3, name: '4 Suits', item: 'https://cardhearth.com/spider-4-suits/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="spider" heading="Spider — 4 Suits">
+    <h2 class="mb-2 text-lg font-bold">The expert's Spider</h2>
+    <p class="mb-3">
+      All four suits, two full decks, ten columns — 4 suit Spider is the game 1- and 2-suit
+      players graduate into and never quite conquer. The rules are unchanged: build down in any
+      suit, move only same-suit runs as a unit, complete eight King-to-Ace runs to win. What
+      changes is that almost every legal move now has a hidden cost.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">How to actually win</h2>
+    <p class="mb-3">
+      Wins at 4 suits are engineered, not found. Count your five stock deals and treat each as a
+      deadline: before dealing, tidy every column you can, because the deal buries all ten at
+      once. Build the longest same-suit runs you can <em>early</em>, even at the price of
+      foundation-tempo, since long runs survive deals intact. Open columns are everything — use
+      them to peel off-suit caps from your best stacks, and don't fill them casually. And use
+      the deal number: replaying a brutal deal teaches more about Spider than ten fresh ones.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Too brutal today? Step down to <a class="underline" href="/spider-2-suits/">2 suit
+      Spider</a> or <a class="underline" href="/spider/">1 suit Spider</a> — or unwind with
+      <a class="underline" href="/freecell/">FreeCell</a>, where nearly every deal is winnable.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { spiderRules } from '../games/cards/spider';
+    startGame(spiderRules, { forceVariant: 4 });
+  </script>
+</Layout>

@@ -211,6 +211,12 @@ export function findHint(state: GameState): Move | null {
     }
   }
   for (let i = 0; i < state.tableau.length; i++) {
+    const pile = state.tableau[i]!;
+    // Never suggest parking a card that already sits on a legal build —
+    // otherwise the hint cycles it through a cell and back forever.
+    if (pile.length >= 2 && fitsOnCascade(pile[pile.length - 1]!, pile[pile.length - 2])) {
+      continue;
+    }
     const from: PileRef = { kind: 'tableau', index: i };
     for (let j = 0; j < state.cells.length; j++) {
       const to: PileRef = { kind: 'cell', index: j };

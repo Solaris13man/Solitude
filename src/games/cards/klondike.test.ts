@@ -338,6 +338,33 @@ describe('hints', () => {
     s.stock = [card('C', 2, false)]; // fits nothing, ever
     expect(findHint(s)).toBeNull();
   });
+
+  it('suggests worrying a foundation card back when it unlocks the stock', () => {
+    const s = emptyState();
+    s.foundations[0] = [card('H', 1), card('H', 2), card('H', 3), card('H', 4), card('H', 5)];
+    s.tableau[0] = [card('S', 6)];
+    s.stock = [card('C', 4, false)]; // playable only on a red 5
+    expect(findHint(s)).toEqual({
+      type: 'move',
+      from: { kind: 'foundation', index: 0 },
+      to: { kind: 'tableau', index: 0 },
+      count: 1,
+    });
+  });
+
+  it('draw 3 recycle penalty starts on the third pass', () => {
+    const s = deal(1, 3);
+    s.score = 100;
+    const recycleOnce = () => {
+      while (s.stock.length) applyMove(s, { type: 'draw' });
+      applyMove(s, { type: 'recycle' });
+    };
+    recycleOnce();
+    recycleOnce();
+    expect(s.score).toBe(100); // two free passes
+    recycleOnce();
+    expect(s.score).toBe(80); // third recycle docks 20
+  });
 });
 
 describe('serialization', () => {

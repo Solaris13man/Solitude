@@ -1,6 +1,13 @@
 import { History } from '../../lib/history';
 import { SoundPlayer } from '../../lib/sound';
-import { formatTime, loadStats, recordResult, winRate } from '../../lib/stats';
+import {
+  aggregate,
+  formatTime,
+  loadStats,
+  recordResult,
+  variantStats,
+  winRate,
+} from '../../lib/stats';
 import {
   type Settings,
   applySettings,
@@ -34,9 +41,18 @@ function $opt(id: string): HTMLElement | null {
   return document.getElementById(id);
 }
 
+export interface StartOptions {
+  /**
+   * Pin the game to one variant (used by landing pages like
+   * /spider-4-suits/). The settings variant select is absent on those pages.
+   */
+  forceVariant?: number;
+}
+
 /** Generic controller for any card Ruleset (Klondike, Spider, FreeCell, …). */
 class CardGameController {
   private ruleset: Ruleset;
+  private options: StartOptions;
   private saveKey: string;
   private state!: GameState;
   private history = new History<GameState>(cloneState);
@@ -48,8 +64,9 @@ class CardGameController {
   private finished = false;
   private autoFinishing = false;
 
-  constructor(ruleset: Ruleset) {
+  constructor(ruleset: Ruleset, options: StartOptions = {}) {
     this.ruleset = ruleset;
+    this.options = options;
     this.saveKey = `solitude.game.v2.${ruleset.id}`;
     this.settings = loadSettings();
     applySettings(this.settings);
@@ -76,29 +93,45 @@ class CardGameController {
       else if (!this.finished && this.state.moves > 0) this.resumeTimer();
     });
 
-    // A shared deal link (?deal=SEED) always starts that exact deal.
-    const sharedSeed = this.seedFromUrl();
-    if (sharedSeed !== null) {
-      this.newGame(false, sharedSeed);
+    // A shared deal link (?deal=SEED&mode=VARIANT) starts that exact deal —
+    // including the variant, so recipients truly get the same cards. The
+    // params are consumed once and stripped so a later reload resumes
+    // whatever is actually in progress instead of silently re-dealing.
+    const shared = this.sharedDealFromUrl();
+    if (shared !== null) {
+      this.newGame(false, shared.seed, shared.variant);
       this.announce('Shared deal loaded.', true);
     } else if (!this.tryResume()) {
       this.newGame(false);
     }
   }
 
-  private seedFromUrl(): number | null {
+  private sharedDealFromUrl(): { seed: number; variant?: number } | null {
     try {
-      const raw = new URLSearchParams(window.location.search).get('deal');
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get('deal');
       if (!raw) return null;
       const seed = Number.parseInt(raw, 10);
-      return Number.isFinite(seed) && seed >= 0 ? seed >>> 0 : null;
+      if (!Number.isFinite(seed) || seed < 0) return null;
+      const modeRaw = params.get('mode');
+      const mode = modeRaw === null ? undefined : Number.parseInt(modeRaw, 10);
+      const variant =
+        mode !== undefined && this.ruleset.variants.some((v) => v.value === mode)
+          ? mode
+          : undefined;
+      window.history.replaceState(null, '', window.location.pathname);
+      return { seed: seed >>> 0, variant };
     } catch {
       return null;
     }
   }
 
   private variant(): number {
-    return this.settings.variants[this.ruleset.id] ?? this.ruleset.defaultVariant;
+    return (
+      this.options.forceVariant ??
+      this.settings.variants[this.ruleset.id] ??
+      this.ruleset.defaultVariant
+    );
   }
 
   // ----- game lifecycle -------------------------------------------------
@@ -112,7 +145,7 @@ class CardGameController {
     this.newGame(false);
   }
 
-  private newGame(countAbandon: boolean, seed?: number): void {
+  private newGame(countAbandon: boolean, seed?: number, variantOverride?: number): void {
     if (countAbandon && this.state && this.state.moves > 0 && !this.finished) {
       recordResult({
         game: this.ruleset.id,
@@ -123,7 +156,7 @@ class CardGameController {
         score: this.state.score,
       });
     }
-    this.state = this.ruleset.deal(seed ?? randomSeed(), this.variant());
+    this.state = this.ruleset.deal(seed ?? randomSeed(), variantOverride ?? this.variant());
     this.history.clear();
     this.finished = false;
     this.autoFinishing = false;
@@ -143,6 +176,13 @@ class CardGameController {
       if (!raw) return false;
       const saved = deserialize(raw);
       if (!saved || saved.state.game !== this.ruleset.id || this.ruleset.isWon(saved.state)) {
+        return false;
+      }
+      // Variant landing pages only resume a save of their own variant.
+      if (
+        this.options.forceVariant !== undefined &&
+        saved.state.variant !== this.options.forceVariant
+      ) {
         return false;
       }
       this.state = saved.state;
@@ -276,12 +316,12 @@ class CardGameController {
       moves: this.state.moves,
       score: this.state.score,
     });
-    const best = stats.bestTimeMs[`v${this.state.variant}`];
+    const v = variantStats(stats, this.state.variant);
     $('win-summary').innerHTML = [
-      `<dt>Time</dt><dd>${formatTime(elapsed)}${best === elapsed ? ' — new best!' : ''}</dd>`,
+      `<dt>Time</dt><dd>${formatTime(elapsed)}${v.bestTimeMs === elapsed ? ' — new best!' : ''}</dd>`,
       `<dt>Moves</dt><dd>${this.state.moves}</dd>`,
       `<dt>Score</dt><dd>${this.state.score}</dd>`,
-      `<dt>Streak</dt><dd>${stats.currentStreak}</dd>`,
+      `<dt>Streak</dt><dd>${v.currentStreak}</dd>`,
     ].join('');
     this.sound.play('win');
     this.announce(`You won in ${formatTime(elapsed)} with ${this.state.moves} moves!`);
@@ -364,7 +404,7 @@ class CardGameController {
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
-      this.newGame(false, this.state.seed);
+      this.newGame(false, this.state.seed, this.state.variant);
       this.announce('Replaying the same deal.', true);
     });
     $opt('btn-share')?.addEventListener('click', () => void this.shareDeal());
@@ -383,9 +423,10 @@ class CardGameController {
     });
   }
 
-  /** Share the current deal (same seed → same cards for everyone). */
+  /** Share the current deal (same seed + variant → same cards for everyone). */
   private async shareDeal(): Promise<void> {
-    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
+    const mode = this.ruleset.variants.length > 0 ? `&mode=${this.state.variant}` : '';
+    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}${mode}`;
     const text = this.finished
       ? `I won ${this.ruleset.name} deal #${this.state.seed} in ${formatTime(this.elapsedMs())} with ${this.state.moves} moves. Can you beat it?`
       : `Try ${this.ruleset.name} deal #${this.state.seed} on CardHearth!`;
@@ -402,30 +443,31 @@ class CardGameController {
   }
 
   private renderStats(): void {
-    const s = loadStats(this.ruleset.id);
-    const bestTimes =
-      this.ruleset.variants.length > 0
-        ? this.ruleset.variants.map((v) => {
-            const t = s.bestTimeMs[`v${v.value}`];
-            return `<dt>Best time (${v.label})</dt><dd>${t == null ? '—' : formatTime(t)}</dd>`;
-          })
-        : [
-            `<dt>Best time</dt><dd>${
-              s.bestTimeMs[`v${this.ruleset.defaultVariant}`] == null
-                ? '—'
-                : formatTime(s.bestTimeMs[`v${this.ruleset.defaultVariant}`]!)
-            }</dd>`,
-          ];
-    $('stats-body').innerHTML = [
-      `<dt>Games played</dt><dd>${s.gamesPlayed}</dd>`,
-      `<dt>Games won</dt><dd>${s.gamesWon}</dd>`,
-      `<dt>Win rate</dt><dd>${winRate(s)}%</dd>`,
-      `<dt>Current streak</dt><dd>${s.currentStreak}</dd>`,
-      `<dt>Best streak</dt><dd>${s.bestStreak}</dd>`,
-      ...bestTimes,
-      `<dt>Best score</dt><dd>${s.bestScore}</dd>`,
-      `<dt>Total moves</dt><dd>${s.totalMoves}</dd>`,
-    ].join('');
+    const stats = loadStats(this.ruleset.id);
+    const rows = (label: string, v: ReturnType<typeof aggregate>): string =>
+      [
+        label ? `<dt class="stats-section">${label}</dt><dd class="stats-section"></dd>` : '',
+        `<dt>Games played</dt><dd>${v.gamesPlayed}</dd>`,
+        `<dt>Games won</dt><dd>${v.gamesWon}</dd>`,
+        `<dt>Win rate</dt><dd>${winRate(v)}%</dd>`,
+        `<dt>Current streak</dt><dd>${v.currentStreak}</dd>`,
+        `<dt>Best streak</dt><dd>${v.bestStreak}</dd>`,
+        `<dt>Best time</dt><dd>${v.bestTimeMs === null ? '—' : formatTime(v.bestTimeMs)}</dd>`,
+        `<dt>Best score</dt><dd>${v.bestScore}</dd>`,
+      ].join('');
+    if (this.ruleset.variants.length === 0) {
+      $('stats-body').innerHTML = rows('', variantStats(stats, this.ruleset.defaultVariant));
+      return;
+    }
+    // One section per variant the player has actually tried, current first.
+    const current = this.variant();
+    const tried = this.ruleset.variants.filter(
+      (v) => v.value === current || variantStats(stats, v.value).gamesPlayed > 0,
+    );
+    $('stats-body').innerHTML = tried
+      .sort((a, b) => (a.value === current ? -1 : b.value === current ? 1 : 0))
+      .map((v) => rows(v.label, variantStats(stats, v.value)))
+      .join('');
   }
 
   private bindSettingsDialog(): void {
@@ -549,6 +591,6 @@ class CardGameController {
   }
 }
 
-export function startGame(ruleset: Ruleset): void {
-  new CardGameController(ruleset);
+export function startGame(ruleset: Ruleset, options: StartOptions = {}): void {
+  new CardGameController(ruleset, options);
 }

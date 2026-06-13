@@ -38,7 +38,8 @@ const schema = [
     operatingSystem: 'Any',
     playMode: 'SinglePlayer',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
   },
   {
     '@context': 'https://schema.org',
@@ -87,7 +88,9 @@ const schema = [
     </p>
     <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
     <p class="mb-3">
-      Start with <strong>1 suit</strong> to learn the rhythm, then graduate to 2 and 4.
+      Start with <strong>1 suit</strong> to learn the rhythm, then graduate to
+      <a class="underline" href="/spider-2-suits/">2 suit Spider</a> and the expert-level
+      <a class="underline" href="/spider-4-suits/">4 suit Spider</a> — each has its own table.
       <strong>Prefer same-suit builds</strong> whenever you have the choice — an off-suit stack
       is a quick fix that costs mobility later, because it can't move as a unit.
       <strong>Empty columns are your most powerful tool:</strong> use them as workspace to

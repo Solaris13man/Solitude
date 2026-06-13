@@ -187,6 +187,13 @@ describe('freecell hints', () => {
     if (hint.type === 'move') expect(hint.to.kind).toBe('tableau');
   });
 
+  it('does not cycle a settled card through a free cell', () => {
+    const s = emptyState();
+    s.tableau[0] = [card('S', 10), card('H', 9)]; // H9 already builds on S10
+    // No other moves exist: the hint must NOT suggest parking H9 in a cell.
+    expect(findHint(s)).toBeNull();
+  });
+
   it('does not ping-pong a card already sitting on a legal build', () => {
     const s = emptyState();
     s.tableau[0] = [card('S', 10), card('H', 9)]; // H9 already builds on S10

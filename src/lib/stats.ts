@@ -1,38 +1,44 @@
-
-
 export type GameId = string;
 
-export interface Stats {
+/** Stats are tracked separately per variant (e.g. Draw 1 vs Draw 3), so a
+ *  casual 1-suit Spider game never dilutes a 4-suit win rate. */
+export interface VariantStats {
   gamesPlayed: number;
   gamesWon: number;
   currentStreak: number;
   bestStreak: number;
   totalMoves: number;
-  /** Best win time in ms, keyed by variant ("v1", "v3", "v0", …). */
-  bestTimeMs: Record<string, number | null>;
+  bestTimeMs: number | null;
   bestScore: number;
 }
 
-const keyFor = (game: GameId) => `solitude.stats.v2.${game}`;
+export interface Stats {
+  /** Keyed "v1", "v3", "v0", … */
+  variants: Record<string, VariantStats>;
+}
 
-const DEFAULT_STATS: Stats = {
-  gamesPlayed: 0,
-  gamesWon: 0,
-  currentStreak: 0,
-  bestStreak: 0,
-  totalMoves: 0,
-  bestTimeMs: {},
-  bestScore: 0,
-};
+const keyFor = (game: GameId) => `solitude.stats.v3.${game}`;
+
+export function emptyVariantStats(): VariantStats {
+  return {
+    gamesPlayed: 0,
+    gamesWon: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    totalMoves: 0,
+    bestTimeMs: null,
+    bestScore: 0,
+  };
+}
 
 export function loadStats(game: GameId): Stats {
   try {
     const raw = localStorage.getItem(keyFor(game));
-    if (!raw) return { ...DEFAULT_STATS, bestTimeMs: {} };
+    if (!raw) return { variants: {} };
     const parsed = JSON.parse(raw) as Partial<Stats>;
-    return { ...DEFAULT_STATS, ...parsed, bestTimeMs: { ...(parsed.bestTimeMs ?? {}) } };
+    return { variants: { ...(parsed.variants ?? {}) } };
   } catch {
-    return { ...DEFAULT_STATS, bestTimeMs: {} };
+    return { variants: {} };
   }
 }
 
@@ -44,6 +50,26 @@ export function saveStats(game: GameId, stats: Stats): void {
   }
 }
 
+export function variantStats(stats: Stats, variant: number): VariantStats {
+  return stats.variants[`v${variant}`] ?? emptyVariantStats();
+}
+
+/** Aggregate view across all variants of a game (for the overview rows). */
+export function aggregate(stats: Stats): VariantStats {
+  const total = emptyVariantStats();
+  for (const v of Object.values(stats.variants)) {
+    total.gamesPlayed += v.gamesPlayed;
+    total.gamesWon += v.gamesWon;
+    total.totalMoves += v.totalMoves;
+    total.bestStreak = Math.max(total.bestStreak, v.bestStreak);
+    total.bestScore = Math.max(total.bestScore, v.bestScore);
+    if (v.bestTimeMs !== null && (total.bestTimeMs === null || v.bestTimeMs < total.bestTimeMs)) {
+      total.bestTimeMs = v.bestTimeMs;
+    }
+  }
+  return total;
+}
+
 export interface GameResult {
   game: GameId;
   variant: number;
@@ -53,29 +79,30 @@ export interface GameResult {
   score: number;
 }
 
-/** Record a finished (won) or abandoned (lost) game and return updated stats. */
+/** Record a finished (won) or abandoned (lost) game; returns updated stats. */
 export function recordResult(result: GameResult): Stats {
   const stats = loadStats(result.game);
-  stats.gamesPlayed++;
-  stats.totalMoves += result.moves;
+  const key = `v${result.variant}`;
+  const v = stats.variants[key] ?? emptyVariantStats();
+  v.gamesPlayed++;
+  v.totalMoves += result.moves;
   if (result.won) {
-    stats.gamesWon++;
-    stats.currentStreak++;
-    stats.bestStreak = Math.max(stats.bestStreak, stats.currentStreak);
-    stats.bestScore = Math.max(stats.bestScore, result.score);
-    const key = `v${result.variant}`;
-    const prev = stats.bestTimeMs[key];
-    if (prev === null || prev === undefined || result.elapsedMs < prev) {
-      stats.bestTimeMs[key] = result.elapsedMs;
+    v.gamesWon++;
+    v.currentStreak++;
+    v.bestStreak = Math.max(v.bestStreak, v.currentStreak);
+    v.bestScore = Math.max(v.bestScore, result.score);
+    if (v.bestTimeMs === null || result.elapsedMs < v.bestTimeMs) {
+      v.bestTimeMs = result.elapsedMs;
     }
   } else {
-    stats.currentStreak = 0;
+    v.currentStreak = 0;
   }
+  stats.variants[key] = v;
   saveStats(result.game, stats);
   return stats;
 }
 
-export function winRate(stats: Stats): number {
+export function winRate(stats: VariantStats): number {
   return stats.gamesPlayed === 0 ? 0 : Math.round((stats.gamesWon / stats.gamesPlayed) * 100);
 }
 
