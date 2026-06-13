@@ -65,12 +65,15 @@ function frontMarkup(card: Card): string {
       <span class="court-suit court-suit-tl">${sym}</span>
       <span class="court-suit court-suit-br">${sym}</span>`;
   }
-  return PIP_LAYOUTS[card.rank]!
+  const pips = PIP_LAYOUTS[card.rank]!
     .map(
       ([x, y, flip]) =>
         `<span class="pip-spot${flip ? ' pip-flip' : ''}" style="left:${x}%;top:${y}%">${sym}</span>`,
     )
     .join('');
+  // The pip field is inset from the card edges so pips never collide with the
+  // corner indices.
+  return `<span class="pip-field">${pips}</span>`;
 }
 
 /** Build the standard card element (front pips + back); shared with the

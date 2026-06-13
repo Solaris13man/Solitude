@@ -7,9 +7,11 @@
 export interface SiteConfig {
   analytics: {
     /** 'none' disables analytics entirely (default). */
-    provider: 'none' | 'plausible';
-    /** The domain registered with the analytics provider. */
+    provider: 'none' | 'plausible' | 'ga';
+    /** The domain registered with the analytics provider (Plausible). */
     domain: string;
+    /** Google Analytics 4 measurement id, e.g. "G-XXXXXXXXXX". */
+    measurementId: string;
   };
   ads: {
     /** When false, AdSlot renders a clearly-labelled placeholder only. */
@@ -51,6 +53,7 @@ export const SITE_CONFIG: SiteConfig = {
   analytics: {
     provider: 'none',
     domain: 'cardhearth.com',
+    measurementId: '',
   },
   ads: {
     enabled: false,

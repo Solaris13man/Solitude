@@ -12,7 +12,7 @@ let initialized = false;
 export function initAnalytics(): void {
   if (initialized || typeof window === 'undefined') return;
   initialized = true;
-  const { provider, domain } = SITE_CONFIG.analytics;
+  const { provider, domain, measurementId } = SITE_CONFIG.analytics;
   if (provider === 'plausible') {
     const s = document.createElement('script');
     s.defer = true;
@@ -27,6 +27,18 @@ export function initAnalytics(): void {
         ((w.plausible as unknown as { q: unknown[] }).q =
           (w.plausible as unknown as { q?: unknown[] }).q || []).push(args);
       };
+  } else if (provider === 'ga' && measurementId) {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    document.head.appendChild(s);
+    const w = window as unknown as { dataLayer?: unknown[]; gtag?: (...a: unknown[]) => void };
+    w.dataLayer = w.dataLayer || [];
+    w.gtag = function (...args: unknown[]) {
+      w.dataLayer!.push(args);
+    };
+    w.gtag('js', new Date());
+    w.gtag('config', measurementId);
   }
 }
 
@@ -34,9 +46,13 @@ export function initAnalytics(): void {
 export function track(event: string, props?: Record<string, string | number | boolean>): void {
   if (typeof window === 'undefined') return;
   try {
-    if (SITE_CONFIG.analytics.provider === 'plausible') {
+    const provider = SITE_CONFIG.analytics.provider;
+    if (provider === 'plausible') {
       const w = window as unknown as { plausible?: (e: string, o?: object) => void };
       w.plausible?.(event, props ? { props } : undefined);
+    } else if (provider === 'ga') {
+      const w = window as unknown as { gtag?: (...a: unknown[]) => void };
+      w.gtag?.('event', event, props ?? {});
     }
     // Always mirror to a debug buffer so events are inspectable in dev/tests.
     const w = window as unknown as { __chEvents?: unknown[] };

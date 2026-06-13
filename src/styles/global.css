@@ -507,11 +507,16 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .corner-tl { top: 5%; left: 6%; }
 .corner-br { bottom: 5%; right: 6%; transform: rotate(180deg); }
 
-/* number-card pips, laid out in the classic arrangement */
+/* number-card pips, laid out in the classic arrangement inside an inset
+   field so they never collide with the corner indices */
+.pip-field {
+  position: absolute;
+  inset: 16% 18%;
+}
 .pip-spot {
   position: absolute;
   transform: translate(-50%, -50%);
-  font-size: clamp(0.5rem, calc(var(--card-w) * 0.21), 1.4rem);
+  font-size: clamp(0.45rem, calc(var(--card-w) * 0.19), 1.3rem);
   line-height: 1;
 }
 .pip-spot.pip-flip { transform: translate(-50%, -50%) rotate(180deg); }
