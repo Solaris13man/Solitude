@@ -1,0 +1,187 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Gin Rummy — Play Free Online vs Computer | CardHearth';
+const description =
+  'Play Gin Rummy free in your browser against the computer — draw, discard, form sets and runs, knock when your deadwood is low, and chase gin. No download, no sign-up.';
+
+const faq = [
+  {
+    q: 'How do you play Gin Rummy?',
+    a: 'Gin Rummy is a two-player game. Each turn you draw one card (from the stock or the discard pile) and discard one. You want to arrange your 10 cards into melds — sets of the same rank or runs of the same suit. When your unmatched "deadwood" cards total 10 points or less, you can knock to end the hand and score.',
+  },
+  {
+    q: 'What is gin and what is an undercut?',
+    a: 'Gin is melding all 10 cards (zero deadwood) — it earns a 25-point bonus and your opponent cannot lay off. On a normal knock, your opponent first lays off deadwood onto your melds; if their remaining deadwood is equal to or lower than yours, they undercut you and score the difference plus 25.',
+  },
+  {
+    q: 'How does scoring work?',
+    a: 'On a knock you score the difference between the two players’ deadwood. Gin adds 25, an undercut hands 25 to your opponent. First player to 100 points wins the game.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Gin Rummy',
+    url: 'https://cardhearth.com/gin/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/gin.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Gin Rummy', item: 'https://cardhearth.com/gin/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-2 sm:px-4">
+    <header class="flex flex-wrap items-center justify-between gap-2 py-3">
+      <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
+        Gin Rummy
+        <a href="/" class="font-normal no-underline opacity-70 hover:underline">· CardHearth</a>
+      </h1>
+      <nav class="flex flex-wrap gap-1.5" aria-label="Game controls">
+        <a href="/" class="btn" aria-label="Back to the game menu"><span class="btn-label">Home</span></a>
+        <button id="btn-new" class="btn" type="button"><span class="btn-label">New game</span></button>
+        <button id="btn-settings" class="btn" type="button"><span class="btn-label">Settings</span></button>
+      </nav>
+    </header>
+
+    <section class="gin-table" aria-label="Gin Rummy table">
+      <div class="gin-opp-row">
+        <span class="seat-chip" id="gin-score-opp">Opponent</span>
+        <div class="opp-hand" id="gin-opp"></div>
+      </div>
+
+      <div class="gin-piles">
+        <button class="gin-pile" id="gin-stock" type="button" aria-label="Draw from stock">
+          <span class="pile-count" id="gin-stock-count"></span>
+        </button>
+        <div class="gin-pile" id="gin-discard" role="button" tabindex="0" aria-label="Take the discard"></div>
+      </div>
+
+      <p class="hearts-status" id="gin-status" role="status" aria-live="polite"></p>
+
+      <div class="gin-hand-wrap">
+        <div class="my-hand" id="gin-hand"></div>
+        <div class="gin-controls">
+          <span class="seat-chip" id="gin-deadwood">Deadwood: 0</span>
+          <button class="btn" id="btn-knock" type="button" disabled>Knock</button>
+          <span class="seat-chip seat-chip-you" id="gin-score-you">You</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
+      <h2 class="mb-2 text-lg font-bold">How to play Gin Rummy</h2>
+      <p class="mb-3">
+        Gin Rummy is the classic two-player card game, here against the computer. Each turn you
+        <strong>draw</strong> a card — from the face-down stock or the top of the discard pile — and
+        then <strong>discard</strong> one. Your aim is to arrange your ten cards into
+        <strong>melds</strong>: sets (three or four of a kind) and runs (three or more in sequence
+        of one suit). Your hand is sorted so your melds group together automatically.
+      </p>
+      <p class="mb-3">
+        Leftover cards are <strong>deadwood</strong>. When your deadwood totals 10 or less, the
+        <strong>Knock</strong> button lights up — knock to end the hand and score the difference
+        between your deadwood and your opponent's. Meld all ten for <strong>gin</strong> and a
+        25-point bonus. First to 100 wins.
+      </p>
+      <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+      {
+        faq.map((f) => (
+          <details class="faq mb-2">
+            <summary class="cursor-pointer font-semibold">{f.q}</summary>
+            <p class="mt-2 opacity-90">{f.a}</p>
+          </details>
+        ))
+      }
+      <p class="mt-6 opacity-75">
+        More card games: <a class="underline" href="/hearts/">Hearts</a> and
+        <a class="underline" href="/spades/">Spades</a>.
+      </p>
+    </section>
+
+    <Footer />
+  </main>
+
+  <dialog id="round-dialog" aria-labelledby="round-title">
+    <p id="round-title" class="dialog-title">Hand scored</p>
+    <dl id="round-body" class="stats-grid"></dl>
+    <div class="mt-4 flex justify-end">
+      <button id="btn-round-continue" class="btn btn-primary" type="button">Next hand</button>
+    </div>
+  </dialog>
+
+  <dialog id="gin-over-dialog" aria-labelledby="gin-over-title">
+    <p id="gin-over-title" class="dialog-title dialog-title-lg">Game over</p>
+    <dl id="gin-over-body" class="stats-grid"></dl>
+    <div class="mt-4 flex justify-end">
+      <button id="btn-gin-again" class="btn btn-primary" type="button">New game</button>
+    </div>
+  </dialog>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <p id="settings-title" class="dialog-title mb-2">Settings</p>
+    <label class="field">Table surface
+      <select id="set-surface">
+        <option value="felt">Felt</option>
+        <option value="wood-walnut">Walnut wood</option>
+        <option value="wood-oak">Oak wood</option>
+        <option value="marble">Marble</option>
+        <option value="granite">Granite</option>
+      </select>
+    </label>
+    <label class="field">Card design
+      <select id="set-cardset">
+        <option value="new-blue">Modern · Blue back</option>
+        <option value="new-red">Modern · Red back</option>
+        <option value="vintage-blue">Vintage · Blue back</option>
+        <option value="vintage-red">Vintage · Red back</option>
+        <option value="classic">Classic (simple)</option>
+      </select>
+    </label>
+    <label class="field">Theme
+      <select id="set-theme">
+        <option value="auto">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <label class="field">Sounds
+      <input type="checkbox" id="set-sounds" />
+    </label>
+    <div class="mt-4 flex justify-end">
+      <button class="btn btn-primary" type="button" data-close-dialog>Done</button>
+    </div>
+  </dialog>
+
+  <script>
+    import { startGin } from '../games/gin/controller';
+    startGin();
+  </script>
+</Layout>

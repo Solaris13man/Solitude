@@ -164,6 +164,27 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'gin' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A run and a set of cards" class="art">
+      {[0, 1, 2].map((i) => (
+        <g transform={`translate(${66 + i * 20} 40)`}>
+          <rect x="-15" y="-22" width="30" height="44" rx="4" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+          <text x="0" y="6" font-size="14" text-anchor="middle" fill="#c2273a">{['3', '4', '5'][i]}</text>
+          <text x="-9" y="-9" font-size="8" font-weight="700" fill="#c2273a">♥</text>
+        </g>
+      ))}
+      {[0, 1, 2].map((i) => (
+        <g transform={`translate(${120 + i * 20} 92)`}>
+          <rect x="-15" y="-22" width="30" height="44" rx="4" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+          <text x="0" y="6" font-size="13" text-anchor="middle" fill="#1d2230">8</text>
+          <text x="-9" y="-9" font-size="8" font-weight="700" fill="#1d2230">{['♠', '♣', '♠'][i]}</text>
+        </g>
+      ))}
+      <text x="120" y="126" font-size="11" font-weight="800" text-anchor="middle" fill="#ffd95e">run + set</text>
+    </svg>
+  )
+}
+{
   game === 'spades' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="A fan of spade cards with a bid" class="art">
       <g transform="translate(88 72) rotate(-15)">

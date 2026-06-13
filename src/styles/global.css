@@ -1547,6 +1547,38 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .bid-btn:hover { background: rgb(255 217 94 / 0.3); transform: translateY(-2px); }
 .bid-btn:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
 
+/* gin rummy (2-player draw/discard) — reuses .hcard / .my-hand / .opp-hand */
+.gin-table {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.5rem 0 1rem;
+}
+.gin-opp-row { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.gin-piles { display: flex; gap: 1.6rem; align-items: center; justify-content: center; margin-top: 0.4rem; }
+.gin-pile {
+  position: relative;
+  width: clamp(2.6rem, 11vw, 3.6rem);
+  aspect-ratio: 150 / 210;
+  border-radius: max(4px, 6%);
+  border: 2px dashed rgb(255 255 255 / 0.22);
+  background: rgb(0 0 0 / 0.15);
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+.gin-pile .hcard { --hc-w: clamp(2.6rem, 11vw, 3.6rem); width: 100%; box-shadow: none; }
+.gin-pile.drawable { border-color: #ffd95e; cursor: pointer; box-shadow: 0 0 0 3px rgb(255 217 94 / 0.3); }
+.pile-count { position: absolute; bottom: -1.25rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; opacity: 0.6; }
+.gin-hand-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
+.gin-controls { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; justify-content: center; }
+.my-hand .hcard.group-start { margin-left: calc(var(--hc-w) * 0.24); }
+
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;

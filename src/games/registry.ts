@@ -110,6 +110,14 @@ export const GAMES: GameInfo[] = [
     category: 'cards',
   },
   {
+    id: 'gin',
+    name: 'Gin Rummy',
+    href: '/gin/',
+    tagline: 'Draw, meld sets and runs, and knock — vs the computer',
+    highlight: 'Play against the computer',
+    category: 'cards',
+  },
+  {
     id: 'sudoku',
     name: 'Sudoku',
     href: '/sudoku/',
