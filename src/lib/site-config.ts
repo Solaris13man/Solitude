@@ -51,9 +51,9 @@ export interface SiteConfig {
 
 export const SITE_CONFIG: SiteConfig = {
   analytics: {
-    provider: 'none',
+    provider: 'ga',
     domain: 'cardhearth.com',
-    measurementId: '',
+    measurementId: 'G-2QD63X4RF2',
   },
   ads: {
     enabled: false,
