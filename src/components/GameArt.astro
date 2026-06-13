@@ -51,6 +51,62 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'pyramid' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A pyramid of cards" class="art">
+      {[
+        [120, 16],
+        [102, 44], [138, 44],
+        [84, 72], [120, 72], [156, 72],
+        [66, 100], [102, 100], [138, 100], [174, 100],
+      ].map(([x, y], i) => (
+        <rect x={x! - 15} y={y!} width="30" height="42" rx="4" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      ))}
+      <text x="120" y="44" font-size="14" text-anchor="middle" fill="#1d2230">♠</text>
+      <text x="66" y="128" font-size="11" text-anchor="middle" fill="#c2273a">6♥</text>
+      <text x="174" y="128" font-size="11" text-anchor="middle" fill="#1d2230">7♣</text>
+    </svg>
+  )
+}
+{
+  game === 'tripeaks' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Three peaks of cards" class="art">
+      {[
+        [60, 14], [120, 14], [180, 14],
+        [46, 44], [74, 44], [106, 44], [134, 44], [166, 44], [194, 44],
+        [32, 74], [60, 74], [88, 74], [116, 74], [144, 74], [172, 74], [200, 74],
+      ].map(([x, y]) => (
+        <rect x={x! - 13} y={y!} width="26" height="36" rx="3.5" fill={y! < 70 ? '#a32934' : '#fcfcf7'} stroke={y! < 70 ? '#ffffff' : '#1d2230'} stroke-opacity={y! < 70 ? '0.5' : '0.3'} />
+      ))}
+      <text x="60" y="98" font-size="11" text-anchor="middle" fill="#c2273a">9♦</text>
+      <text x="116" y="98" font-size="11" text-anchor="middle" fill="#1d2230">8♠</text>
+      <text x="172" y="98" font-size="11" text-anchor="middle" fill="#c2273a">7♥</text>
+      <text x="120" y="128" font-size="13" text-anchor="middle" fill="#ffd95e">★ streak ★</text>
+    </svg>
+  )
+}
+{
+  game === 'golf' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Golf solitaire columns" class="art">
+      {[0, 1, 2, 3, 4].map((c) => (
+        <g>
+          <rect x={52 + c * 28} y="14" width="26" height="36" rx="3.5" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+          <rect x={52 + c * 28} y="32" width="26" height="36" rx="3.5" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+          <rect x={52 + c * 28} y="50" width="26" height="36" rx="3.5" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        </g>
+      ))}
+      <text x="65" y="76" font-size="11" text-anchor="middle" fill="#1d2230">4♣</text>
+      <text x="93" y="76" font-size="11" text-anchor="middle" fill="#c2273a">6♦</text>
+      <text x="121" y="76" font-size="11" text-anchor="middle" fill="#1d2230">5♠</text>
+      <text x="149" y="76" font-size="11" text-anchor="middle" fill="#c2273a">7♥</text>
+      <text x="177" y="76" font-size="11" text-anchor="middle" fill="#1d2230">3♠</text>
+      <g transform="translate(120 112)">
+        <rect x="-15" y="-21" width="30" height="42" rx="4" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.35" />
+        <text x="0" y="6" font-size="14" text-anchor="middle" fill="#c2273a">5♥</text>
+      </g>
+    </svg>
+  )
+}
+{
   game === 'sudoku' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="A sudoku grid" class="art">
       <rect x="75" y="13" width="108" height="108" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />

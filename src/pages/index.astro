@@ -36,19 +36,29 @@ const schema = [
       </p>
     </header>
 
-    <nav class="menu-grid" aria-label="Choose a game">
+    <nav aria-label="Choose a game">
       {
-        GAMES.map((game) => (
-          <a href={game.href} class="menu-card">
-            <span class="menu-art" aria-hidden="true">
-              <GameArt game={game.id} />
-            </span>
-            <span class="menu-card-body">
-              <span class="menu-card-name">{game.name}</span>
-              <span class="menu-card-tag">{game.tagline}</span>
-              <span class="menu-card-play">Play now →</span>
-            </span>
-          </a>
+        [
+          { key: 'cards', title: 'Card Games' },
+          { key: 'puzzle', title: 'Puzzles' },
+        ].map((section) => (
+          <>
+            <h2 class="menu-section">{section.title}</h2>
+            <div class="menu-grid">
+              {GAMES.filter((g) => g.category === section.key).map((game) => (
+                <a href={game.href} class="menu-card">
+                  <span class="menu-art" aria-hidden="true">
+                    <GameArt game={game.id} />
+                  </span>
+                  <span class="menu-card-body">
+                    <span class="menu-card-name">{game.name}</span>
+                    <span class="menu-card-tag">{game.tagline}</span>
+                    <span class="menu-card-play">Play now →</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </>
         ))
       }
     </nav>

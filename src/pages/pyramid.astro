@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Pyramid Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play Pyramid Solitaire free in your browser: pair cards that add to 13 and dismantle the pyramid. Unlimited undo, hints, deal sharing — no download, no sign-up.';
+
+const faq = [
+  {
+    q: 'How do pairs work in Pyramid Solitaire?',
+    a: 'Remove two exposed cards whose ranks add up to 13: Ace counts 1, Jack 11, Queen 12. So Queen+Ace, Jack+2, 10+3, 9+4, 8+5 and 7+6 all pair. Kings count 13 by themselves and come off with a single tap.',
+  },
+  {
+    q: 'Which cards count as exposed?',
+    a: 'A pyramid card is exposed when neither of the two cards overlapping it from below remains. The top card of the waste pile is always available too — you can pair it with any exposed pyramid card.',
+  },
+  {
+    q: 'How many passes through the stock do I get?',
+    a: 'Three: after the initial pass you may recycle the waste back into the stock twice. Spend late-stock cards carefully on the final pass.',
+  },
+  {
+    q: 'Is every Pyramid deal winnable?',
+    a: 'No — Pyramid has one of the lower win rates among popular solitaires, since a needed pair can be buried beneath itself. Unlimited undo helps you explore lines, and the deal number lets you retry or share a deal.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Pyramid Solitaire',
+    url: 'https://cardhearth.com/pyramid/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Pyramid Solitaire', item: 'https://cardhearth.com/pyramid/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="pyramid" heading="Pyramid">
+    <h2 class="mb-2 text-lg font-bold">How to play Pyramid Solitaire</h2>
+    <p class="mb-3">
+      Twenty-eight cards form a seven-row pyramid, all face up. Tap two exposed cards whose
+      ranks <strong>sum to 13</strong> to remove them — Queen+Ace, Jack+2, 10+3, 9+4, 8+5, 7+6 —
+      and tap a <strong>King alone</strong> to clear it instantly. A card is exposed once
+      nothing overlaps it from below. Flip cards from the stock when you're out of pairs; the
+      waste top can always join a pair. Dismantle the whole pyramid to win.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      Before your first move, scan for <strong>trapped pairs</strong>: if both cards of a pair
+      (say, both black 6s and both black 7s) sit on top of each other in the pyramid, the deal
+      may be unwinnable — knowing early saves time. Work the pyramid evenly rather than digging
+      one steep hole, since lopsided removal strands high rows. Don't burn waste cards
+      reflexively: with only three passes through the stock, a 4 you spend now may be the 9's
+      only partner later. And remember Kings are free moves — but sometimes <em>delaying</em> a
+      King keeps a recycle-pass alignment you want.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      In a streaky mood? Try <a class="underline" href="/tripeaks/">TriPeaks</a> or
+      <a class="underline" href="/golf/">Golf</a> — or the classic
+      <a class="underline" href="/klondike/">Klondike Solitaire</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startPeaks } from '../games/peaks/controller';
+    import { pyramidRules } from '../games/peaks/pyramid';
+    startPeaks(pyramidRules);
+  </script>
+</Layout>

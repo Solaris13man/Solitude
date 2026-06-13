@@ -550,6 +550,38 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .no-animations .slot.hint { animation: none; outline: 3px solid #ffd95e; }
 .no-animations .card.shake .card-inner { animation: none; }
 
+/* ---------- peaks formations (Pyramid, TriPeaks) ---------- */
+
+.board-scroll:has(.peaks-host) {
+  min-height: auto;
+  overflow-x: visible;
+}
+.board.peaks-host { touch-action: auto; }
+.peaks-host .card { cursor: default; }
+.peaks-host .card.movable { cursor: pointer; }
+.peaks-host .card.peaks-removed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.peaks-host .card.peaks-selected .card-inner {
+  box-shadow: 0 0 0 3px #ffd95e, 0 4px 12px rgb(0 0 0 / 0.35);
+}
+.no-animations .peaks-host .card.peaks-removed { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .peaks-host .card.peaks-removed { transition: none; }
+}
+
+/* ---------- menu category headings ---------- */
+
+.menu-section {
+  margin: 1.6rem 0 0.7rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  opacity: 0.9;
+}
+.menu-section:first-of-type { margin-top: 0; }
+
 /* ---------- sudoku ---------- */
 
 .board-scroll:has(.sudoku-grid) {

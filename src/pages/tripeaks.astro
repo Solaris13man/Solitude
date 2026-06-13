@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'TriPeaks Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play TriPeaks Solitaire free in your browser: clear three peaks by chaining cards one rank up or down. Streak scoring, unlimited undo, deal sharing — no download.';
+
+const faq = [
+  {
+    q: 'What are the rules of TriPeaks?',
+    a: 'Twenty-eight cards form three peaks; the bottom row starts face up. Tap any uncovered card that is one rank above or below the waste card — Aces and Kings wrap around — and it joins the waste, exposing what was beneath. Clear all three peaks before the 23-card stock runs dry.',
+  },
+  {
+    q: 'How does streak scoring work?',
+    a: 'Every consecutive card you clear without drawing is worth more than the last: 10 points, then 20, then 30, and so on. Drawing from the stock resets the streak to zero, so long chains are everything.',
+  },
+  {
+    q: 'Do Aces and Kings really connect?',
+    a: 'Yes — rank wraps around, so a King plays on an Ace and an Ace plays on a King. Long chains often hinge on riding a wrap twice: Queen, King, Ace, 2.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'TriPeaks Solitaire',
+    url: 'https://cardhearth.com/tripeaks/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'TriPeaks Solitaire', item: 'https://cardhearth.com/tripeaks/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="tripeaks" heading="TriPeaks">
+    <h2 class="mb-2 text-lg font-bold">How to play TriPeaks</h2>
+    <p class="mb-3">
+      Three peaks of cards rise above a face-up bottom row. Tap any uncovered card that's
+      <strong>one rank above or below</strong> the waste card — suits don't matter, and
+      <strong>Aces and Kings wrap</strong> — to send it to the waste and expose what's beneath.
+      When nothing plays, flip a new card from the stock (you have 23). Clear all twenty-eight
+      cards to win.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      TriPeaks is a streak game: every card cleared without drawing is worth more than the
+      last, and a draw resets the chain. Before tapping, <strong>trace the longest chain</strong>
+      you can — a 6 can ride 5-4-3-2-A-K if the table allows it. Prefer plays that
+      <strong>uncover face-down cards</strong>, especially under the peaks, and when two cards of
+      the same rank both play, take the one hiding more. Late game, count the stock: with three
+      cards left and two peaks standing, it's chain-or-nothing.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      More quick fixes: <a class="underline" href="/golf/">Golf Solitaire</a> and
+      <a class="underline" href="/pyramid/">Pyramid</a> — or go deep with
+      <a class="underline" href="/spider/">Spider</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startPeaks } from '../games/peaks/controller';
+    import { tripeaksRules } from '../games/peaks/tripeaks';
+    startPeaks(tripeaksRules);
+  </script>
+</Layout>

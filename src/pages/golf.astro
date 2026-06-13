@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Golf Solitaire — Play Free Online | CardHearth';
+const description =
+  'Play Golf Solitaire free in your browser: clear seven columns by playing cards one rank up or down onto the waste. Fast rounds, unlimited undo, deal sharing — no download.';
+
+const faq = [
+  {
+    q: 'What are the rules of Golf Solitaire?',
+    a: 'Seven columns of five face-up cards sit above a waste pile. Play the bottom card of any column onto the waste when it is one rank above or below the waste top (suits are irrelevant). When nothing plays, flip one of the 16 stock cards. Clear all 35 column cards to win the hole.',
+  },
+  {
+    q: 'Do Aces and Kings connect in Golf?',
+    a: 'In this classic version, no — the sequence stops at both ends, so only a 2 plays on an Ace and only a Queen plays on a King. That makes Kings the most dangerous cards on the course.',
+  },
+  {
+    q: 'Why is it called Golf?',
+    a: 'Traditionally you play nine deals as nine "holes" and count leftover column cards as strokes — the lower your total, the better. Here each deal stands alone: clear the columns to win, and your remaining-card count is the score to beat.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Golf Solitaire',
+    url: 'https://cardhearth.com/golf/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Golf Solitaire', item: 'https://cardhearth.com/golf/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="golf" heading="Golf">
+    <h2 class="mb-2 text-lg font-bold">How to play Golf Solitaire</h2>
+    <p class="mb-3">
+      Seven columns of five cards, all face up, and a waste pile below. Tap (or drag) the bottom
+      card of any column onto the waste when it's <strong>one rank above or below</strong> the
+      waste top — suits don't matter, and the sequence does <em>not</em> wrap between Ace and
+      King. When you're stuck, flip a card from the 16-card stock. Clear every column card to
+      win the hole.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      Golf rewards chain-greed: before playing, <strong>look for the longest run</strong> the
+      table allows — a single 7 can unlock 8-9-10-J in one sweep. Treat <strong>Kings as
+      roadblocks</strong>: nothing plays on a King except a Queen, so save a Queen for each King
+      you can see, and clear columns topped by Kings early while you still have stock to spare.
+      Watch the rank distribution too — if three 5s are already gone, the fourth is precious to
+      every 4 and 6 still on the course.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      Enjoy the pace? <a class="underline" href="/tripeaks/">TriPeaks</a> adds streak scoring,
+      and <a class="underline" href="/pyramid/">Pyramid</a> swaps chains for pairs. For the full
+      classic, deal <a class="underline" href="/klondike/">Klondike Solitaire</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startGame } from '../games/cards/controller';
+    import { golfRules } from '../games/cards/golf';
+    startGame(golfRules);
+  </script>
+</Layout>

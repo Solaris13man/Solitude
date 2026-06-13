@@ -97,6 +97,7 @@ class CardGameController {
       cellCount: ruleset.cellCount,
       hasStock: ruleset.hasStock,
       hasWaste: ruleset.hasWaste,
+      wasteDrop: ruleset.wasteDrop ?? false,
     });
     this.board.setOptions({
       leftHand: this.settings.leftHand,

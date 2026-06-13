@@ -1,6 +1,6 @@
 import type { Card } from './deck';
 
-export type GameId = 'klondike' | 'spider' | 'freecell';
+export type GameId = 'klondike' | 'spider' | 'freecell' | 'golf';
 
 export type PileKind = 'stock' | 'waste' | 'foundation' | 'tableau' | 'cell';
 
@@ -50,6 +50,8 @@ export interface Ruleset {
   hasWaste: boolean;
   /** Selectable modes for this game (empty when there are none). */
   variants: VariantOption[];
+  /** Golf: the waste pile is the play/drop target. */
+  wasteDrop?: boolean;
   defaultVariant: number;
   deal(seed: number, variant: number): GameState;
   canMove(state: GameState, from: PileRef, to: PileRef, count: number): boolean;

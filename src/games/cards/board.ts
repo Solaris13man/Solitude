@@ -19,6 +19,8 @@ export interface BoardConfig {
   cellCount: number;
   hasStock: boolean;
   hasWaste: boolean;
+  /** Golf: the waste pile is itself the drop/play target. */
+  wasteDrop?: boolean;
 }
 
 export interface BoardMetrics {
@@ -69,6 +71,25 @@ function frontMarkup(card: Card): string {
         `<span class="pip-spot${flip ? ' pip-flip' : ''}" style="left:${x}%;top:${y}%">${sym}</span>`,
     )
     .join('');
+}
+
+/** Build the standard card element (front pips + back); shared with the
+ *  open-layout (pyramid/peaks) renderer so all games use the same faces. */
+export function createCardElement(card: Card): HTMLElement {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.dataset.id = card.id;
+  const color = isRed(card.suit) ? 'red' : 'black';
+  el.innerHTML = `
+    <div class="card-inner">
+      <div class="card-face card-front card-${color}" aria-hidden="true">
+        <span class="corner corner-tl"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
+        ${frontMarkup(card)}
+        <span class="corner corner-br"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
+      </div>
+      <div class="card-face card-back" aria-hidden="true"></div>
+    </div>`;
+  return el;
 }
 
 export interface BoardOptions {
@@ -227,19 +248,7 @@ export class Board {
   private ensureCardEl(card: Card): HTMLElement {
     let el = this.cardEls.get(card.id);
     if (el) return el;
-    el = document.createElement('div');
-    el.className = 'card';
-    el.dataset.id = card.id;
-    const color = isRed(card.suit) ? 'red' : 'black';
-    el.innerHTML = `
-      <div class="card-inner">
-        <div class="card-face card-front card-${color}" aria-hidden="true">
-          <span class="corner corner-tl"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
-          ${frontMarkup(card)}
-          <span class="corner corner-br"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
-        </div>
-        <div class="card-face card-back" aria-hidden="true"></div>
-      </div>`;
+    el = createCardElement(card);
     this.container.appendChild(el);
     this.cardEls.set(card.id, el);
     return el;
@@ -391,9 +400,13 @@ export class Board {
     const physical = Math.min(n - 1, Math.max(0, Math.floor((x + m.gap / 2) / stride)));
     const col = this.options.leftHand ? n - 1 - physical : physical;
     if (y < m.tableauTop - m.gap) {
-      // Top row: cells and foundations accept drops; stock/waste don't.
+      // Top row: cells and foundations accept drops; stock/waste usually
+      // don't (Golf opts the waste in).
+      if (cfg.wasteDrop && cfg.hasWaste && col === 1) return { kind: 'waste', index: 0 };
       const fStart = n - cfg.foundationCount;
-      if (col >= fStart) return { kind: 'foundation', index: col - fStart };
+      if (cfg.foundationCount > 0 && col >= fStart) {
+        return { kind: 'foundation', index: col - fStart };
+      }
       const cellStart = (cfg.hasStock ? 1 : 0) + (cfg.hasWaste ? 1 : 0);
       const cellIdx = col - cellStart;
       if (cellIdx >= 0 && cellIdx < cfg.cellCount) return { kind: 'cell', index: cellIdx };
@@ -430,9 +443,8 @@ export class Board {
     if (!ref || !this.state) return;
     const pile = getPile(this.state, ref);
     const topCard = pile[pile.length - 1];
-    const el = topCard
-      ? this.cardEls.get(topCard.id)
-      : this.slotEls.get(`${ref.kind}-${ref.index}`);
+    const slotKey = ref.kind === 'waste' ? 'waste' : `${ref.kind}-${ref.index}`;
+    const el = topCard ? this.cardEls.get(topCard.id) : this.slotEls.get(slotKey);
     if (el) {
       el.classList.add('drop-ok');
       this.dropHintEl = el;
@@ -463,7 +475,8 @@ export class Board {
         const el = this.cardEls.get(toPile[toPile.length - 1]!.id);
         if (el) els.push(el);
       } else {
-        const slot = this.slotEls.get(`${move.to.kind}-${move.to.index}`);
+        const slotKey = move.to.kind === 'waste' ? 'waste' : `${move.to.kind}-${move.to.index}`;
+        const slot = this.slotEls.get(slotKey);
         if (slot) els.push(slot);
       }
     }

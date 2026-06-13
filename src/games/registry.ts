@@ -35,6 +35,27 @@ export const GAMES: GameInfo[] = [
     category: 'cards',
   },
   {
+    id: 'pyramid',
+    name: 'Pyramid',
+    href: '/pyramid/',
+    tagline: 'Pair cards that sum to thirteen and level the pyramid',
+    category: 'cards',
+  },
+  {
+    id: 'tripeaks',
+    name: 'TriPeaks',
+    href: '/tripeaks/',
+    tagline: 'Ride the streak and clear all three peaks',
+    category: 'cards',
+  },
+  {
+    id: 'golf',
+    name: 'Golf',
+    href: '/golf/',
+    tagline: 'Quick rounds: play up or down and clear the course',
+    category: 'cards',
+  },
+  {
     id: 'sudoku',
     name: 'Sudoku',
     href: '/sudoku/',
