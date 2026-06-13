@@ -7,6 +7,7 @@ import { GAMES } from '../games/registry';
     <nav class="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
       {GAMES.map((game) => <a class="hover:underline" href={game.href}>{game.name}</a>)}
       <a class="hover:underline" href="/guides/">Guides</a>
+      <a class="hover:underline" href="/profile/">Profile</a>
       <a class="hover:underline" href="/account/">Account</a>
       <a class="hover:underline" href="/about/">About</a>
       <a class="hover:underline" href="/privacy/">Privacy</a>

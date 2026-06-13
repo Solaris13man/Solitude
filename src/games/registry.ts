@@ -8,6 +8,8 @@ export interface GameInfo {
   name: string;
   href: string;
   tagline: string;
+  /** Optional trust-building badge shown on the menu card (e.g. a guarantee). */
+  highlight?: string;
   /** Engine family; future entries might be 'dominoes', 'board', 'puzzle'… */
   category: 'cards' | 'dominoes' | 'board' | 'puzzle';
   /** Variant landing pages surfaced under this game (for SEO + navigation). */
@@ -39,6 +41,7 @@ export const GAMES: GameInfo[] = [
     name: 'FreeCell',
     href: '/freecell/',
     tagline: 'Every deal is open — and almost all are winnable',
+    highlight: 'Almost every deal winnable',
     category: 'cards',
   },
   {
@@ -67,6 +70,7 @@ export const GAMES: GameInfo[] = [
     name: 'Sudoku',
     href: '/sudoku/',
     tagline: 'Pure logic, four difficulties, pencil marks included',
+    highlight: 'Every puzzle logic-solvable — no guessing',
     category: 'puzzle',
     variants: [
       { label: 'Easy', href: '/sudoku-easy/' },
@@ -79,6 +83,7 @@ export const GAMES: GameInfo[] = [
     name: 'Mahjong',
     href: '/mahjong/',
     tagline: 'Match free tiles and dismantle the turtle — every deal solvable',
+    highlight: 'Every board guaranteed solvable',
     category: 'puzzle',
     variants: [{ label: 'Turtle', href: '/mahjong-turtle/' }],
   },

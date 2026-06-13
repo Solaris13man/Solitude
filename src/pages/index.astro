@@ -54,10 +54,16 @@ const schema = [
         Free Solitaire &amp; Puzzle Games
       </h1>
       <p class="mx-auto mt-3 max-w-lg text-base opacity-85">
-        CardHearth is your home for {cardCount + puzzleCount} classic strategy and puzzle games —
-        solitaire, Sudoku, Mahjong and more — beautifully playable on any device. Pick one to
-        start; your progress, stats and streaks save automatically.
+        Your cozy home for {cardCount + puzzleCount} classic card &amp; puzzle games. Pick one and play
+        in seconds — nothing to install, no account needed.
       </p>
+      <ul class="feature-pills" aria-label="What's included">
+        <li>🎴 {cardCount + puzzleCount} free games</li>
+        <li>📅 Daily Challenge</li>
+        <li>🚫 No sign-up</li>
+        <li>🏆 Stats &amp; achievements</li>
+        <li>📲 Installable app</li>
+      </ul>
       <ul class="trust-strip" aria-label="Why CardHearth">
         <li><strong>No guessing</strong>Every Sudoku is solvable by pure logic — guaranteed.</li>
         <li><strong>Always solvable</strong>Every Mahjong board is winnable by design.</li>
@@ -69,6 +75,18 @@ const schema = [
     </header>
 
     <nav aria-label="Choose a game">
+      <a href="/daily-challenge/" class="daily-feature">
+        <span class="daily-feature-art" aria-hidden="true"><GameArt game="daily" /></span>
+        <span class="daily-feature-body">
+          <span class="daily-feature-eyebrow">⭐ Daily Challenge</span>
+          <span class="daily-feature-title">A new game every day</span>
+          <span class="daily-feature-tag">
+            One puzzle, the same for everyone — build your streak and fill your calendar.
+          </span>
+          <span class="daily-feature-play">Play today's challenge →</span>
+        </span>
+      </a>
+
       {
         [
           { key: 'cards', title: 'Card Games' },
@@ -77,7 +95,7 @@ const schema = [
           <>
             <h2 class="menu-section">{section.title}</h2>
             <div class="menu-grid">
-              {GAMES.filter((g) => g.category === section.key).map((game) => (
+              {GAMES.filter((g) => g.category === section.key && g.id !== 'daily').map((game) => (
                 <a href={game.href} class="menu-card">
                   <span class="menu-art" aria-hidden="true">
                     <GameArt game={game.id} />
@@ -85,6 +103,7 @@ const schema = [
                   <span class="menu-card-body">
                     <span class="menu-card-name">{game.name}</span>
                     <span class="menu-card-tag">{game.tagline}</span>
+                    {game.highlight && <span class="menu-card-highlight">✓ {game.highlight}</span>}
                     <span class="menu-card-play">Play now →</span>
                   </span>
                 </a>
@@ -108,6 +127,45 @@ const schema = [
         ))
       }
     </nav>
+
+    <section class="why-play" aria-label="Why play on CardHearth">
+      <h2 class="why-play-title">Why play on CardHearth?</h2>
+      <ul class="why-grid">
+        <li>
+          <span class="why-icon" aria-hidden="true">✅</span>
+          <strong>Fair puzzles</strong>
+          Every Sudoku is logic-solvable and every Mahjong board is guaranteed clearable.
+        </li>
+        <li>
+          <span class="why-icon" aria-hidden="true">↩️</span>
+          <strong>Unlimited undo &amp; hints</strong>
+          Explore a line, take it back, and get a nudge whenever you're stuck.
+        </li>
+        <li>
+          <span class="why-icon" aria-hidden="true">📅</span>
+          <strong>Daily Challenge</strong>
+          A new game each day, the same for everyone, with a streak to defend.
+        </li>
+        <li>
+          <span class="why-icon" aria-hidden="true">📈</span>
+          <strong>Track your progress</strong>
+          Per-game stats, win streaks, and 20 achievements to unlock.
+        </li>
+        <li>
+          <span class="why-icon" aria-hidden="true">📲</span>
+          <strong>Play anywhere</strong>
+          Mouse, touch or keyboard — and install it as an app on any device.
+        </li>
+        <li>
+          <span class="why-icon" aria-hidden="true">🔒</span>
+          <strong>Free &amp; private</strong>
+          No sign-up, no download; your progress stays on your device.
+        </li>
+      </ul>
+      <p class="why-cta">
+        <a class="guide-cta" href="/daily-challenge/">▶ Start with today's Daily Challenge</a>
+      </p>
+    </section>
 
     <section class="mx-auto max-w-2xl py-12 text-sm leading-relaxed opacity-90">
       <h2 class="mb-2 text-lg font-bold">Solitaire, puzzles, and classics — all free</h2>
@@ -140,6 +198,18 @@ const schema = [
         play. Sign in only if you want to <a class="underline" href="/account/">sync your
         progress and badges</a> across devices.
       </p>
+    </section>
+
+    <section class="popular-guides" aria-label="Popular guides">
+      <h2 class="why-play-title">Popular guides</h2>
+      <ul class="popular-guides-list">
+        <li><a href="/guides/solitaire-rules/">How to Play Solitaire (Klondike rules)</a></li>
+        <li><a href="/guides/how-to-win-klondike-solitaire/">How to Win Klondike Solitaire</a></li>
+        <li><a href="/guides/spider-solitaire-strategy/">Spider Solitaire Strategy</a></li>
+        <li><a href="/guides/sudoku-solving-techniques/">Sudoku Solving Techniques</a></li>
+        <li><a href="/guides/freecell-rules/">FreeCell Rules</a></li>
+        <li><a href="/guides/">Browse all guides &amp; rules →</a></li>
+      </ul>
     </section>
 
     <Footer />

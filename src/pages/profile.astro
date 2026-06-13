@@ -1,0 +1,360 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Your CardHearth Profile';
+const description =
+  'Your personal CardHearth profile — games played, win rate, daily streak, and the badges you have earned, all kept privately on your device. Share your stats with a tap.';
+---
+
+<Layout title={title} description={description} noindex={true}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Profile</span>
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Your CardHearth profile</h1>
+      <p class="mt-3 text-lg opacity-80">
+        A snapshot of your play — kept privately on this device.
+      </p>
+    </header>
+
+    <!-- Populated client-side from localStorage. Strangers / first-time
+         visitors see the empty state instead of a wall of zeros. -->
+    <section id="profile-root" aria-live="polite" aria-busy="true">
+      <p class="py-6 opacity-70">Loading your profile…</p>
+    </section>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  /* Scoped page styles — page-specific only; shared bits reuse global classes
+     (.btn, .guide-cta, .breadcrumb). Matches the dark felt aesthetic: light
+     text on translucent dark panels, accent #ffd95e, rounded cards. */
+  .profile-section {
+    margin: 1.6rem 0;
+  }
+  .profile-section h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Big headline "stat cards". */
+  .stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 0.75rem;
+  }
+  .stat-card {
+    background: rgb(0 0 0 / 0.28);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    text-align: center;
+  }
+  .stat-card .num {
+    display: block;
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #ffd95e;
+  }
+  .stat-card .lbl {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+  }
+
+  .panel {
+    background: rgb(0 0 0 / 0.22);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 14px;
+    padding: 1rem 1.15rem;
+  }
+  .panel-note {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.85rem;
+  }
+  .fav-game {
+    font-weight: 700;
+  }
+  .fav-game .fav-name {
+    color: #ffd95e;
+  }
+
+  /* Badge grid. */
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    gap: 0.6rem;
+  }
+  .badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    text-align: center;
+    padding: 0.7rem 0.4rem;
+    border-radius: 12px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.2);
+  }
+  .badge .badge-icon {
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+  .badge .badge-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    opacity: 0.92;
+  }
+  .badge.earned {
+    border-color: rgb(255 217 94 / 0.55);
+    background: rgb(255 217 94 / 0.1);
+  }
+  .badge.locked {
+    opacity: 0.42;
+    filter: grayscale(0.7);
+  }
+
+  /* Per-game list. */
+  .game-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .game-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 0.4rem 1rem;
+    padding: 0.6rem 0.9rem;
+    background: rgb(0 0 0 / 0.2);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: 12px;
+  }
+  .game-row .game-name {
+    font-weight: 700;
+  }
+  .game-row .game-meta {
+    font-size: 0.85rem;
+    opacity: 0.82;
+    text-align: right;
+  }
+  .game-row .game-meta b {
+    color: #ffd95e;
+    font-weight: 700;
+  }
+
+  .share-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: center;
+    margin: 1.8rem 0 0.6rem;
+  }
+  /* A prominent, accent share button (reuses .guide-cta look). */
+  #share-btn {
+    cursor: pointer;
+    border: none;
+    background: #ffd95e;
+  }
+  .share-feedback {
+    font-size: 0.85rem;
+    color: #ffd95e;
+    min-height: 1.2em;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+  }
+  .empty-state p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    margin-bottom: 1.3rem;
+  }
+</style>
+
+<script>
+  import { GAMES } from '../games/registry';
+  import { loadStats, aggregate, formatTime, winRate } from '../lib/stats';
+  import { BADGES, snapshot, earnedBadgeIds } from '../lib/achievements';
+  import {
+    loadDaily,
+    currentDailyStreak,
+    bestDailyStreak,
+    totalDailySolves,
+  } from '../lib/daily';
+  import { track } from '../lib/analytics';
+
+  const fmt = (n: number) => n.toLocaleString();
+
+  interface Summary {
+    text: string;
+    badgesEarned: number;
+    badgesTotal: number;
+    dailyStreak: number;
+  }
+
+  function render(): Summary | null {
+    const root = document.getElementById('profile-root');
+    if (!root) return null;
+
+    const snap = snapshot();
+    const earned = earnedBadgeIds(snap);
+    const daily = loadDaily();
+    const dailyCurrent = currentDailyStreak(daily);
+    const dailyBest = bestDailyStreak(daily);
+    const dailyTotal = totalDailySolves(daily);
+
+    const totalPlayed = snap.totalPlayed;
+    const totalWon = snap.totalWon;
+    const overallRate = totalPlayed === 0 ? 0 : Math.round((totalWon / totalPlayed) * 100);
+    const bestStreak = snap.bestStreak;
+
+    root.setAttribute('aria-busy', 'false');
+
+    // Empty state: nothing played and no dailies solved.
+    if (totalPlayed === 0 && dailyTotal === 0) {
+      root.innerHTML = `
+        <div class="empty-state panel">
+          <p>Your profile is empty — start playing to build it.</p>
+          <a class="guide-cta" href="/">▶ Start playing</a>
+        </div>`;
+      return null;
+    }
+
+    // Per-game rows (real games only; the 'daily' entry has no stats).
+    const games = GAMES.filter((g) => g.id !== 'daily');
+    let favName = '';
+    let favPlayed = 0;
+    const rows: string[] = [];
+    for (const g of games) {
+      const agg = aggregate(loadStats(g.id));
+      if (agg.gamesPlayed === 0) continue;
+      if (agg.gamesPlayed > favPlayed) {
+        favPlayed = agg.gamesPlayed;
+        favName = g.name;
+      }
+      const best = agg.bestTimeMs !== null ? ` · best ${formatTime(agg.bestTimeMs)}` : '';
+      rows.push(`
+        <div class="game-row">
+          <span class="game-name">${g.name}</span>
+          <span class="game-meta">
+            <b>${fmt(agg.gamesPlayed)}</b> played · <b>${fmt(agg.gamesWon)}</b> won
+            · ${winRate(agg)}%${best}
+          </span>
+        </div>`);
+    }
+
+    const badgeCells = BADGES.map((b) => {
+      const got = earned.has(b.id);
+      return `
+        <div class="badge ${got ? 'earned' : 'locked'}" title="${escapeAttr(b.description)}">
+          <span class="badge-icon" aria-hidden="true">${b.icon}</span>
+          <span class="badge-name">${escapeHtml(b.name)}</span>
+        </div>`;
+    }).join('');
+
+    const favBlock = favName
+      ? `<p class="fav-game">Favourite game: <span class="fav-name">${escapeHtml(favName)}</span>
+           <span style="opacity:.7;font-weight:400">(${fmt(favPlayed)} played)</span></p>`
+      : '';
+
+    const gamesBlock = rows.length
+      ? `<section class="profile-section">
+           <h2>Your games</h2>
+           <div class="game-list">${rows.join('')}</div>
+         </section>`
+      : '';
+
+    root.innerHTML = `
+      <section class="profile-section">
+        <h2>At a glance</h2>
+        <div class="stat-cards">
+          <div class="stat-card"><span class="num">${fmt(totalPlayed)}</span><span class="lbl">Games played</span></div>
+          <div class="stat-card"><span class="num">${fmt(totalWon)}</span><span class="lbl">Games won</span></div>
+          <div class="stat-card"><span class="num">${overallRate}%</span><span class="lbl">Win rate</span></div>
+          <div class="stat-card"><span class="num">${fmt(bestStreak)}</span><span class="lbl">Best win streak</span></div>
+        </div>
+        ${favBlock}
+      </section>
+
+      <section class="profile-section">
+        <h2>Daily Challenge</h2>
+        <div class="stat-cards">
+          <div class="stat-card"><span class="num">${fmt(dailyCurrent)}</span><span class="lbl">Current streak</span></div>
+          <div class="stat-card"><span class="num">${fmt(dailyBest)}</span><span class="lbl">Best streak</span></div>
+          <div class="stat-card"><span class="num">${fmt(dailyTotal)}</span><span class="lbl">Days solved</span></div>
+        </div>
+      </section>
+
+      <section class="profile-section">
+        <h2>Achievements <span style="opacity:.7;font-weight:600">${earned.size}/${BADGES.length}</span></h2>
+        <div class="badge-grid">${badgeCells}</div>
+      </section>
+
+      ${gamesBlock}
+
+      <div class="share-row">
+        <button id="share-btn" class="guide-cta" type="button"
+          aria-label="Share my CardHearth profile">📣 Share my profile</button>
+        <span id="share-feedback" class="share-feedback" role="status" aria-live="polite"></span>
+      </div>
+      <p class="panel-note">
+        Your profile lives only on this device. Signing in (coming soon) will sync it
+        across all your devices.
+      </p>`;
+
+    // Build the short text summary used by the share button.
+    const text =
+      `My CardHearth profile: ${fmt(totalPlayed)} games · ${fmt(totalWon)} wins · ` +
+      `${fmt(dailyCurrent)}-day daily streak · ${earned.size}/${BADGES.length} badges. ` +
+      `Play free at cardhearth.com`;
+
+    return { text, badgesEarned: earned.size, badgesTotal: BADGES.length, dailyStreak: dailyCurrent };
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
+    );
+  }
+  function escapeAttr(s: string): string {
+    return escapeHtml(s);
+  }
+
+  function wireShare(summary: Summary): void {
+    const btn = document.getElementById('share-btn');
+    const feedback = document.getElementById('share-feedback');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      track('share_clicked', { type: 'profile' });
+      const url = 'https://cardhearth.com/';
+      try {
+        if (navigator.share) {
+          await navigator.share({ text: summary.text, url });
+          return;
+        }
+        await navigator.clipboard.writeText(summary.text);
+        if (feedback) feedback.textContent = 'Copied to clipboard!';
+      } catch {
+        // user cancelled the share sheet, or clipboard unavailable
+      }
+    });
+  }
+
+  const summary = render();
+  if (summary) wireShare(summary);
+</script>
