@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = '2048 — Play Free Online | CardHearth';
+const description =
+  'Play 2048 free in your browser: slide and merge tiles to reach the famous 2048 tile and beyond. Swipe or arrow keys, undo, shareable games. No download, no sign-up.';
+
+const faq = [
+  {
+    q: 'What are the rules of 2048?',
+    a: 'Swipe (or press an arrow key) to slide every tile as far as it goes. When two tiles with the same number collide, they merge into one tile of double the value, adding that value to your score. After every move a new 2 (or occasionally a 4) appears. Reach the 2048 tile to win — then keep going for 4096 and beyond.',
+  },
+  {
+    q: 'What is the corner strategy?',
+    a: 'Keep your biggest tile locked in a corner and build a descending chain along one edge. The practical version: pick two directions you almost never press (for a bottom-left corner, never up, rarely right). One careless swipe that dislodges the corner usually unravels the whole board.',
+  },
+  {
+    q: 'Why can a single move only merge a tile once?',
+    a: 'Merging is one-shot per move by design: four 2s in a row become two 4s, not a single 8. Each new tile must wait for the next move before merging again — that pacing is what makes the endgame tight.',
+  },
+  {
+    q: 'What does sharing a game do?',
+    a: 'Each game number fixes the entire sequence of tile spawns. A friend opening your link faces exactly the same tiles in the same order — only the moves differ, which makes scores directly comparable.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: '2048',
+    url: 'https://cardhearth.com/2048/',
+    description,
+    genre: 'Puzzle',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: '2048', item: 'https://cardhearth.com/2048/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="2048" heading="2048" cardSettings={false}>
+    <h2 class="mb-2 text-lg font-bold">How to play 2048</h2>
+    <p class="mb-3">
+      Swipe in any direction — or use the <strong>arrow keys / WASD</strong> — and every tile
+      slides as far as it can. Equal tiles that collide <strong>merge into their sum</strong>,
+      scoring those points. A new tile appears after each move. The board is full and out of
+      merges? Game over. Build a 2048 tile and you've won — though the real players keep going.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      <strong>Own a corner.</strong> Park your largest tile in one corner and never press the
+      direction that would dislodge it. Build a <strong>snake</strong>: descending values
+      zig-zagging along the edges, so each merge feeds the next. Don't chase every small merge —
+      a tidy board with merge-ready pairs beats a messy board with a slightly higher score. And
+      when you must make a bad move, make it early, while there's still room to recover.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      More puzzles: <a class="underline" href="/sudoku/">Sudoku</a>,
+      <a class="underline" href="/minesweeper/">Minesweeper</a>, and
+      <a class="underline" href="/mahjong/">Mahjong</a> — or deal some
+      <a class="underline" href="/klondike/">Klondike Solitaire</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { start2048 } from '../games/2048/controller';
+    start2048();
+  </script>
+</Layout>

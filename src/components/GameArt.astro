@@ -159,6 +159,51 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'minesweeper' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A minesweeper board" class="art">
+      <rect x="66" y="14" width="108" height="108" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+      {[0, 1, 2, 3].map((r) =>
+        [0, 1, 2, 3].map((c) => (
+          <rect
+            x={66 + c * 27}
+            y={14 + r * 27}
+            width="27"
+            height="27"
+            fill={(r + c) % 2 === 0 ? '#c9d3c9' : '#aab8ab'}
+            stroke="#1d2230"
+            stroke-opacity="0.2"
+          />
+        ))
+      )}
+      <rect x="66" y="68" width="54" height="54" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.2" />
+      <text x="80" y="105" font-size="18" font-weight="800" fill="#2c5fa8">1</text>
+      <text x="107" y="105" font-size="18" font-weight="800" fill="#2e7d32">2</text>
+      <text x="133" y="51" font-size="18" text-anchor="middle" fill="#c2273a">⚑</text>
+      <text x="160" y="105" font-size="18" text-anchor="middle" fill="#1d2230">✸</text>
+    </svg>
+  )
+}
+{
+  game === '2048' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="2048 tiles" class="art">
+      <rect x="62" y="11" width="116" height="116" rx="8" fill="#1d2230" fill-opacity="0.35" />
+      {[
+        [68, 17, '2', '#efe4ce', '#43320a'],
+        [125, 17, '8', '#f2b179', '#ffffff'],
+        [68, 74, '4', '#ece0c2', '#43320a'],
+        [125, 74, '16', '#f59563', '#ffffff'],
+      ].map(([x, y, label, bg, fg]) => (
+        <g>
+          <rect x={x} y={y} width="47" height="47" rx="5" fill={bg as string} />
+          <text x={(x as number) + 23.5} y={(y as number) + 31} font-size="20" font-weight="800" text-anchor="middle" fill={fg as string}>{label}</text>
+        </g>
+      ))}
+      <text x="198" y="75" font-size="22" text-anchor="middle" fill="#ffd95e">→</text>
+      <text x="40" y="75" font-size="22" text-anchor="middle" fill="#ffd95e">←</text>
+    </svg>
+  )
+}
+{
   game === 'daily' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="A calendar page with a playing card" class="art">
       <rect x="60" y="22" width="92" height="92" rx="10" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />

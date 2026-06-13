@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Minesweeper — Play Free Online (Easy to Expert) | CardHearth';
+const description =
+  'Play classic Minesweeper free in your browser: three difficulties, safe first click, flags, chording, and unlimited undo. No download, no sign-up.';
+
+const faq = [
+  {
+    q: 'Can my first click hit a mine?',
+    a: 'No. Mines are placed after your first reveal, excluding that square and everything around it — so the first click always opens a safe area to start reading from.',
+  },
+  {
+    q: 'How do I place flags?',
+    a: 'Right-click a square on desktop, long-press on touch screens, or toggle Flag mode (the ⚑ button or F key) to make every tap place a flag. The counter in the HUD shows mines minus flags.',
+  },
+  {
+    q: 'What is chording?',
+    a: 'Tap an already-revealed number that has exactly that many flags around it, and all its remaining neighbors open at once. It is the fastest way to clear a board — and the fastest way to lose one if a flag is wrong.',
+  },
+  {
+    q: 'What do the difficulties change?',
+    a: 'Board size and mine density: Easy is 9×9 with 10 mines, Medium 16×16 with 40, and Expert the classic 30×16 with 99 mines. Each difficulty keeps its own statistics and best times.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Minesweeper',
+    url: 'https://cardhearth.com/minesweeper/',
+    description,
+    genre: 'Puzzle',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Minesweeper', item: 'https://cardhearth.com/minesweeper/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell
+    gameId="minesweeper"
+    heading="Minesweeper"
+    scoreLabel="Mines"
+    cardSettings={false}
+    variantLabel="Difficulty"
+    variantOptions={[
+      { value: 1, label: 'Easy (9×9, 10 mines)' },
+      { value: 2, label: 'Medium (16×16, 40 mines)' },
+      { value: 3, label: 'Expert (30×16, 99 mines)' },
+    ]}
+  >
+    <div slot="after-board" class="numpad" role="group" aria-label="Input mode">
+      <button id="flag-toggle" class="numpad-btn" type="button" aria-pressed="false" title="Toggle flag mode (F)">⚑ Flag mode</button>
+    </div>
+
+    <h2 class="mb-2 text-lg font-bold">How to play Minesweeper</h2>
+    <p class="mb-3">
+      Every number tells you how many mines touch that square. Open squares you can prove are
+      safe, flag the ones you can prove are mines, and clear the whole board without detonating
+      anything. Your <strong>first click is always safe</strong> and opens a starting area.
+      Right-click (or long-press, or Flag mode ⚑) to plant flags; tap a satisfied number to
+      <strong>chord</strong> — open all its remaining neighbors at once.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      Start from the borders of the opened area: a 1 touching exactly one hidden square is a
+      certain mine, and a number already touching its full count of flags makes every other
+      neighbor safe. Learn the classic patterns — <strong>1-2-1</strong> means the mines sit
+      under the 1s; <strong>1-2-2-1</strong> puts them under the 2s. When logic truly runs out,
+      prefer guesses that touch the most numbers, and remember undo is unlimited here — purists
+      can ignore it, learners can lean on it.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      More logic? Try <a class="underline" href="/sudoku/">Sudoku</a> or
+      <a class="underline" href="/mahjong/">Mahjong</a> — or change pace entirely with
+      <a class="underline" href="/2048/">2048</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startMinesweeper } from '../games/minesweeper/controller';
+    startMinesweeper();
+  </script>
+</Layout>

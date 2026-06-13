@@ -70,6 +70,20 @@ export const GAMES: GameInfo[] = [
     category: 'puzzle',
   },
   {
+    id: 'minesweeper',
+    name: 'Minesweeper',
+    href: '/minesweeper/',
+    tagline: 'Read the numbers, dodge the mines',
+    category: 'puzzle',
+  },
+  {
+    id: '2048',
+    name: '2048',
+    href: '/2048/',
+    tagline: 'Slide, merge, and chase the famous tile',
+    category: 'puzzle',
+  },
+  {
     id: 'daily',
     name: 'Daily Challenge',
     href: '/daily-challenge/',
