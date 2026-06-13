@@ -1,0 +1,188 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Hearts — Play Free Online vs Computer | CardHearth';
+const description =
+  'Play Hearts free in your browser against three computer opponents — pass three cards, follow suit, dodge the hearts and the Queen of Spades, and try to shoot the moon. No download, no sign-up.';
+
+const faq = [
+  {
+    q: 'What is the goal of Hearts?',
+    a: 'Hearts is a trick-taking game for four players where you want the FEWEST points. Each heart is worth 1 point and the Queen of Spades is worth 13. The game runs until someone reaches 100 points, and the player with the lowest score wins.',
+  },
+  {
+    q: 'How do the rules work?',
+    a: 'Each round you pass three cards to an opponent (the direction rotates), then play 13 tricks. You must follow the suit that was led if you can. The 2 of Clubs always leads the first trick, you cannot lead hearts until they are "broken", and no point cards may be played on the very first trick.',
+  },
+  {
+    q: 'What is shooting the moon?',
+    a: 'If you manage to take every single point in a round — all 13 hearts and the Queen of Spades (26 points) — you score 0 and every other player gets 26 points instead. It is risky but game-changing.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Hearts',
+    url: 'https://cardhearth.com/hearts/',
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/hearts.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Hearts', item: 'https://cardhearth.com/hearts/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4">
+    <header class="flex flex-wrap items-center justify-between gap-2 py-3">
+      <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
+        Hearts
+        <a href="/" class="font-normal no-underline opacity-70 hover:underline">· CardHearth</a>
+      </h1>
+      <nav class="flex flex-wrap gap-1.5" aria-label="Game controls">
+        <a href="/" class="btn" aria-label="Back to the game menu"><span class="btn-label">Home</span></a>
+        <button id="btn-new" class="btn" type="button"><span class="btn-label">New game</span></button>
+        <button id="btn-settings" class="btn" type="button"><span class="btn-label">Settings</span></button>
+      </nav>
+    </header>
+
+    <section class="hearts-table" aria-label="Hearts table">
+      <div class="seat seat-north">
+        <span class="seat-chip" id="score-north">North</span>
+        <div class="opp-hand" id="hand-north"></div>
+      </div>
+      <div class="seat seat-west">
+        <span class="seat-chip" id="score-west">West</span>
+        <div class="opp-hand" id="hand-west"></div>
+      </div>
+      <div class="hearts-center">
+        <div class="hearts-trick" id="hearts-trick"></div>
+        <p class="hearts-status" id="hearts-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="seat seat-east">
+        <span class="seat-chip" id="score-east">East</span>
+        <div class="opp-hand" id="hand-east"></div>
+      </div>
+      <div class="seat seat-south">
+        <div class="my-hand" id="hearts-hand"></div>
+        <div class="pass-bar" id="pass-bar" hidden>
+          <button id="btn-pass" class="btn btn-primary" type="button" disabled>Pass 3 cards →</button>
+        </div>
+        <span class="seat-chip seat-chip-you" id="score-you">You</span>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
+      <h2 class="mb-2 text-lg font-bold">How to play Hearts</h2>
+      <p class="mb-3">
+        Hearts is a classic four-player trick-taking game, and here you play against three computer
+        opponents. The twist: you want the <strong>fewest</strong> points. Every heart costs 1
+        point and the <strong>Queen of Spades</strong> costs 13. The game runs until someone hits
+        100; lowest score wins.
+      </p>
+      <p class="mb-3">
+        Each round opens with a <strong>pass</strong> — choose three cards to hand an opponent (the
+        direction rotates left, right, across, then none). Then you play 13 tricks: the
+        <strong>2♣ leads</strong> the first trick, you must <strong>follow the led suit</strong> if
+        you can, and you can't lead hearts until they're "broken". Dodge the points — or take them
+        all and <strong>shoot the moon</strong> to stick everyone else with 26.
+      </p>
+      <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+      {
+        faq.map((f) => (
+          <details class="faq mb-2">
+            <summary class="cursor-pointer font-semibold">{f.q}</summary>
+            <p class="mt-2 opacity-90">{f.a}</p>
+          </details>
+        ))
+      }
+      <p class="mt-6 opacity-75">
+        Prefer solitaire? Try <a class="underline" href="/klondike/">Klondike</a> or
+        <a class="underline" href="/freecell/">FreeCell</a>.
+      </p>
+    </section>
+
+    <Footer />
+  </main>
+
+  <dialog id="round-dialog" aria-labelledby="round-title">
+    <p id="round-title" class="dialog-title">Round scored</p>
+    <dl id="round-body" class="stats-grid"></dl>
+    <div class="mt-4 flex justify-end">
+      <button id="btn-round-continue" class="btn btn-primary" type="button">Next round</button>
+    </div>
+  </dialog>
+
+  <dialog id="hearts-over-dialog" aria-labelledby="hearts-over-title">
+    <p id="hearts-over-title" class="dialog-title dialog-title-lg">Game over</p>
+    <dl id="hearts-over-body" class="stats-grid"></dl>
+    <div class="mt-4 flex justify-end">
+      <button id="btn-hearts-again" class="btn btn-primary" type="button">New game</button>
+    </div>
+  </dialog>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <p id="settings-title" class="dialog-title mb-2">Settings</p>
+    <label class="field">Table surface
+      <select id="set-surface">
+        <option value="felt">Felt</option>
+        <option value="wood-walnut">Walnut wood</option>
+        <option value="wood-oak">Oak wood</option>
+        <option value="marble">Marble</option>
+        <option value="granite">Granite</option>
+      </select>
+    </label>
+    <label class="field">Card design
+      <select id="set-cardset">
+        <option value="new-blue">Modern · Blue back</option>
+        <option value="new-red">Modern · Red back</option>
+        <option value="vintage-blue">Vintage · Blue back</option>
+        <option value="vintage-red">Vintage · Red back</option>
+        <option value="classic">Classic (simple)</option>
+      </select>
+    </label>
+    <label class="field">Theme
+      <select id="set-theme">
+        <option value="auto">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <label class="field">Sounds
+      <input type="checkbox" id="set-sounds" />
+    </label>
+    <div class="mt-4 flex justify-end">
+      <button class="btn btn-primary" type="button" data-close-dialog>Done</button>
+    </div>
+  </dialog>
+
+  <script>
+    import { startHearts } from '../games/hearts/controller';
+    startHearts();
+  </script>
+</Layout>

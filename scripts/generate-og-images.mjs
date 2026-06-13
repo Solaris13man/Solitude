@@ -27,6 +27,7 @@ const PAGES = [
   { slug: 'scorpion', title: 'Scorpion Solitaire', label: 'Build suits and untangle the sting', motif: '♣' },
   { slug: 'forty-thieves', title: 'Forty Thieves', label: 'Two decks · a serious challenge', motif: '♦' },
   { slug: 'eight-off', title: 'Eight Off Solitaire', label: 'Eight free cells · almost always winnable', motif: '♥' },
+  { slug: 'hearts', title: 'Hearts', label: 'Trick-taking vs the computer', motif: '♥' },
   { slug: 'sudoku', title: 'Sudoku', label: 'Pure logic · four difficulties', motif: 'grid' },
   { slug: 'sudoku-easy', title: 'Sudoku', label: 'Easy', motif: 'grid' },
   { slug: 'sudoku-hard', title: 'Sudoku', label: 'Hard', motif: 'grid' },

@@ -1419,6 +1419,98 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   .g2048-pop, .g2048-spawn { animation: none; }
 }
 
+/* ---------- hearts (4-player trick-taking) ---------- */
+
+.hearts-table {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(9rem, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  flex: 1;
+  padding: 0.5rem 0 1rem;
+}
+.seat { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.seat-north { grid-column: 2; grid-row: 1; }
+.seat-west { grid-column: 1; grid-row: 2; }
+.seat-east { grid-column: 3; grid-row: 2; }
+.seat-south { grid-column: 1 / -1; grid-row: 3; }
+.hearts-center { grid-column: 2; grid-row: 2; justify-self: center; }
+.seat-chip {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  white-space: nowrap;
+}
+.seat-chip-you { background: rgb(255 217 94 / 0.18); border-color: rgb(255 217 94 / 0.5); }
+
+.hcard {
+  --hc-w: clamp(2.1rem, 7vw, 3.3rem);
+  width: var(--hc-w);
+  aspect-ratio: 150 / 210;
+  flex: none;
+  position: relative;
+  border-radius: max(4px, calc(var(--hc-w) * 0.07));
+  overflow: hidden;
+  background: #fcfcf7;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+.hcard-img { width: 100%; height: 100%; object-fit: fill; display: block; }
+.hcard-back { background: linear-gradient(135deg, var(--back-a), var(--back-b)); }
+.hcard-corner {
+  position: absolute;
+  top: 4%;
+  left: 7%;
+  font-weight: 700;
+  line-height: 1;
+  font-size: calc(var(--hc-w) * 0.32);
+}
+.hcard-corner i { font-style: normal; }
+.hcard-mid { position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--hc-w) * 0.5); }
+.hcard-red { color: var(--card-text-red); }
+.hcard-black { color: var(--card-text-black); }
+
+.opp-hand { display: flex; }
+.opp-hand .hcard { --hc-w: clamp(1.35rem, 4.4vw, 2.1rem); margin-left: calc(var(--hc-w) * -0.62); }
+.opp-hand .hcard:first-child { margin-left: 0; }
+
+.my-hand { display: flex; justify-content: center; padding-top: 0.4rem; }
+.my-hand .hcard {
+  --hc-w: clamp(2.2rem, 8.5vw, 3.6rem);
+  margin-left: calc(var(--hc-w) * -0.42);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.my-hand .hcard:first-child { margin-left: 0; }
+@media (hover: hover) {
+  .my-hand .hcard.playable:hover,
+  .my-hand .hcard.selectable:hover { transform: translateY(-10px); }
+}
+.my-hand .hcard.playable { box-shadow: 0 0 0 2px rgb(255 217 94 / 0.55), 0 3px 7px rgb(0 0 0 / 0.4); }
+.my-hand .hcard.selected { transform: translateY(-14px); outline: 3px solid #ffd95e; outline-offset: -2px; }
+.my-hand .hcard.dim { opacity: 0.45; cursor: default; }
+
+.hearts-trick {
+  position: relative;
+  width: clamp(8rem, 30vw, 12rem);
+  height: clamp(9rem, 34vw, 13rem);
+  margin: 0 auto;
+}
+.hearts-trick .hcard { position: absolute; --hc-w: clamp(2.2rem, 7vw, 3.1rem); left: 50%; top: 50%; }
+.hearts-trick .trick-you { transform: translate(-50%, 6%); }
+.hearts-trick .trick-west { transform: translate(-92%, -50%); }
+.hearts-trick .trick-north { transform: translate(-50%, -104%); }
+.hearts-trick .trick-east { transform: translate(-8%, -50%); }
+.hearts-status { text-align: center; margin-top: 0.6rem; font-size: 0.9rem; min-height: 1.3rem; opacity: 0.92; }
+.pass-bar { margin-top: 0.7rem; display: flex; justify-content: center; }
+
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;
