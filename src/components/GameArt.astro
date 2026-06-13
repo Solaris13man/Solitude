@@ -107,6 +107,29 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'mahjong' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="Stacked mahjong tiles" class="art">
+      {[
+        [52, 52, 0], [86, 52, 0], [120, 52, 0], [154, 52, 0], [188, 52, 0],
+        [69, 86, 0], [103, 86, 0], [137, 86, 0], [171, 86, 0],
+        [95, 30, 1], [129, 30, 1],
+      ].map(([x, y, top]) => (
+        <g transform={`translate(${x} ${y})`}>
+          <rect x="-14" y="-19" width="28" height="38" rx="3" fill={top ? '#fffef8' : '#efeadb'} stroke="#5a4b32" stroke-opacity="0.45" />
+          <rect x="-12" y="17" width="28" height="3" rx="1.5" fill="#aa966e" />
+        </g>
+      ))}
+      <text x="52" y="60" font-size="15" text-anchor="middle" fill="#c2273a">中</text>
+      <text x="120" y="60" font-size="15" text-anchor="middle" fill="#2c5fa8">●</text>
+      <text x="188" y="60" font-size="15" text-anchor="middle" fill="#2e7d32">❚</text>
+      <text x="95" y="38" font-size="15" text-anchor="middle" fill="#1d2230">東</text>
+      <text x="129" y="38" font-size="15" text-anchor="middle" fill="#c2563a">✿</text>
+      <text x="103" y="94" font-size="15" text-anchor="middle" fill="#c2273a">万</text>
+      <text x="171" y="94" font-size="15" text-anchor="middle" fill="#1d7a45">春</text>
+    </svg>
+  )
+}
+{
   game === 'sudoku' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="A sudoku grid" class="art">
       <rect x="75" y="13" width="108" height="108" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />

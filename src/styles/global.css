@@ -693,6 +693,74 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   color: #43320a;
 }
 
+/* ---------- mahjong ---------- */
+
+.board-scroll:has(.mahjong-host) {
+  min-height: auto;
+  overflow-x: visible;
+}
+.board.mahjong-host { touch-action: auto; }
+
+.tile {
+  position: absolute;
+  width: var(--tile-w);
+  height: var(--tile-h);
+  border-radius: max(3px, calc(var(--tile-w) * 0.09));
+  background: linear-gradient(160deg, #fffef8 0%, #efeadb 75%);
+  border: 1px solid rgb(90 75 50 / 0.45);
+  /* the right/bottom edge fakes tile depth */
+  box-shadow:
+    2px 3px 0 rgb(170 150 110 / 0.9),
+    3px 5px 6px rgb(0 0 0 / 0.35);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: default;
+  transition: transform 0.15s ease, opacity 0.25s ease;
+}
+.tile.tile-free { cursor: pointer; }
+@media (hover: hover) {
+  .tile.tile-free:hover { filter: brightness(1.05); }
+}
+.tile.tile-selected {
+  outline: 3px solid #ffd95e;
+  outline-offset: -1px;
+  filter: brightness(1.08);
+}
+.tile.tile-removed {
+  opacity: 0;
+  pointer-events: none;
+}
+.tile:focus-visible { outline: 3px solid #ffd95e; outline-offset: 1px; }
+.tile.hint { animation: hint-pulse 0.8s ease-in-out 2; }
+.tile.shake { animation: card-shake 0.3s ease-in-out; }
+.no-animations .tile { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .tile { transition: none; }
+  .tile.hint { animation: none; outline: 3px solid #ffd95e; }
+}
+
+.tile-corner {
+  position: absolute;
+  top: 4%;
+  left: 8%;
+  font-size: calc(var(--tile-w) * 0.26);
+  font-weight: 800;
+  line-height: 1;
+}
+.tile-glyph {
+  font-size: calc(var(--tile-w) * 0.52);
+  font-weight: 700;
+  line-height: 1;
+  margin-top: calc(var(--tile-h) * 0.08);
+}
+.tile-dot { color: #2c5fa8; }
+.tile-bamboo { color: #2e7d32; }
+.tile-char { color: #c2273a; }
+.tile-wind { color: #1d2230; }
+.tile-flower { color: #c2563a; }
+.tile-season { color: #1d7a45; }
+
 /* ---------- a11y helpers ---------- */
 
 .visually-hidden {

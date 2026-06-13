@@ -7,6 +7,9 @@
   conventions (ranks, suits, pip layouts) only.
 - **Sound effects** — synthesized at runtime with the Web Audio API
   (oscillators and noise buffers); no recorded or third-party audio.
+- **Mahjong tiles** — original CSS/text rendering using standard CJK
+  characters and geometric glyphs; the mahjong tile set and the "turtle"
+  layout are traditional, public-domain designs. No third-party tile art.
 - **Favicon** — original inline SVG created for this project.
 - **Game rules** — Klondike Solitaire is a traditional public-domain card
   game; mechanics are not subject to copyright. No code, art, sounds, or

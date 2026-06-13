@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GameShell from '../components/GameShell.astro';
+
+const title = 'Mahjong Solitaire — Play Free Online (Every Deal Solvable) | CardHearth';
+const description =
+  'Play Mahjong Solitaire free in your browser: match free tiles and dismantle the classic 144-tile turtle. Every deal is guaranteed solvable — unlimited undo, hints, no download.';
+
+const faq = [
+  {
+    q: 'Which mahjong tiles can I match?',
+    a: 'A tile is "free" when no tile rests on top of it and at least one of its long sides (left or right) is open. Match two free identical tiles to remove them. Flower tiles match any other flower, and season tiles match any other season — those are the only mixed matches.',
+  },
+  {
+    q: 'Is every Mahjong Solitaire deal solvable?',
+    a: 'Here, yes. CardHearth builds each deal by placing pairs in reverse play order, which mathematically guarantees at least one path to clearing the board. You can still paint yourself into a corner mid-game — that is what unlimited undo is for.',
+  },
+  {
+    q: 'How many tiles are there, and what are they?',
+    a: 'The classic set of 144: three suits (dots, bamboo, characters) numbered 1–9 with four copies each, four winds, three dragons, four flowers, and four seasons, arranged in the traditional five-layer "turtle" formation.',
+  },
+  {
+    q: 'What if I run out of moves?',
+    a: 'If no matching free pair remains, the position is stuck — but because the deal itself is solvable, undoing a few pairs and choosing differently always leads back to a winning path. The hint button (H) shows you a matching pair whenever one exists.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Mahjong Solitaire',
+    url: 'https://cardhearth.com/mahjong/',
+    description,
+    genre: 'Tile-matching puzzle',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Mahjong Solitaire', item: 'https://cardhearth.com/mahjong/' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <GameShell gameId="mahjong" heading="Mahjong" scoreLabel="Pairs left" cardSettings={false}>
+    <h2 class="mb-2 text-lg font-bold">How to play Mahjong Solitaire</h2>
+    <p class="mb-3">
+      One hundred forty-four tiles stack into the classic five-layer
+      <strong>turtle</strong>. Tap two matching <strong>free</strong> tiles to remove them — a
+      tile is free when nothing sits on top of it and its left or right side is open. Suited
+      tiles (dots ●, bamboo ❚, characters 万), winds and dragons match their exact twin;
+      <strong>any flower matches any flower</strong>, and any season any season. Clear all 72
+      pairs to dismantle the turtle.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Strategy tips</h2>
+    <p class="mb-3">
+      Work <strong>top-down and outside-in</strong>: the apex tile and the long row ends choke
+      the most tiles beneath them. When you spot three copies of a kind free at once, pick the
+      pair that <em>unlocks more</em> — usually the tiles burying the biggest stacks. Be
+      careful with the final copy-pairs: if two identical tiles end up directly on top of one
+      another, that line of play is blocked, so peel layered stacks early. Stuck positions
+      happen even in solvable deals — undo generously; the winning path is always there.
+    </p>
+    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+    {
+      faq.map((f) => (
+        <details class="faq mb-2">
+          <summary class="cursor-pointer font-semibold">{f.q}</summary>
+          <p class="mt-2 opacity-90">{f.a}</p>
+        </details>
+      ))
+    }
+    <p class="mt-6 opacity-75">
+      More puzzles: <a class="underline" href="/sudoku/">Sudoku</a> — or shuffle up some
+      <a class="underline" href="/klondike/">Klondike</a>,
+      <a class="underline" href="/pyramid/">Pyramid</a>, or
+      <a class="underline" href="/tripeaks/">TriPeaks</a>.
+    </p>
+  </GameShell>
+
+  <script>
+    import { startMahjong } from '../games/mahjong/controller';
+    startMahjong();
+  </script>
+</Layout>

@@ -63,6 +63,13 @@ export const GAMES: GameInfo[] = [
     category: 'puzzle',
   },
   {
+    id: 'mahjong',
+    name: 'Mahjong',
+    href: '/mahjong/',
+    tagline: 'Match free tiles and dismantle the turtle — every deal solvable',
+    category: 'puzzle',
+  },
+  {
     id: 'daily',
     name: 'Daily Challenge',
     href: '/daily-challenge/',
