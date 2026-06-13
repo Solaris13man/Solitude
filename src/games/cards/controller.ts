@@ -527,6 +527,14 @@ class CardGameController {
     anim.checked = this.settings.animations;
     snd.checked = this.settings.sounds;
 
+    // The drawn 'Classic' deck is the only one whose back the card-back
+    // picker affects; hide it for the premium image decks.
+    const syncBackPicker = () => {
+      const field = back.closest('label');
+      if (field) (field as HTMLElement).hidden = (cardset ? cardset.value : this.settings.cardSet) !== 'classic';
+    };
+    syncBackPicker();
+
     const update = () => {
       const prevSounds = this.settings.sounds;
       const variants = { ...this.settings.variants };
@@ -547,6 +555,7 @@ class CardGameController {
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
       this.board.applyCardArt();
+      syncBackPicker();
       this.board.setOptions({
         leftHand: this.settings.leftHand,
         canPick: (ref, depth) => this.canPick(ref, depth),

@@ -376,6 +376,13 @@ class PeaksController {
     anim.checked = this.settings.animations;
     snd.checked = this.settings.sounds;
 
+    // Card-back picker only affects the drawn 'Classic' deck.
+    const syncBackPicker = () => {
+      const field = back.closest('label');
+      if (field) (field as HTMLElement).hidden = (cardset ? cardset.value : this.settings.cardSet) !== 'classic';
+    };
+    syncBackPicker();
+
     const update = () => {
       const prevSounds = this.settings.sounds;
       this.settings = {
@@ -394,6 +401,7 @@ class PeaksController {
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
       this.board.applyCardArt();
+      syncBackPicker();
     };
     const controls = [theme, felt, back, anim, snd, ...(cardset ? [cardset] : []), ...(left ? [left] : [])];
     for (const el of controls) el.addEventListener('change', update);
