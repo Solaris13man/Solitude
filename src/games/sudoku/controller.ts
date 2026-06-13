@@ -392,6 +392,7 @@ class SudokuController {
     const variant = $opt('set-variant') as HTMLSelectElement | null;
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
+    const surface = $('set-surface') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
     const anim = $('set-animations') as HTMLInputElement;
@@ -400,6 +401,7 @@ class SudokuController {
     if (variant) variant.value = String(this.difficulty());
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
+    surface.value = this.settings.tableSurface;
     back.value = this.settings.cardBack;
     if (left) left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
@@ -412,6 +414,7 @@ class SudokuController {
       this.settings = {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
+        tableSurface: surface.value as Settings['tableSurface'],
         cardBack: back.value as Settings['cardBack'],
         cardSet: this.settings.cardSet,
         tileSet: this.settings.tileSet,
@@ -427,7 +430,7 @@ class SudokuController {
       const note = $opt('variant-note');
       if (note) note.hidden = this.difficulty() === this.state.variant;
     };
-    const controls = [theme, felt, back, anim, snd, ...(variant ? [variant] : []), ...(left ? [left] : [])];
+    const controls = [theme, felt, surface, back, anim, snd, ...(variant ? [variant] : []), ...(left ? [left] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

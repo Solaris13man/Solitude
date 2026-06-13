@@ -4,10 +4,14 @@ export type CardBack = 'classic' | 'royal' | 'mint' | 'midnight';
 export type TileSet = 'china' | 'japan' | 'korea' | 'india' | 'medieval';
 /** Card face+back artwork: 'classic' = the built-in drawn deck. */
 export type CardSet = 'classic' | 'new-blue' | 'new-red' | 'vintage-blue' | 'vintage-red';
+/** The table surface behind every game. 'felt' uses the felt-colour gradient. */
+export type TableSurface = 'felt' | 'wood-walnut' | 'wood-oak' | 'marble' | 'granite';
 
 export interface Settings {
   theme: ThemeMode;
   felt: Felt;
+  /** Table surface texture. */
+  tableSurface: TableSurface;
   cardBack: CardBack;
   /** Playing-card artwork set. */
   cardSet: CardSet;
@@ -25,6 +29,7 @@ const KEY = 'solitude.settings.v1';
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'auto',
   felt: 'green',
+  tableSurface: 'felt',
   cardBack: 'classic',
   cardSet: 'new-blue',
   tileSet: 'china',
@@ -67,6 +72,7 @@ export function applySettings(settings: Settings): void {
   const root = document.documentElement;
   root.dataset.theme = settings.theme;
   root.dataset.felt = settings.felt;
+  root.dataset.surface = settings.tableSurface;
   root.dataset.cardback = settings.cardBack;
   root.dataset.cardset = settings.cardSet;
   root.dataset.tileset = settings.tileSet;

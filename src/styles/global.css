@@ -100,6 +100,25 @@ body::before {
   background-repeat: repeat;
 }
 
+/* ---------- alternate table surfaces (wood / marble / granite) ---------- */
+/* These replace the felt-colour gradient with a tiled texture, keeping a
+   sheen + vignette for depth. The felt grain overlay is hidden for them. */
+:root[data-surface='wood-walnut'] body,
+:root[data-surface='wood-oak'] body,
+:root[data-surface='marble'] body,
+:root[data-surface='granite'] body {
+  background:
+    radial-gradient(140% 110% at 50% -10%, rgb(255 255 255 / 0.10) 0%, transparent 45%),
+    radial-gradient(130% 100% at 50% 60%, transparent 50%, rgb(0 0 0 / 0.34) 100%),
+    var(--surface-img) 0 0 / var(--surface-size, 420px) repeat;
+  background-attachment: fixed;
+}
+:root[data-surface='wood-walnut'] { --surface-img: url('/textures/wood-walnut.png'); --surface-size: 460px; }
+:root[data-surface='wood-oak'] { --surface-img: url('/textures/wood-oak.png'); --surface-size: 460px; }
+:root[data-surface='marble'] { --surface-img: url('/textures/marble.png'); --surface-size: 520px; }
+:root[data-surface='granite'] { --surface-img: url('/textures/granite.png'); --surface-size: 480px; }
+:root[data-surface]:not([data-surface='felt']) body::before { display: none; }
+
 /* ---------- homepage trust strip (the "fair" promise) ---------- */
 
 .trust-strip {

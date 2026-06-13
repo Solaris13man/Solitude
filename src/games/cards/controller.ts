@@ -512,6 +512,7 @@ class CardGameController {
     const variant = $opt('set-variant') as HTMLSelectElement | null;
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
+    const surface = $('set-surface') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
     const cardset = $opt('set-cardset') as HTMLSelectElement | null;
     const left = $('set-lefthand') as HTMLInputElement;
@@ -521,6 +522,7 @@ class CardGameController {
     if (variant) variant.value = String(this.variant());
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
+    surface.value = this.settings.tableSurface;
     back.value = this.settings.cardBack;
     if (cardset) cardset.value = this.settings.cardSet;
     left.checked = this.settings.leftHand;
@@ -542,6 +544,7 @@ class CardGameController {
       this.settings = {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
+        tableSurface: surface.value as Settings['tableSurface'],
         cardBack: back.value as Settings['cardBack'],
         cardSet: (cardset ? cardset.value : this.settings.cardSet) as Settings['cardSet'],
         tileSet: this.settings.tileSet,
@@ -564,7 +567,7 @@ class CardGameController {
       const note = $opt('variant-note');
       if (note) note.hidden = this.variant() === this.state.variant;
     };
-    const controls = [theme, felt, back, left, anim, snd, ...(cardset ? [cardset] : []), ...(variant ? [variant] : [])];
+    const controls = [theme, felt, surface, back, left, anim, snd, ...(cardset ? [cardset] : []), ...(variant ? [variant] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

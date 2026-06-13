@@ -359,6 +359,7 @@ class MahjongController {
     const variant = $opt('set-variant') as HTMLSelectElement | null;
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
+    const surface = $('set-surface') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
     const tileset = $opt('set-tileset') as HTMLSelectElement | null;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
@@ -368,6 +369,7 @@ class MahjongController {
     if (variant) variant.value = String(this.layoutVariant());
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
+    surface.value = this.settings.tableSurface;
     back.value = this.settings.cardBack;
     if (tileset) tileset.value = this.settings.tileSet;
     if (left) left.checked = this.settings.leftHand;
@@ -383,6 +385,7 @@ class MahjongController {
         variants,
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
+        tableSurface: surface.value as Settings['tableSurface'],
         cardBack: back.value as Settings['cardBack'],
         tileSet: (tileset ? tileset.value : this.settings.tileSet) as Settings['tileSet'],
         leftHand: left ? left.checked : this.settings.leftHand,
@@ -398,7 +401,7 @@ class MahjongController {
       const note = $opt('variant-note');
       if (note) note.hidden = this.layoutVariant() === this.state.variant;
     };
-    const controls = [theme, felt, back, anim, snd, ...(tileset ? [tileset] : []), ...(left ? [left] : []), ...(variant ? [variant] : [])];
+    const controls = [theme, felt, surface, back, anim, snd, ...(tileset ? [tileset] : []), ...(left ? [left] : []), ...(variant ? [variant] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

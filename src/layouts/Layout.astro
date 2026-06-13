@@ -87,7 +87,10 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
         var root = document.documentElement;
         if (s.theme) root.dataset.theme = s.theme;
         if (s.felt) root.dataset.felt = s.felt;
+        if (s.tableSurface) root.dataset.surface = s.tableSurface;
         if (s.cardBack) root.dataset.cardback = s.cardBack;
+        if (s.cardSet) root.dataset.cardset = s.cardSet;
+        if (s.tileSet) root.dataset.tileset = s.tileSet;
         if (s.animations === false) root.classList.add('no-animations');
       } catch (e) {}
     </script>

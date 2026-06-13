@@ -362,6 +362,7 @@ class PeaksController {
   private bindSettingsDialog(): void {
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
+    const surface = $('set-surface') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
     const cardset = $opt('set-cardset') as HTMLSelectElement | null;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
@@ -370,6 +371,7 @@ class PeaksController {
 
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
+    surface.value = this.settings.tableSurface;
     back.value = this.settings.cardBack;
     if (cardset) cardset.value = this.settings.cardSet;
     if (left) left.checked = this.settings.leftHand;
@@ -389,6 +391,7 @@ class PeaksController {
         ...this.settings,
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
+        tableSurface: surface.value as Settings['tableSurface'],
         cardBack: back.value as Settings['cardBack'],
         cardSet: (cardset ? cardset.value : this.settings.cardSet) as Settings['cardSet'],
         tileSet: this.settings.tileSet,
@@ -403,7 +406,7 @@ class PeaksController {
       this.board.applyCardArt();
       syncBackPicker();
     };
-    const controls = [theme, felt, back, anim, snd, ...(cardset ? [cardset] : []), ...(left ? [left] : [])];
+    const controls = [theme, felt, surface, back, anim, snd, ...(cardset ? [cardset] : []), ...(left ? [left] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

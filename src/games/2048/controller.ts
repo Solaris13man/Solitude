@@ -338,6 +338,7 @@ class G2048Controller {
   private bindSettingsDialog(): void {
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
+    const surface = $('set-surface') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
     const anim = $('set-animations') as HTMLInputElement;
@@ -345,6 +346,7 @@ class G2048Controller {
 
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
+    surface.value = this.settings.tableSurface;
     back.value = this.settings.cardBack;
     if (left) left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
@@ -356,6 +358,7 @@ class G2048Controller {
         ...this.settings,
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
+        tableSurface: surface.value as Settings['tableSurface'],
         cardBack: back.value as Settings['cardBack'],
         cardSet: this.settings.cardSet,
         tileSet: this.settings.tileSet,
@@ -368,7 +371,7 @@ class G2048Controller {
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
     };
-    const controls = [theme, felt, back, anim, snd, ...(left ? [left] : [])];
+    const controls = [theme, felt, surface, back, anim, snd, ...(left ? [left] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 
