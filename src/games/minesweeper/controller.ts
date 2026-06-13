@@ -1,4 +1,5 @@
 import { History } from '../../lib/history';
+import { track } from '../../lib/analytics';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -142,6 +143,7 @@ class MinesweeperController {
     const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.difficulty());
     this.state = deal(dealSeed, dealVariant);
+    track('game_started', { game: GAME_ID, variant: dealVariant });
     this.history.clear();
     this.finished = false;
     this.accumulatedMs = 0;
@@ -232,10 +234,16 @@ class MinesweeperController {
   }
 
   private undo(): void {
-    if (this.finished) return;
+    // A loss is recoverable: undoing a misclick on a mine restores the prior
+    // board and resumes play. A win stays locked so it can't be replayed.
+    if (this.finished && this.state.status !== 'lost') return;
     const prev = this.history.undo(this.state);
     if (!prev) return;
     this.state = prev;
+    if (this.finished && prev.status === 'playing') {
+      this.finished = false;
+      this.resumeTimer();
+    }
     this.sound.play('undo');
     this.refresh(true);
     this.announce('Undid move.');
@@ -261,7 +269,10 @@ class MinesweeperController {
         this.daily.isToday(this.state.seed) ? this.daily.dealLabel() : `#${this.state.seed}`;
     }
     this.updateClock();
-    ($('btn-undo') as HTMLButtonElement).disabled = this.finished || !this.history.canUndo;
+    // Keep undo live after a loss so a misclick on a mine can be taken back.
+    const lost = this.state.status === 'lost';
+    ($('btn-undo') as HTMLButtonElement).disabled =
+      (this.finished && !lost) || !this.history.canUndo;
     ($('btn-redo') as HTMLButtonElement).disabled = this.finished || !this.history.canRedo;
     if (persist) this.persist();
     if (this.state.status === 'won') this.finish(true);
@@ -343,6 +354,7 @@ class MinesweeperController {
   }
 
   private async shareDeal(): Promise<void> {
+    track('share_clicked', { game: GAME_ID });
     let url: string;
     let text: string;
     if (this.daily.isToday(this.state.seed)) {

@@ -1,4 +1,5 @@
 import { History } from '../../lib/history';
+import { track } from '../../lib/analytics';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -123,6 +124,7 @@ class MahjongController {
     const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.layoutVariant());
     this.state = deal(dealSeed, dealVariant);
+    track('game_started', { game: GAME_ID, variant: dealVariant });
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -308,6 +310,7 @@ class MahjongController {
   }
 
   private async shareDeal(): Promise<void> {
+    track('share_clicked', { game: GAME_ID });
     let url: string;
     let text: string;
     if (this.daily.isToday(this.state.seed)) {

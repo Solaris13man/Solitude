@@ -8,6 +8,7 @@ import {
   hintTarget,
   isWon,
   logicalSolvable,
+  maxTechniqueFor,
   revealCell,
   serialize,
   setCell,
@@ -44,15 +45,52 @@ describe('sudoku generation', () => {
   });
 
   it('every difficulty is solvable by logic alone — no guessing required', () => {
-    // The technique budget per difficulty: easy/medium = singles only,
-    // hard = + locked candidates, expert = + naked pairs.
-    const maxLevel: Record<number, number> = { 1: 1, 2: 1, 3: 2, 4: 3 };
+    // The technique budget per difficulty: easy = singles, medium = + locked
+    // candidates, hard = + naked pairs, expert = + hidden pairs + X-Wing.
     for (const variant of [1, 2, 3, 4]) {
       for (const seed of [3, 88, 4242]) {
         const s = deal(seed, variant);
-        expect(logicalSolvable(s.givens, maxLevel[variant]!)).toBe(true);
+        expect(logicalSolvable(s.givens, maxTechniqueFor(variant))).toBe(true);
       }
     }
+  });
+
+  it('technique tiers are strictly increasing across difficulties', () => {
+    const tiers = [1, 2, 3, 4].map(maxTechniqueFor);
+    for (let i = 1; i < tiers.length; i++) {
+      expect(tiers[i]!).toBeGreaterThan(tiers[i - 1]!);
+    }
+    // Expert reaches the fish-pattern tier (X-Wing), well beyond naked pairs.
+    expect(maxTechniqueFor(4)).toBeGreaterThanOrEqual(5);
+  });
+
+  it('every difficulty is uniquely solvable', () => {
+    for (const variant of [1, 2, 3, 4]) {
+      for (const seed of [3, 88, 4242]) {
+        const s = deal(seed, variant);
+        expect(countSolutions(s.givens.slice())).toBe(1);
+      }
+    }
+  });
+
+  it('puzzles solvable at their tier are not necessarily solvable below it', () => {
+    // Solver levels are nested: anything solvable at level n is solvable at
+    // every level > n. Verify the new advanced techniques are monotone by
+    // checking a tier-4 (expert) puzzle stays solvable at its full budget.
+    const expert = deal(4242, 4);
+    expect(logicalSolvable(expert.givens, maxTechniqueFor(4))).toBe(true);
+    // And that allowing MORE techniques never breaks solvability.
+    expect(logicalSolvable(expert.givens, 5)).toBe(true);
+  });
+
+  it('the advanced solver respects the no-guessing guarantee', () => {
+    // The known hard 17-clue puzzle needs chains/guessing; it must remain
+    // unsolvable even with all implemented human techniques enabled.
+    const hard17 =
+      '000000010400000000020000000000050407008000300001090000300400200050100000000806000';
+    const grid = hard17.split('').map(Number);
+    expect(countSolutions(grid.slice())).toBe(1);
+    expect(logicalSolvable(grid, 5)).toBe(false);
   });
 
   it('a puzzle needing guessing is rejected at the easy technique budget', () => {

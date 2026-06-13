@@ -132,8 +132,10 @@ const schema = [
       utcDateKey,
     } from '../lib/daily';
     import { formatTime } from '../lib/stats';
+    import { track } from '../lib/analytics';
 
     const entry = dailyGame();
+    track('daily_viewed', { game: entry.game });
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-US', {
       timeZone: 'UTC',

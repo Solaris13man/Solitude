@@ -207,10 +207,86 @@ function nakedPairs(grid: number[], cand: number[]): boolean {
   return changed;
 }
 
+/** Hidden pairs: when two digits can each only go in the same two cells of a
+ *  unit, those two cells can hold nothing else — clear their other candidates. */
+function hiddenPairs(grid: number[], cand: number[]): boolean {
+  let changed = false;
+  for (const unit of UNITS) {
+    // Where can each digit go within this unit?
+    const spotsFor: number[][] = [];
+    for (let d = 1; d <= 9; d++) {
+      const bit = 1 << (d - 1);
+      spotsFor[d] = unit.filter((i) => !grid[i] && cand[i]! & bit);
+    }
+    for (let d1 = 1; d1 <= 9; d1++) {
+      if (spotsFor[d1]!.length !== 2) continue;
+      for (let d2 = d1 + 1; d2 <= 9; d2++) {
+        if (spotsFor[d2]!.length !== 2) continue;
+        const [a1, a2] = spotsFor[d1]!;
+        const [b1, b2] = spotsFor[d2]!;
+        if (a1 !== b1 || a2 !== b2) continue; // same two cells?
+        const pairMask = (1 << (d1 - 1)) | (1 << (d2 - 1));
+        for (const i of [a1!, a2!]) {
+          if (cand[i]! & ~pairMask) {
+            cand[i]! &= pairMask;
+            changed = true;
+          }
+        }
+      }
+    }
+  }
+  return changed;
+}
+
+/** Rows and columns as [orientation, lines] for fish patterns. */
+const ROWS: number[][] = UNITS.slice(0, 9);
+const COLS: number[][] = UNITS.slice(9, 18);
+
+/** X-Wing: for a digit, two rows whose candidate cells lie in the same two
+ *  columns let us eliminate that digit from those columns elsewhere (and the
+ *  column-oriented mirror). A classic "advanced" technique. */
+function xWing(grid: number[], cand: number[]): boolean {
+  let changed = false;
+  const scan = (lines: number[][], lineOf: (i: number) => number, crossOf: (i: number) => number) => {
+    for (let d = 1; d <= 9; d++) {
+      const bit = 1 << (d - 1);
+      // For each line, the cross-coordinates where the digit can go.
+      const crosses: number[][] = lines.map((line) =>
+        line.filter((i) => !grid[i] && cand[i]! & bit).map(crossOf),
+      );
+      for (let a = 0; a < lines.length; a++) {
+        if (crosses[a]!.length !== 2) continue;
+        for (let b = a + 1; b < lines.length; b++) {
+          if (crosses[b]!.length !== 2) continue;
+          if (crosses[a]![0] !== crosses[b]![0] || crosses[a]![1] !== crosses[b]![1]) continue;
+          const [x1, x2] = crosses[a]!;
+          // Eliminate the digit from those two crosslines, outside the two lines.
+          for (let i = 0; i < 81; i++) {
+            if (grid[i] || !(cand[i]! & bit)) continue;
+            if (crossOf(i) !== x1 && crossOf(i) !== x2) continue;
+            if (lineOf(i) === a || lineOf(i) === b) continue;
+            cand[i]! &= ~bit;
+            changed = true;
+          }
+        }
+      }
+    }
+  };
+  scan(ROWS, rowOf, colOf);
+  scan(COLS, colOf, rowOf);
+  return changed;
+}
+
 /**
  * Can the puzzle be solved by deduction alone (no guessing), using only
- * techniques up to `maxLevel`? 1 = singles, 2 = + locked candidates,
- * 3 = + naked pairs. This is what makes generated puzzles fair.
+ * techniques up to `maxLevel`?
+ *   1 = singles (naked + hidden)
+ *   2 = + locked candidates (pointing / claiming)
+ *   3 = + naked pairs
+ *   4 = + hidden pairs
+ *   5 = + X-Wing
+ * Each level is a strict superset of the one below, so a higher budget can
+ * only ever solve more puzzles. This is what makes generated puzzles fair.
  */
 export function logicalSolvable(givens: number[], maxLevel: number): boolean {
   const grid = givens.slice();
@@ -254,13 +330,28 @@ export function logicalSolvable(givens: number[], maxLevel: number): boolean {
     }
     if (maxLevel >= 2 && lockedCandidates(grid, cand)) continue;
     if (maxLevel >= 3 && nakedPairs(grid, cand)) continue;
+    if (maxLevel >= 4 && hiddenPairs(grid, cand)) continue;
+    if (maxLevel >= 5 && xWing(grid, cand)) continue;
     break;
   }
   return filled === 81;
 }
 
-/** Hardest technique tier a difficulty is allowed to require. */
-const MAX_TECHNIQUE: Record<number, number> = { 1: 1, 2: 1, 3: 2, 4: 3 };
+/** Hardest technique tier a difficulty is allowed to require. Strictly
+ *  increasing, so Easy < Medium < Hard < Expert in technique ceiling:
+ *    Easy   = singles only
+ *    Medium = + locked candidates
+ *    Hard   = + naked pairs
+ *    Expert = + hidden pairs + X-Wing
+ *  (Expert deliberately skips to the fish-pattern tier so it is genuinely
+ *  harder than the naked-pair "medium-hard" it used to top out at.) */
+const MAX_TECHNIQUE: Record<number, number> = { 1: 1, 2: 2, 3: 3, 4: 5 };
+
+/** Exposed for tests: the technique ceiling each difficulty may require. */
+export function maxTechniqueFor(difficulty: number): number {
+  const variant = difficulty >= 1 && difficulty <= 4 ? Math.floor(difficulty) : 1;
+  return MAX_TECHNIQUE[variant]!;
+}
 
 export function deal(seed: number, difficulty: number): SudokuState {
   const variant = difficulty >= 1 && difficulty <= 4 ? Math.floor(difficulty) : 1;

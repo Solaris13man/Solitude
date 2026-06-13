@@ -13,6 +13,7 @@ import {
   utcDateKey,
 } from './daily';
 import { formatTime } from './stats';
+import { track } from './analytics';
 
 /**
  * Encapsulates Daily Challenge mode for any game's controller. A controller
@@ -81,6 +82,7 @@ export class DailyMode {
   /** Record a solve into the daily history; returns the current streak. */
   recordSolve(timeMs: number, moves: number, score: number, game: string): number {
     const record = recordDailyWin(utcDateKey(), { timeMs, moves, score, game });
+    track('daily_solved', { game, seconds: Math.round(timeMs / 1000) });
     this.refreshBanner();
     return currentDailyStreak(record);
   }

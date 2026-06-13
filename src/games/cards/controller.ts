@@ -16,6 +16,7 @@ import {
   saveSettings,
 } from '../../lib/settings';
 import { DailyMode } from '../../lib/daily-mode';
+import { track } from '../../lib/analytics';
 import {
   type GameState,
   type Move,
@@ -172,6 +173,7 @@ class CardGameController {
     const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.variant());
     this.state = this.ruleset.deal(dealSeed, dealVariant);
+    track('game_started', { game: this.ruleset.id, variant: dealVariant });
     this.history.clear();
     this.finished = false;
     this.autoFinishing = false;
@@ -454,7 +456,9 @@ class CardGameController {
     let text: string;
     if (this.daily.isToday(this.state.seed)) {
       ({ url, text } = this.daily.shareText(this.finished, this.elapsedMs()));
+      track('share_clicked', { game: this.ruleset.id, type: 'daily' });
     } else {
+      track('share_clicked', { game: this.ruleset.id, type: 'deal' });
       const mode = this.ruleset.variants.length > 0 ? `&mode=${this.state.variant}` : '';
       url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}${mode}`;
       text = this.finished

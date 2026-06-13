@@ -1,4 +1,5 @@
 import { History } from '../../lib/history';
+import { track } from '../../lib/analytics';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -128,6 +129,7 @@ class SudokuController {
     const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.difficulty());
     this.state = deal(dealSeed, dealVariant);
+    track('game_started', { game: GAME_ID, variant: dealVariant });
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -340,6 +342,7 @@ class SudokuController {
   }
 
   private async shareDeal(): Promise<void> {
+    track('share_clicked', { game: GAME_ID });
     let url: string;
     let text: string;
     if (this.daily.isToday(this.state.seed)) {

@@ -1,4 +1,5 @@
 import { History } from '../../lib/history';
+import { track } from '../../lib/analytics';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -120,6 +121,7 @@ class G2048Controller {
       });
     }
     this.state = deal(seed ?? (this.daily.active ? this.daily.seed : randomSeed()));
+    track('game_started', { game: GAME_ID, variant: 0 });
     this.dailyRecorded = false;
     this.history.clear();
     this.finished = false;
@@ -297,6 +299,7 @@ class G2048Controller {
   }
 
   private async shareDeal(): Promise<void> {
+    track('share_clicked', { game: GAME_ID });
     let url: string;
     let text: string;
     if (this.daily.isToday(this.state.seed)) {

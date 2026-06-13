@@ -293,6 +293,31 @@ body {
 }
 .instructions-body { padding: 0 1.2rem 1.3rem; }
 
+/* compact game switcher in the top control bar */
+.games-menu { position: relative; }
+.games-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.games-menu > summary::-webkit-details-marker { display: none; }
+.games-menu-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: max-content;
+  max-width: min(92vw, 30rem);
+  padding: 0.85rem 1rem;
+  background: var(--chrome-bg);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 14px;
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.42);
+}
+.games-menu-panel .game-nav { margin-bottom: 0; }
+@media (max-width: 480px) {
+  .games-menu-panel { left: auto; right: 0; }
+}
+
 .more-games {
   margin: 1.5rem auto 0;
   text-align: center;

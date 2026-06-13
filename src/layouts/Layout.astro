@@ -14,7 +14,15 @@ import { SITE_CONFIG } from '../lib/site-config';
 
 const { title, description, schema, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/og.png', Astro.site);
+// Per-game share images live at /og/<slug>.png; fall back to the generic one.
+const OG_SLUGS = new Set([
+  'klondike', 'klondike-draw-3', 'spider', 'spider-2-suits', 'spider-4-suits',
+  'freecell', 'pyramid', 'tripeaks', 'golf', 'sudoku', 'sudoku-easy',
+  'sudoku-hard', 'sudoku-expert', 'mahjong', 'mahjong-turtle', 'minesweeper',
+  'minesweeper-expert', '2048', 'daily-challenge',
+]);
+const slug = Astro.url.pathname.replace(/^\/|\/$/g, '');
+const ogImage = new URL(OG_SLUGS.has(slug) ? `/og/${slug}.png` : '/og.png', Astro.site);
 const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient;
 const ga = SITE_CONFIG.analytics;
 const gaLive = ga.provider === 'ga' && !!ga.measurementId;
@@ -88,7 +96,7 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
     <slot />
     <div id="badge-toast" class="badge-toast" role="status" aria-live="polite" hidden></div>
     <script>
-      import { initAnalytics } from '../lib/analytics';
+      import { initAnalytics, track } from '../lib/analytics';
       import { checkForNewBadges } from '../lib/achievements';
       import { initAccount, syncUp } from '../lib/account';
       import { initAdRefresh } from '../lib/ads';
@@ -119,7 +127,10 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
         }, 3200);
       }
       window.addEventListener('cardhearth:result', () => {
-        for (const b of checkForNewBadges()) queue.push({ icon: b.icon, name: b.name });
+        for (const b of checkForNewBadges()) {
+          queue.push({ icon: b.icon, name: b.name });
+          track('badge_unlocked', { badge_id: b.id, badge_name: b.name });
+        }
         flush();
         void syncUp();
       });
