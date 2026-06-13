@@ -247,7 +247,7 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
 .daily-feature:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgb(0 0 0 / 0.4); border-color: #ffd95e; }
 .daily-feature:focus-visible { outline: 3px solid #ffd95e; outline-offset: 3px; }
 .daily-feature-art { flex: 0 0 34%; max-width: 16rem; display: block; }
-.daily-feature-art .art { width: 100%; height: 100%; }
+.daily-feature-art .art { width: 100%; height: 100%; padding: 6px 0; filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.4)); }
 .daily-feature-body { display: flex; flex-direction: column; gap: 0.25rem; padding: 1.1rem 1.3rem; }
 .daily-feature-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #ffd95e; }
 .daily-feature-title { font-size: 1.4rem; font-weight: 800; }
@@ -286,15 +286,32 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
 }
 .menu-art {
   display: block;
+  position: relative;
   aspect-ratio: 16 / 7;
+  overflow: hidden;
   background:
-    radial-gradient(120% 120% at 50% 0%, rgb(255 255 255 / 0.1) 0%, transparent 55%),
-    rgb(0 0 0 / 0.18);
-  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    radial-gradient(120% 130% at 50% 0%, rgb(255 255 255 / 0.12) 0%, transparent 55%),
+    radial-gradient(130% 120% at 50% 125%, rgb(0 0 0 / 0.30) 0%, transparent 60%),
+    linear-gradient(160deg, #207e48 0%, #11542f 100%);
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+}
+/* woven-felt grain so each thumbnail reads as a game on a real table */
+.menu-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/textures/felt.png');
+  background-size: 150px 150px;
+  opacity: 0.85;
+  pointer-events: none;
 }
 .menu-art .art {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
+  padding: 6px 0;
+  filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.42));
 }
 .menu-card-body {
   display: flex;
