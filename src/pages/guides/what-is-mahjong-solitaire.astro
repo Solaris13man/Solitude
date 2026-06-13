@@ -1,0 +1,194 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'What Is Mahjong Solitaire? Rules & How to Play | CardHearth';
+const description =
+  'What is Mahjong Solitaire? A clear, beginner-friendly reference: the 144 tiles, the layered layouts, how matching works, when a tile is free, and how you win or get stuck.';
+const updated = '2026-06-13';
+const heading = 'What Is Mahjong Solitaire?';
+const subtitle =
+  'A plain-English reference to the rules of the single-player tile-matching game — the tiles, the layout, the matches, and how a board is won.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'What Is Mahjong Solitaire?', href: '/guides/what-is-mahjong-solitaire/' },
+];
+
+const faq = [
+  {
+    q: 'Is Mahjong Solitaire the same as Mahjong?',
+    a: 'No. Mahjong is a four-player game played with hands, draws and discards, scored a bit like rummy. Mahjong Solitaire is a single-player puzzle: you simply remove matching pairs of tiles from a fixed layout until the board is clear. The two games share the same 144 tiles, but the goals and rules are entirely different.',
+  },
+  {
+    q: 'When is a tile playable?',
+    a: 'A tile is "free" (selectable) when two things are true at once: nothing rests on top of it, and at least one of its long sides — left or right — is open. If a tile is buried under another tile, or boxed in on both the left and right, it is locked until you clear the tiles around it.',
+  },
+  {
+    q: 'Do flowers and seasons match each other?',
+    a: 'Within their own group, yes. Any flower matches any other flower, and any season matches any other season — those are the only "mixed" matches in the game. Every other tile (the suits, winds and dragons) must be paired with an exact identical twin.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'What Is Mahjong Solitaire? Rules & How to Play',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/what-is-mahjong-solitaire/',
+    image: 'https://cardhearth.com/og/mahjong.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/mahjong/', label: 'Play Mahjong Solitaire' }}
+>
+  <p>
+    Mahjong Solitaire is a <strong>single-player tile-matching puzzle</strong>. You take a pile
+    of tiles stacked into a layered pattern and dismantle it by removing matching pairs, one pair
+    at a time, until nothing is left. It goes by several names — <em>Mahjong Tiles</em>,
+    <em>Shanghai</em>, <em>Taipei</em>, or just "Mahjong" on a phone or computer — but it is
+    always the same calm, methodical solo game. If you'd rather learn by doing, you can
+    <a href="/mahjong/">play a board right now</a> and refer back here as questions come up.
+  </p>
+
+  <h2>Mahjong Solitaire is not the four-player game Mahjong</h2>
+  <p>
+    This is the single most common point of confusion, so it's worth stating plainly. Traditional
+    <strong>Mahjong</strong> is a social game for four players, built around drawing and
+    discarding tiles to complete a scoring hand — closer in spirit to rummy or gin. Mahjong
+    <em>Solitaire</em> borrows the same beautiful set of 144 tiles, but that's where the
+    resemblance ends: there are no opponents, no hands, no discards and no draws. The goal and
+    the rules are entirely different. Here you simply find pairs and clear the table.
+  </p>
+
+  <h2>The tiles</h2>
+  <p>
+    A full set has <strong>144 tiles</strong>, drawn from a few families:
+  </p>
+  <ul>
+    <li>
+      <strong>Three suits</strong> — circles (dots), bamboo, and characters — each numbered 1
+      through 9, with four copies of every number.
+    </li>
+    <li>
+      <strong>Honor tiles</strong> — the four winds and the three dragons — again with four
+      copies each.
+    </li>
+    <li>
+      <strong>Bonus tiles</strong> — four flowers and four seasons.
+    </li>
+  </ul>
+  <p>
+    For matching, most tiles need an <strong>exact identical twin</strong>: a circle 5 pairs only
+    with another circle 5, the east wind only with another east wind, and so on. The bonus tiles
+    are the one exception — <strong>any flower matches any other flower</strong>, and
+    <strong>any season matches any other season</strong>. That small rule is what lets the bonus
+    tiles come off even though no two of them are truly identical.
+  </p>
+
+  <h2>The layout</h2>
+  <p>
+    The tiles aren't laid flat in a grid. They're stacked into a <strong>multi-layer 3D
+    pattern</strong>, with upper tiles resting partly on top of the ones below. The classic shape
+    is the five-layer <a href="/mahjong-turtle/"><strong>Turtle</strong></a> (sometimes called the
+    Dragon), but it's only one of several formations — CardHearth also deals a quick Cross, a
+    pointed Diamond, a stepped Ziggurat, a twin-towered Bridge, a winged Butterfly, a walled
+    Fortress, and a moated Arena. The layout is what gives the game its puzzle: tiles bury one
+    another, so the order you remove them in matters.
+  </p>
+
+  <h2>The objective</h2>
+  <p>
+    The goal is simple to state: <strong>remove every tile</strong>. You do that by selecting two
+    matching <strong>free</strong> tiles to take them off the board, then repeating until the
+    whole layout is clear. With 144 tiles that's 72 pairs to find. Clear them all and you've won.
+  </p>
+
+  <h2>What makes a tile "free"</h2>
+  <p>
+    You can't match just any two tiles — only ones that are currently <strong>free</strong>. A
+    tile is free when <strong>both</strong> of these are true:
+  </p>
+  <ul>
+    <li><strong>Nothing rests on top of it</strong> — no tile from a higher layer covers it.</li>
+    <li>
+      <strong>At least one long side is open</strong> — its left edge or its right edge has no
+      tile touching it.
+    </li>
+  </ul>
+  <p>
+    A tile that's buried, or hemmed in by neighbours on both the left and right, is locked. As you
+    clear pairs, locked tiles become free, which is what keeps the puzzle moving.
+  </p>
+
+  <h2>How you win — and how you get stuck</h2>
+  <p>
+    You <strong>win</strong> by clearing every tile from the board. You can also get
+    <strong>stuck</strong>: if you reach a point where no two free tiles match, there are no legal
+    moves left and the layout can't be finished from that position. Importantly, this isn't always
+    bad luck. <strong>Every CardHearth deal is built to be solvable</strong> — deals are
+    assembled by placing pairs in reverse play order, which guarantees at least one path to a
+    clear board. But a wrong removal <em>order</em> can still strand you (for instance, if two
+    identical tiles end up stacked directly on top of each other). That's exactly what
+    <strong>undo</strong> is for: step back a few pairs, choose differently, and the winning path
+    is always there. The hint button will surface a matching free pair whenever one exists.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that the rules make sense, the best next step is a board: <a href="/mahjong/">play Mahjong
+    Solitaire</a> and try the principles out. When you want to clear deals faster, our
+    <a href="/guides/mahjong-solitaire-strategy/">Mahjong Solitaire strategy guide</a> covers the
+    habits that matter, and <a href="/guides/are-solitaire-games-winnable/">are solitaire games
+    winnable?</a> explains why "solvable" doesn't mean "easy." For everything else, the
+    <a href="/guides/">guides hub</a> covers the whole CardHearth library.
+  </p>
+</Article>

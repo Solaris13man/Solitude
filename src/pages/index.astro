@@ -6,7 +6,7 @@ import { GAMES } from '../games/registry';
 
 const title = 'CardHearth — Free Solitaire & Puzzle Games Online';
 const description =
-  'Play free Solitaire, Sudoku, Mahjong, 2048, Minesweeper and more in your browser. Smooth animations, full touch support, unlimited undo — always free, no download, no sign-up.';
+  'Play 11 free Solitaire and puzzle games in your browser — no download, no sign-up. Every Sudoku is logically solvable with no guessing, and every Mahjong board is guaranteed solvable.';
 
 const cardCount = GAMES.filter((g) => g.category === 'cards').length;
 const puzzleCount = GAMES.filter((g) => g.category === 'puzzle').length;
@@ -53,11 +53,16 @@ const schema = [
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
         Free Solitaire &amp; Puzzle Games
       </h1>
-      <p class="mx-auto mt-3 max-w-md text-base opacity-85">
-        CardHearth is {cardCount + puzzleCount} classic games — solitaire, Sudoku, Mahjong and
-        more — beautifully playable on any device. Pick one to start; your progress, stats and
-        streaks save automatically.
+      <p class="mx-auto mt-3 max-w-lg text-base opacity-85">
+        CardHearth is your home for {cardCount + puzzleCount} classic strategy and puzzle games —
+        solitaire, Sudoku, Mahjong and more — beautifully playable on any device. Pick one to
+        start; your progress, stats and streaks save automatically.
       </p>
+      <ul class="trust-strip" aria-label="Why CardHearth">
+        <li><strong>No guessing</strong>Every Sudoku is solvable by pure logic — guaranteed.</li>
+        <li><strong>Always solvable</strong>Every Mahjong board is winnable by design.</li>
+        <li><strong>Free &amp; private</strong>No sign-up, no download. Progress stays on your device.</li>
+      </ul>
     </header>
 
     <nav aria-label="Choose a game">
@@ -120,6 +125,12 @@ const schema = [
         deals you can replay or share to challenge a friend on the exact same board. And once a
         day there's the <a class="underline" href="/daily-challenge/">Daily Challenge</a> — one
         deal, identical for everyone, with a streak to defend.
+      </p>
+      <p class="mb-3">
+        New to a game or want to win more? Our <a class="underline" href="/guides/">strategy
+        guides and rules</a> cover every game — from <a class="underline" href="/guides/solitaire-rules/">how
+        to play Solitaire</a> to <a class="underline" href="/guides/sudoku-solving-techniques/">advanced
+        Sudoku techniques</a>.
       </p>
       <p class="opacity-75">
         CardHearth runs right in your browser — no install, no account required, always free to

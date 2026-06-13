@@ -1,0 +1,207 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'How to Play Minesweeper: Rules for Beginners | CardHearth';
+const description =
+  'Learn how to play Minesweeper from scratch: what the grid and numbers mean, how to reveal and flag squares, and the simple deductions that clear a board safely.';
+const updated = '2026-06-13';
+const heading = 'How to Play Minesweeper';
+const subtitle =
+  'The complete beginner rules — what the board is, what the numbers tell you, and how to clear every safe square without setting off a mine.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'How to Play Minesweeper', href: '/guides/how-to-play-minesweeper/' },
+];
+
+const faq = [
+  {
+    q: 'Is the first click always safe?',
+    a: 'Yes, on CardHearth. The mines are placed only after your first reveal, and the game avoids both the square you clicked and the squares around it. That means your opening move can never detonate a mine and always opens a small safe area to start reading from.',
+  },
+  {
+    q: 'What do the numbers mean?',
+    a: 'A number on a revealed square counts the mines hidden in its eight neighbouring squares (up, down, left, right, and the four diagonals). A 1 means exactly one of those neighbours is a mine; a 3 means three of them are. A square with no number at all is a 0 — none of its neighbours are mines.',
+  },
+  {
+    q: 'Do I have to flag every mine to win?',
+    a: 'No. Flags are just an optional memory aid for you. You win the moment every non-mine square is revealed, whether or not you placed a single flag. You also never have to flag correctly to win — flagging the wrong square does not lose the game by itself.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'How to Play Minesweeper: Rules for Beginners',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/how-to-play-minesweeper/',
+    image: 'https://cardhearth.com/og/minesweeper.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/minesweeper/', label: 'Play Minesweeper' }}
+>
+  <p>
+    Minesweeper looks intimidating — a grid full of blank squares, a hidden field of mines — but the
+    rules are simple and you can learn them in a couple of minutes. This guide covers the basics from
+    the ground up: what the board is, what the numbers mean, how to reveal and flag squares, and the
+    handful of deductions that let you clear a board safely. The fastest way to follow along is to
+    <a href="/minesweeper/">open a game</a> and read this alongside it.
+  </p>
+
+  <h2>What is Minesweeper?</h2>
+  <p>
+    Minesweeper is a single-player logic puzzle. A grid of squares hides a fixed number of mines, and
+    your job is to <strong>reveal every safe square without detonating a single mine</strong>. You are
+    never asked to find the mines directly — you find the safe squares, and the mines are simply
+    everything you leave untouched. It is pure deduction: the board gives you clues, and you work out
+    where it is and isn't safe to click.
+  </p>
+
+  <h2>The board and the objective</h2>
+  <p>
+    The board is a rectangular grid of cells. Some unknown subset of those cells contain mines; the
+    rest are safe. On CardHearth, Easy is 9×9 with 10 mines, Medium is 16×16 with 40 mines, and
+    <a href="/minesweeper-expert/">Expert</a> is the classic 30×16 board with 99 mines. Whatever the
+    size, the goal is identical: <strong>clear every cell that is not a mine</strong>. Do that and you
+    win — you never need to "click" the mines themselves.
+  </p>
+
+  <h2>What the numbers mean</h2>
+  <p>
+    This is the heart of the game. When you reveal a safe cell, it shows a <strong>number from 1 to
+    8</strong>, and that number tells you exactly how many of its eight neighbouring cells (the ones
+    touching it horizontally, vertically, and diagonally) contain mines. A 1 means one of those eight
+    neighbours is a mine; a 3 means three of them are.
+  </p>
+  <p>
+    A revealed cell that is completely blank is a <strong>0</strong> — none of its neighbours are
+    mines. Because a 0 is surrounded entirely by safe cells, the game automatically opens all of those
+    neighbours for you, and if any of <em>them</em> are also 0s, it keeps cascading outward. That is
+    why a single click in an open area can suddenly clear a large region of the board at once.
+  </p>
+
+  <h2>Controls: revealing and flagging</h2>
+  <p>
+    There are two actions. <strong>Revealing</strong> a cell (a normal click or tap) opens it, showing
+    either a number, a blank, or — if you guessed wrong — a mine. <strong>Flagging</strong> a cell
+    marks it as a suspected mine so you remember not to click it. On CardHearth you flag with a
+    right-click, a long-press on touch screens, or by switching on Flag mode (the ⚑ button or the F
+    key).
+  </p>
+  <p>
+    Flags are entirely optional. They do not affect whether you win — they are just a memory aid, and
+    a flag does not even have to be correct. The mine counter in the display simply shows the mine
+    total minus the flags you have placed, to help you keep track.
+  </p>
+
+  <h2>Two things CardHearth does for you</h2>
+  <p>
+    Two CardHearth features make learning much friendlier than the classic version:
+  </p>
+  <ul>
+    <li>
+      <strong>The first click is always safe.</strong> Mines are placed only <em>after</em> your first
+      reveal, and the game deliberately keeps them away from the cell you clicked and its neighbours.
+      So your opening move can never blow up, and it always opens a starting area to read from.
+    </li>
+    <li>
+      <strong>You can undo a misclick.</strong> Hitting a mine no longer permanently ends the game —
+      you can take the move back and carry on. Purists can ignore this; beginners can lean on it to
+      learn from mistakes without starting over.
+    </li>
+  </ul>
+
+  <h2>Getting started: your first deductions</h2>
+  <p>
+    After the first click opens an area, work along the edge of the revealed region where the numbers
+    sit next to hidden cells. A few simple rules will carry you a long way:
+  </p>
+  <ul>
+    <li>
+      <strong>Click in the open.</strong> If you have a large blank area, clicking inside it reveals
+      lots of squares at once and gives you more numbers to reason from.
+    </li>
+    <li>
+      <strong>Satisfied numbers make the rest safe.</strong> If a number already touches as many flags
+      (known mines) as its value, then all of its <em>other</em> hidden neighbours must be safe — you
+      can reveal them.
+    </li>
+    <li>
+      <strong>Forced mines.</strong> If a number's count exactly equals the number of unknown cells
+      still touching it, then every one of those unknown cells is a mine. A 1 touching a single hidden
+      square means that square is the mine.
+    </li>
+  </ul>
+
+  <h2>Winning and losing</h2>
+  <p>
+    You <strong>win</strong> the instant every safe cell is revealed — you do not have to flag the
+    mines, and CardHearth tracks how many mines remain for you as you go. You <strong>lose</strong> by
+    revealing a mine (though, again, undo means a slip need not be the end). Most boards can be solved
+    by logic alone; only occasionally will a position leave you with a genuine guess. When that
+    happens, and when you want to recognise recurring shapes like the <strong>1-2-1</strong> pattern
+    or weigh up the odds of a guess, head to our
+    <a href="/guides/minesweeper-strategy/">Minesweeper strategy guide</a>, which covers deduction
+    patterns and probability in depth.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    That is everything you need to start playing. <a href="/minesweeper/">Play Minesweeper</a> now and
+    practise reading the numbers, then level up with the
+    <a href="/guides/minesweeper-strategy/">strategy guide</a> for the patterns and probability that
+    crack the harder boards — or tackle the full
+    <a href="/minesweeper-expert/">Expert grid</a>. Our <a href="/guides/">guides hub</a> covers the
+    rest of the CardHearth library too.
+  </p>
+</Article>

@@ -1,0 +1,203 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Spider Solitaire Rules: How to Play (Complete Guide) | CardHearth';
+const description =
+  'The complete rules of Spider Solitaire: the two-deck setup, how the 54 tableau cards are dealt, legal moves, completing King-to-Ace runs, dealing from the stock, and the 1, 2 and 4 suit variants.';
+const updated = '2026-06-13';
+const heading = 'Spider Solitaire Rules';
+const subtitle =
+  'A complete, plain-English reference to how Spider Solitaire is played — the deal, the moves, the goal, and the suit variants.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Spider Solitaire Rules', href: '/guides/spider-solitaire-rules/' },
+];
+
+const faq = [
+  {
+    q: 'How many cards and decks does Spider Solitaire use?',
+    a: 'Spider uses two standard 52-card decks combined — 104 cards in total. Fifty-four of them are dealt to the ten tableau columns at the start, and the remaining fifty sit in the stock to be dealt later, ten at a time, across five deals.',
+  },
+  {
+    q: 'Can you move more than one card at a time in Spider?',
+    a: 'Yes, but only if the cards form a same-suit run in descending order. A run such as the 10-9-8 of spades moves together as a unit. If the cards are in sequence but of mixed suits, only the single top card can be moved on its own.',
+  },
+  {
+    q: 'Why can I not deal new cards from the stock?',
+    a: 'Spider forbids a stock deal while any column is empty. Because every deal places one card on each of the ten columns, an empty column is not allowed to receive one. Fill all empty columns first, then the stock will deal.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Spider Solitaire Rules: How to Play (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/spider-solitaire-rules/',
+    image: 'https://cardhearth.com/og/spider.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/spider/', label: 'Play Spider Solitaire' }}
+>
+  <p>
+    Spider Solitaire is one of the most popular two-deck solitaire games, and it plays quite
+    differently from Klondike. There are no separate foundation piles to build onto and suits
+    matter less than you might expect. This page is a complete reference to the rules — the
+    setup, the legal moves, the goal, and the suit variants — so you can sit down and play with
+    confidence. If you would rather learn by doing, you can <a href="/spider/">play Spider
+    Solitaire</a> right now with hints turned on.
+  </p>
+
+  <h2>What is Spider Solitaire?</h2>
+  <p>
+    Spider is played with <strong>two full decks shuffled together — 104 cards</strong>. The cards
+    are spread across ten tableau columns, and your job is to sort them into ordered sequences
+    that can be cleared from the board. Spider comes in three difficulty settings, all using the
+    same 104 cards: a <strong>1-suit</strong> game (every card is a spade), a
+    <strong>2-suit</strong> game (spades and hearts), and a <strong>4-suit</strong> game (all four
+    suits). The more suits in play, the harder it is to build the runs you need.
+  </p>
+
+  <h2>Setting up the board</h2>
+  <p>
+    At the start of a game, <strong>54 of the 104 cards are dealt to the ten columns</strong>. The
+    deal is uneven: the <strong>first four columns receive six cards each</strong> and the
+    <strong>remaining six columns receive five cards each</strong> (4 × 6 + 6 × 5 = 54). In every
+    column only the <strong>bottom card — the one nearest you — is turned face-up</strong>; all the
+    cards above it are face-down.
+  </p>
+  <p>
+    The <strong>other 50 cards form the stock</strong>, held face-down to one side. Because each
+    stock deal places one card on every one of the ten columns, those 50 cards give you exactly
+    <strong>five deals</strong> over the course of the game.
+  </p>
+
+  <h2>The objective</h2>
+  <p>
+    The goal is to build <strong>eight complete sequences, each running from King down to Ace in a
+    single suit</strong>. The moment a column ends in a full, in-suit King-to-Ace run, that run is
+    <strong>automatically removed from the board</strong> and set aside. Clear all eight runs —
+    one for each King in the two decks — and you win. There is nothing extra to do once the last
+    run lifts off: an empty board is a finished game.
+  </p>
+
+  <h2>Legal moves</h2>
+  <p>
+    Within the tableau, you build <strong>downward by rank, ignoring suit</strong>. You may place a
+    card onto any card that is exactly <strong>one rank higher</strong> — a Nine of any suit onto
+    any Ten, a Two of any suit onto any Three, and so on. This means you can always make progress
+    even when the colours and suits do not line up.
+  </p>
+  <p>
+    Suit matters when you want to <strong>move several cards at once</strong>. A group of cards
+    only travels together if it is a <strong>same-suit run in descending order</strong> — for
+    example the 8-7-6 of hearts. A sequence of mixed suits is still a legal stack to look at, but
+    only its single top card can be picked up and moved on its own. Keeping runs in one suit is
+    therefore what lets you shift large blocks around.
+  </p>
+  <p>
+    An <strong>empty column accepts any card or run</strong>, regardless of rank, which makes empty
+    columns a valuable workspace for reorganising tangled stacks. Whenever you move cards off a
+    column and expose a face-down card beneath, that card is <strong>turned face-up</strong>
+    automatically.
+  </p>
+  <p>
+    When you run out of useful moves, you can <strong>deal a new row from the stock</strong>:
+    tapping the stock lays one card face-up onto each of the ten columns. The one restriction is
+    that <strong>every column must already hold at least one card</strong> — you cannot deal while
+    any column is empty, so plan ahead before reaching for the stock.
+  </p>
+
+  <h2>Completing and clearing runs</h2>
+  <p>
+    A run is completed when a column ends in thirteen cards of the same suit in order, from
+    <strong>King at the top down to Ace at the bottom</strong>. As soon as that happens — whether
+    you formed it by hand or a stock deal completed it — the whole run is lifted off the board and
+    parked in one of the eight finished slots. Any face-down card it leaves behind is flipped
+    face-up, ready to use. You have <strong>won the game once all eight runs have been removed</strong>
+    and the tableau is empty.
+  </p>
+
+  <h2>The suit variants and difficulty</h2>
+  <p>
+    The number of suits is Spider's difficulty dial, and CardHearth offers all three on their own
+    tables:
+  </p>
+  <ul>
+    <li><strong>1 suit (easy)</strong> — every card is a spade, so any descending sequence is also
+      a same-suit run and moves as a unit. This is the best way to learn the game; start at
+      <a href="/spider/">1-suit Spider</a>.</li>
+    <li><strong>2 suits (medium)</strong> — spades and hearts are mixed in, so you have to keep
+      suits apart to move blocks. Try <a href="/spider-2-suits/">2-suit Spider</a> once the basics
+      feel natural.</li>
+    <li><strong>4 suits (hard)</strong> — all four suits are in play, making same-suit runs scarce
+      and the game a genuine challenge. <a href="/spider-4-suits/">4-suit Spider</a> is for
+      confident players.</li>
+  </ul>
+  <p>
+    For a side-by-side breakdown of how the difficulty changes, see our guide to
+    <a href="/guides/spider-1-2-4-suits/">choosing between 1, 2 and 4 suits</a>.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that you know the rules, the next step is learning to win them. Read our
+    <a href="/guides/spider-solitaire-strategy/">Spider Solitaire strategy guide</a> for the habits
+    that lift your win rate, decide where to start with our
+    <a href="/guides/spider-1-2-4-suits/">1, 2 or 4 suits guide</a>, and look up any unfamiliar
+    term in the <a href="/guides/solitaire-glossary/">solitaire glossary</a>. When you are ready,
+    <a href="/spider/">play Spider Solitaire</a> — or browse every guide in our
+    <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

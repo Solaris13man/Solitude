@@ -1,0 +1,189 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Golf Solitaire Rules: How to Play (Complete Guide) | CardHearth';
+const description =
+  'A complete rules reference for Golf Solitaire: the setup, the objective, every legal move, how the game ends, and the key fact that the rank does not wrap from King to Ace.';
+const updated = '2026-06-13';
+const heading = 'Golf Solitaire Rules';
+const subtitle =
+  'How to play Golf Solitaire from the deal to the win — a clear, complete reference to the setup, the legal moves, and how a hand ends.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Golf Solitaire Rules', href: '/guides/golf-solitaire-rules/' },
+];
+
+const faq = [
+  {
+    q: 'Does Golf Solitaire wrap from King to Ace?',
+    a: 'No. On CardHearth, the rank sequence does not wrap: a King and an Ace are not adjacent. Only a Queen plays on a King, and only a 2 plays on an Ace. The chain simply stops at each end.',
+  },
+  {
+    q: 'Can you recycle the stock in Golf Solitaire?',
+    a: 'No. The stock is dealt face down and turned one card at a time. Once it is empty, it is gone — there is no recycling or redealing. When no column card plays and the stock is empty, the hand is over.',
+  },
+  {
+    q: 'How many cards are in Golf Solitaire?',
+    a: 'A standard 52-card deck. Of those, 35 are dealt face up into seven columns of five, one card starts the waste pile, and the remaining 16 form the face-down stock.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Golf Solitaire Rules: How to Play (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/golf-solitaire-rules/',
+    image: 'https://cardhearth.com/og/golf.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/golf/', label: 'Play Golf Solitaire' }}
+>
+  <p>
+    Golf Solitaire is one of the fastest, most approachable games in the patience family. There
+    are no foundations to build up and no face-down columns to dig through — every tableau card
+    is visible from the start, and your only job is to play them off, one by one, onto a single
+    pile. This page is a complete rules reference: what the layout is, exactly which moves are
+    legal, and how a hand is won or lost. If you'd rather learn by doing, you can
+    <a href="/golf/">play Golf Solitaire</a> in your browser right now.
+  </p>
+
+  <h2>What is Golf Solitaire?</h2>
+  <p>
+    Golf is a single-deck game played with a standard 52-card pack. The name comes from the
+    traditional scoring format, in which you play a series of deals as "holes" and add up the
+    cards you fail to clear, aiming for the lowest total — just like golf. Each CardHearth deal
+    stands on its own: the aim is simply to clear the table. Suits are irrelevant throughout;
+    only the rank of each card matters.
+  </p>
+
+  <h2>Setup</h2>
+  <p>
+    Shuffle the 52-card deck and deal <strong>35 cards face up into seven tableau columns of
+    five cards each</strong>. Every card is visible, and only the bottom (lowest) card of each
+    column is exposed for play. The next card off the deck is turned face up to start the
+    <strong>waste pile</strong> (sometimes called the foundation in Golf), which is where you
+    play cards. The remaining <strong>16 cards form the stock</strong>, dealt face down. That
+    accounts for all 52 cards: 35 in the tableau, 1 on the waste, and 16 in the stock.
+  </p>
+
+  <h2>Objective</h2>
+  <p>
+    Win by <strong>clearing all seven tableau columns</strong>, moving every one of the 35
+    column cards onto the waste pile. Empty all seven columns and the hand is won. The waste
+    pile and the stock do not need to be empty — only the tableau matters.
+  </p>
+
+  <h2>Legal moves</h2>
+  <p>
+    On your turn you have at most two kinds of move:
+  </p>
+  <ul>
+    <li>
+      <strong>Play a column card to the waste.</strong> Take the bottom-exposed card of any
+      tableau column and place it on top of the waste pile, but only if its rank is
+      <strong>exactly one higher or one lower</strong> than the current top card of the waste.
+      For example, on a 7 you may play either a 6 or an 8. Suit does not matter.
+    </li>
+    <li>
+      <strong>Draw a card from the stock.</strong> When no column card plays — or when you
+      simply choose to — turn the top card of the stock face up onto the waste. That card
+      becomes the new target, opening up fresh plays.
+    </li>
+  </ul>
+  <p>
+    Two limits are worth stating plainly, because they shape every game:
+  </p>
+  <ul>
+    <li>
+      <strong>The rank does not wrap.</strong> A King and an Ace are <em>not</em> adjacent. Only
+      a Queen plays on a King, and only a 2 plays on an Ace — the chain stops dead at each end.
+      This makes Kings the trickiest cards on the table.
+    </li>
+    <li>
+      <strong>The stock does not recycle.</strong> You may turn each of the 16 stock cards exactly
+      once. There is no redeal: once the stock is exhausted, those cards are gone for good.
+    </li>
+  </ul>
+
+  <h2>How you win, and how a hand ends</h2>
+  <p>
+    You <strong>win</strong> the moment the last tableau card leaves the table — all seven
+    columns empty. A hand <strong>ends without a win</strong> when two things are true at once:
+    no column card can legally be played onto the current waste card, <em>and</em> the stock is
+    empty so you cannot draw a new target. At that point the cards still sitting in the columns
+    are stranded, and the deal is over. Because there is no recycle, careful sequencing matters:
+    every stock card you spend is one you can never get back.
+  </p>
+
+  <h2>A note on variations</h2>
+  <p>
+    Golf has several common house rules. Some versions allow the sequence to
+    <strong>wrap around</strong>, so an Ace plays on a King and a King plays on an Ace, which
+    makes long chains far easier. Others let you redeal the stock, or change the number of
+    columns. <strong>CardHearth's Golf uses the classic, stricter rules</strong>: no wrap-around
+    and no recycling. If you've played a wrap-around version elsewhere, expect Kings to feel much
+    more dangerous here.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that you know the rules, the next step is playing them well. Our
+    <a href="/guides/golf-solitaire-strategy/">Golf Solitaire strategy guide</a> shows how to
+    plan long chains and tame those Kings, and the
+    <a href="/guides/solitaire-glossary/">solitaire glossary</a> defines any term you're unsure
+    about. When you're ready, <a href="/golf/">play Golf Solitaire</a> — or browse the full
+    <a href="/guides/">guides hub</a> for more games.
+  </p>
+</Article>

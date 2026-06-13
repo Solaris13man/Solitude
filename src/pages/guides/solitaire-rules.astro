@@ -1,0 +1,244 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Solitaire Rules: How to Play Klondike (Complete Guide) | CardHearth';
+const description =
+  'The complete rules of Solitaire (Klondike): the deal, the objective, every legal move, drawing and recycling the stock, scoring, how you win, and common variations — a clear reference.';
+const updated = '2026-06-13';
+const heading = 'Solitaire Rules: How to Play Klondike';
+const subtitle =
+  'A complete, plain-English reference to the rules of Klondike — the patience game most people simply call "Solitaire."';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Solitaire Rules', href: '/guides/solitaire-rules/' },
+];
+
+const faq = [
+  {
+    q: 'How many cards are in Klondike Solitaire?',
+    a: 'Klondike uses a single standard 52-card deck with no Jokers. Twenty-eight cards are dealt across the seven tableau columns and the remaining twenty-four form the stock. The goal is to get all 52 onto the four foundations.',
+  },
+  {
+    q: 'Can you move more than one card at a time?',
+    a: 'Yes. Any face-up run that is already in descending, alternating-colour order can be moved between tableau columns as a single unit, provided the bottom card of the run still fits the column you are moving it onto. You cannot move face-down cards, and only one card at a time may go to a foundation.',
+  },
+  {
+    q: 'What is the difference between Solitaire and Klondike?',
+    a: '"Solitaire" (or "patience") is a family of hundreds of single-player card games. Klondike is one specific game in that family — but because it shipped with early versions of Windows, it became so popular that most people now use "Solitaire" to mean Klondike. So every Klondike game is Solitaire, but not every Solitaire game is Klondike.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Solitaire Rules: How to Play Klondike (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/solitaire-rules/',
+    image: 'https://cardhearth.com/og/klondike.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/klondike/', label: 'Play Klondike Solitaire' }}
+>
+  <p>
+    Klondike is the game most people simply call "Solitaire." It is a one-player
+    <strong>patience</strong> game played with a single deck, and the version that shipped with
+    early home computers made it the most-played card game in the world. This page is a complete
+    reference to the rules: how the cards are dealt, what you are trying to do, exactly which moves
+    are legal, how the stock and scoring work, and how a game ends. If you would rather learn by
+    doing, you can <a href="/klondike/">play a hand</a> right away.
+  </p>
+
+  <h2>The setup</h2>
+  <p>
+    Klondike uses one <strong>standard 52-card deck</strong> (no Jokers). After shuffling, the
+    cards are dealt into four areas of the table:
+  </p>
+  <ul>
+    <li>
+      <strong>The tableau</strong> — seven columns dealt left to right. The first column gets one
+      card, the second two, the third three, and so on up to seven in the last column — 28 cards
+      in all. In every column, only the <strong>top (last-dealt) card is face-up</strong>; all the
+      cards beneath it are face-down.
+    </li>
+    <li>
+      <strong>The foundations</strong> — four empty spaces, one for each suit. They start the game
+      with no cards and are built up over the course of play.
+    </li>
+    <li>
+      <strong>The stock</strong> — the 24 cards left over after the deal, placed face-down as a
+      draw pile.
+    </li>
+    <li>
+      <strong>The waste</strong> — an empty pile next to the stock that receives the cards you turn
+      over from it.
+    </li>
+  </ul>
+
+  <h2>The objective</h2>
+  <p>
+    You win by building all four <strong>foundations</strong>. Each foundation holds one suit and
+    is built <strong>up in sequence, starting with the Ace</strong>: Ace, then Two, Three, and so
+    on through Jack, Queen, and finally King. When all four foundations are complete — 13 cards
+    each, 52 in total — the game is won.
+  </p>
+
+  <h2>Legal moves</h2>
+  <p>
+    On your turn you may make any move that the rules allow, in any order, for as long as legal
+    moves exist. There are five kinds:
+  </p>
+  <h3>Building on the tableau</h3>
+  <p>
+    You build the tableau columns <strong>downward in rank and in alternating colours</strong>. A
+    card may be placed on a tableau card that is one rank higher and the opposite colour — for
+    example, a red Nine goes on a black Ten, and a black Queen goes on a red King. (Red suits are
+    Hearts and Diamonds; black suits are Clubs and Spades.)
+  </p>
+  <h3>Moving runs as a unit</h3>
+  <p>
+    A sequence of face-up cards that is already in correct order (descending, alternating colour)
+    is called a <strong>run</strong>, and you may move the whole run at once. The card at the
+    bottom of the run still has to follow the alternating-colour rule for wherever it lands.
+    Face-down cards can never be moved.
+  </p>
+  <h3>Filling an empty column</h3>
+  <p>
+    When a tableau column is emptied, only a <strong>King</strong> — alone, or as the top of a run
+    led by a King — may be moved into the empty space. No other card can start a new column.
+  </p>
+  <h3>Playing to the foundations</h3>
+  <p>
+    The top card of any tableau column, or the top card of the waste, can be moved to a foundation
+    whenever it is the next card that foundation needs (the matching suit and the next rank up).
+    Only <strong>one card at a time</strong> may go to a foundation. You may also move a card back
+    <em>off</em> a foundation onto the tableau if it helps, though this is rarely useful and costs
+    points (see scoring).
+  </p>
+  <h3>Flipping an exposed card</h3>
+  <p>
+    Whenever a move uncovers a face-down card at the bottom of a tableau column, that card is
+    <strong>turned face-up</strong> and becomes available to play. On CardHearth this happens
+    automatically.
+  </p>
+
+  <h2>Drawing and recycling the stock</h2>
+  <p>
+    When you run out of useful tableau moves, you turn cards from the <strong>stock</strong> into
+    the <strong>waste</strong>. In <strong>Draw 1</strong> you turn one card at a time; in
+    <a href="/klondike-draw-3/"><strong>Draw 3</strong></a> you turn three at a time, and only the
+    top card of those three is immediately playable. The top of the waste is always available to
+    play onto the tableau or a foundation.
+  </p>
+  <p>
+    When the stock is empty, you can <strong>recycle</strong>: the waste is turned face-down and
+    becomes the stock again, so you can pass through the cards once more. Draw 1 allows unlimited
+    recycles, and so does Draw 3 — though, as the scoring below shows, recycling is not free.
+  </p>
+
+  <h2>Scoring</h2>
+  <p>
+    CardHearth uses the standard Klondike scoring system. Points are awarded and deducted as
+    follows:
+  </p>
+  <ul>
+    <li><strong>+10</strong> for every card moved to a foundation.</li>
+    <li><strong>+5</strong> for moving a card from the waste to a tableau column.</li>
+    <li><strong>+5</strong> for flipping a face-down tableau card face-up.</li>
+    <li><strong>−15</strong> for moving a card back from a foundation to the tableau.</li>
+    <li>
+      <strong>Recycling the waste:</strong> <strong>−100</strong> points each time in Draw 1, and
+      <strong>−20</strong> points per pass in Draw 3 — but only starting from the
+      <strong>third</strong> recycle onward (the first two Draw 3 passes are free). Your score
+      never drops below zero from a recycle.
+    </li>
+  </ul>
+  <p>
+    Moving a card from one tableau column to another scores nothing in itself — but if it uncovers
+    a face-down card, you collect the +5 for the flip.
+  </p>
+
+  <h2>How you win — and when a game ends</h2>
+  <p>
+    You <strong>win</strong> the moment all 52 cards sit on the four foundations, each suit
+    complete from Ace to King. Often the game reaches a point where every card is face-up and the
+    stock and waste are empty; from there the outcome is decided, and CardHearth can
+    <strong>auto-finish</strong> the deal for you.
+  </p>
+  <p>
+    A game <strong>ends without a win</strong> when no legal move remains — no card can go to a
+    foundation, no tableau move helps, and cycling the stock turns up nothing playable. Not every
+    Klondike deal is solvable, so a dead end is part of the game. On CardHearth you can use
+    unlimited <em>Undo</em> to back out of a wrong turn, or start a fresh deal.
+  </p>
+
+  <h2>Common variations</h2>
+  <p>
+    The two most common variations both appear on CardHearth. <strong>Draw 1 vs Draw 3</strong>
+    changes how many stock cards you turn at once: Draw 1 is the gentler, higher-winning game,
+    while Draw 3 demands you plan your stock passes. <strong>Vegas scoring</strong> is a different
+    money-style system in which you "buy" the deck for 52 points and earn 5 points per card sent
+    to a foundation, aiming to finish ahead — a contrast to the standard cumulative scoring
+    described above. The rules of play are otherwise identical.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that you know the rules, the next step is playing better. Read
+    <a href="/guides/how-to-win-klondike-solitaire/">how to win Klondike Solitaire</a> for the
+    habits that lift your win rate, brush up on terms in the
+    <a href="/guides/solitaire-glossary/">Solitaire glossary</a>, or just
+    <a href="/klondike/">play Klondike Solitaire</a> now. Our
+    <a href="/guides/">guides hub</a> covers the rest of the CardHearth library.
+  </p>
+</Article>

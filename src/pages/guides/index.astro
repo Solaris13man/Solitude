@@ -6,6 +6,59 @@ const title = 'Game Guides & Strategy — Solitaire, Sudoku & More | CardHearth'
 const description =
   'Free strategy guides and comparisons for Klondike, Spider and FreeCell Solitaire, Sudoku, Mahjong, Minesweeper and 2048 — learn how to win and pick the right game or difficulty.';
 
+const RULES = [
+  {
+    href: '/guides/solitaire-rules/',
+    title: 'Solitaire Rules (Klondike)',
+    blurb: 'The complete rules of Klondike — setup, moves, scoring and how to win.',
+  },
+  {
+    href: '/guides/spider-solitaire-rules/',
+    title: 'Spider Solitaire Rules',
+    blurb: 'How the two-deck game is dealt and played across ten columns.',
+  },
+  {
+    href: '/guides/freecell-rules/',
+    title: 'FreeCell Rules',
+    blurb: 'The all-face-up game, the four free cells, and how many cards you can move.',
+  },
+  {
+    href: '/guides/pyramid-solitaire-rules/',
+    title: 'Pyramid Solitaire Rules',
+    blurb: 'Pairing to thirteen, exposed cards, and clearing the pyramid.',
+  },
+  {
+    href: '/guides/tripeaks-solitaire-rules/',
+    title: 'TriPeaks Solitaire Rules',
+    blurb: 'Three peaks, the rank wrap, and how the streak scoring works.',
+  },
+  {
+    href: '/guides/golf-solitaire-rules/',
+    title: 'Golf Solitaire Rules',
+    blurb: 'Play one higher or lower, clear the columns — and why rank does not wrap.',
+  },
+  {
+    href: '/guides/what-is-mahjong-solitaire/',
+    title: 'What Is Mahjong Solitaire?',
+    blurb: 'The single-player tile game (not four-player Mahjong) and its rules.',
+  },
+  {
+    href: '/guides/how-to-play-sudoku/',
+    title: 'How to Play Sudoku',
+    blurb: 'The one rule, the beginner techniques, and pencil marks.',
+  },
+  {
+    href: '/guides/how-to-play-minesweeper/',
+    title: 'How to Play Minesweeper',
+    blurb: 'What the numbers mean, flagging, first-click safety, and undo.',
+  },
+  {
+    href: '/guides/how-to-play-2048/',
+    title: 'How to Play 2048',
+    blurb: 'Slide, merge, and reach the 2048 tile — rules and controls.',
+  },
+];
+
 const GUIDES = [
   {
     href: '/guides/how-to-win-klondike-solitaire/',
@@ -141,6 +194,20 @@ const schema = [
         read.
       </p>
     </header>
+
+    <section class="pb-8">
+      <h2 class="guide-section-title">Rules &amp; how to play</h2>
+      <div class="guide-grid">
+        {
+          RULES.map((g) => (
+            <a class="guide-card" href={g.href}>
+              <h3>{g.title}</h3>
+              <p>{g.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
 
     <section class="pb-8">
       <h2 class="guide-section-title">Strategy guides</h2>

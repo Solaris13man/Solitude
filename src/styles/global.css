@@ -87,6 +87,32 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ---------- homepage trust strip (the "fair" promise) ---------- */
+
+.trust-strip {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  max-width: 56rem;
+  margin: 1.75rem auto 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.trust-strip li {
+  background: rgb(0 0 0 / 0.2);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  opacity: 0.92;
+}
+.trust-strip strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: #ffd95e;
+}
+
 /* ---------- menu (landing) page ---------- */
 
 .menu-grid {
