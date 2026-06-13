@@ -37,10 +37,67 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
     dragging: boolean;
     els: HTMLElement[];
     origins: { x: number; y: number }[];
+    /** Horizontal scroll wrapper, when the board is wider than the screen. */
+    scrollEl: HTMLElement | null;
+    startScroll: number;
+    lastClientX: number;
+    lastClientY: number;
+    autoScrollRaf: number;
   }
   let session: DragSession | null = null;
 
   const container = board.container;
+  const EDGE = 56; // px from a wrapper edge that triggers auto-scroll
+  const MAX_STEP = 18; // px per frame at the very edge
+
+  const scrollWrapper = (): HTMLElement | null =>
+    container.closest<HTMLElement>('.board-scroll');
+
+  /** Place the dragged run under the pointer, compensating for any scroll. */
+  const positionDrag = (s: DragSession) => {
+    const dx = s.lastClientX - s.startX;
+    const dy = s.lastClientY - s.startY;
+    const sd = s.scrollEl ? s.scrollEl.scrollLeft - s.startScroll : 0;
+    for (let i = 0; i < s.els.length; i++) {
+      const o = s.origins[i]!;
+      s.els[i]!.style.transform = `translate3d(${o.x + dx + sd}px, ${o.y + dy}px, 0)`;
+    }
+    const lead = s.els[0]!;
+    const rect = lead.getBoundingClientRect();
+    const p = board.toBoardCoords(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    callbacks.onDragOver(s.ref, s.depth + 1, board.dropTargetAt(p.x, p.y));
+  };
+
+  /** Scroll the wrapper one step if the pointer is hugging an edge. */
+  const autoScrollStep = (s: DragSession): boolean => {
+    const el = s.scrollEl;
+    if (!el) return false;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) return false;
+    const rect = el.getBoundingClientRect();
+    let step = 0;
+    if (s.lastClientX < rect.left + EDGE) {
+      step = -MAX_STEP * Math.min(1, (rect.left + EDGE - s.lastClientX) / EDGE);
+    } else if (s.lastClientX > rect.right - EDGE) {
+      step = MAX_STEP * Math.min(1, (s.lastClientX - (rect.right - EDGE)) / EDGE);
+    }
+    if (step === 0) return false;
+    const next = Math.max(0, Math.min(maxScroll, el.scrollLeft + step));
+    if (next === el.scrollLeft) return false;
+    el.scrollLeft = next;
+    return true;
+  };
+
+  const runAutoScroll = () => {
+    if (!session || !session.dragging) return;
+    if (autoScrollStep(session)) positionDrag(session);
+    session.autoScrollRaf = requestAnimationFrame(runAutoScroll);
+  };
+
+  const stopAutoScroll = (s: DragSession) => {
+    if (s.autoScrollRaf) cancelAnimationFrame(s.autoScrollRaf);
+    s.autoScrollRaf = 0;
+  };
 
   container.addEventListener('pointerdown', (e) => {
     if (session || e.button !== 0) return;
@@ -57,6 +114,7 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
     const count = located.depth + 1;
     const pickable = callbacks.canPick(located.ref, located.depth);
     const els = pickable ? callbacks.runElements(located.ref, count) : [];
+    const scrollEl = scrollWrapper();
     session = {
       pointerId: e.pointerId,
       ref: located.ref,
@@ -70,12 +128,19 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
         const id = el.dataset.id!;
         return board.positionOf(id);
       }),
+      scrollEl,
+      startScroll: scrollEl ? scrollEl.scrollLeft : 0,
+      lastClientX: e.clientX,
+      lastClientY: e.clientY,
+      autoScrollRaf: 0,
     };
     container.setPointerCapture(e.pointerId);
   });
 
   container.addEventListener('pointermove', (e) => {
     if (!session || e.pointerId !== session.pointerId) return;
+    session.lastClientX = e.clientX;
+    session.lastClientY = e.clientY;
     const dx = e.clientX - session.startX;
     const dy = e.clientY - session.startY;
     if (!session.dragging) {
@@ -83,21 +148,17 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
       if (session.els.length === 0) return; // not pickable: can still be a tap, never a drag
       session.dragging = true;
       for (const el of session.els) el.classList.add('dragging');
+      // Begin the edge-scroll watcher now that a real drag is underway.
+      session.autoScrollRaf = requestAnimationFrame(runAutoScroll);
     }
-    for (let i = 0; i < session.els.length; i++) {
-      const o = session.origins[i]!;
-      session.els[i]!.style.transform = `translate3d(${o.x + dx}px, ${o.y + dy}px, 0)`;
-    }
-    const lead = session.els[0]!;
-    const rect = lead.getBoundingClientRect();
-    const p = board.toBoardCoords(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    callbacks.onDragOver(session.ref, session.depth + 1, board.dropTargetAt(p.x, p.y));
+    positionDrag(session);
   });
 
   const finish = (e: PointerEvent, cancelled: boolean) => {
     if (!session || e.pointerId !== session.pointerId) return;
     const s = session;
     session = null;
+    stopAutoScroll(s);
     try {
       container.releasePointerCapture(e.pointerId);
     } catch {
