@@ -4,7 +4,7 @@ import Footer from '../../components/Footer.astro';
 
 const title = 'Game Guides & Strategy — Solitaire, Sudoku & More | CardHearth';
 const description =
-  'Free strategy guides for Klondike, Spider and FreeCell Solitaire, Sudoku solving techniques, and a roundup of the best free games to play in your browser.';
+  'Free strategy guides and comparisons for Klondike, Spider and FreeCell Solitaire, Sudoku, Mahjong, Minesweeper and 2048 — learn how to win and pick the right game or difficulty.';
 
 const GUIDES = [
   {
@@ -57,6 +57,29 @@ const GUIDES = [
     title: '2048 Strategy',
     blurb: 'The corner-and-snake method to reach the 2048 tile and beyond.',
   },
+];
+
+const COMPARISONS = [
+  {
+    href: '/guides/klondike-draw-1-vs-draw-3/',
+    title: 'Klondike: Draw 1 vs Draw 3',
+    blurb: 'How the two modes differ and which one fits how you like to play.',
+  },
+  {
+    href: '/guides/spider-1-2-4-suits/',
+    title: 'Spider: 1, 2 or 4 Suits?',
+    blurb: 'The suit count is the difficulty dial — here is where to start.',
+  },
+  {
+    href: '/guides/freecell-vs-klondike/',
+    title: 'FreeCell vs Klondike',
+    blurb: 'Pure-planning puzzle or the casual classic? Pick the right one.',
+  },
+  {
+    href: '/guides/sudoku-difficulty-levels/',
+    title: 'Sudoku Difficulty Levels',
+    blurb: 'What Easy, Medium, Hard and Expert actually require — no guessing, ever.',
+  },
   {
     href: '/guides/best-free-solitaire-and-puzzle-games/',
     title: 'The Best Free Solitaire & Puzzle Games',
@@ -101,16 +124,33 @@ const schema = [
       </p>
     </header>
 
-    <div class="guide-grid pb-10">
-      {
-        GUIDES.map((g) => (
-          <a class="guide-card" href={g.href}>
-            <h2>{g.title}</h2>
-            <p>{g.blurb}</p>
-          </a>
-        ))
-      }
-    </div>
+    <section class="pb-8">
+      <h2 class="guide-section-title">Strategy guides</h2>
+      <div class="guide-grid">
+        {
+          GUIDES.map((g) => (
+            <a class="guide-card" href={g.href}>
+              <h3>{g.title}</h3>
+              <p>{g.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="pb-10">
+      <h2 class="guide-section-title">Compare &amp; choose</h2>
+      <div class="guide-grid">
+        {
+          COMPARISONS.map((g) => (
+            <a class="guide-card" href={g.href}>
+              <h3>{g.title}</h3>
+              <p>{g.blurb}</p>
+            </a>
+          ))
+        }
+      </div>
+    </section>
 
     <Footer />
   </main>

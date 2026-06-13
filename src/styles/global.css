@@ -400,8 +400,14 @@ body {
   border-color: rgb(255 217 94 / 0.7);
   box-shadow: 0 12px 28px rgb(0 0 0 / 0.32);
 }
-.guide-card h2 { font-size: 1.1rem; font-weight: 700; }
+.guide-card h3 { font-size: 1.1rem; font-weight: 700; }
 .guide-card p { font-size: 0.9rem; opacity: 0.82; }
+.guide-section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.9rem;
+}
 
 /* "Strategy guide" link shown on game pages */
 .game-guide-link {
