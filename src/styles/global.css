@@ -87,6 +87,19 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Woven-felt grain over the colour gradient — one neutral tile that reads on
+   any felt colour. Sits behind all content; viewport-fixed like the felt. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('/textures/felt.png');
+  background-size: 220px 220px;
+  background-repeat: repeat;
+}
+
 /* ---------- homepage trust strip (the "fair" promise) ---------- */
 
 .trust-strip {
