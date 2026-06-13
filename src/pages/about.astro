@@ -2,40 +2,134 @@
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 
-const title = 'About CardHearth';
+const title = 'The Story Behind CardHearth';
 const description =
-  'CardHearth is a free, fast, no-nonsense home for classic card games — Klondike, Spider, and FreeCell — built with care for desktop and mobile.';
+  "Why I built CardHearth — a free, no-nonsense home for classic card and puzzle games, where every Sudoku is solvable by logic and every Mahjong board is guaranteed clearable, with no ads in your face.";
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'The Story Behind CardHearth',
+    url: 'https://cardhearth.com/about/',
+    description,
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: 'https://cardhearth.com/logo.png',
+      founder: { '@type': 'Person', name: 'Jared' },
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'About', item: 'https://cardhearth.com/about/' },
+    ],
+  },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} schema={schema}>
   <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
-    <header class="py-10">
-      <p class="text-sm font-bold opacity-70"><a href="/" class="hover:underline">← CardHearth</a></p>
-      <h1 class="mt-2 text-3xl font-extrabold tracking-tight">About CardHearth</h1>
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">About</span>
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">The story behind CardHearth</h1>
+      <p class="mt-3 text-lg opacity-80">
+        A free home for classic games, built on one stubborn idea: the game should never cheat you.
+      </p>
     </header>
-    <section class="text-sm leading-relaxed opacity-90">
-      <p class="mb-3">
-        CardHearth is a home for the classic games people have played at kitchen tables for
-        generations — starting with Klondike Solitaire, Spider, and FreeCell, with more classics
-        on the way.
+
+    <article class="prose py-4">
+      <p>
+        Hi — I'm Jared. I work in aerospace, and on the side I build websites. CardHearth started
+        the way a lot of side projects do: I went looking for a tired, neglected corner of the
+        web that I could honestly make better. Free online solitaire and puzzles turned out to be
+        exactly that. The games are timeless and beloved, but so many of the places to play them
+        felt like a chore — slow, cluttered, and weirdly hostile to the person actually trying to
+        play.
       </p>
-      <p class="mb-3">
-        We built it because most places to play these games online feel a decade old: slow
-        pages, cluttered screens, and clunky controls. CardHearth loads instantly, plays
-        beautifully with mouse or touch, respects your attention, and works the same on a phone
-        as on a desktop. Unlimited undo, hints, auto-finish, statistics, streaks, and numbered
-        deals you can share with friends are all built in — free.
+
+      <h2>The thing that finally bugged me enough to build it</h2>
+      <p>
+        Two things, really. The first was <strong>unsolvable puzzles</strong>. There are few
+        things more deflating than grinding away at a "hard" Sudoku — especially with a win streak
+        on the line — only to discover it needed a lucky guess, or sitting down to a Mahjong board
+        that physically cannot be cleared no matter how perfectly you play. That's not difficulty.
+        That's the game wasting your time. So I made fairness the foundation of CardHearth:
       </p>
-      <p class="mb-3">
-        Your games, settings, and statistics are stored on your own device. There are no
-        accounts and nothing to install. All artwork, code, and sounds are original work; the
-        games themselves are traditional, public-domain classics.
+      <ul>
+        <li>
+          <strong>Every Sudoku is solvable by pure logic — no guessing, ever.</strong> Each puzzle
+          is generated and then checked by a solver before it's ever served; if it can't be cracked
+          by reasoning alone, it doesn't ship. Difficulty just means <em>which</em> techniques you'll
+          need, not how lucky you have to be.
+        </li>
+        <li>
+          <strong>Every Mahjong board is guaranteed solvable.</strong> Deals are built in reverse —
+          laying down pairs in the opposite of play order — so a winning path is mathematically
+          guaranteed to exist. Get stuck? That's what unlimited undo is for.
+        </li>
+      </ul>
+
+      <h2>And the ads. So many ads.</h2>
+      <p>
+        The second thing was the assault. You know the pages — you click "play," and the screen
+        fills with blinking banners, a video that autoplays in the corner, and a cookie wall
+        stacked on a newsletter pop-up, all before you can see a single card. I hate that. A cozy
+        game should feel calm. CardHearth loads fast, puts the game first, and never buries the
+        thing you came for. No sign-up, no download, and your stats and streaks just save on your
+        own device.
       </p>
-      <p class="mb-3">
-        Questions or suggestions? We'd love to hear them — reach us at
-        <a class="underline" href="mailto:hello@cardhearth.com">hello@cardhearth.com</a>.
+
+      <h2>What it is now</h2>
+      <p>
+        CardHearth is <strong>11 classic games</strong> and growing — Klondike, Spider and FreeCell
+        solitaire, plus Pyramid, TriPeaks and Golf; and on the puzzle side Sudoku, Mahjong,
+        Minesweeper and 2048. There's a <a href="/daily-challenge/">Daily Challenge</a> that rotates
+        through every game (the same for everyone, with a full-year calendar so you can go back and
+        finish days you missed), shareable numbered deals, achievements, and a pile of small
+        comforts: dark mode, card backs, sounds you can switch off, and unlimited undo everywhere.
+        If you want to get better, there are <a href="/guides/">strategy guides and rules</a> for
+        every game.
       </p>
-    </section>
+
+      <h2>Who it's for</h2>
+      <p>
+        Honestly? Anyone who loves a cozy game and just wants the best possible version of it —
+        whether that's five quiet minutes with a coffee or a daily streak you're quietly proud of.
+        If that's you, you're who I'm building this for, and I want your time here to feel
+        genuinely good.
+      </p>
+
+      <h2>Where it's going</h2>
+      <p>
+        More games, for one — the structure was built so dominoes, board games and other classics
+        can join the card and puzzle families over time. The dream is simple: become the place
+        people think of first when they want to play a classic game online, fairly and without the
+        nonsense. If a few million people a month end up making CardHearth part of their day, I'll
+        consider that a very good outcome.
+      </p>
+
+      <p>
+        Thanks for being here. If you have a game you'd love to see, or something I've gotten wrong,
+        I genuinely want to hear it — <a href="mailto:hello@cardhearth.com">hello@cardhearth.com</a>.
+      </p>
+
+      <p class="opacity-75">— Jared, CardHearth</p>
+    </article>
+
+    <p class="py-6">
+      <a class="guide-cta" href="/">▶ Browse all games</a>
+    </p>
+
     <Footer />
   </main>
 </Layout>
