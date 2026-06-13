@@ -63,8 +63,8 @@ export const SITE_CONFIG: SiteConfig = {
   },
   accounts: {
     enabled: false,
-    supabaseUrl: '',
-    supabaseAnonKey: '',
+    supabaseUrl: 'https://fyymkznfrxvnbfolttuq.supabase.co',
+    supabaseAnonKey: 'sb_publishable_yUrVqY3hJXhD4zV6SdASaA_ntTBZQBm',
   },
   showAdPlaceholders: false,
 };
