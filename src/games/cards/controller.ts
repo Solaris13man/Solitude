@@ -513,6 +513,7 @@ class CardGameController {
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
+    const cardset = $opt('set-cardset') as HTMLSelectElement | null;
     const left = $('set-lefthand') as HTMLInputElement;
     const anim = $('set-animations') as HTMLInputElement;
     const snd = $('set-sounds') as HTMLInputElement;
@@ -521,6 +522,7 @@ class CardGameController {
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
     back.value = this.settings.cardBack;
+    if (cardset) cardset.value = this.settings.cardSet;
     left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
     snd.checked = this.settings.sounds;
@@ -533,6 +535,7 @@ class CardGameController {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
+        cardSet: (cardset ? cardset.value : this.settings.cardSet) as Settings['cardSet'],
         tileSet: this.settings.tileSet,
         leftHand: left.checked,
         animations: anim.checked,
@@ -543,6 +546,7 @@ class CardGameController {
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
+      this.board.applyCardArt();
       this.board.setOptions({
         leftHand: this.settings.leftHand,
         canPick: (ref, depth) => this.canPick(ref, depth),
@@ -551,7 +555,7 @@ class CardGameController {
       const note = $opt('variant-note');
       if (note) note.hidden = this.variant() === this.state.variant;
     };
-    const controls = [theme, felt, back, left, anim, snd, ...(variant ? [variant] : [])];
+    const controls = [theme, felt, back, left, anim, snd, ...(cardset ? [cardset] : []), ...(variant ? [variant] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

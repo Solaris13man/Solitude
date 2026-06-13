@@ -1,4 +1,4 @@
-import { createCardElement } from '../cards/board';
+import { createCardElement, paintCardArt } from '../cards/board';
 import { type Card, cardName } from '../cards/deck';
 import type { PeaksRules, PeaksState, Target } from './types';
 
@@ -75,6 +75,11 @@ export class PeaksBoard {
     const y = this.slotY();
     this.stockSlot.style.transform = `translate3d(${cx - this.cardW - 8}px, ${y}px, 0)`;
     this.wasteSlot.style.transform = `translate3d(${cx + 8}px, ${y}px, 0)`;
+  }
+
+  /** Re-skin all cards to the current card-art set (on settings change). */
+  applyCardArt(): void {
+    for (const [id, el] of this.cardEls) paintCardArt(id, el);
   }
 
   private ensureCardEl(card: Card): HTMLElement {

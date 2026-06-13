@@ -53,6 +53,61 @@ const PIP_LAYOUTS: Record<number, [number, number, boolean][]> = {
   10: [[32, 20, false], [68, 20, false], [50, 30, false], [32, 40, false], [68, 40, false], [32, 60, true], [68, 60, true], [50, 70, true], [32, 80, true], [68, 80, true]],
 };
 
+/** The active card-art set (applied to <html> as data-cardset). */
+export function currentCardSet(): string {
+  if (typeof document === 'undefined') return 'new-blue';
+  return document.documentElement.dataset.cardset || 'new-blue';
+}
+
+/** Image paths for a card id's face and back in the current set, or null for
+ *  the built-in 'classic' drawn deck. */
+export function cardArtById(id: string): { face: string; back: string } | null {
+  const set = currentCardSet();
+  if (set === 'classic') return null;
+  const design = set.startsWith('vintage') ? 'vintage' : 'new';
+  const color = set.endsWith('red') ? 'red' : 'blue';
+  return { face: `/cards/${design}/${id}.png`, back: `/cards/${design}/back-${color}.png` };
+}
+
+export function cardArt(card: Card): { face: string; back: string } | null {
+  return cardArtById(card.id);
+}
+
+function makeCardImg(cls: string): HTMLImageElement {
+  const img = document.createElement('img');
+  img.className = `card-img ${cls}`;
+  img.alt = '';
+  img.draggable = false;
+  img.addEventListener('error', () => img.remove(), { once: true });
+  return img;
+}
+
+/** Add/update/remove the premium art layers on one card element to match the
+ *  current set. Shared by the main and peaks boards so all card games re-skin
+ *  identically on a settings change. */
+export function paintCardArt(id: string, el: HTMLElement): void {
+  const art = cardArtById(id);
+  const front = el.querySelector('.card-front');
+  const back = el.querySelector('.card-back');
+  let faceImg = el.querySelector<HTMLImageElement>('.card-face-img');
+  let backImg = el.querySelector<HTMLImageElement>('.card-back-img');
+  if (!art) {
+    faceImg?.remove();
+    backImg?.remove();
+    return;
+  }
+  if (!faceImg && front) {
+    faceImg = makeCardImg('card-face-img');
+    front.prepend(faceImg);
+  }
+  if (faceImg) faceImg.src = art.face;
+  if (!backImg && back) {
+    backImg = makeCardImg('card-back-img');
+    back.appendChild(backImg);
+  }
+  if (backImg) backImg.src = art.back;
+}
+
 function frontMarkup(card: Card): string {
   const sym = SUIT_SYMBOLS[card.suit];
   if (card.rank === 1) {
@@ -83,15 +138,24 @@ export function createCardElement(card: Card): HTMLElement {
   el.className = 'card';
   el.dataset.id = card.id;
   const color = isRed(card.suit) ? 'red' : 'black';
+  const art = cardArt(card);
+  // Premium artwork as <img> layers; if one fails to load it's removed and the
+  // drawn pips/back below take over (CSS :has() hides them only while present).
+  const faceImg = art ? `<img class="card-img card-face-img" alt="" draggable="false" src="${art.face}">` : '';
+  const backImg = art ? `<img class="card-img card-back-img" alt="" draggable="false" src="${art.back}">` : '';
   el.innerHTML = `
     <div class="card-inner">
       <div class="card-face card-front card-${color}" aria-hidden="true">
+        ${faceImg}
         <span class="corner corner-tl"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
         ${frontMarkup(card)}
         <span class="corner corner-br"><b>${RANK_LABELS[card.rank]}</b><i>${SUIT_SYMBOLS[card.suit]}</i></span>
       </div>
-      <div class="card-face card-back" aria-hidden="true"></div>
+      <div class="card-face card-back" aria-hidden="true">${backImg}</div>
     </div>`;
+  for (const img of el.querySelectorAll<HTMLImageElement>('img.card-img')) {
+    img.addEventListener('error', () => img.remove(), { once: true });
+  }
   return el;
 }
 
@@ -129,6 +193,12 @@ export class Board {
 
   setOptions(options: BoardOptions): void {
     this.options = options;
+  }
+
+  /** Re-skin every card to the current card-art set (called on settings
+   *  change). Adds/updates/removes the premium <img> layers in place. */
+  applyCardArt(): void {
+    for (const [id, el] of this.cardEls) paintCardArt(id, el);
   }
 
   private mirror(x: number): number {

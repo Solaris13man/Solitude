@@ -426,6 +426,7 @@ class MinesweeperController {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
+        cardSet: this.settings.cardSet,
         tileSet: this.settings.tileSet,
         leftHand: left ? left.checked : this.settings.leftHand,
         animations: anim.checked,

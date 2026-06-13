@@ -831,6 +831,32 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   border: 1px solid rgb(0 0 0 / 0.18);
   color: var(--card-text-black);
 }
+
+/* Premium image decks: the artwork is the whole face/back, so drop the drawn
+   chrome while the <img> is present (it's clipped to the rounded card by the
+   .card-face overflow). If an image fails to load it's removed and the drawn
+   pips/back come back automatically. */
+.card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.card-front:has(.card-face-img) {
+  background: #fff;
+  border: none;
+}
+.card-front:has(.card-face-img) .corner,
+.card-front:has(.card-face-img) .pip-field,
+.card-front:has(.card-face-img) .pip-ace,
+.card-front:has(.card-face-img) .court-frame,
+.card-front:has(.card-face-img) .court-letter,
+.card-front:has(.card-face-img) .court-suit { display: none; }
+.card-back:has(.card-back-img) { background: #fff; }
 :root[data-theme='dark'] .card-front { background: linear-gradient(160deg, #f4f4ee 0%, var(--card-front) 65%); }
 .card-front.card-red { color: var(--card-text-red); }
 

@@ -196,7 +196,16 @@ const {
       <option value="crimson">Crimson</option>
     </select>
   </label>
-  <label class="field" hidden={!cardSettings}>Card back
+  <label class="field" hidden={!cardSettings}>Card design
+    <select id="set-cardset">
+      <option value="new-blue">Modern · Blue back</option>
+      <option value="new-red">Modern · Red back</option>
+      <option value="vintage-blue">Vintage · Blue back</option>
+      <option value="vintage-red">Vintage · Red back</option>
+      <option value="classic">Classic (simple)</option>
+    </select>
+  </label>
+  <label class="field" hidden={!cardSettings}>Card back (Classic)
     <select id="set-cardback">
       <option value="classic">Classic red</option>
       <option value="royal">Royal blue</option>

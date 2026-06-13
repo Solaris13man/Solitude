@@ -363,6 +363,7 @@ class PeaksController {
     const theme = $('set-theme') as HTMLSelectElement;
     const felt = $('set-felt') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
+    const cardset = $opt('set-cardset') as HTMLSelectElement | null;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
     const anim = $('set-animations') as HTMLInputElement;
     const snd = $('set-sounds') as HTMLInputElement;
@@ -370,6 +371,7 @@ class PeaksController {
     theme.value = this.settings.theme;
     felt.value = this.settings.felt;
     back.value = this.settings.cardBack;
+    if (cardset) cardset.value = this.settings.cardSet;
     if (left) left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
     snd.checked = this.settings.sounds;
@@ -381,6 +383,7 @@ class PeaksController {
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         cardBack: back.value as Settings['cardBack'],
+        cardSet: (cardset ? cardset.value : this.settings.cardSet) as Settings['cardSet'],
         tileSet: this.settings.tileSet,
         leftHand: left ? left.checked : this.settings.leftHand,
         animations: anim.checked,
@@ -390,8 +393,9 @@ class PeaksController {
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
       if (this.settings.sounds && !prevSounds) this.sound.play('place');
+      this.board.applyCardArt();
     };
-    const controls = [theme, felt, back, anim, snd, ...(left ? [left] : [])];
+    const controls = [theme, felt, back, anim, snd, ...(cardset ? [cardset] : []), ...(left ? [left] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 
