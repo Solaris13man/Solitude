@@ -62,7 +62,7 @@ export const SITE_CONFIG: SiteConfig = {
     refreshOnGameEnd: false,
   },
   accounts: {
-    enabled: false,
+    enabled: true,
     supabaseUrl: 'https://fyymkznfrxvnbfolttuq.supabase.co',
     supabaseAnonKey: 'sb_publishable_yUrVqY3hJXhD4zV6SdASaA_ntTBZQBm',
   },
