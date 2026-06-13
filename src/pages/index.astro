@@ -43,7 +43,13 @@ const schema = [
 
 <Layout title={title} description={description} schema={schema}>
   <main class="mx-auto flex min-h-dvh w-full max-w-4xl flex-col px-4">
-    <header class="py-10 text-center sm:py-14">
+    <div class="flex justify-end pt-3">
+      <a href="/account/" class="btn" id="account-link">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <span id="account-link-label">Account &amp; badges</span>
+      </a>
+    </div>
+    <header class="pt-6 pb-10 text-center sm:pb-12">
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
         Free Solitaire &amp; Puzzle Games
       </h1>
@@ -102,10 +108,21 @@ const schema = [
         deal, identical for everyone, with a streak to defend.
       </p>
       <p class="opacity-75">
-        CardHearth runs entirely on your device — no account, no install, always free to play.
+        CardHearth runs right in your browser — no install, no account required, always free to
+        play. Sign in only if you want to <a class="underline" href="/account/">sync your
+        progress and badges</a> across devices.
       </p>
     </section>
 
     <Footer />
   </main>
+
+  <script>
+    import { getCachedUser } from '../lib/account';
+    const user = getCachedUser();
+    if (user) {
+      const label = document.getElementById('account-link-label');
+      if (label) label.textContent = user.name.split(' ')[0] || 'Account';
+    }
+  </script>
 </Layout>

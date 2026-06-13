@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Your Account & Badges — CardHearth';
+const description =
+  'Track your CardHearth achievements and badges. Optionally sign in with Google to sync your streaks and progress across devices — free, and your games stay free to play as a guest.';
+---
+
+<Layout title={title} description={description} noindex>
+  <main class="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4">
+    <header class="flex flex-wrap items-center justify-between gap-2 py-3">
+      <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
+        Account
+        <a href="/" class="font-normal no-underline opacity-70 hover:underline">· CardHearth</a>
+      </h1>
+      <a href="/" class="btn" aria-label="Back to the game menu">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
+        <span class="btn-label">Home</span>
+      </a>
+    </header>
+
+    <section class="account-card" id="account-card">
+      <div class="account-id">
+        <div class="account-avatar" id="account-avatar" aria-hidden="true">🙂</div>
+        <div>
+          <p class="account-name" id="account-name">Guest</p>
+          <p class="account-sub" id="account-sub">Playing on this device</p>
+        </div>
+      </div>
+      <div id="account-action"></div>
+    </section>
+
+    <section class="py-6">
+      <div class="flex items-baseline justify-between">
+        <h2 class="text-lg font-bold">Badges</h2>
+        <span class="text-sm opacity-70" id="badge-count"></span>
+      </div>
+      <div class="badge-grid" id="badge-grid"></div>
+    </section>
+
+    <section class="pb-10 text-sm opacity-80">
+      <h2 class="mb-2 text-lg font-bold">About accounts &amp; sync</h2>
+      <p class="mb-3">
+        CardHearth is free and works fully as a guest — your games, stats, streaks and badges are
+        saved on this device, no sign-in required. Signing in (optional) syncs your progress
+        across devices and keeps it safe if you clear your browser. We only ever store your game
+        progress and the email tied to your account; see our
+        <a class="underline" href="/privacy/">Privacy Policy</a>.
+      </p>
+    </section>
+
+    <Footer />
+  </main>
+
+  <script>
+    import {
+      accountsEnabled,
+      getCachedUser,
+      onAccountChange,
+      signInWithGoogle,
+      signOut,
+      type AccountUser,
+    } from '../lib/account';
+    import { BADGES, snapshot, earnedBadgeIds } from '../lib/achievements';
+
+    function renderBadges() {
+      const grid = document.getElementById('badge-grid');
+      const count = document.getElementById('badge-count');
+      if (!grid) return;
+      const earned = earnedBadgeIds(snapshot());
+      grid.innerHTML = BADGES.map((b) => {
+        const got = earned.has(b.id);
+        return `<div class="badge ${got ? 'earned' : 'locked'}" title="${b.description}">
+          <span class="badge-face">${got ? b.icon : '🔒'}</span>
+          <span class="badge-name">${b.name}</span>
+          <span class="badge-desc">${b.description}</span>
+        </div>`;
+      }).join('');
+      if (count) count.textContent = `${earned.size} of ${BADGES.length} earned`;
+    }
+
+    function renderAccount(user: AccountUser | null) {
+      const name = document.getElementById('account-name');
+      const sub = document.getElementById('account-sub');
+      const avatar = document.getElementById('account-avatar');
+      const action = document.getElementById('account-action');
+      if (!name || !sub || !action || !avatar) return;
+
+      if (user) {
+        name.textContent = user.name;
+        sub.textContent = user.email + ' · synced';
+        if (user.picture) {
+          avatar.innerHTML = `<img src="${user.picture}" alt="" />`;
+        }
+        action.innerHTML = '<button class="btn" id="signout-btn" type="button">Sign out</button>';
+        document.getElementById('signout-btn')?.addEventListener('click', () => void signOut());
+        return;
+      }
+
+      name.textContent = 'Guest';
+      sub.textContent = 'Playing on this device';
+      avatar.textContent = '🙂';
+      if (accountsEnabled()) {
+        action.innerHTML =
+          '<button class="btn btn-primary" id="signin-btn" type="button">Sign in with Google</button>';
+        document.getElementById('signin-btn')?.addEventListener('click', () => signInWithGoogle());
+      } else {
+        action.innerHTML =
+          '<button class="btn" type="button" disabled title="Coming soon">Sign in (coming soon)</button>';
+      }
+    }
+
+    renderBadges();
+    renderAccount(getCachedUser());
+    onAccountChange(renderAccount);
+    // badges may change after a sign-in merge
+    window.addEventListener('cardhearth:account', renderBadges);
+    window.addEventListener('cardhearth:result', renderBadges);
+  </script>
+</Layout>

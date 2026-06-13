@@ -62,9 +62,42 @@ const ogImage = new URL('/og.png', Astro.site);
   </head>
   <body>
     <slot />
+    <div id="badge-toast" class="badge-toast" role="status" aria-live="polite" hidden></div>
     <script>
       import { initAnalytics } from '../lib/analytics';
+      import { checkForNewBadges } from '../lib/achievements';
+      import { initAccount, syncUp } from '../lib/account';
+
       initAnalytics();
+      void initAccount();
+
+      // Celebrate badges the moment they unlock, after any game result.
+      const queue: { icon: string; name: string }[] = [];
+      let showing = false;
+      function flush() {
+        const toast = document.getElementById('badge-toast');
+        if (!toast || showing) return;
+        const next = queue.shift();
+        if (!next) return;
+        showing = true;
+        toast.innerHTML = `<span class="badge-toast-icon">${next.icon}</span><span><b>Badge unlocked!</b><br>${next.name}</span>`;
+        toast.hidden = false;
+        toast.classList.add('show');
+        window.setTimeout(() => {
+          toast.classList.remove('show');
+          window.setTimeout(() => {
+            toast.hidden = true;
+            showing = false;
+            flush();
+          }, 300);
+        }, 3200);
+      }
+      window.addEventListener('cardhearth:result', () => {
+        for (const b of checkForNewBadges()) queue.push({ icon: b.icon, name: b.name });
+        flush();
+        void syncUp();
+      });
+
       // Register the service worker for installability + fast repeat loads.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

@@ -111,6 +111,15 @@ export function loadDaily(): DailyRecord {
   }
 }
 
+/** Overwrite the whole daily record (used by account sync). */
+export function replaceDaily(record: DailyRecord): void {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(record));
+  } catch {
+    // storage unavailable
+  }
+}
+
 /** Records the first solve of a day; later solves of the same day are kept
  *  only if faster. Returns the updated record. */
 export function recordDailyWin(dateKey: string, result: DailyResult): DailyRecord {
@@ -123,6 +132,9 @@ export function recordDailyWin(dateKey: string, result: DailyResult): DailyRecor
     } catch {
       // storage unavailable
     }
+  }
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cardhearth:result'));
   }
   return record;
 }

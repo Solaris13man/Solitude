@@ -108,6 +108,10 @@ export function recordResult(result: GameResult): Stats {
     variant: result.variant,
     seconds: Math.round(result.elapsedMs / 1000),
   });
+  // Let the page re-check achievements / sync without coupling stats to them.
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cardhearth:result'));
+  }
   return stats;
 }
 

@@ -113,6 +113,31 @@ src/
       └─ controller.ts     # Generic controller for any card Ruleset
 ```
 
+## Accounts, badges & the business layer (optional, off by default)
+
+Everything below is gated behind `src/lib/site-config.ts` and dormant until you
+turn it on — the site ships fully private and guest-only.
+
+- **Achievements & badges** work for everyone right now, stored on-device. A
+  badge unlocks with a celebratory toast the moment you qualify; the full
+  collection (earned + locked) lives on `/account/`.
+- **Optional Google accounts + cloud sync.** To enable real sign-in and
+  cross-device sync:
+  1. Create a Supabase project and run `supabase/schema.sql` in its SQL editor.
+  2. Enable the Google provider in Supabase Auth (add a Google OAuth client
+     id/secret from the Google Cloud Console; add your site to the redirect
+     allow-list).
+  3. In `src/lib/site-config.ts` set `accounts.enabled = true` and fill in
+     `supabaseUrl` + `supabaseAnonKey`.
+  Sign-in then appears on `/account/`, and progress merges across devices
+  (never losing a streak or badge). Sync runs over plain `fetch` against
+  Supabase's REST/auth endpoints — no SDK dependency — protected by row-level
+  security.
+- **Analytics & ads** are likewise one config switch each (`analytics.provider`
+  / `ads.enabled`), with `game_won`/`game_lost` events already wired through the
+  shared result hook and an `AdSlot` placed in every game page.
+- **PWA**: a manifest + service worker make the site installable.
+
 ## License & assets
 
 All code and artwork are original; card faces are rendered with CSS and
