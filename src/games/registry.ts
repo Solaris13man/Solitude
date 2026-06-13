@@ -87,7 +87,7 @@ export const GAMES: GameInfo[] = [
     id: 'daily',
     name: 'Daily Challenge',
     href: '/daily-challenge/',
-    tagline: 'One deal a day, the same for everyone — keep your streak alive',
+    tagline: 'A different game each day, the same for everyone — keep your streak alive',
     category: 'cards',
   },
 ];

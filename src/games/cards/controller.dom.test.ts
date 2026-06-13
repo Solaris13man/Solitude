@@ -66,18 +66,29 @@ beforeEach(() => {
 });
 
 describe('daily challenge mode', () => {
-  it('deals the date-derived seed and saves under its own key', async () => {
-    const { dailySeed, dailyNumber } = await import('../../lib/daily');
-    startGame(klondikeRules, { daily: true, forceVariant: 1 });
+  it('self-activates from ?daily=1 when Klondike is the day, deals the dated seed', async () => {
+    const { dailySeed, dailyGame } = await import('../../lib/daily');
+    // The daily host GameShell always renders.
+    const banner = document.createElement('div');
+    banner.id = 'daily-banner';
+    banner.hidden = true;
+    document.body.appendChild(banner);
+    window.history.replaceState({}, '', '/klondike/?daily=1');
+    startGame(klondikeRules);
     tapStock();
-    const saved = JSON.parse(localStorage.getItem('solitude.game.v2.klondike.daily')!);
-    expect(saved.state.seed).toBe(dailySeed());
-    expect(saved.state.variant).toBe(1);
-    expect(document.getElementById('stat-deal')!.textContent).toBe(`Daily #${dailyNumber()}`);
-    expect(document.getElementById('daily-title')!.textContent).toContain('Daily Challenge #');
-    expect(document.getElementById('daily-status')!.textContent).toContain('Next deal in');
-    // the regular klondike save is untouched
-    expect(localStorage.getItem('solitude.game.v2.klondike')).toBeNull();
+
+    if (dailyGame().game === 'klondike') {
+      const saved = JSON.parse(localStorage.getItem('solitude.game.v2.klondike.daily')!);
+      expect(saved.state.seed).toBe(dailySeed());
+      expect(document.getElementById('stat-deal')!.textContent).toMatch(/^Daily #/);
+      expect(document.getElementById('daily-banner')!.hidden).toBe(false);
+      // the regular klondike save is untouched
+      expect(localStorage.getItem('solitude.game.v2.klondike')).toBeNull();
+    } else {
+      // Not Klondike's day → ?daily=1 is ignored, plays a normal game.
+      expect(localStorage.getItem('solitude.game.v2.klondike')).not.toBeNull();
+    }
+    window.history.replaceState({}, '', '/');
   });
 });
 

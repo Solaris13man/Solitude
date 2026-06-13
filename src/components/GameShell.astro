@@ -74,7 +74,8 @@ const {
 
   <GameNav current={gameId} />
 
-  <slot name="banner" />
+  <!-- Populated by the controller only when a game runs as today's daily. -->
+  <div id="daily-banner" class="daily-banner" hidden></div>
 
   <div class="hud" role="status" aria-label="Game status">
     <span><span class="hud-label">Time</span><span id="stat-time">0:00</span></span>

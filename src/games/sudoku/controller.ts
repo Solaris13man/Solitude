@@ -8,6 +8,7 @@ import {
   saveSettings,
 } from '../../lib/settings';
 import { randomSeed } from '../cards/rng';
+import { DailyMode } from '../../lib/daily-mode';
 import {
   DIFFICULTIES,
   type SudokuState,
@@ -49,6 +50,8 @@ class SudokuController {
   private runningSince: number | null = null;
   private finished = false;
   private toastTimer = 0;
+  private daily = new DailyMode(GAME_ID);
+  private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
 
   constructor() {
     this.settings = loadSettings();
@@ -71,6 +74,11 @@ class SudokuController {
       this.announce('Shared puzzle loaded.', true);
     } else if (!this.tryResume()) {
       this.newGame(false);
+    }
+    if (this.daily.active) {
+      this.daily.mountBanner();
+      const again = $opt('btn-play-again');
+      if (again) again.textContent = 'Play again';
     }
   }
 
@@ -115,7 +123,9 @@ class SudokuController {
         score: 0,
       });
     }
-    this.state = deal(seed ?? randomSeed(), variantOverride ?? this.difficulty());
+    const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
+    const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.difficulty());
+    this.state = deal(dealSeed, dealVariant);
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -127,10 +137,11 @@ class SudokuController {
 
   private tryResume(): boolean {
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
+      const raw = localStorage.getItem(this.saveKey);
       if (!raw) return false;
       const saved = deserialize(raw);
       if (!saved || isWon(saved.state)) return false;
+      if (this.daily.active && !this.daily.isToday(saved.state.seed)) return false;
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.refresh(false);
@@ -144,8 +155,8 @@ class SudokuController {
 
   private persist(): void {
     try {
-      if (this.finished) localStorage.removeItem(SAVE_KEY);
-      else localStorage.setItem(SAVE_KEY, serialize(this.state, this.elapsedMs()));
+      if (this.finished) localStorage.removeItem(this.saveKey);
+      else localStorage.setItem(this.saveKey, serialize(this.state, this.elapsedMs()));
     } catch {
       // storage unavailable
     }
@@ -233,7 +244,10 @@ class SudokuController {
     $('stat-moves').textContent = String(this.state.moves);
     $('stat-score').textContent = String(this.state.mistakes);
     const dealEl = $opt('stat-deal');
-    if (dealEl) dealEl.textContent = `#${this.state.seed}`;
+    if (dealEl) {
+      dealEl.textContent =
+        this.daily.isToday(this.state.seed) ? this.daily.dealLabel() : `#${this.state.seed}`;
+    }
     this.updateClock();
     ($('btn-undo') as HTMLButtonElement).disabled = this.finished || !this.history.canUndo;
     ($('btn-redo') as HTMLButtonElement).disabled = this.finished || !this.history.canRedo;
@@ -256,12 +270,17 @@ class SudokuController {
       score: 0,
     });
     const v = variantStats(stats, this.state.variant);
-    $('win-summary').innerHTML = [
+    const rows = [
       `<dt>Time</dt><dd>${formatTime(elapsed)}${v.bestTimeMs === elapsed ? ' — new best!' : ''}</dd>`,
       `<dt>Mistakes</dt><dd>${this.state.mistakes}</dd>`,
       `<dt>Difficulty</dt><dd>${DIFFICULTIES.find((d) => d.value === this.state.variant)?.label ?? ''}</dd>`,
       `<dt>Streak</dt><dd>${v.currentStreak}</dd>`,
-    ].join('');
+    ];
+    if (this.daily.isToday(this.state.seed)) {
+      const streak = this.daily.recordSolve(elapsed, this.state.moves, 0, 'Sudoku');
+      rows.push(`<dt>Daily streak</dt><dd>${streak} 🔥</dd>`);
+    }
+    $('win-summary').innerHTML = rows.join('');
     this.sound.play('win');
     this.announce(`Solved in ${formatTime(elapsed)}!`);
     this.board.flashSolved();
@@ -318,11 +337,17 @@ class SudokuController {
   }
 
   private async shareDeal(): Promise<void> {
-    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}&mode=${this.state.variant}`;
-    const label = DIFFICULTIES.find((d) => d.value === this.state.variant)?.label ?? '';
-    const text = this.finished
-      ? `I solved ${label} Sudoku #${this.state.seed} in ${formatTime(this.elapsedMs())} with ${this.state.mistakes} mistakes. Can you beat it?`
-      : `Try ${label} Sudoku #${this.state.seed} on CardHearth!`;
+    let url: string;
+    let text: string;
+    if (this.daily.isToday(this.state.seed)) {
+      ({ url, text } = this.daily.shareText(this.finished, this.elapsedMs()));
+    } else {
+      url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}&mode=${this.state.variant}`;
+      const label = DIFFICULTIES.find((d) => d.value === this.state.variant)?.label ?? '';
+      text = this.finished
+        ? `I solved ${label} Sudoku #${this.state.seed} in ${formatTime(this.elapsedMs())} with ${this.state.mistakes} mistakes. Can you beat it?`
+        : `Try ${label} Sudoku #${this.state.seed} on CardHearth!`;
+    }
     try {
       if (navigator.share) {
         await navigator.share({ text, url });
@@ -341,7 +366,8 @@ class SudokuController {
     const tried = DIFFICULTIES.filter(
       (d) => d.value === current || variantStats(stats, d.value).gamesPlayed > 0,
     ).sort((a, b) => (a.value === current ? -1 : b.value === current ? 1 : 0));
-    $('stats-body').innerHTML = tried
+    const daily = this.daily.active ? DailyMode.statsRows() : '';
+    $('stats-body').innerHTML = daily + tried
       .map((d) => {
         const v = variantStats(stats, d.value);
         return [
@@ -453,6 +479,7 @@ class SudokuController {
 
   private updateClock(): void {
     $('stat-time').textContent = formatTime(this.elapsedMs());
+    if (this.daily.active) this.daily.refreshBanner();
   }
 
   private announce(text: string, visible = false): void {

@@ -8,6 +8,7 @@ import {
   saveSettings,
 } from '../../lib/settings';
 import { randomSeed } from '../cards/rng';
+import { DailyMode } from '../../lib/daily-mode';
 import { G2048Board } from './board';
 import {
   type Direction,
@@ -46,6 +47,9 @@ class G2048Controller {
   /** A win (2048) or loss has been recorded for this game. */
   private resultRecorded = false;
   private toastTimer = 0;
+  private daily = new DailyMode(GAME_ID);
+  private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
+  private dailyRecorded = false;
 
   constructor() {
     this.settings = loadSettings();
@@ -69,6 +73,11 @@ class G2048Controller {
       this.announce('Shared game loaded — same tile sequence for everyone.', true);
     } else if (!this.tryResume()) {
       this.newGame(false);
+    }
+    if (this.daily.active) {
+      this.daily.mountBanner();
+      const again = $opt('btn-play-again');
+      if (again) again.textContent = 'Play again';
     }
   }
 
@@ -110,7 +119,8 @@ class G2048Controller {
         score: this.state.score,
       });
     }
-    this.state = deal(seed ?? randomSeed());
+    this.state = deal(seed ?? (this.daily.active ? this.daily.seed : randomSeed()));
+    this.dailyRecorded = false;
     this.history.clear();
     this.finished = false;
     this.resultRecorded = false;
@@ -123,10 +133,11 @@ class G2048Controller {
 
   private tryResume(): boolean {
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
+      const raw = localStorage.getItem(this.saveKey);
       if (!raw) return false;
       const saved = deserialize(raw);
       if (!saved || isOver(saved.state)) return false;
+      if (this.daily.active && !this.daily.isToday(saved.state.seed)) return false;
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.resultRecorded = this.state.reached2048;
@@ -142,8 +153,8 @@ class G2048Controller {
 
   private persist(): void {
     try {
-      if (this.finished) localStorage.removeItem(SAVE_KEY);
-      else localStorage.setItem(SAVE_KEY, serialize(this.state, this.elapsedMs()));
+      if (this.finished) localStorage.removeItem(this.saveKey);
+      else localStorage.setItem(this.saveKey, serialize(this.state, this.elapsedMs()));
     } catch {
       // storage unavailable
     }
@@ -159,6 +170,7 @@ class G2048Controller {
     this.sound.play(events.merges.length > 0 ? 'foundation' : 'flip');
     this.board.applyMove(this.state, events);
     this.refreshHud(true);
+    this.checkDailyTarget();
     if (this.state.reached2048 && !this.resultRecorded) {
       this.recordOutcome(true);
       this.showOutcome('🎉 2048!', true);
@@ -229,11 +241,24 @@ class G2048Controller {
     $('stat-moves').textContent = String(this.state.moves);
     $('stat-score').textContent = String(this.state.score);
     const dealEl = $opt('stat-deal');
-    if (dealEl) dealEl.textContent = `#${this.state.seed}`;
+    if (dealEl) {
+      dealEl.textContent =
+        this.daily.isToday(this.state.seed) ? this.daily.dealLabel() : `#${this.state.seed}`;
+    }
     this.updateClock();
     ($('btn-undo') as HTMLButtonElement).disabled = this.finished || !this.history.canUndo;
     ($('btn-redo') as HTMLButtonElement).disabled = this.finished || !this.history.canRedo;
     if (persist) this.persist();
+  }
+
+  /** 2048's daily is "solved" by reaching the rotation's target tile. */
+  private checkDailyTarget(): void {
+    if (!this.daily.isToday(this.state.seed) || this.dailyRecorded) return;
+    const target = this.daily.entry.target ?? 2048;
+    if (bestTile(this.state) < target) return;
+    this.dailyRecorded = true;
+    const streak = this.daily.recordSolve(this.elapsedMs(), this.state.moves, this.state.score, '2048');
+    this.announce(`Daily target ${target} reached! Streak ${streak} 🔥`, true);
   }
 
   private bindToolbar(): void {
@@ -272,8 +297,14 @@ class G2048Controller {
   }
 
   private async shareDeal(): Promise<void> {
-    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
-    const text = `I scored ${this.state.score} in 2048 game #${this.state.seed} (best tile ${bestTile(this.state)}). Same tiles, your moves: can you beat it?`;
+    let url: string;
+    let text: string;
+    if (this.daily.isToday(this.state.seed)) {
+      ({ url, text } = this.daily.shareText(this.dailyRecorded, this.elapsedMs()));
+    } else {
+      url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
+      text = `I scored ${this.state.score} in 2048 game #${this.state.seed} (best tile ${bestTile(this.state)}). Same tiles, your moves: can you beat it?`;
+    }
     try {
       if (navigator.share) {
         await navigator.share({ text, url });
@@ -289,7 +320,8 @@ class G2048Controller {
   private renderStats(): void {
     const stats = loadStats(GAME_ID);
     const v = variantStats(stats, 0);
-    $('stats-body').innerHTML = [
+    const daily = this.daily.active ? DailyMode.statsRows() : '';
+    $('stats-body').innerHTML = daily + [
       `<dt>Games played</dt><dd>${v.gamesPlayed}</dd>`,
       `<dt>Reached 2048</dt><dd>${v.gamesWon}</dd>`,
       `<dt>Win rate</dt><dd>${winRate(v)}%</dd>`,
@@ -382,6 +414,7 @@ class G2048Controller {
 
   private updateClock(): void {
     $('stat-time').textContent = formatTime(this.elapsedMs());
+    if (this.daily.active) this.daily.refreshBanner();
   }
 
   private announce(text: string, visible = false): void {

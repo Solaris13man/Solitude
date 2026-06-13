@@ -8,6 +8,7 @@ import {
   saveSettings,
 } from '../../lib/settings';
 import { randomSeed } from '../cards/rng';
+import { DailyMode } from '../../lib/daily-mode';
 import { MinesweeperBoard } from './board';
 import {
   DIFFICULTIES,
@@ -47,6 +48,8 @@ class MinesweeperController {
   private runningSince: number | null = null;
   private finished = false;
   private toastTimer = 0;
+  private daily = new DailyMode(GAME_ID);
+  private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
 
   constructor() {
     this.settings = loadSettings();
@@ -73,6 +76,11 @@ class MinesweeperController {
       this.announce('Shared board loaded.', true);
     } else if (!this.tryResume()) {
       this.newGame(false);
+    }
+    if (this.daily.active) {
+      this.daily.mountBanner();
+      const again = $opt('btn-play-again');
+      if (again) again.textContent = 'Play again';
     }
     this.onboard();
   }
@@ -129,7 +137,9 @@ class MinesweeperController {
         score: 0,
       });
     }
-    this.state = deal(seed ?? randomSeed(), variantOverride ?? this.difficulty());
+    const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
+    const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.difficulty());
+    this.state = deal(dealSeed, dealVariant);
     this.history.clear();
     this.finished = false;
     this.accumulatedMs = 0;
@@ -141,10 +151,11 @@ class MinesweeperController {
 
   private tryResume(): boolean {
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
+      const raw = localStorage.getItem(this.saveKey);
       if (!raw) return false;
       const saved = deserialize(raw);
       if (!saved || saved.state.status !== 'playing') return false;
+      if (this.daily.active && !this.daily.isToday(saved.state.seed)) return false;
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.board.mount(this.state);
@@ -159,8 +170,8 @@ class MinesweeperController {
 
   private persist(): void {
     try {
-      if (this.finished) localStorage.removeItem(SAVE_KEY);
-      else localStorage.setItem(SAVE_KEY, serialize(this.state, this.elapsedMs()));
+      if (this.finished) localStorage.removeItem(this.saveKey);
+      else localStorage.setItem(this.saveKey, serialize(this.state, this.elapsedMs()));
     } catch {
       // storage unavailable
     }
@@ -242,7 +253,10 @@ class MinesweeperController {
     $('stat-moves').textContent = String(this.state.moves);
     $('stat-score').textContent = String(flagsRemaining(this.state));
     const dealEl = $opt('stat-deal');
-    if (dealEl) dealEl.textContent = `#${this.state.seed}`;
+    if (dealEl) {
+      dealEl.textContent =
+        this.daily.isToday(this.state.seed) ? this.daily.dealLabel() : `#${this.state.seed}`;
+    }
     this.updateClock();
     ($('btn-undo') as HTMLButtonElement).disabled = this.finished || !this.history.canUndo;
     ($('btn-redo') as HTMLButtonElement).disabled = this.finished || !this.history.canRedo;
@@ -267,11 +281,16 @@ class MinesweeperController {
     });
     const v = variantStats(stats, this.state.variant);
     $('win-title').textContent = won ? '🎉 Swept clean!' : '✸ Boom!';
-    $('win-summary').innerHTML = [
+    const rows = [
       `<dt>Time</dt><dd>${formatTime(elapsed)}${won && v.bestTimeMs === elapsed ? ' — new best!' : ''}</dd>`,
       `<dt>Difficulty</dt><dd>${difficultyOf(this.state.variant).label.split(' (')[0]}</dd>`,
       `<dt>Streak</dt><dd>${v.currentStreak}</dd>`,
-    ].join('');
+    ];
+    if (won && this.daily.isToday(this.state.seed)) {
+      const streak = this.daily.recordSolve(elapsed, this.state.moves, 0, 'Minesweeper');
+      rows.push(`<dt>Daily streak</dt><dd>${streak} 🔥</dd>`);
+    }
+    $('win-summary').innerHTML = rows.join('');
     this.sound.play(won ? 'win' : 'shuffle');
     this.announce(won ? `Cleared in ${formatTime(elapsed)}!` : 'You hit a mine!');
     window.setTimeout(() => {
@@ -321,10 +340,16 @@ class MinesweeperController {
   }
 
   private async shareDeal(): Promise<void> {
-    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}&mode=${this.state.variant}`;
-    const text = this.finished && this.state.status === 'won'
-      ? `I swept Minesweeper board #${this.state.seed} in ${formatTime(this.elapsedMs())}. Can you beat it?`
-      : `Try Minesweeper board #${this.state.seed} on CardHearth!`;
+    let url: string;
+    let text: string;
+    if (this.daily.isToday(this.state.seed)) {
+      ({ url, text } = this.daily.shareText(this.state.status === 'won', this.elapsedMs()));
+    } else {
+      url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}&mode=${this.state.variant}`;
+      text = this.finished && this.state.status === 'won'
+        ? `I swept Minesweeper board #${this.state.seed} in ${formatTime(this.elapsedMs())}. Can you beat it?`
+        : `Try Minesweeper board #${this.state.seed} on CardHearth!`;
+    }
     try {
       if (navigator.share) {
         await navigator.share({ text, url });
@@ -343,7 +368,8 @@ class MinesweeperController {
     const tried = DIFFICULTIES.filter(
       (d) => d.value === current || variantStats(stats, d.value).gamesPlayed > 0,
     ).sort((a, b) => (a.value === current ? -1 : b.value === current ? 1 : 0));
-    $('stats-body').innerHTML = tried
+    const daily = this.daily.active ? DailyMode.statsRows() : '';
+    $('stats-body').innerHTML = daily + tried
       .map((d) => {
         const v = variantStats(stats, d.value);
         return [
@@ -439,6 +465,7 @@ class MinesweeperController {
 
   private updateClock(): void {
     $('stat-time').textContent = formatTime(this.elapsedMs());
+    if (this.daily.active) this.daily.refreshBanner();
   }
 
   private announce(text: string, visible = false): void {

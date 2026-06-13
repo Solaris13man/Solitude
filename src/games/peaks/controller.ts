@@ -8,6 +8,7 @@ import {
   saveSettings,
 } from '../../lib/settings';
 import { randomSeed } from '../cards/rng';
+import { DailyMode } from '../../lib/daily-mode';
 import { PeaksBoard } from './board';
 import {
   type PeaksRules,
@@ -43,9 +44,12 @@ class PeaksController {
   private finished = false;
   private toastTimer = 0;
 
+  private daily: DailyMode;
+
   constructor(rules: PeaksRules) {
     this.rules = rules;
-    this.saveKey = `solitude.game.v2.${rules.id}`;
+    this.daily = new DailyMode(rules.id);
+    this.saveKey = `solitude.game.v2.${rules.id}${this.daily.saveSuffix}`;
     this.settings = loadSettings();
     applySettings(this.settings);
     this.sound.enabled = this.settings.sounds;
@@ -70,6 +74,11 @@ class PeaksController {
       this.announce('Shared deal loaded.', true);
     } else if (!this.tryResume()) {
       this.newGame(false);
+    }
+    if (this.daily.active) {
+      this.daily.mountBanner();
+      const again = $opt('btn-play-again');
+      if (again) again.textContent = 'Play again';
     }
   }
 
@@ -107,7 +116,7 @@ class PeaksController {
         score: this.state.score,
       });
     }
-    this.state = this.rules.deal(seed ?? randomSeed());
+    this.state = this.rules.deal(seed ?? (this.daily.active ? this.daily.seed : randomSeed()));
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -124,6 +133,7 @@ class PeaksController {
       if (!raw) return false;
       const saved = deserialize(raw, this.rules.id);
       if (!saved || this.rules.isWon(saved.state)) return false;
+      if (this.daily.active && !this.daily.isToday(saved.state.seed)) return false;
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.refresh(false);
@@ -234,7 +244,10 @@ class PeaksController {
     $('stat-moves').textContent = String(this.state.moves);
     $('stat-score').textContent = String(this.state.score);
     const dealEl = $opt('stat-deal');
-    if (dealEl) dealEl.textContent = `#${this.state.seed}`;
+    if (dealEl) {
+      dealEl.textContent =
+        this.daily.isToday(this.state.seed) ? this.daily.dealLabel() : `#${this.state.seed}`;
+    }
     this.updateClock();
     ($('btn-undo') as HTMLButtonElement).disabled = this.finished || !this.history.canUndo;
     ($('btn-redo') as HTMLButtonElement).disabled = this.finished || !this.history.canRedo;
@@ -257,12 +270,17 @@ class PeaksController {
       score: this.state.score,
     });
     const v = variantStats(stats, 0);
-    $('win-summary').innerHTML = [
+    const rows = [
       `<dt>Time</dt><dd>${formatTime(elapsed)}${v.bestTimeMs === elapsed ? ' — new best!' : ''}</dd>`,
       `<dt>Moves</dt><dd>${this.state.moves}</dd>`,
       `<dt>Score</dt><dd>${this.state.score}</dd>`,
       `<dt>Streak</dt><dd>${v.currentStreak}</dd>`,
-    ].join('');
+    ];
+    if (this.daily.isToday(this.state.seed)) {
+      const streak = this.daily.recordSolve(elapsed, this.state.moves, this.state.score, this.rules.name);
+      rows.push(`<dt>Daily streak</dt><dd>${streak} 🔥</dd>`);
+    }
+    $('win-summary').innerHTML = rows.join('');
     this.sound.play('win');
     this.announce(`You won in ${formatTime(elapsed)}!`);
     window.setTimeout(() => {
@@ -304,10 +322,16 @@ class PeaksController {
   }
 
   private async shareDeal(): Promise<void> {
-    const url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
-    const text = this.finished
-      ? `I cleared ${this.rules.name} deal #${this.state.seed} in ${formatTime(this.elapsedMs())} (${this.state.score} points). Can you beat it?`
-      : `Try ${this.rules.name} deal #${this.state.seed} on CardHearth!`;
+    let url: string;
+    let text: string;
+    if (this.daily.isToday(this.state.seed)) {
+      ({ url, text } = this.daily.shareText(this.finished, this.elapsedMs()));
+    } else {
+      url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}`;
+      text = this.finished
+        ? `I cleared ${this.rules.name} deal #${this.state.seed} in ${formatTime(this.elapsedMs())} (${this.state.score} points). Can you beat it?`
+        : `Try ${this.rules.name} deal #${this.state.seed} on CardHearth!`;
+    }
     try {
       if (navigator.share) {
         await navigator.share({ text, url });
@@ -323,7 +347,8 @@ class PeaksController {
   private renderStats(): void {
     const stats = loadStats(this.rules.id);
     const v = variantStats(stats, 0);
-    $('stats-body').innerHTML = [
+    const daily = this.daily.active ? DailyMode.statsRows() : '';
+    $('stats-body').innerHTML = daily + [
       `<dt>Games played</dt><dd>${v.gamesPlayed}</dd>`,
       `<dt>Games won</dt><dd>${v.gamesWon}</dd>`,
       `<dt>Win rate</dt><dd>${winRate(v)}%</dd>`,
@@ -410,6 +435,7 @@ class PeaksController {
 
   private updateClock(): void {
     $('stat-time').textContent = formatTime(this.elapsedMs());
+    if (this.daily.active) this.daily.refreshBanner();
   }
 
   private announce(text: string, visible = false): void {

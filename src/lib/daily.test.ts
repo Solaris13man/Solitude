@@ -95,3 +95,42 @@ describe('utcDateKey', () => {
     expect(utcDateKey(at('2026-06-13T23:59:59Z'))).toBe('2026-06-13');
   });
 });
+
+describe('daily rotation', () => {
+  it('cycles deterministically and stays within the rotation', async () => {
+    const { dailyGame, DAILY_ROTATION, dailyNumber } = await import('./daily');
+    const day1 = dailyGame(at('2026-06-13T12:00:00Z'));
+    expect(day1).toBe(DAILY_ROTATION[0]);
+    // wraps after the rotation length
+    const wrap = dailyGame(at('2026-06-27T12:00:00Z')); // day 15 → index 0
+    expect(dailyNumber(at('2026-06-27T12:00:00Z'))).toBe(15);
+    expect(wrap).toBe(DAILY_ROTATION[0]);
+    const day2 = dailyGame(at('2026-06-14T12:00:00Z'));
+    expect(day2).toBe(DAILY_ROTATION[1]);
+  });
+
+  it('includes every game in the catalogue', async () => {
+    const { DAILY_ROTATION } = await import('./daily');
+    const games = new Set(DAILY_ROTATION.map((e) => e.game));
+    for (const g of [
+      'klondike', 'spider', 'freecell', 'pyramid', 'tripeaks',
+      'golf', 'sudoku', 'mahjong', 'minesweeper', '2048',
+    ]) {
+      expect(games.has(g)).toBe(true);
+    }
+  });
+
+  it('every rotation entry has a label and a path', async () => {
+    const { DAILY_ROTATION } = await import('./daily');
+    for (const e of DAILY_ROTATION) {
+      expect(e.label.length).toBeGreaterThan(0);
+      expect(e.path.startsWith('/')).toBe(true);
+    }
+  });
+
+  it('records the game name with a solve and shows it in history', async () => {
+    const { recordDailyWin, loadDaily } = await import('./daily');
+    recordDailyWin('2026-06-13', { timeMs: 1000, moves: 10, score: 5, game: 'Sudoku' });
+    expect(loadDaily().days['2026-06-13']!.game).toBe('Sudoku');
+  });
+});

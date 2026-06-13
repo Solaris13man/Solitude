@@ -15,18 +15,7 @@ import {
   reducedMotion,
   saveSettings,
 } from '../../lib/settings';
-import {
-  bestDailyStreak,
-  currentDailyStreak,
-  dailyNumber,
-  dailySeed,
-  formatCountdown,
-  loadDaily,
-  msUntilNextDaily,
-  recordDailyWin,
-  totalDailySolves,
-  utcDateKey,
-} from '../../lib/daily';
+import { DailyMode } from '../../lib/daily-mode';
 import {
   type GameState,
   type Move,
@@ -59,18 +48,13 @@ export interface StartOptions {
    * /spider-4-suits/). The settings variant select is absent on those pages.
    */
   forceVariant?: number;
-  /**
-   * Daily Challenge mode: the deal seed derives from the UTC date (the same
-   * deal for everyone), wins record into the daily history/streak, and the
-   * page banner shows status + a countdown to the next deal.
-   */
-  daily?: boolean;
 }
 
 /** Generic controller for any card Ruleset (Klondike, Spider, FreeCell, …). */
 class CardGameController {
   private ruleset: Ruleset;
   private options: StartOptions;
+  private daily: DailyMode;
   private saveKey: string;
   private state!: GameState;
   private history = new History<GameState>(cloneState);
@@ -85,9 +69,11 @@ class CardGameController {
   constructor(ruleset: Ruleset, options: StartOptions = {}) {
     this.ruleset = ruleset;
     this.options = options;
-    // The daily game saves separately so it never clobbers a game in
-    // progress on the regular page.
-    this.saveKey = `solitude.game.v2.${ruleset.id}${options.daily ? '.daily' : ''}`;
+    // Daily Challenge mode self-activates from the ?daily=1 URL when this
+    // game is today's rotation pick; it saves separately so it never
+    // clobbers a regular game in progress.
+    this.daily = new DailyMode(ruleset.id);
+    this.saveKey = `solitude.game.v2.${ruleset.id}${this.daily.saveSuffix}`;
     this.settings = loadSettings();
     applySettings(this.settings);
     this.sound.enabled = this.settings.sounds;
@@ -125,9 +111,9 @@ class CardGameController {
     } else if (!this.tryResume()) {
       this.newGame(false);
     }
-    if (options.daily) {
-      this.updateDailyBanner();
-      // On the daily page "play again" is the same deal, so label it honestly.
+    if (this.daily.active) {
+      this.daily.mountBanner();
+      // On the daily the "new deal" button replays the same daily.
       const again = $opt('btn-play-again');
       if (again) again.textContent = 'Play again';
     }
@@ -183,8 +169,9 @@ class CardGameController {
         score: this.state.score,
       });
     }
-    const dealSeed = seed ?? (this.options.daily ? dailySeed() : randomSeed());
-    this.state = this.ruleset.deal(dealSeed, variantOverride ?? this.variant());
+    const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
+    const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.variant());
+    this.state = this.ruleset.deal(dealSeed, dealVariant);
     this.history.clear();
     this.finished = false;
     this.autoFinishing = false;
@@ -214,7 +201,7 @@ class CardGameController {
         return false;
       }
       // Yesterday's unfinished daily is gone; the day moved on.
-      if (this.options.daily && saved.state.seed !== dailySeed()) return false;
+      if (this.daily.active && !this.daily.isToday(saved.state.seed)) return false;
       this.state = saved.state;
       this.accumulatedMs = saved.elapsedMs;
       this.board.setState(this.state);
@@ -272,9 +259,7 @@ class CardGameController {
     const dealEl = $opt('stat-deal');
     if (dealEl) {
       dealEl.textContent =
-        this.options.daily && this.isTodaysDaily()
-          ? `Daily #${dailyNumber()}`
-          : `#${this.state.seed}`;
+        this.daily.isToday(this.state.seed) ? this.daily.dealLabel() : `#${this.state.seed}`;
     }
     this.updateClock();
     // Once a game is won it stays won: undo/redo lock so the result can't be
@@ -358,14 +343,9 @@ class CardGameController {
       `<dt>Score</dt><dd>${this.state.score}</dd>`,
       `<dt>Streak</dt><dd>${v.currentStreak}</dd>`,
     ];
-    if (this.options.daily && this.isTodaysDaily()) {
-      const record = recordDailyWin(utcDateKey(), {
-        timeMs: elapsed,
-        moves: this.state.moves,
-        score: this.state.score,
-      });
-      rows.push(`<dt>Daily streak</dt><dd>${currentDailyStreak(record)} 🔥</dd>`);
-      this.updateDailyBanner();
+    if (this.daily.isToday(this.state.seed)) {
+      const streak = this.daily.recordSolve(elapsed, this.state.moves, this.state.score, this.ruleset.name);
+      rows.push(`<dt>Daily streak</dt><dd>${streak} 🔥</dd>`);
     }
     $('win-summary').innerHTML = rows.join('');
     this.sound.play('win');
@@ -472,12 +452,8 @@ class CardGameController {
   private async shareDeal(): Promise<void> {
     let url: string;
     let text: string;
-    if (this.options.daily && this.isTodaysDaily()) {
-      // Today's challenge is the same deal for everyone — share the page.
-      url = `${window.location.origin}${window.location.pathname}`;
-      text = this.finished
-        ? `CardHearth Daily #${dailyNumber()} 🃏 solved in ${formatTime(this.elapsedMs())} with ${this.state.moves} moves. Can you beat it?`
-        : `Today's CardHearth Daily Challenge — same deal for everyone. Can you solve it?`;
+    if (this.daily.isToday(this.state.seed)) {
+      ({ url, text } = this.daily.shareText(this.finished, this.elapsedMs()));
     } else {
       const mode = this.ruleset.variants.length > 0 ? `&mode=${this.state.variant}` : '';
       url = `${window.location.origin}${window.location.pathname}?deal=${this.state.seed}${mode}`;
@@ -497,22 +473,6 @@ class CardGameController {
     }
   }
 
-  private dailyStatsRows(): string {
-    const record = loadDaily();
-    const recent = Object.entries(record.days)
-      .sort(([a], [b]) => (a < b ? 1 : -1))
-      .slice(0, 5);
-    return [
-      `<dt class="stats-section">Daily Challenge</dt><dd class="stats-section"></dd>`,
-      `<dt>Current streak</dt><dd>${currentDailyStreak(record)}</dd>`,
-      `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
-      `<dt>Dailies solved</dt><dd>${totalDailySolves(record)}</dd>`,
-      ...recent.map(
-        ([day, r]) => `<dt>${day}</dt><dd>${formatTime(r.timeMs)} · ${r.moves} moves</dd>`,
-      ),
-    ].join('');
-  }
-
   private renderStats(): void {
     const stats = loadStats(this.ruleset.id);
     const rows = (label: string, v: ReturnType<typeof aggregate>): string =>
@@ -526,7 +486,7 @@ class CardGameController {
         `<dt>Best time</dt><dd>${v.bestTimeMs === null ? '—' : formatTime(v.bestTimeMs)}</dd>`,
         `<dt>Best score</dt><dd>${v.bestScore}</dd>`,
       ].join('');
-    const daily = this.options.daily ? this.dailyStatsRows() : '';
+    const daily = this.daily.active ? DailyMode.statsRows() : '';
     if (this.ruleset.variants.length === 0) {
       $('stats-body').innerHTML = daily + rows('', variantStats(stats, this.ruleset.defaultVariant));
       return;
@@ -640,38 +600,7 @@ class CardGameController {
 
   private updateClock(): void {
     $('stat-time').textContent = formatTime(this.elapsedMs());
-    if (this.options.daily) this.updateDailyBanner();
-  }
-
-  // ----- daily challenge ---------------------------------------------------
-
-  private isTodaysDaily(): boolean {
-    return this.state.seed === dailySeed();
-  }
-
-  private updateDailyBanner(): void {
-    const title = $opt('daily-title');
-    const status = $opt('daily-status');
-    if (!title && !status) return;
-    const now = new Date();
-    if (title) {
-      const date = now.toLocaleDateString('en-US', {
-        timeZone: 'UTC',
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      });
-      title.textContent = `Daily Challenge #${dailyNumber(now)} — ${date}`;
-    }
-    if (status) {
-      const record = loadDaily();
-      const today = record.days[utcDateKey(now)];
-      const countdown = formatCountdown(msUntilNextDaily(now));
-      const streak = currentDailyStreak(record, now);
-      status.textContent = today
-        ? `Solved in ${formatTime(today.timeMs)} ✓ · Streak: ${streak} · Next deal in ${countdown}`
-        : `The same deal for everyone, every day. Next deal in ${countdown}.`;
-    }
+    if (this.daily.active) this.daily.refreshBanner();
   }
 
   private toastTimer = 0;

@@ -1,27 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import GameShell from '../components/GameShell.astro';
+import Footer from '../components/Footer.astro';
+import GameNav from '../components/GameNav.astro';
 
-const title = 'Daily Solitaire Challenge — A New Deal Every Day | CardHearth';
+const title = 'Daily Challenge — A New Game Every Day | CardHearth';
 const description =
-  'Play the CardHearth Daily Challenge: one Klondike Solitaire deal per day, identical for every player worldwide. Solve it, keep your streak alive, and challenge your friends — free, no sign-up.';
+  'The CardHearth Daily Challenge rotates across every game — Solitaire, Sudoku, Mahjong, Minesweeper, 2048 and more. One puzzle a day, identical for everyone. Build a streak, free, no sign-up.';
 
 const faq = [
   {
     q: 'How does the Daily Challenge work?',
-    a: 'Every day there is one Klondike Solitaire deal (Draw 1), and it is exactly the same for every player in the world — the cards are derived from the date itself. Solve it to extend your daily streak. A new deal arrives at midnight UTC.',
+    a: 'Every day a different game from the catalogue is the daily challenge, and its puzzle is identical for every player worldwide — both the game and its deal are derived from the date. Solve it before midnight UTC to extend your daily streak.',
   },
   {
-    q: 'Is the daily deal the same for everyone?',
-    a: 'Yes. The shuffle is generated from the calendar date, so your deal is identical to everyone else’s. That makes times and move counts directly comparable — share yours and see who solves it faster.',
+    q: 'Which games are in the rotation?',
+    a: 'All of them — Klondike (Draw 1 and Draw 3), Spider, FreeCell, Pyramid, TriPeaks, Golf, Sudoku, Mahjong, Minesweeper, and 2048 — cycling so every game comes around. The same game and puzzle appear for everyone on a given day.',
+  },
+  {
+    q: 'Is the daily the same for everyone?',
+    a: 'Yes. The game and its shuffle are generated from the calendar date, so your challenge is identical to everyone else’s. That makes times directly comparable — share yours and see who finishes faster.',
   },
   {
     q: 'What happens to my streak if I miss a day?',
-    a: 'Your current streak resets when a day passes without a solve, but your best streak and your history of solved days are kept. Your streak survives until midnight UTC, so there is always time to keep it alive today.',
-  },
-  {
-    q: 'Can every daily deal be won?',
-    a: 'Not necessarily — daily deals are honest random Klondike deals, and roughly one in five Klondike games cannot be won even with perfect play. Unlimited undo is fair game; part of the fun is figuring out whether today’s deal will yield at all.',
+    a: 'Your current streak resets when a day passes without a solve, but your best streak and your full history are kept. Your streak survives until midnight UTC, so there is always time to keep it alive today.',
   },
 ];
 
@@ -29,10 +30,10 @@ const schema = [
   {
     '@context': 'https://schema.org',
     '@type': 'VideoGame',
-    name: 'CardHearth Daily Solitaire Challenge',
+    name: 'CardHearth Daily Challenge',
     url: 'https://cardhearth.com/daily-challenge/',
     description,
-    genre: 'Card game',
+    genre: 'Puzzle',
     gamePlatform: 'Web browser',
     applicationCategory: 'Game',
     operatingSystem: 'Any',
@@ -62,46 +63,114 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="daily" heading="Daily Challenge">
-    <div slot="banner" class="daily-banner">
-      <span id="daily-title" class="daily-banner-title">Daily Challenge</span>
-      <span id="daily-status" class="daily-banner-status">One deal a day, the same for everyone.</span>
-    </div>
+  <div class="mx-auto flex min-h-dvh w-full max-w-4xl flex-col px-4">
+    <header class="flex flex-wrap items-center justify-between gap-2 py-3">
+      <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
+        Daily Challenge
+        <a href="/" class="font-normal no-underline opacity-70 hover:underline">· CardHearth</a>
+      </h1>
+      <a href="/" class="btn" aria-label="Back to the game menu">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
+        <span class="btn-label">Home</span>
+      </a>
+    </header>
 
-    <h2 class="mb-2 text-lg font-bold">One deal. Everyone. Every day.</h2>
-    <p class="mb-3">
-      The Daily Challenge serves a single Klondike Solitaire deal (Draw 1) each day — and because
-      the cards are generated from the date itself, <strong>every player in the world gets the
-      identical deal</strong>. Your time and move count mean something here: they're directly
-      comparable with anyone else who played today. Solve it before midnight UTC to extend your
-      <strong>daily streak</strong>, then share your result and dare a friend to beat it.
-    </p>
-    <h2 class="mb-2 text-lg font-bold">How streaks work</h2>
-    <p class="mb-3">
-      Solve the daily deal on consecutive days and your streak grows; miss a day and it resets
-      (your best streak and full history are always kept — check the Stats panel). Unlimited
-      undo and hints are fair game: the challenge is finishing, and the bragging rights are in
-      the time. If you solve it twice, your faster time is kept.
-    </p>
-    <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
-    {
-      faq.map((f) => (
-        <details class="faq mb-2">
-          <summary class="cursor-pointer font-semibold">{f.q}</summary>
-          <p class="mt-2 opacity-90">{f.a}</p>
-        </details>
-      ))
-    }
-    <p class="mt-6 opacity-75">
-      Warm up first on <a class="underline" href="/klondike/">Klondike Solitaire</a>, or try
-      <a class="underline" href="/spider/">Spider</a> and
-      <a class="underline" href="/freecell/">FreeCell</a> while you wait for tomorrow's deal.
-    </p>
-  </GameShell>
+    <GameNav current="daily" />
+
+    <!-- Today's challenge — filled in client-side from the date. -->
+    <section class="daily-hero">
+      <p class="daily-hero-eyebrow" id="daily-hero-date">Today's challenge</p>
+      <p class="daily-hero-game" id="daily-hero-game">Loading…</p>
+      <p class="daily-hero-status" id="daily-hero-status"></p>
+      <a id="daily-play" class="btn btn-primary daily-play-btn" href="/">Play today's challenge →</a>
+      <dl class="daily-hero-stats" id="daily-hero-stats"></dl>
+    </section>
+
+    <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
+      <h2 class="mb-2 text-lg font-bold">One game. Everyone. Every day.</h2>
+      <p class="mb-3">
+        The Daily Challenge rotates across the whole CardHearth catalogue — one day it's
+        Klondike, the next Sudoku, then Mahjong, Minesweeper, 2048 and on through every game.
+        Whatever the day's game is, <strong>everyone in the world gets the identical puzzle</strong>,
+        generated from the date itself. Finish it before midnight UTC to grow your
+        <strong>daily streak</strong>, then share your time and dare a friend to beat it.
+      </p>
+      <h2 class="mb-2 text-lg font-bold">How streaks work</h2>
+      <p class="mb-3">
+        Solve the daily on consecutive days and your streak grows; miss a day and it resets
+        (your best streak and full history are always kept — check the Stats panel inside any
+        game). The streak survives until midnight UTC, so there's always time to keep it alive.
+      </p>
+      <h2 class="mb-2 text-lg font-bold">Frequently asked questions</h2>
+      {
+        faq.map((f) => (
+          <details class="faq mb-2">
+            <summary class="cursor-pointer font-semibold">{f.q}</summary>
+            <p class="mt-2 opacity-90">{f.a}</p>
+          </details>
+        ))
+      }
+      <p class="mt-6 opacity-75">
+        Prefer to choose? Browse <a class="underline" href="/">all games</a> on the menu.
+      </p>
+    </section>
+
+    <Footer />
+  </div>
 
   <script>
-    import { startGame } from '../games/cards/controller';
-    import { klondikeRules } from '../games/cards/klondike';
-    startGame(klondikeRules, { daily: true, forceVariant: 1 });
+    import {
+      dailyGame,
+      dailyNumber,
+      formatCountdown,
+      msUntilNextDaily,
+      loadDaily,
+      currentDailyStreak,
+      bestDailyStreak,
+      totalDailySolves,
+      isDailySolved,
+      utcDateKey,
+    } from '../lib/daily';
+    import { formatTime } from '../lib/stats';
+
+    const entry = dailyGame();
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    });
+    const record = loadDaily();
+    const solved = isDailySolved();
+    const today = record.days[utcDateKey()];
+
+    const set = (id: string, text: string) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    };
+    set('daily-hero-date', `Daily #${dailyNumber()} · ${dateStr}`);
+    set('daily-hero-game', entry.label);
+    set(
+      'daily-hero-status',
+      solved && today
+        ? `Solved in ${formatTime(today.timeMs)} ✓ — next game in ${formatCountdown(msUntilNextDaily())}`
+        : `The same for everyone — next game in ${formatCountdown(msUntilNextDaily())}`,
+    );
+
+    const play = document.getElementById('daily-play') as HTMLAnchorElement | null;
+    if (play) {
+      play.href = `${entry.path}?daily=1`;
+      play.textContent = solved ? 'Play again →' : "Play today's challenge →";
+    }
+
+    const stats = document.getElementById('daily-hero-stats');
+    if (stats) {
+      stats.innerHTML = [
+        `<dt>Current streak</dt><dd>${currentDailyStreak(record)} 🔥</dd>`,
+        `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
+        `<dt>Days solved</dt><dd>${totalDailySolves(record)}</dd>`,
+      ].join('');
+    }
   </script>
 </Layout>
