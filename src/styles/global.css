@@ -1511,6 +1511,42 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .hearts-status { text-align: center; margin-top: 0.6rem; font-size: 0.9rem; min-height: 1.3rem; opacity: 0.92; }
 .pass-bar { margin-top: 0.7rem; display: flex; justify-content: center; }
 
+/* spades extras (bidding + team scoreboard); reuses the hearts table layout */
+.spades-scoreboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem 1.6rem;
+  font-size: 0.85rem;
+  margin: 0 auto 0.3rem;
+  padding: 0.4rem 1rem;
+  background: rgb(0 0 0 / 0.25);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+}
+.spades-scoreboard b { color: #ffd95e; }
+.bid-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  max-width: 30rem;
+}
+.bid-btn {
+  min-width: 2.2rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  font-weight: 700;
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  color: var(--chrome-text);
+  cursor: pointer;
+  transition: background-color 0.12s ease, transform 0.12s ease;
+}
+.bid-btn:hover { background: rgb(255 217 94 / 0.3); transform: translateY(-2px); }
+.bid-btn:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
+
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;

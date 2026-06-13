@@ -164,6 +164,28 @@ const { game } = Astro.props;
   )
 }
 {
+  game === 'spades' && (
+    <svg viewBox="0 0 240 135" role="img" aria-label="A fan of spade cards with a bid" class="art">
+      <g transform="translate(88 72) rotate(-15)">
+        <rect x="-26" y="-37" width="52" height="74" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-18" y="-19" font-size="12" font-weight="700" fill="#1d2230">A</text>
+        <text x="0" y="12" font-size="28" text-anchor="middle" fill="#1d2230">♠</text>
+      </g>
+      <g transform="translate(124 64)">
+        <rect x="-26" y="-37" width="52" height="74" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-18" y="-19" font-size="12" font-weight="700" fill="#1d2230">K</text>
+        <text x="0" y="12" font-size="28" text-anchor="middle" fill="#1d2230">♠</text>
+      </g>
+      <g transform="translate(160 72) rotate(15)">
+        <rect x="-26" y="-37" width="52" height="74" rx="6" fill="#fcfcf7" stroke="#1d2230" stroke-opacity="0.3" />
+        <text x="-18" y="-19" font-size="12" font-weight="700" fill="#1d2230">Q</text>
+        <text x="0" y="12" font-size="28" text-anchor="middle" fill="#1d2230">♠</text>
+      </g>
+      <text x="120" y="126" font-size="12" font-weight="800" text-anchor="middle" fill="#ffd95e">bid · nil · 500</text>
+    </svg>
+  )
+}
+{
   game === 'hearts' && (
     <svg viewBox="0 0 240 135" role="img" aria-label="A trick of cards with the Queen of Spades" class="art">
       <g transform="translate(86 70) rotate(-14)">

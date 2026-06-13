@@ -102,6 +102,14 @@ export const GAMES: GameInfo[] = [
     category: 'cards',
   },
   {
+    id: 'spades',
+    name: 'Spades',
+    href: '/spades/',
+    tagline: 'Bid, partner up, and take the tricks — vs the computer',
+    highlight: 'Play against the computer',
+    category: 'cards',
+  },
+  {
     id: 'sudoku',
     name: 'Sudoku',
     href: '/sudoku/',
