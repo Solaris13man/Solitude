@@ -2,9 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import GameShell from '../components/GameShell.astro';
 
-const title = 'Sudoku — Play Free Online (Easy to Expert) | CardHearth';
+const title = 'Sudoku — Free Online, No Guessing (Easy to Expert) | CardHearth';
 const description =
-  'Play free Sudoku online with four difficulty levels, pencil marks, unlimited undo, hints, and mistake tracking. Every puzzle has a unique solution — no download, no sign-up.';
+  'Play free Sudoku online — every puzzle is solvable by pure logic with no guessing, ever, and has exactly one solution. Four difficulties, pencil marks, unlimited undo and hints. No download, no sign-up.';
 
 const faq = [
   {
@@ -38,7 +38,7 @@ const schema = [
     operatingSystem: 'Any',
     playMode: 'SinglePlayer',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    image: 'https://cardhearth.com/og.png',
+    image: 'https://cardhearth.com/og/sudoku.png',
     publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
   },
   {
@@ -86,11 +86,12 @@ const schema = [
 
     <h2 class="mb-2 text-lg font-bold">How to play Sudoku</h2>
     <p class="mb-3">
-      Fill the 9×9 grid so every row, every column, and every 3×3 box contains the digits 1
-      through 9 exactly once. Tap a square, then tap a number — or use your keyboard: arrows to
-      move, digits to fill, Backspace to erase. Bold numbers are the puzzle's given clues and
-      can't be changed; conflicts light up red the moment two matching digits share a row,
-      column or box.
+      <strong>Every CardHearth Sudoku is solvable by pure logic — you never have to guess</strong>,
+      and each puzzle has exactly one solution, verified by a solver at every difficulty. Fill the
+      9×9 grid so every row, every column, and every 3×3 box contains the digits 1 through 9 exactly
+      once. Tap a square, then tap a number — or use your keyboard: arrows to move, digits to fill,
+      Backspace to erase. Bold numbers are the puzzle's given clues and can't be changed; conflicts
+      light up red the moment two matching digits share a row, column or box.
     </p>
     <h2 class="mb-2 text-lg font-bold">Notes, hints &amp; mistakes</h2>
     <p class="mb-3">
