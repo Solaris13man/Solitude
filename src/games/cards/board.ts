@@ -64,6 +64,8 @@ export function currentCardSet(): string {
 export function cardArtById(id: string): { face: string; back: string } | null {
   const set = currentCardSet();
   if (set === 'classic') return null;
+  // 'ink' is a single-back hand-drawn set; the others pair a design with a back colour.
+  if (set === 'ink') return { face: `/cards/ink/${id}.png`, back: `/cards/ink/back.png` };
   const design = set.startsWith('vintage') ? 'vintage' : 'new';
   const color = set.endsWith('red') ? 'red' : 'blue';
   return { face: `/cards/${design}/${id}.png`, back: `/cards/${design}/back-${color}.png` };
