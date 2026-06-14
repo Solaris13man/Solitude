@@ -1,0 +1,178 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Rummy Rules: How to Play (Complete Guide) | CardHearth';
+const description =
+  'Learn the rules of Rummy: the deal, melds (sets and runs), drawing and discarding, laying off, going out, scoring, and the popular variants like Gin Rummy.';
+const updated = '2026-06-14';
+const heading = 'Rummy Rules: How to Play';
+const subtitle =
+  'The rules of the classic Rummy family — how the cards are dealt, how you build sets and runs, how to lay off and go out, and how scoring works — plus the variants you’ll meet.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Rummy Rules', href: '/guides/rummy-rules/' },
+];
+
+const faq = [
+  {
+    q: 'How many cards are dealt in Rummy?',
+    a: 'For two players, ten cards each is standard. With three or four players it’s usually seven each, and with five or six players, six each. The rest of the deck forms the stock, with its top card turned up to start the discard pile.',
+  },
+  {
+    q: 'How do you win a hand of Rummy?',
+    a: 'You win a hand by "going out" — getting every card in your hand into valid melds (sets and runs), usually ending with a final discard. The other players are then penalised for the unmatched cards left in their hands.',
+  },
+  {
+    q: 'What’s the difference between Rummy and Gin Rummy?',
+    a: 'Gin Rummy is a two-player member of the Rummy family with two key twists: you keep your melds concealed until you end the hand, and you can "knock" once your unmatched cards total 10 or fewer instead of melding everything. See our Gin Rummy vs Rummy comparison for the full breakdown.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Rummy Rules: How to Play (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/rummy-rules/',
+    image: 'https://cardhearth.com/og/gin.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/gin/', label: 'Play Gin Rummy' }}
+>
+  <p>
+    "Rummy" is a whole family of matching games built on one simple idea: draw and discard cards
+    until your hand is organised into <strong>melds</strong> — sets and runs — then be the first to
+    get rid of it all. This page covers <strong>basic Rummy</strong> (also called Traditional or
+    Standard Rummy), the version most people learn first, and points you to the popular variants. The
+    most famous variant, <a href="/gin/">Gin Rummy</a>, you can play here free against the computer.
+  </p>
+
+  <h2>What is Rummy?</h2>
+  <p>
+    Rummy is played by <strong>two to six players</strong> with a standard 52-card deck (larger
+    groups often use two decks shuffled together). Aces are usually low. The aim is to form your
+    cards into valid combinations and "go out" before anyone else, leaving your opponents stuck with
+    unmatched cards that count against them.
+  </p>
+
+  <h2>The deal</h2>
+  <p>
+    Each player is dealt a hand — <strong>10 cards for two players</strong>, 7 each for three or
+    four, 6 each for five or six. The remaining cards form a face-down <strong>stock</strong>, and
+    the top card is turned face up to begin the <strong>discard pile</strong>.
+  </p>
+
+  <h2>Melds: sets and runs</h2>
+  <p>A meld is a valid group of three or more cards:</p>
+  <ul>
+    <li><strong>Set:</strong> three or four cards of the <strong>same rank</strong> — say three Eights.</li>
+    <li><strong>Run:</strong> three or more cards of the <strong>same suit in sequence</strong> — say the 5-6-7 of clubs.</li>
+  </ul>
+
+  <h2>Your turn: draw and discard</h2>
+  <p>On your turn you:</p>
+  <ol>
+    <li><strong>Draw</strong> one card — the top of the stock or the top of the discard pile.</li>
+    <li><strong>Meld or lay off</strong> if you can (optional — see below).</li>
+    <li><strong>Discard</strong> one card face up to end your turn.</li>
+  </ol>
+  <p>
+    Unlike Gin Rummy, in basic Rummy you put your melds <strong>face up on the table</strong> as you
+    make them rather than keeping them hidden.
+  </p>
+
+  <h2>Laying off</h2>
+  <p>
+    Once a meld is on the table — yours or, in many house rules, anyone's — you may
+    <strong>lay off</strong> matching cards onto it: adding the 8 of clubs to a 5-6-7 of clubs run,
+    or a fourth Eight to a set of three. Laying off is how you shed cards quickly toward going out.
+  </p>
+
+  <h2>Going out and scoring</h2>
+  <p>
+    You <strong>go out</strong> when you get rid of your last card — having melded or laid off
+    everything, usually finishing with a final discard. The hand ends immediately, and each opponent
+    is penalised for the cards still in their hand: <strong>face cards count 10</strong>, aces
+    typically 1, and number cards their face value. Those points go to the winner (or against the
+    losers, depending on the variant). Games are played to a target score, such as 100 or 250, or for
+    a set number of deals.
+  </p>
+
+  <h2>Popular variants</h2>
+  <ul>
+    <li>
+      <strong><a href="/gin/">Gin Rummy</a>:</strong> the two-player classic — melds stay concealed,
+      and you "knock" once your unmatched cards (deadwood) total 10 or fewer instead of melding your
+      whole hand. See <a href="/guides/gin-rummy-vs-rummy/">Gin Rummy vs Rummy</a> for the full
+      contrast, or the <a href="/guides/gin-rummy-rules/">Gin Rummy rules</a>.
+    </li>
+    <li>
+      <strong>Rummy 500:</strong> you score the value of the cards you meld (rather than penalising
+      leftovers), can draw multiple cards from the discard pile, and play to 500.
+    </li>
+    <li>
+      <strong>Canasta, Contract Rummy and others</strong> add wild cards, required contracts, and
+      team play — but all share the same set-and-run core.
+    </li>
+  </ul>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    The most popular Rummy variant is playable here right now — <a href="/gin/">play Gin Rummy</a>
+    against the computer. Learn its rules in the <a href="/guides/gin-rummy-rules/">Gin Rummy rules</a>,
+    see exactly how it differs in <a href="/guides/gin-rummy-vs-rummy/">Gin Rummy vs Rummy</a>, browse
+    more in the <a href="/guides/best-free-card-games/">best free card games</a> roundup, or head to
+    the <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

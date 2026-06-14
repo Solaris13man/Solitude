@@ -81,11 +81,21 @@ const schema = [
   cta={{ href: '/gin/', label: 'Play Gin Rummy' }}
 >
   <p>
-    Gin Rummy looks simple but rewards careful play. If you already know
-    <a href="/guides/gin-rummy-rules/">the rules</a>, winning consistently comes down to keeping a
-    flexible hand, dumping high deadwood early, reading the discards, and timing your knock. Here is
-    how.
+    The same players keep winning at Gin Rummy because the game rewards flexible cards, reading the
+    discards, and timing your knock — not luck. If you already know
+    <a href="/guides/gin-rummy-rules/">the rules</a>, here's how to turn those habits into wins.
   </p>
+
+  <div class="tldr">
+    <span class="tldr-title">Quick tips</span>
+    <ul>
+      <li>Keep flexible middle cards that can become a run or a set.</li>
+      <li>Dump high deadwood early — every unmatched face card is 10 points.</li>
+      <li>Draw from the stock by default; taking the discard tells your opponent what you're building.</li>
+      <li>Knock early to pressure, or hold for gin (a 25-point bonus, no lay-offs) when you're one card away.</li>
+      <li>Against an organised opponent, lower your knock or go for gin — a thin knock invites an undercut.</li>
+    </ul>
+  </div>
 
   <h2>Keep flexible cards</h2>
   <p>
@@ -151,6 +161,23 @@ const schema = [
     better than nothing.
   </p>
 
+  <h2>A worked example: knock or hold?</h2>
+  <p>
+    Suppose your melds are <strong>&spades;7-8-9</strong> and <strong>&clubs;Q-Q-Q</strong>, leaving
+    <strong>&diams;4</strong> and <strong>&hearts;2</strong> as just 6 points of deadwood. You can knock right
+    now — and early pressure is good. But if that &diams;4 sits next to a &diams;3 or &diams;5 you're a single
+    card from melding everything: holding one turn for <strong>gin</strong> banks the 25-point bonus, blocks any
+    lay-off, and removes all undercut risk. Knock when the table looks loose; hold for gin when you're one
+    flexible card away and your opponent looks unset.
+  </p>
+  <h2>Common mistakes that cost you</h2>
+  <ul>
+    <li>Knocking at 9 or 10 into an opponent who's been drawing purposefully — prime undercut bait.</li>
+    <li>Hoarding high cards "just in case" — each unmelded face card is 10 points of deadwood.</li>
+    <li>Taking the discard when you don't need it, handing your opponent a read on your hand.</li>
+    <li>Discarding the exact card that completes your opponent's obvious meld.</li>
+  </ul>
+
   <h2>Frequently asked questions</h2>
   {
     faq.map((f) => (
@@ -164,7 +191,8 @@ const schema = [
   <h2>Keep going</h2>
   <p>
     Put it to use — <a href="/gin/">play Gin Rummy</a> against the computer. New to the game? Start
-    with the <a href="/guides/gin-rummy-rules/">Gin Rummy rules</a>, compare all four in our
+    with the <a href="/guides/gin-rummy-rules/">Gin Rummy rules</a>, see how it differs in
+    <a href="/guides/gin-rummy-vs-rummy/">Gin Rummy vs Rummy</a>, find more in our
     <a href="/guides/best-free-card-games/">best free card games</a> roundup, or browse the
     <a href="/guides/">guides hub</a> for more card and puzzle strategy.
   </p>

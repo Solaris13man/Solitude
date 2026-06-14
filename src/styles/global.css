@@ -592,6 +592,31 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
   opacity: 0.85;
   font-style: italic;
 }
+.table-wrap { overflow-x: auto; margin-top: 1rem; }
+.prose table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.prose th, .prose td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  vertical-align: top;
+}
+.prose thead th { color: #fff; font-weight: 700; border-bottom-color: rgb(255 217 94 / 0.5); }
+.prose tbody th { font-weight: 600; color: var(--chrome-text); white-space: nowrap; }
+.tldr {
+  border: 1px solid rgb(255 217 94 / 0.35);
+  background: rgb(255 217 94 / 0.08);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  margin-top: 1.2rem;
+}
+.tldr-title {
+  font-weight: 800;
+  color: #ffd95e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.78rem;
+}
+.tldr ul { margin-top: 0.5rem; margin-bottom: 0; }
 
 .guide-cta {
   display: inline-flex;

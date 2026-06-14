@@ -31,6 +31,7 @@ const GUIDE_OG: [string, string][] = [
   ['freecell', 'freecell'], ['spider', 'spider'], ['klondike', 'klondike'], ['pyramid', 'pyramid'],
   ['tripeaks', 'tripeaks'], ['golf', 'golf'], ['sudoku', 'sudoku'], ['mahjong', 'mahjong'],
   ['minesweeper', 'minesweeper'], ['2048', '2048'], ['best-free-card', 'hearts'],
+  ['rummy', 'gin'],
 ];
 function ogPathFor(s: string): string {
   if (OG_SLUGS.has(s)) return `/og/${s}.png`;
