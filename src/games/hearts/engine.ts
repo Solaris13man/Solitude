@@ -20,6 +20,8 @@ export interface HeartsState {
   roundPoints: number[]; // points taken THIS round, length 4 (filled at round end)
   passDir: number; // 0=left, 1=right, 2=across, 3=none (rotates each round)
   phase: Phase;
+  /** House rule: when true, playing the Queen of Spades also breaks hearts. */
+  queenBreaksHearts: boolean;
 }
 
 export const TARGET_SCORE = 100;
@@ -66,7 +68,7 @@ function findTwoOfClubsHolder(hands: Card[][]): number {
   return 0;
 }
 
-export function newGame(seed: number): HeartsState {
+export function newGame(seed: number, queenBreaksHearts = true): HeartsState {
   const hands = deal(seed);
   return {
     seed,
@@ -81,6 +83,7 @@ export function newGame(seed: number): HeartsState {
     roundPoints: [0, 0, 0, 0],
     passDir: 0,
     phase: 'passing',
+    queenBreaksHearts,
   };
 }
 
@@ -198,7 +201,9 @@ export function playCard(state: HeartsState, player: number, card: Card): void {
   }
   state.hands[player] = state.hands[player]!.filter((c) => !sameCard(c, card));
   state.trick.push({ player, card });
-  if (isHeart(card)) state.heartsBroken = true;
+  if (isHeart(card) || (state.queenBreaksHearts && isQueenOfSpades(card))) {
+    state.heartsBroken = true;
+  }
   if (state.trick.length < 4) {
     state.turn = (player + 1) % 4;
   }

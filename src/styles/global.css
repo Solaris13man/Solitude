@@ -1535,7 +1535,11 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 }
 .bid-btn {
   min-width: 2.2rem;
-  padding: 0.4rem 0.55rem;
+  min-height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.7rem;
   border-radius: 8px;
   font-weight: 700;
   background: rgb(255 255 255 / 0.12);
@@ -1621,6 +1625,7 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 }
 .gin-pile .hcard { --hc-w: clamp(2.6rem, 11vw, 3.6rem); width: 100%; box-shadow: none; }
 .gin-pile.drawable { border-color: #ffd95e; cursor: pointer; box-shadow: 0 0 0 3px rgb(255 217 94 / 0.3); }
+.gin-pile:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
 .pile-count { position: absolute; bottom: -1.25rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; opacity: 0.6; }
 .gin-hand-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
 .gin-controls { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; justify-content: center; }

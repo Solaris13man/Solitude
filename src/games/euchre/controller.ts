@@ -369,14 +369,14 @@ class EuchreController {
     if (s.phase === 'bid1') {
       panel.innerHTML =
         aloneToggle +
-        `<button class="bid-btn" type="button" data-act="order">Order up ${suitGlyph(s.upCard.suit)}</button>` +
+        `<button class="bid-btn" type="button" data-act="order" aria-label="Order up ${SUIT_NAMES[s.upCard.suit]} as trump">Order up ${suitGlyph(s.upCard.suit)}</button>` +
         '<button class="bid-btn" type="button" data-act="pass">Pass</button>';
     } else {
       const candidates = SUITS.filter((su) => su !== s.upCard.suit);
       const suitBtns = candidates
         .map(
           (su) =>
-            `<button class="bid-btn suit-btn${isRed(su) ? ' red' : ''}" type="button" data-act="name" data-suit="${su}">${SUIT_SYMBOLS[su]}</button>`,
+            `<button class="bid-btn suit-btn${isRed(su) ? ' red' : ''}" type="button" data-act="name" data-suit="${su}" aria-label="Name ${SUIT_NAMES[su]} as trump">${SUIT_SYMBOLS[su]}</button>`,
         )
         .join('');
       const pass =

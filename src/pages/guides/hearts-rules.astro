@@ -3,7 +3,7 @@ import Article from '../../components/Article.astro';
 
 const title = 'Hearts Rules: How to Play (Complete Guide) | CardHearth';
 const description =
-  'A complete guide to the rules of Hearts: the deal, passing, the two of clubs lead, following suit, breaking hearts, scoring the hearts and the Queen of Spades, shooting the moon, and how to win.';
+  'Learn the rules of Hearts: the deal, the three-card pass, the two-of-clubs lead, breaking hearts, scoring hearts and the Queen of Spades, and shooting the moon.';
 const updated = '2026-06-14';
 const heading = 'Hearts Rules: How to Play';
 const subtitle =
@@ -22,7 +22,7 @@ const faq = [
   },
   {
     q: 'What does "breaking hearts" mean?',
-    a: 'You cannot lead a heart until hearts have been "broken" — that is, until someone has been unable to follow suit and has discarded a heart (or the Queen of Spades) on an earlier trick. Once hearts are broken, they may be led like any other suit.',
+    a: 'You cannot lead a heart until hearts have been "broken" — that is, until someone, unable to follow suit, discards a heart onto an earlier trick. By default on CardHearth the Queen of Spades also breaks hearts (a common house rule), but you can switch that off in Settings so that only a heart breaks. Once hearts are broken, they may be led like any other suit.',
   },
   {
     q: 'What is shooting the moon?',
@@ -148,9 +148,11 @@ const schema = [
   <h2>Breaking hearts</h2>
   <p>
     You cannot <strong>lead</strong> a heart until hearts have been "broken". Hearts break the first
-    time someone, unable to follow the led suit, discards a heart (or the Queen of Spades) onto a
-    trick. Until that happens, hearts can only be played when you are following suit or sloughing on
-    another suit — never as the card that opens a trick.
+    time someone, unable to follow the led suit, discards a heart onto a trick. By default the
+    <strong>Queen of Spades</strong> breaks hearts too — a common house rule — and you can turn that
+    off in <strong>Settings</strong> if you prefer that only a heart breaks. Until hearts are broken,
+    they can only be played when you are following suit or sloughing on another suit — never as the
+    card that opens a trick.
   </p>
 
   <h2>Scoring</h2>

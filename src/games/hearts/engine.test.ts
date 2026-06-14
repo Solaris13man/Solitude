@@ -75,6 +75,7 @@ function stateWithHands(hands: Card[][], overrides: Partial<HeartsState> = {}): 
     roundPoints: [0, 0, 0, 0],
     passDir: 3,
     phase: 'playing',
+    queenBreaksHearts: true,
     ...overrides,
   };
 }
@@ -400,5 +401,39 @@ describe('hearts aiPlay full game', () => {
     expect(Math.max(...s.scores)).toBeGreaterThanOrEqual(TARGET_SCORE);
     const winner = gameWinner(s);
     expect(s.scores[winner]).toBe(Math.min(...s.scores));
+  });
+});
+
+describe('hearts queen breaks hearts (house rule)', () => {
+  // taken is non-empty so the first-trick no-points restriction doesn't apply.
+  const notFirstTrick = { turn: 0, leader: 0, taken: [[card('D', 2)], [], [], []] };
+
+  it('breaks hearts when the Queen of Spades is sloughed and the rule is on (default)', () => {
+    const hands = [[card('C', 5)], [card('S', 12), card('D', 4)], [card('C', 7)], [card('C', 8)]];
+    const s = stateWithHands(hands, { ...notFirstTrick, queenBreaksHearts: true });
+    playCard(s, 0, card('C', 5));
+    playCard(s, 1, card('S', 12)); // void in clubs -> may slough the queen
+    expect(s.heartsBroken).toBe(true);
+  });
+
+  it('does NOT break hearts on the Queen of Spades when the rule is off', () => {
+    const hands = [[card('C', 5)], [card('S', 12), card('D', 4)], [card('C', 7)], [card('C', 8)]];
+    const s = stateWithHands(hands, { ...notFirstTrick, queenBreaksHearts: false });
+    playCard(s, 0, card('C', 5));
+    playCard(s, 1, card('S', 12));
+    expect(s.heartsBroken).toBe(false);
+  });
+
+  it('a heart always breaks hearts regardless of the rule', () => {
+    const hands = [[card('C', 5)], [card('H', 9), card('D', 4)], [card('C', 7)], [card('C', 8)]];
+    const s = stateWithHands(hands, { ...notFirstTrick, queenBreaksHearts: false });
+    playCard(s, 0, card('C', 5));
+    playCard(s, 1, card('H', 9));
+    expect(s.heartsBroken).toBe(true);
+  });
+
+  it('newGame defaults the rule on, and respects an explicit false', () => {
+    expect(newGame(1).queenBreaksHearts).toBe(true);
+    expect(newGame(1, false).queenBreaksHearts).toBe(false);
   });
 });

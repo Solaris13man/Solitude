@@ -73,10 +73,15 @@ class HeartsController {
   }
 
   private newGame(): void {
-    this.state = H.newGame((Date.now() ^ (Math.random() * 0xffffffff)) >>> 0);
+    this.state = H.newGame((Date.now() ^ (Math.random() * 0xffffffff)) >>> 0, this.queenBreaksHearts());
     this.selectedPass.clear();
     this.render();
     this.enterPhase();
+  }
+
+  /** House rule from settings: does the Queen of Spades break hearts? Defaults on. */
+  private queenBreaksHearts(): boolean {
+    return this.settings.variants['hearts'] !== 0;
   }
 
   // ----- phase flow -------------------------------------------------------
@@ -293,6 +298,8 @@ class HeartsController {
     if (cardset) cardset.value = this.settings.cardSet === 'ink-shadow' ? 'ink' : this.settings.cardSet;
     if (shadow) shadow.checked = this.settings.cardSet === 'ink-shadow';
     if (snd) snd.checked = this.settings.sounds;
+    const qbh = $opt('set-queen-breaks') as HTMLInputElement | null;
+    if (qbh) qbh.checked = this.queenBreaksHearts();
     // The hand-drawn 'Ink' deck has a shadowed variant; its toggle only shows
     // while that deck is selected.
     const syncShadow = () => {
@@ -309,14 +316,19 @@ class HeartsController {
         tableSurface: (surface?.value ?? this.settings.tableSurface) as Settings['tableSurface'],
         cardSet: cardSet as Settings['cardSet'],
         sounds: snd ? snd.checked : this.settings.sounds,
+        variants: qbh
+          ? { ...this.settings.variants, hearts: qbh.checked ? 1 : 0 }
+          : this.settings.variants,
       };
       saveSettings(this.settings);
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
+      // A rule change takes effect on the current game and all future deals.
+      this.state.queenBreaksHearts = this.queenBreaksHearts();
       this.render();
       syncShadow();
     };
-    for (const el of [theme, surface, cardset, snd, shadow]) el?.addEventListener('change', update);
+    for (const el of [theme, surface, cardset, snd, shadow, qbh]) el?.addEventListener('change', update);
   }
 }
 
