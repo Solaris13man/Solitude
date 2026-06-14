@@ -118,6 +118,14 @@ export const GAMES: GameInfo[] = [
     category: 'cards',
   },
   {
+    id: 'euchre',
+    name: 'Euchre',
+    href: '/euchre/',
+    tagline: 'Order up trump, name the bowers, go alone — vs the computer',
+    highlight: 'Play against the computer',
+    category: 'cards',
+  },
+  {
     id: 'sudoku',
     name: 'Sudoku',
     href: '/sudoku/',

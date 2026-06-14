@@ -1547,6 +1547,53 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .bid-btn:hover { background: rgb(255 217 94 / 0.3); transform: translateY(-2px); }
 .bid-btn:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
 
+/* euchre extras (order-up bidding, up-card, trump) — reuses the hearts table */
+.euchre-trump { font-weight: 700; color: #ffd95e; }
+.euchre-trump .suit-red,
+.spades-scoreboard .suit-red { color: #ff6b81; }
+.euchre-up {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0 auto 0.4rem;
+}
+.euchre-up .hcard { --hc-w: clamp(2.3rem, 8vw, 3.1rem); }
+.euchre-up-label { font-size: 0.7rem; opacity: 0.78; text-transform: uppercase; letter-spacing: 0.04em; }
+.euchre-bid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  max-width: 28rem;
+}
+.euchre-bid .bid-alone {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.euchre-bid .suit-btn { font-size: 1.15rem; line-height: 1; min-width: 2.6rem; }
+.euchre-bid .suit-btn.red { color: #ff6b81; }
+.euchre-bid .bid-btn .suit-red { color: #ff6b81; }
+.seat-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.02rem 0.32rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+.seat-badge.maker { background: rgb(255 217 94 / 0.32); color: #ffe9a8; }
+.opp-hand.sitting-out { opacity: 0.4; filter: grayscale(0.6); }
+
 /* gin rummy (2-player draw/discard) — reuses .hcard / .my-hand / .opp-hand */
 .gin-table {
   width: 100%;
