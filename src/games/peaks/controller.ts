@@ -365,6 +365,7 @@ class PeaksController {
     const surface = $('set-surface') as HTMLSelectElement;
     const back = $('set-cardback') as HTMLSelectElement;
     const cardset = $opt('set-cardset') as HTMLSelectElement | null;
+    const shadow = $opt('set-ink-shadow') as HTMLInputElement | null;
     const left = $opt('set-lefthand') as HTMLInputElement | null;
     const anim = $('set-animations') as HTMLInputElement;
     const snd = $('set-sounds') as HTMLInputElement;
@@ -373,27 +374,33 @@ class PeaksController {
     felt.value = this.settings.felt;
     surface.value = this.settings.tableSurface;
     back.value = this.settings.cardBack;
-    if (cardset) cardset.value = this.settings.cardSet;
+    if (cardset) cardset.value = this.settings.cardSet === 'ink-shadow' ? 'ink' : this.settings.cardSet;
+    if (shadow) shadow.checked = this.settings.cardSet === 'ink-shadow';
     if (left) left.checked = this.settings.leftHand;
     anim.checked = this.settings.animations;
     snd.checked = this.settings.sounds;
 
     // Card-back picker only affects the drawn 'Classic' deck.
     const syncBackPicker = () => {
+      const sel = cardset ? cardset.value : this.settings.cardSet;
       const field = back.closest('label');
-      if (field) (field as HTMLElement).hidden = (cardset ? cardset.value : this.settings.cardSet) !== 'classic';
+      if (field) (field as HTMLElement).hidden = sel !== 'classic';
+      const shadowField = shadow?.closest('label');
+      if (shadowField) (shadowField as HTMLElement).hidden = sel !== 'ink';
     };
     syncBackPicker();
 
     const update = () => {
       const prevSounds = this.settings.sounds;
+      const baseSet = cardset ? cardset.value : this.settings.cardSet;
+      const inkSet = baseSet === 'ink' && shadow?.checked ? 'ink-shadow' : baseSet;
       this.settings = {
         ...this.settings,
         theme: theme.value as Settings['theme'],
         felt: felt.value as Settings['felt'],
         tableSurface: surface.value as Settings['tableSurface'],
         cardBack: back.value as Settings['cardBack'],
-        cardSet: (cardset ? cardset.value : this.settings.cardSet) as Settings['cardSet'],
+        cardSet: inkSet as Settings['cardSet'],
         tileSet: this.settings.tileSet,
         leftHand: left ? left.checked : this.settings.leftHand,
         animations: anim.checked,
@@ -406,7 +413,7 @@ class PeaksController {
       this.board.applyCardArt();
       syncBackPicker();
     };
-    const controls = [theme, felt, surface, back, anim, snd, ...(cardset ? [cardset] : []), ...(left ? [left] : [])];
+    const controls = [theme, felt, surface, back, anim, snd, ...(cardset ? [cardset] : []), ...(shadow ? [shadow] : []), ...(left ? [left] : [])];
     for (const el of controls) el.addEventListener('change', update);
   }
 

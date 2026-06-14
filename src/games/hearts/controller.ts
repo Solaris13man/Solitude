@@ -289,22 +289,34 @@ class HeartsController {
     const snd = $opt('set-sounds') as HTMLInputElement | null;
     if (theme) theme.value = this.settings.theme;
     if (surface) surface.value = this.settings.tableSurface;
-    if (cardset) cardset.value = this.settings.cardSet;
+    const shadow = $opt('set-ink-shadow') as HTMLInputElement | null;
+    if (cardset) cardset.value = this.settings.cardSet === 'ink-shadow' ? 'ink' : this.settings.cardSet;
+    if (shadow) shadow.checked = this.settings.cardSet === 'ink-shadow';
     if (snd) snd.checked = this.settings.sounds;
+    // The hand-drawn 'Ink' deck has a shadowed variant; its toggle only shows
+    // while that deck is selected.
+    const syncShadow = () => {
+      const field = shadow?.closest('label');
+      if (field) (field as HTMLElement).hidden = (cardset?.value ?? this.settings.cardSet) !== 'ink';
+    };
+    syncShadow();
     const update = () => {
+      const baseSet = cardset?.value ?? this.settings.cardSet;
+      const cardSet = baseSet === 'ink' && shadow?.checked ? 'ink-shadow' : baseSet;
       this.settings = {
         ...this.settings,
         theme: (theme?.value ?? this.settings.theme) as Settings['theme'],
         tableSurface: (surface?.value ?? this.settings.tableSurface) as Settings['tableSurface'],
-        cardSet: (cardset?.value ?? this.settings.cardSet) as Settings['cardSet'],
+        cardSet: cardSet as Settings['cardSet'],
         sounds: snd ? snd.checked : this.settings.sounds,
       };
       saveSettings(this.settings);
       applySettings(this.settings);
       this.sound.enabled = this.settings.sounds;
       this.render();
+      syncShadow();
     };
-    for (const el of [theme, surface, cardset, snd]) el?.addEventListener('change', update);
+    for (const el of [theme, surface, cardset, snd, shadow]) el?.addEventListener('change', update);
   }
 }
 

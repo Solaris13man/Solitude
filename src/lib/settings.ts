@@ -3,7 +3,14 @@ export type Felt = 'green' | 'blue' | 'slate' | 'crimson';
 export type CardBack = 'classic' | 'royal' | 'mint' | 'midnight';
 export type TileSet = 'china' | 'japan' | 'korea' | 'india' | 'medieval';
 /** Card face+back artwork: 'classic' = the built-in drawn deck. */
-export type CardSet = 'classic' | 'new-blue' | 'new-red' | 'vintage-blue' | 'vintage-red' | 'ink';
+export type CardSet =
+  | 'classic'
+  | 'new-blue'
+  | 'new-red'
+  | 'vintage-blue'
+  | 'vintage-red'
+  | 'ink'
+  | 'ink-shadow';
 /** The table surface behind every game. 'felt' uses the felt-colour gradient. */
 export type TableSurface = 'felt' | 'wood-walnut' | 'wood-oak' | 'marble' | 'granite';
 
