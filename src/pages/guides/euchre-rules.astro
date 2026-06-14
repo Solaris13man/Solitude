@@ -1,0 +1,199 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Euchre Rules: How to Play (Complete Guide) | CardHearth';
+const description =
+  'A complete guide to the rules of Euchre: the 24-card deck, partnerships, the bowers, ordering up trump, naming trump, going alone, following suit, and how to score to 10.';
+const updated = '2026-06-14';
+const heading = 'Euchre Rules: How to Play';
+const subtitle =
+  'Everything you need to play Euchre correctly — the short deck, the right and left bowers, ordering up trump, going alone, and the scoring that runs a game to 10.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Euchre Rules', href: '/guides/euchre-rules/' },
+];
+
+const faq = [
+  {
+    q: 'What are the bowers in Euchre?',
+    a: 'The bowers are the two most powerful trump cards. The right bower is the Jack of the trump suit — the highest card in the game. The left bower is the Jack of the same colour as trump (for example, the Jack of diamonds when hearts are trump); it counts as a trump and ranks just below the right bower.',
+  },
+  {
+    q: 'What does "ordering up" mean in Euchre?',
+    a: 'After the deal, one card is turned face up. In the first round of bidding, a player can "order it up", making that card’s suit trump and forcing the dealer to pick the card up and discard one. If everyone passes, a second round lets a player name a different suit as trump.',
+  },
+  {
+    q: 'How does going alone work?',
+    a: 'The player who calls trump may choose to go alone. Their partner sits out the hand, so it’s one player against two. Winning all five tricks alone scores 4 points instead of the usual 2 — the biggest single hand in Euchre.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Euchre Rules: How to Play (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/euchre-rules/',
+    image: 'https://cardhearth.com/og/euchre.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/euchre/', label: 'Play Euchre' }}
+>
+  <p>
+    Euchre is a fast, punchy partnership game played with just 24 cards. Its signature quirks — a
+    trump suit chosen each hand and two Jacks (the "bowers") that outrank everything — make it feel
+    different from any other trick-taking game. The team that names trump must take at least three of
+    five tricks, and the first side to <strong>10</strong> wins. This page is a complete reference. To
+    learn by doing, you can <a href="/euchre/">play Euchre</a> now with a computer partner.
+  </p>
+
+  <h2>What is Euchre?</h2>
+  <p>
+    Euchre is a four-player game in two <strong>partnerships</strong> — you and the player across the
+    table against the other two. It uses a stripped-down deck and a trump suit that changes every
+    hand. Each hand is only five tricks long, so games move quickly and the lead can swing fast.
+  </p>
+
+  <h2>The deck</h2>
+  <p>
+    Euchre uses a <strong>24-card deck</strong>: only the <strong>9, 10, Jack, Queen, King and
+    Ace</strong> of each suit. Everything from the 2 through the 8 is removed. Aces are high (except
+    where the bowers take over in the trump suit, below).
+  </p>
+
+  <h2>The deal</h2>
+  <p>
+    Each player is dealt <strong>five cards</strong>. The next card is turned <strong>face up</strong>
+    on the table — this "up-card" drives the first round of bidding — and the remaining three cards (the
+    "kitty") are set aside face down.
+  </p>
+
+  <h2>The bowers: trump's special ranks</h2>
+  <p>
+    In the trump suit, two Jacks outrank everything else:
+  </p>
+  <ul>
+    <li>
+      <strong>Right bower:</strong> the <strong>Jack of the trump suit</strong> — the single highest
+      card in the game.
+    </li>
+    <li>
+      <strong>Left bower:</strong> the <strong>Jack of the other suit of the same colour</strong>
+      (for example, the Jack of diamonds when hearts are trump). It counts as a trump card — not as
+      its printed suit — and ranks just below the right bower.
+    </li>
+  </ul>
+  <p>
+    Below the two bowers, the trump suit runs <strong>Ace, King, Queen, 10, 9</strong>. Non-trump
+    suits rank normally: Ace high down to the 9.
+  </p>
+
+  <h2>Choosing trump: ordering up and naming</h2>
+  <p>Bidding happens in up to two rounds, starting to the dealer's left:</p>
+  <ol>
+    <li>
+      <strong>Round one — order it up.</strong> Each player may accept the up-card's suit as trump by
+      "ordering it up", or pass. If someone orders up, that suit is trump and the
+      <strong>dealer picks up the up-card</strong> and discards one card.
+    </li>
+    <li>
+      <strong>Round two — name a suit.</strong> If all four pass, the up-card is turned down and each
+      player may now <strong>name a different suit</strong> as trump, or pass. (On CardHearth the
+      dealer must name a suit rather than pass it out, so trump is always decided.)
+    </li>
+  </ol>
+  <p>The team that selects trump are the <strong>makers</strong>; they must take at least three tricks.</p>
+
+  <h2>Going alone</h2>
+  <p>
+    When you call trump, you may declare that you'll <strong>go alone</strong>. Your partner sets
+    their cards aside and sits out the hand, leaving you to play one-against-two. The reward is large:
+    taking all five tricks alone scores <strong>4 points</strong>.
+  </p>
+
+  <h2>Playing the tricks</h2>
+  <p>
+    The player to the dealer's left leads the first trick. You <strong>must follow the led suit</strong>
+    if you can — remembering that the left bower counts as trump, not as its printed suit. If you
+    can't follow, you may play any card, including a trump. The highest trump wins the trick; if no
+    trump is played, the highest card of the led suit wins. The winner leads the next trick.
+  </p>
+
+  <h2>Scoring</h2>
+  <p>At the end of the hand, score based on the makers' tricks:</p>
+  <ul>
+    <li><strong>Makers take 3 or 4 tricks:</strong> 1 point.</li>
+    <li><strong>Makers take all 5 (a "march"):</strong> 2 points.</li>
+    <li><strong>Makers go alone and take all 5:</strong> 4 points.</li>
+    <li>
+      <strong>Makers take fewer than 3 (they're "euchred"):</strong> the <em>other</em> team scores
+      <strong>2 points</strong>.
+    </li>
+  </ul>
+
+  <h2>How you win</h2>
+  <p>
+    Hands continue, with the deal rotating, until a team reaches <strong>10 points</strong>. Because
+    being euchred hands two points to the opponents and a lone march grabs four, momentum can flip in
+    a single hand — which is exactly what makes Euchre so quick and tense.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that you know the rules, <a href="/euchre/">play a hand of Euchre</a> with a computer partner.
+    To call trump confidently and stop getting euchred, read our
+    <a href="/guides/euchre-strategy/">Euchre strategy guide</a>, try the bigger partnership game in
+    <a href="/guides/spades-rules/">Spades</a>, or browse the <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

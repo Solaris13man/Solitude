@@ -1,0 +1,166 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Spades Strategy: How to Win (Bidding & Tactics) | CardHearth';
+const description =
+  'Practical Spades strategy: how to count your bid, when to bid nil, how to cover your partner, managing bags, when to trump, and how to set the opposing team.';
+const updated = '2026-06-14';
+const heading = 'Spades Strategy: How to Win';
+const subtitle =
+  'Win more at Spades by bidding accurately — count your sure tricks, cover your partner, dodge the bag penalty, and know when nil is the right gamble.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Spades Strategy', href: '/guides/spades-strategy/' },
+];
+
+const faq = [
+  {
+    q: 'How do I count my bid in Spades?',
+    a: 'Count near-certain tricks: high spades (Ace, King, often Queen), side-suit aces, and protected side-suit kings. Add roughly one trick for a void or singleton in a side suit once you have a few spades to trump with. Round down when in doubt — being set costs far more than a missed bag.',
+  },
+  {
+    q: 'Should I bid nil?',
+    a: 'Bid nil when your hand can realistically duck every trick: no high spades, few or no spades at all, and low cards in the side suits (no bare aces or kings that must win). A void you can throw losers into helps. With a partner who can cover you, a clean nil is worth 100.',
+  },
+  {
+    q: 'How do I avoid the bag penalty?',
+    a: 'Bid close to your real trick count and then take only what you bid. Don’t grab overtricks you don’t need — duck low when a trick is already safe for your team. Watch your running bag total: as it nears 10, actively avoid winning extra tricks.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Spades Strategy: How to Win (Bidding & Tactics)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/spades-strategy/',
+    image: 'https://cardhearth.com/og/spades.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/spades/', label: 'Play Spades' }}
+>
+  <p>
+    Spades is won at the bid. If you already know
+    <a href="/guides/spades-rules/">the rules</a>, the leap to winning comes from counting your hand
+    honestly, playing as a partnership, and respecting the bag penalty. Here is how to do all three.
+  </p>
+
+  <h2>Count your bid honestly</h2>
+  <p>
+    Your bid should reflect tricks you can <strong>actually win</strong>, not tricks you'd like to.
+    Start by counting your near-certain winners:
+  </p>
+  <ul>
+    <li><strong>High spades:</strong> the Ace and King are almost always tricks; the Queen often is.</li>
+    <li><strong>Side-suit aces:</strong> usually good for a trick on the first round of that suit.</li>
+    <li><strong>Protected kings:</strong> a King with at least one small card behind it will often score.</li>
+    <li>
+      <strong>Trumping power:</strong> a void or singleton in a side suit, plus a few low spades to
+      ruff with, is worth roughly an extra trick.
+    </li>
+  </ul>
+  <p>
+    When unsure between two numbers, <strong>bid the lower one</strong>. A bag costs you a future
+    penalty at worst; getting <em>set</em> costs you ten points per bid trick right now.
+  </p>
+
+  <h2>Play as a partnership</h2>
+  <p>
+    Your two bids combine into one contract, so think about the team's total, not your own tricks.
+    If your partner bid high, you may only need to chip in one or two — don't fight them for tricks
+    they're set up to win. If your partner bid <strong>nil</strong>, your job changes entirely: you
+    must <strong>cover</strong> them. Win tricks they can't safely duck, lead suits that let them
+    throw their dangerous cards, and take the high cards so a forced win never lands on them.
+  </p>
+
+  <h2>Respect the bags</h2>
+  <p>
+    Overtricks feel like free points, but ten bags wipe out 100. Once your team has made its bid,
+    stop grabbing tricks you don't need — play <strong>under</strong> when a trick is already going to
+    your side, and dump high cards you'd otherwise be stuck winning with later. Keep an eye on the
+    running bag count; near 10, ducking becomes a priority over a single extra point.
+  </p>
+
+  <h2>Manage your spades</h2>
+  <p>
+    Spades are your trump and your currency. Don't burn high spades early on side-suit tricks you
+    could win another way — save them to capture opponents' aces and to control the end of the hand.
+    Leading spades to <strong>draw</strong> them out can be powerful when you hold length, stripping
+    opponents of trumps so your side-suit winners run. But remember you can't lead spades until
+    they're broken.
+  </p>
+
+  <h2>Set the opponents</h2>
+  <p>
+    Defense wins games too. If the other team bid aggressively, you don't always need your own tricks
+    — you need <em>theirs</em>. Force them to use trumps early, hold up your high cards to deny a key
+    trick, and count how many they still owe. Setting a team that bid 8 swings 80 points your way in
+    relative terms. Watch for an opponent's nil, too, and try to feed them a trick they can't avoid.
+  </p>
+
+  <h2>Adjust to the score</h2>
+  <p>
+    Late in a game to 500, bid for the situation. If you're well ahead, bid conservatively and play
+    safe — don't hand the trailing team a chance to set you. If you're behind, look for a bold nil or
+    an aggressive bid that can close the gap in one hand. And always know how close each team is to
+    the next bag penalty.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Take it to the table — <a href="/spades/">play Spades</a> with a computer partner. New here? Start
+    with the <a href="/guides/spades-rules/">Spades rules</a>. For another partnership trump game,
+    learn <a href="/guides/euchre-rules/">Euchre</a>, or browse the <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

@@ -1,0 +1,170 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Gin Rummy Strategy: How to Win (Tips & Tactics) | CardHearth';
+const description =
+  'Practical Gin Rummy strategy: which cards to keep, reading the discard pile, when to knock versus go gin, avoiding the undercut, and managing deadwood.';
+const updated = '2026-06-14';
+const heading = 'Gin Rummy Strategy: How to Win';
+const subtitle =
+  'Win more at Gin Rummy by holding flexible cards, reading your opponent’s discards, dropping high deadwood fast, and knowing when to knock instead of chasing gin.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Gin Rummy Strategy', href: '/guides/gin-rummy-strategy/' },
+];
+
+const faq = [
+  {
+    q: 'Should I knock as soon as I can in Gin Rummy?',
+    a: 'Often, but not always. Early in a hand a fast knock with low deadwood pressures your opponent. Later, if your opponent looks well organised, knocking risks an undercut — and if you are one or two cards from gin with a flexible hand, holding for gin and its 25-point bonus can be worth more.',
+  },
+  {
+    q: 'Which cards should I get rid of first?',
+    a: 'Discard high cards that aren’t doing anything — unconnected face cards and tens carry 10 points of deadwood each. Shedding them early limits the damage if your opponent knocks, while you keep low and middle cards that can still form melds.',
+  },
+  {
+    q: 'How do I avoid being undercut?',
+    a: 'Don’t knock the instant you hit 10 deadwood if your opponent has been drawing from the discard pile and discarding tidily — they may be close. Knock with a lower count, or go for gin, when an opponent looks set. The cleaner your knock, the safer it is.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Gin Rummy Strategy: How to Win (Tips & Tactics)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/gin-rummy-strategy/',
+    image: 'https://cardhearth.com/og/gin.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/gin/', label: 'Play Gin Rummy' }}
+>
+  <p>
+    Gin Rummy looks simple but rewards careful play. If you already know
+    <a href="/guides/gin-rummy-rules/">the rules</a>, winning consistently comes down to keeping a
+    flexible hand, dumping high deadwood early, reading the discards, and timing your knock. Here is
+    how.
+  </p>
+
+  <h2>Keep flexible cards</h2>
+  <p>
+    Early on, hold cards that can develop into a meld <strong>multiple ways</strong>. A middle card
+    like the 7 of hearts can join a run (6-7-8 of hearts) or a set (three Sevens), so it has far more
+    potential than a lone King. Connected pairs and two-card "almost runs" are the building blocks of
+    a fast hand — prioritise them over isolated high cards.
+  </p>
+
+  <h2>Shed high deadwood early</h2>
+  <p>
+    Face cards and tens carry <strong>10 points</strong> each as deadwood. If they aren't part of a
+    meld and aren't close to one, get rid of them in the first few turns. The danger in Gin is being
+    caught with a fat hand when your opponent knocks; trimming your big cards early caps your
+    downside even if the hand goes against you.
+  </p>
+
+  <h2>Read the discard pile</h2>
+  <p>
+    The discard pile is an open book. When your opponent <strong>takes</strong> a discard, note its
+    rank and suit — it tells you what they're building, so you can stop feeding that area. When they
+    discard, that card is "safe-ish" in that suit and rank neighbourhood. Likewise, be careful what
+    <em>you</em> discard: handing over a card that completes their meld is how close hands are lost.
+  </p>
+
+  <h2>Draw from the stock by default</h2>
+  <p>
+    Taking the top discard reveals exactly what you're collecting. Draw from the face-down
+    <strong>stock</strong> unless the visible discard genuinely completes or strongly advances a
+    meld. Free information is worth protecting, and a surprised opponent discards into your hand more
+    often.
+  </p>
+
+  <h2>Knock early — or hold for gin</h2>
+  <p>
+    Two winning rhythms exist, and good players switch between them:
+  </p>
+  <ul>
+    <li>
+      <strong>The fast knock.</strong> Early in a hand, knocking with low deadwood denies your
+      opponent time to organise and books points before they're set. Speed is pressure.
+    </li>
+    <li>
+      <strong>The gin hold.</strong> If you're one flexible card from melding everything, holding for
+      <strong>gin</strong> bags the 25-point bonus and removes any undercut risk. Just don't chase it
+      so long that the opponent knocks first.
+    </li>
+  </ul>
+
+  <h2>Respect the undercut</h2>
+  <p>
+    A knock isn't free. If your opponent has been drawing purposefully and discarding clean low
+    cards, they may be sitting on tiny deadwood — and an undercut hands them the points plus 25. When
+    an opponent looks organised, lower your knocking threshold or go for gin instead of a thin knock
+    at 9 or 10.
+  </p>
+
+  <h2>Mind the score and the stock</h2>
+  <p>
+    Near 100, play to the situation: when you're ahead, a safe early knock protects your lead; when
+    you're behind, holding for gin or a big deadwood haul can close the gap. And watch the stock — if
+    it's running low and no one has knocked, the hand washes out for zero, so a modest knock late is
+    better than nothing.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Put it to use — <a href="/gin/">play Gin Rummy</a> against the computer. New to the game? Start
+    with the <a href="/guides/gin-rummy-rules/">Gin Rummy rules</a>, or browse the
+    <a href="/guides/">guides hub</a> for more card and puzzle strategy.
+  </p>
+</Article>

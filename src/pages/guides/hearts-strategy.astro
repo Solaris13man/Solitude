@@ -1,0 +1,180 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Hearts Strategy: How to Win (Tips & Tactics) | CardHearth';
+const description =
+  'Practical Hearts strategy: how to pass, how to duck the Queen of Spades, when to take points on purpose, how to read the table, and when to risk shooting the moon.';
+const updated = '2026-06-14';
+const heading = 'Hearts Strategy: How to Win';
+const subtitle =
+  'The habits that turn Hearts from luck into skill — smarter passing, ducking the Queen, controlling the lead, and knowing when to gamble on the moon.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Hearts Strategy', href: '/guides/hearts-strategy/' },
+];
+
+const faq = [
+  {
+    q: 'Should I always pass the Queen of Spades?',
+    a: 'Not always. If you also hold low spades to protect her — and especially several of them — keeping the Queen lets you control when she falls. Pass her when your spades are high or thin and she is likely to land on you.',
+  },
+  {
+    q: 'How do I avoid getting stuck with the Queen of Spades?',
+    a: 'Keep low spades (the two through about the nine). When spades are led you can follow underneath the Queen, and you avoid being forced to win a spade trick and "catch" her. Voiding a suit early also lets you dump her on someone else.',
+  },
+  {
+    q: 'When should I try to shoot the moon?',
+    a: 'Only with a genuinely dominant hand: lots of high hearts, top spades including control of the Queen, and high cards in a side suit. Watch the table — if an opponent takes even one point card, your shot is dead and you should bail out immediately.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Hearts Strategy: How to Win (Tips & Tactics)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/hearts-strategy/',
+    image: 'https://cardhearth.com/og/hearts.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/hearts/', label: 'Play Hearts' }}
+>
+  <p>
+    Hearts rewards patience and planning far more than luck. If you already know
+    <a href="/guides/hearts-rules/">the rules</a>, the difference between a good player and a
+    point-magnet comes down to a handful of habits: passing well, managing the Queen of Spades,
+    creating voids, and reading when to duck versus when to strike. Here is how to win more.
+  </p>
+
+  <h2>Pass with a plan</h2>
+  <p>
+    The pass is your most important decision, made before you see anything in return. Aim to make
+    your hand <strong>safe</strong>, not just to dump your worst three cards. Good candidates to pass
+    are high hearts (the Ace, King, Queen and Jack), and the dangerous spades — the
+    <strong>Ace and King of Spades</strong>, which can force you to capture the Queen. If you are
+    going to keep the Queen of Spades, keep enough <strong>low spades</strong> to guard her.
+  </p>
+
+  <h2>Respect the Queen of Spades</h2>
+  <p>
+    Thirteen points sit in one card, so half the game is about her. Two truths drive everything:
+  </p>
+  <ul>
+    <li>
+      <strong>Low spades are armour.</strong> Holding the two through nine of spades means you can
+      always follow a spade lead underneath the Queen, so you are never forced to win the trick that
+      catches her.
+    </li>
+    <li>
+      <strong>High bare spades are a liability.</strong> The Ace or King of Spades with no low
+      spades behind them is how you accidentally win the Queen. Pass them or play them off early.
+    </li>
+  </ul>
+  <p>
+    When you don't have the Queen, you want to flush her out: leading spades early can force the
+    holder to commit, and if you are void in spades you can drop her on whoever wins the trick.
+  </p>
+
+  <h2>Create voids early</h2>
+  <p>
+    A <strong>void</strong> — having no cards in a suit — is a weapon. The moment a suit you are void
+    in is led, you can throw away a heart or the Queen of Spades onto someone else's trick. Use the
+    pass and the early tricks to shed your shortest side suit so you have somewhere to dump points
+    later in the hand.
+  </p>
+
+  <h2>Duck, don't win</h2>
+  <p>
+    Most of the time you want to <strong>lose</strong> tricks, not win them. Play your highest
+    <em>safe</em> card when you can't be caught, and save your low cards for when a suit gets
+    dangerous. Counting how many cards of a suit have been played tells you when your King or Queen
+    of a side suit has become safe to throw — or when it is about to win a pile of hearts you don't
+    want.
+  </p>
+
+  <h2>Control the lead</h2>
+  <p>
+    Leading lets you steer the hand. Early on, lead suits you are <strong>strong and low</strong> in
+    to draw out high cards safely. Avoid leading a suit where you hold the dangerous top card. Once
+    hearts are broken, leading low hearts can bleed points onto opponents who are out of the suit.
+  </p>
+
+  <h2>Know when to shoot the moon — and when to stop one</h2>
+  <p>
+    Shooting the moon (taking all 26 points) flips the score: you get zero and everyone else gets 26.
+    Only attempt it with a powerhouse hand — many high hearts, the Queen of Spades with protection,
+    and high control cards in a side suit. Bail the instant an opponent takes a point you needed.
+  </p>
+  <p>
+    Just as important is <strong>stopping</strong> someone else's moon. If one player is gobbling up
+    every point and you can take a single heart to break their run, do it — one point now beats 26
+    later. Watching for an opponent who is suspiciously winning everything is a defensive skill worth
+    practising.
+  </p>
+
+  <h2>Watch the scoreboard near 100</h2>
+  <p>
+    As scores climb toward 100, play the table, not just your hand. If a trailing opponent is about
+    to lose, you can afford to take a few points to deny a leader. And if <em>you</em> are close to
+    100, every point matters — tighten up, duck relentlessly, and don't gamble on a half-hearted moon.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Put it into practice — <a href="/hearts/">play Hearts</a> against the computer. New to the game?
+    Start with the <a href="/guides/hearts-rules/">Hearts rules</a>. For more trick-taking, try
+    <a href="/guides/spades-strategy/">Spades strategy</a> or browse the
+    <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

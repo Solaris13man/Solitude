@@ -1,0 +1,194 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Gin Rummy Rules: How to Play (Complete Guide) | CardHearth';
+const description =
+  'A complete guide to the rules of Gin Rummy: the deal, melds (sets and runs), deadwood, drawing and discarding, knocking, going gin, the undercut, and how to score to 100.';
+const updated = '2026-06-14';
+const heading = 'Gin Rummy Rules: How to Play';
+const subtitle =
+  'Everything you need to play Gin Rummy correctly — building sets and runs, what deadwood is, when you can knock, going gin, and the undercut that punishes a sloppy knock.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Gin Rummy Rules', href: '/guides/gin-rummy-rules/' },
+];
+
+const faq = [
+  {
+    q: 'What is deadwood in Gin Rummy?',
+    a: 'Deadwood is the cards in your hand that are not part of any meld (set or run). Each counts its pip value — face cards are 10, aces are 1 — and the total is your deadwood count. You can knock only when your deadwood is 10 or less.',
+  },
+  {
+    q: 'What is the difference between knocking and going gin?',
+    a: 'Knocking ends the hand with 10 or fewer deadwood points, after which your opponent can lay off cards onto your melds and you score the difference in deadwood. Going gin means all 10 cards form melds (zero deadwood); it earns a 25-point bonus and the opponent cannot lay off.',
+  },
+  {
+    q: 'What is an undercut in Gin Rummy?',
+    a: 'If you knock but your opponent’s deadwood (after laying off) is equal to or lower than yours, they "undercut" you. They score the difference plus a 25-point undercut bonus instead of you scoring anything.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Gin Rummy Rules: How to Play (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/gin-rummy-rules/',
+    image: 'https://cardhearth.com/og/gin.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/gin/', label: 'Play Gin Rummy' }}
+>
+  <p>
+    Gin Rummy is the classic two-player card game of building tidy combinations and getting out
+    before your opponent. You draw and discard one card at a time, arranging your hand into
+    <strong>melds</strong> and trimming the leftover <strong>deadwood</strong> until you can safely
+    end the hand. This page is a complete reference to the rules. To learn by doing, you can
+    <a href="/gin/">play Gin Rummy</a> right now against the computer.
+  </p>
+
+  <h2>What is Gin Rummy?</h2>
+  <p>
+    Gin Rummy is played by two people with a standard 52-card deck. Aces are <strong>low</strong>.
+    The aim is to organise your hand into melds and reduce your unmatched cards to a low value, then
+    end the hand on your terms. Hands are quick, and you play several of them, accumulating points
+    until someone reaches the target of <strong>100</strong>.
+  </p>
+
+  <h2>The deal</h2>
+  <p>
+    Each player is dealt <strong>10 cards</strong>. The next card is turned face up to start the
+    <strong>discard pile</strong>, and the rest form the face-down <strong>stock</strong>. On each
+    turn you draw one card and discard one, so your hand is always 10 cards at the end of your turn.
+  </p>
+
+  <h2>Melds: sets and runs</h2>
+  <p>A meld is a valid group of cards. There are two kinds:</p>
+  <ul>
+    <li>
+      <strong>Set:</strong> three or four cards of the <strong>same rank</strong> — for example,
+      three Sevens or four Queens.
+    </li>
+    <li>
+      <strong>Run:</strong> three or more cards of the <strong>same suit in sequence</strong> — for
+      example, the 4-5-6 of hearts. Aces are low, so the lowest run is Ace-2-3; an ace does not wrap
+      around to the King.
+    </li>
+  </ul>
+  <p>A single card can only belong to one meld at a time, so part of the skill is choosing the best arrangement.</p>
+
+  <h2>Deadwood</h2>
+  <p>
+    Any card left over that isn't in a meld is <strong>deadwood</strong>. Each deadwood card scores
+    its pip value: number cards are face value, <strong>face cards are 10</strong>, and
+    <strong>aces are 1</strong>. Add them up and you have your deadwood total — the number you are
+    always trying to push down.
+  </p>
+
+  <h2>Your turn: draw and discard</h2>
+  <p>On your turn you do two things in order:</p>
+  <ol>
+    <li>
+      <strong>Draw</strong> one card — either the top of the face-down stock (unknown) or the top of
+      the discard pile (known, but it tells your opponent what you're collecting).
+    </li>
+    <li>
+      <strong>Discard</strong> one card face up onto the discard pile.
+    </li>
+  </ol>
+  <p>
+    Play alternates until someone ends the hand by knocking, or the stock runs too low to continue.
+  </p>
+
+  <h2>Knocking</h2>
+  <p>
+    When your deadwood total is <strong>10 or fewer</strong>, you may <strong>knock</strong> to end
+    the hand (you knock as you make your final discard). You lay down your melds and your deadwood.
+    Your opponent then lays down their melds and may <strong>lay off</strong> their own deadwood
+    cards onto <em>your</em> melds — extending your run or completing your set — to shrink their own
+    count. Then you compare deadwood: if yours is lower, you score the <strong>difference</strong>.
+  </p>
+
+  <h2>Going gin</h2>
+  <p>
+    If you can meld <strong>all ten cards</strong> with <strong>zero deadwood</strong>, you go
+    <strong>gin</strong>. This earns a <strong>25-point bonus</strong> on top of your opponent's
+    deadwood, and crucially the opponent <strong>cannot lay off</strong> any cards. Going gin is
+    always a clean, safe way to win a hand.
+  </p>
+
+  <h2>The undercut</h2>
+  <p>
+    Knocking has a risk. After lay-offs, if your opponent's deadwood is <strong>equal to or less
+    than yours</strong>, they have <strong>undercut</strong> you. Instead of you scoring, they score
+    the difference <strong>plus a 25-point undercut bonus</strong>. That is why you don't knock the
+    instant you're able to — a thin knock can hand the hand to a well-set opponent.
+  </p>
+
+  <h2>Scoring and winning</h2>
+  <p>
+    Points accumulate hand by hand: the knocker scores the deadwood difference, a gin adds 25, and an
+    undercut gives the bonus to the defender. The first player to reach <strong>100 points</strong>
+    wins the game. If the stock is exhausted before anyone knocks, the hand is a wash and no one
+    scores.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that you know the rules, <a href="/gin/">play a hand of Gin Rummy</a> against the computer.
+    To knock smarter and read your opponent, read our
+    <a href="/guides/gin-rummy-strategy/">Gin Rummy strategy guide</a>, or browse everything in our
+    <a href="/guides/">guides hub</a>.
+  </p>
+</Article>
