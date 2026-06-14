@@ -1,0 +1,152 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'The Best Free Card Games to Play vs the Computer | CardHearth';
+const description =
+  'A quick tour of the best free card games you can play against the computer in your browser — Hearts, Spades, Gin Rummy and Euchre — and which one fits your mood. No download, no sign-up.';
+const updated = '2026-06-14';
+const heading = 'The Best Free Card Games vs the Computer';
+const subtitle =
+  'Four classic card games you can play right now against smart AI opponents — here’s what each one feels like and which to pick.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Best Free Card Games', href: '/guides/best-free-card-games/' },
+];
+
+const faq = [
+  {
+    q: 'What are the best free card games to play against the computer?',
+    a: 'On CardHearth you can play Hearts, Spades, Gin Rummy and Euchre free against AI opponents, with no download or sign-up. Hearts and Spades are four-player trick-taking, Euchre is a fast partnership game, and Gin Rummy is a sharp two-player melding game.',
+  },
+  {
+    q: 'Which free card game is easiest to learn?',
+    a: 'Gin Rummy and Hearts are the gentlest starts. Gin is just two players building sets and runs, and Hearts has no bidding — you simply avoid points. Spades adds bidding and a partner, and Euchre adds the bowers, so both have a little more to learn.',
+  },
+  {
+    q: 'Do I need an account to play?',
+    a: 'No. Every game is free to play instantly in your browser with no sign-up and no download. Your stats and streaks save on your own device.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'The Best Free Card Games to Play vs the Computer',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/best-free-card-games/',
+    image: 'https://cardhearth.com/og/hearts.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/hearts/', label: 'Play Hearts' }}
+>
+  <p>
+    Want a real card game without rounding up three friends? CardHearth has four classics you can
+    play free against the computer, right in your browser — no download, no sign-up. Here's what each
+    one feels like, and which to reach for depending on your mood.
+  </p>
+
+  <h2>Hearts — the avoidance classic</h2>
+  <p>
+    <a href="/hearts/">Hearts</a> is a four-player game where you're trying <em>not</em> to win
+    points: every heart costs one and the Queen of Spades costs thirteen, and the lowest score wins.
+    There are no partners and no bidding — just you against three AI players, ducking tricks and
+    occasionally going for the spectacular "shoot the moon". Great for a tense, brainy solo game.
+    Start with the <a href="/guides/hearts-rules/">rules</a> or the
+    <a href="/guides/hearts-strategy/">strategy guide</a>.
+  </p>
+
+  <h2>Spades — bid, partner up, deliver</h2>
+  <p>
+    <a href="/spades/">Spades</a> pairs you with a computer partner against two AI opponents. Each
+    hand you bid how many tricks you'll take, spades are always trump, and your team races to 500.
+    The bold <strong>nil</strong> bid — promising zero tricks for a big swing — makes it dramatic.
+    Pick Spades when you want bidding and teamwork. See the
+    <a href="/guides/spades-rules/">rules</a> and <a href="/guides/spades-strategy/">strategy</a>, or
+    compare it head-to-head in <a href="/guides/hearts-vs-spades/">Hearts vs Spades</a>.
+  </p>
+
+  <h2>Gin Rummy — quick two-player melding</h2>
+  <p>
+    <a href="/gin/">Gin Rummy</a> is the sharp head-to-head game: draw and discard to build sets and
+    runs, trim your deadwood, and knock before your opponent does — or go for a clean
+    <strong>gin</strong>. Hands are fast and the lead changes constantly. Ideal when you want a tight
+    duel rather than a four-player table. Learn the <a href="/guides/gin-rummy-rules/">rules</a> and
+    <a href="/guides/gin-rummy-strategy/">strategy</a>.
+  </p>
+
+  <h2>Euchre — fast partnership trumps</h2>
+  <p>
+    <a href="/euchre/">Euchre</a> is a punchy partnership game on a short 24-card deck, famous for its
+    two bower Jacks that rule the trump suit. Hands are only five tricks and games run to 10, so it's
+    quick and swingy — and you can "go alone" for a big score. Read the
+    <a href="/guides/euchre-rules/">rules</a> and <a href="/guides/euchre-strategy/">strategy</a>, or
+    weigh it against Spades in <a href="/guides/euchre-vs-spades/">Euchre vs Spades</a>.
+  </p>
+
+  <h2>Which one should you play?</h2>
+  <ul>
+    <li><strong>Solo and brainy?</strong> Hearts.</li>
+    <li><strong>Bidding and teamwork?</strong> Spades.</li>
+    <li><strong>Quick one-on-one?</strong> Gin Rummy.</li>
+    <li><strong>Fast and punchy?</strong> Euchre.</li>
+  </ul>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Jump in: <a href="/hearts/">Hearts</a>, <a href="/spades/">Spades</a>,
+    <a href="/gin/">Gin Rummy</a> or <a href="/euchre/">Euchre</a>. Prefer playing alone? See the
+    <a href="/guides/best-free-solitaire-and-puzzle-games/">best free solitaire & puzzle games</a>,
+    or browse everything in the <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

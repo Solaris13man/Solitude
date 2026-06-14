@@ -1,0 +1,161 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Euchre vs Spades: What’s the Difference? | CardHearth';
+const description =
+  'Euchre vs Spades compared: deck size, trump and the bowers, bidding, going alone vs nil, hand length and scoring — so you can pick the partnership trick-taking game that fits you.';
+const updated = '2026-06-14';
+const heading = 'Euchre vs Spades';
+const subtitle =
+  'Two partnership trump games that feel very different — one short, sharp and bower-driven, the other a longer game of precise bidding. Here’s how they compare.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Euchre vs Spades', href: '/guides/euchre-vs-spades/' },
+];
+
+const faq = [
+  {
+    q: 'Is Euchre faster than Spades?',
+    a: 'Yes, noticeably. Euchre hands are only five tricks with a 24-card deck and a game runs to 10 points, so a full game is quick. Spades uses the full 52-card deck, 13 tricks a hand, and runs to 500 — a longer, more drawn-out game.',
+  },
+  {
+    q: 'How is trump different in Euchre and Spades?',
+    a: 'In Spades the trump suit is always spades. In Euchre a trump suit is chosen each hand, and two Jacks — the right and left bowers — become the top two trumps, which is unique to Euchre and changes how you value your hand.',
+  },
+  {
+    q: 'What’s the difference between going alone and bidding nil?',
+    a: 'Both are bold solo plays but opposite in aim. Going alone (Euchre) means playing without your partner to try to sweep all five tricks for 4 points. Bidding nil (Spades) means promising to win zero tricks for a 100-point swing. One chases everything; the other chases nothing.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Euchre vs Spades: What’s the Difference?',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/euchre-vs-spades/',
+    image: 'https://cardhearth.com/og/euchre.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/euchre/', label: 'Play Euchre' }}
+>
+  <p>
+    <a href="/euchre/">Euchre</a> and <a href="/spades/">Spades</a> are both four-player partnership
+    games built on trump and trick-taking, so they're natural to compare. But one is a short, snappy
+    game driven by two special Jacks, and the other is a longer game of careful bidding. Here's how
+    they line up.
+  </p>
+
+  <h2>What they share</h2>
+  <ul>
+    <li>Four players in two fixed partnerships (you and the player opposite).</li>
+    <li>A trump suit and follow-suit trick-taking.</li>
+    <li>A bold solo option — going alone in Euchre, bidding nil in Spades.</li>
+  </ul>
+
+  <h2>The deck and hand length</h2>
+  <p>
+    <strong>Euchre uses a 24-card deck</strong> — only the 9 through Ace of each suit — and deals
+    <strong>five cards</strong> each, so a hand is just five tricks. <strong>Spades uses the full
+    52-card deck</strong> and deals <strong>thirteen</strong>, so a hand is thirteen tricks. That
+    alone makes Euchre much quicker per hand.
+  </p>
+
+  <h2>Trump: a chosen suit and the bowers</h2>
+  <p>
+    In <strong>Spades, trump is always spades</strong> — simple and fixed. In <strong>Euchre, trump
+    is chosen each hand</strong> by ordering up or naming a suit, and the two Jacks become the
+    powerhouse cards: the <strong>right bower</strong> (Jack of trump) is the highest card in the
+    game, and the <strong>left bower</strong> (the same-colour Jack) becomes the second-highest trump.
+    Learning to value the bowers is the heart of Euchre and has no equivalent in Spades.
+  </p>
+
+  <h2>Bidding</h2>
+  <p>
+    <strong>Spades has precise bidding:</strong> every player names exactly how many tricks they
+    expect, and your team is scored against that combined contract. <strong>Euchre's "bidding" is
+    simpler:</strong> one team just commits to making trump and promises to take at least three of
+    five tricks. Spades asks for an exact number; Euchre asks "can your team win the hand?"
+  </p>
+
+  <h2>Scoring and game length</h2>
+  <p>
+    <strong>Euchre</strong> scores 1 point for taking 3–4 tricks, 2 for all five, and 4 for a lone
+    sweep — and the first team to <strong>10</strong> wins, so games are short. <strong>Spades</strong>
+    scores 10 per bid trick with bags and nil swings, running all the way to <strong>500</strong>.
+    Euchre is a quick best-of; Spades is a longer campaign.
+  </p>
+
+  <h2>Which should you play?</h2>
+  <ul>
+    <li>
+      <strong>Play Euchre</strong> if you want fast, punchy games, the unique bower mechanic, and
+      quick momentum swings.
+    </li>
+    <li>
+      <strong>Play Spades</strong> if you enjoy precise bidding, longer games, and the deep
+      partnership play of covering a nil.
+    </li>
+  </ul>
+  <p>Both are free with a computer partner, so you can learn either in a few minutes.</p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Try them both: <a href="/euchre/">play Euchre</a> or <a href="/spades/">play Spades</a>. Learn the
+    details in the <a href="/guides/euchre-rules/">Euchre rules</a> and
+    <a href="/guides/spades-rules/">Spades rules</a>, compare the avoidance classic in
+    <a href="/guides/hearts-vs-spades/">Hearts vs Spades</a>, or see all four in our
+    <a href="/guides/best-free-card-games/">best free card games</a> roundup.
+  </p>
+</Article>

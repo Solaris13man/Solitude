@@ -1,0 +1,170 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Hearts vs Spades: What’s the Difference? | CardHearth';
+const description =
+  'Hearts vs Spades compared: partnerships, bidding, trump, scoring and how each game feels — so you can pick the trick-taking card game that fits how you like to play.';
+const updated = '2026-06-14';
+const heading = 'Hearts vs Spades';
+const subtitle =
+  'Both are four-player trick-taking classics, but they pull in opposite directions — one is about dodging, the other about delivering. Here’s how they differ and which to play.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Hearts vs Spades', href: '/guides/hearts-vs-spades/' },
+];
+
+const faq = [
+  {
+    q: 'Is Hearts or Spades harder?',
+    a: 'They are hard in different ways. Spades adds bidding and partnership coordination, so there is more to plan and a partner to read. Hearts has no bidding or partners but demands careful card-counting to dodge points and judge the moon. Most players find Spades has the steeper learning curve because of bidding.',
+  },
+  {
+    q: 'Do Hearts and Spades use trump?',
+    a: 'Spades does — the spade suit is always trump. Hearts has no trump suit at all; the highest card of the led suit simply wins each trick. That single difference changes how both games are played.',
+  },
+  {
+    q: 'Which is better for playing solo against the computer?',
+    a: 'Hearts is every-player-for-themselves, so playing solo against three AI opponents feels completely natural. Spades is a partnership game, so solo play means trusting a computer partner — fun, but a different experience. Both are free to play on CardHearth.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Hearts vs Spades: What’s the Difference?',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/hearts-vs-spades/',
+    image: 'https://cardhearth.com/og/hearts.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/hearts/', label: 'Play Hearts' }}
+>
+  <p>
+    Hearts and Spades are the two most popular trick-taking card games, and they share a lot of DNA:
+    four players, a standard 52-card deck, 13 tricks per hand, and the rule that you must follow the
+    led suit. But the goals are opposites. In <a href="/hearts/">Hearts</a> you're trying to
+    <em>avoid</em> winning the wrong cards; in <a href="/spades/">Spades</a> you commit to a number of
+    tricks and have to <em>deliver</em>. Here's how they compare.
+  </p>
+
+  <h2>What they share</h2>
+  <ul>
+    <li>Four players and a full 52-card deck, aces high.</li>
+    <li>Thirteen tricks per hand; you must follow the led suit if you can.</li>
+    <li>The game runs over several hands to a target score.</li>
+  </ul>
+
+  <h2>The core difference: avoid vs deliver</h2>
+  <p>
+    <strong>Hearts is a game of avoidance.</strong> Every heart costs a point and the Queen of Spades
+    costs thirteen, so you spend the hand ducking tricks and sloughing dangerous cards onto opponents.
+    The <strong>lowest</strong> score wins. <strong>Spades is a game of contracts.</strong> Before
+    play, your team bids how many tricks it will take, and you're scored on hitting that number — the
+    <strong>highest</strong> score wins.
+  </p>
+
+  <h2>Partnerships and bidding</h2>
+  <p>
+    <strong>Hearts has no partners and no bidding</strong> — it's every player for themselves, and
+    the only pre-play decision is the three-card pass. <strong>Spades is a partnership game with
+    bidding</strong>: you and the player across the table combine your bids into one contract, and
+    coordinating with your partner (especially covering a <a href="/guides/spades-rules/">nil bid</a>)
+    is half the game.
+  </p>
+
+  <h2>Trump</h2>
+  <p>
+    <strong>Spades always has trump — the spade suit.</strong> A spade beats any other suit, which
+    creates the whole strategy of ruffing and drawing trumps. <strong>Hearts has no trump at all</strong>;
+    the highest card of the led suit wins, full stop. If you can't follow suit in Hearts, your off-suit
+    card can never win — which is exactly how you dump points.
+  </p>
+
+  <h2>Scoring and length</h2>
+  <p>
+    Hearts has 26 points on the table each hand (one per heart, 13 for the Queen of Spades) and runs
+    until someone hits 100 — then the lowest score wins. Spades scores 10 points per bid trick, with
+    bags and nil bids swinging things, and runs to 500. Spades games tend to run a little longer and
+    swingier thanks to nil bids and the bag penalty.
+  </p>
+
+  <h2>The signature move</h2>
+  <p>
+    Each game has one spectacular play. In Hearts it's <strong>shooting the moon</strong> — take all
+    26 points yourself and everyone else eats 26 instead. In Spades it's the <strong>nil bid</strong>
+    — promise zero tricks for a 100-point swing. Both reward nerve and reading the table.
+  </p>
+
+  <h2>Which should you play?</h2>
+  <ul>
+    <li>
+      <strong>Play Hearts</strong> if you want a solo, every-player-for-themselves game with tense
+      card-counting and no partner to depend on.
+    </li>
+    <li>
+      <strong>Play Spades</strong> if you enjoy bidding, planning, and teamwork — predicting your
+      tricks and pulling them off with a partner.
+    </li>
+  </ul>
+  <p>Both are free, with no sign-up — so the honest answer is to try both and see which grabs you.</p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Try them both: <a href="/hearts/">play Hearts</a> or <a href="/spades/">play Spades</a>. Learn the
+    details in the <a href="/guides/hearts-rules/">Hearts rules</a> and
+    <a href="/guides/spades-rules/">Spades rules</a>, see all four card games in our
+    <a href="/guides/best-free-card-games/">best free card games</a> roundup, or browse the
+    <a href="/guides/">guides hub</a>.
+  </p>
+</Article>

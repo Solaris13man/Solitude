@@ -102,7 +102,7 @@ export function recordResult(result: GameResult): Stats {
   stats.variants[key] = v;
   saveStats(result.game, stats);
   // Single choke point for every game's outcome — one analytics hook covers
-  // all 11 games' win/loss tracking.
+  // every game's win/loss tracking.
   track(result.won ? 'game_won' : 'game_lost', {
     game: result.game,
     variant: result.variant,

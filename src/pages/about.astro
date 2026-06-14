@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
+import { GAMES } from '../games/registry';
+
+const gameCount = GAMES.filter((g) => g.category === 'cards' || g.category === 'puzzle').length;
 
 const title = 'The Story Behind CardHearth';
 const description =
@@ -92,14 +95,16 @@ const schema = [
 
       <h2>What it is now</h2>
       <p>
-        CardHearth is <strong>11 classic games</strong> and growing — Klondike, Spider and FreeCell
-        solitaire, plus Pyramid, TriPeaks and Golf; and on the puzzle side Sudoku, Mahjong,
-        Minesweeper and 2048. There's a <a href="/daily-challenge/">Daily Challenge</a> that rotates
-        through every game (the same for everyone, with a full-year calendar so you can go back and
-        finish days you missed), shareable numbered deals, achievements, and a pile of small
-        comforts: dark mode, card backs, sounds you can switch off, and unlimited undo everywhere.
-        If you want to get better, there are <a href="/guides/">strategy guides and rules</a> for
-        every game.
+        CardHearth is <strong>{gameCount} games</strong> and growing — ten solitaires (Klondike,
+        Spider and FreeCell, plus Pyramid, TriPeaks, Golf, Yukon, Scorpion, Forty Thieves and Eight
+        Off), four card games you play against the computer (<a href="/hearts/">Hearts</a>,
+        <a href="/spades/">Spades</a>, <a href="/gin/">Gin Rummy</a> and
+        <a href="/euchre/">Euchre</a>), four puzzles (Sudoku, Mahjong, Minesweeper and 2048), and a
+        <a href="/daily-challenge/">Daily Challenge</a> that rotates through every game — the same for
+        everyone, with a full-year calendar so you can go back and finish days you missed. Add
+        shareable numbered deals, achievements, and a pile of small comforts: dark mode, card backs
+        and designs, sounds you can switch off, and unlimited undo everywhere. If you want to get
+        better, there are <a href="/guides/">strategy guides and rules</a> for every game.
       </p>
 
       <h2>Who it's for</h2>

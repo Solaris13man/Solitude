@@ -4,12 +4,13 @@ import GameArt from '../components/GameArt.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
 
-const title = 'CardHearth — Free Solitaire & Puzzle Games Online';
-const description =
-  'Play 11 free Solitaire and puzzle games in your browser — no download, no sign-up. Every Sudoku is logically solvable with no guessing, and every Mahjong board is guaranteed solvable.';
-
 const cardCount = GAMES.filter((g) => g.category === 'cards').length;
 const puzzleCount = GAMES.filter((g) => g.category === 'puzzle').length;
+const gameCount = cardCount + puzzleCount;
+
+const title = 'CardHearth — Free Solitaire, Card & Puzzle Games Online';
+const description =
+  `Play ${gameCount} free solitaire, card and puzzle games in your browser — no download, no sign-up. Hearts, Spades, Gin Rummy and Euchre against the computer, plus Klondike, FreeCell, Sudoku, Mahjong and more.`;
 
 const schema = [
   {
