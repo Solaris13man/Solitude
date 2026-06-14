@@ -127,10 +127,12 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
       import { checkForNewBadges } from '../lib/achievements';
       import { initAccount, syncUp } from '../lib/account';
       import { initAdRefresh } from '../lib/ads';
+      import { initDailyReminder } from '../lib/daily-reminder';
 
       initAnalytics();
       initAdRefresh();
       void initAccount();
+      initDailyReminder();
 
       // Celebrate badges the moment they unlock, after any game result.
       const queue: { icon: string; name: string }[] = [];

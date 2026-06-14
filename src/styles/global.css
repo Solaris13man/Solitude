@@ -443,6 +443,61 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
   margin-top: 0.15rem;
 }
 
+/* Calm, dismissible on-site reminder to play today's Daily (see daily-reminder.ts). */
+.daily-nudge {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.7rem 0.8rem 0.7rem 1rem;
+  border-radius: 0.9rem;
+  background: var(--chrome-bg, #123);
+  background: linear-gradient(180deg, #1d6b3f, #14502f);
+  border: 1px solid rgb(255 217 94 / 0.4);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+  color: #f3f6f2;
+  transform: translateY(140%);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.daily-nudge.show { transform: translateY(0); opacity: 1; }
+.daily-nudge-body { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.daily-nudge-title { font-weight: 800; font-size: 0.9rem; }
+.daily-nudge-sub { font-size: 0.78rem; opacity: 0.85; }
+.daily-nudge-play {
+  flex: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: #ffd95e;
+  color: #1a3a26;
+  text-decoration: none;
+}
+.daily-nudge-play:hover { background: #ffe486; }
+.daily-nudge-close {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  border: none;
+  background: rgb(255 255 255 / 0.12);
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.daily-nudge-close:hover { background: rgb(255 255 255 / 0.22); }
+.daily-nudge-close:focus-visible,
+.daily-nudge-play:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .daily-nudge { transition: opacity 0.2s ease; transform: none; }
+}
+
 .game-nav {
   display: flex;
   justify-content: center;
