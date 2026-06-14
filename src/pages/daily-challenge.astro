@@ -84,6 +84,17 @@ const schema = [
       <p class="daily-hero-status" id="daily-hero-status"></p>
       <a id="daily-play" class="btn btn-primary daily-play-btn" href="/">Play today's challenge →</a>
       <dl class="daily-hero-stats" id="daily-hero-stats"></dl>
+      <div class="daily-reminder" id="daily-reminder" hidden>
+        <label class="daily-reminder-row">
+          <input type="checkbox" id="reminder-toggle" />
+          <span>🔔 Remind me to play each day</span>
+        </label>
+        <label class="daily-reminder-time" id="reminder-time-row" hidden>
+          <span>Reminder time</span>
+          <select id="reminder-hour"></select>
+        </label>
+        <p class="daily-reminder-note" id="reminder-note" role="status"></p>
+      </div>
     </section>
 
     <section class="daily-calendar" aria-label="Daily Challenge calendar">
@@ -285,6 +296,67 @@ const schema = [
         }
       });
       render();
+    }
+  </script>
+
+  <script>
+    import { reminderState, enableReminder, disableReminder, updateReminderHour } from '../lib/push';
+
+    const wrap = document.getElementById('daily-reminder');
+    const state = reminderState();
+    if (wrap && state.configured && state.supported) {
+      wrap.hidden = false;
+      const toggle = document.getElementById('reminder-toggle') as HTMLInputElement;
+      const timeRow = document.getElementById('reminder-time-row') as HTMLElement;
+      const hourSel = document.getElementById('reminder-hour') as HTMLSelectElement;
+      const note = document.getElementById('reminder-note') as HTMLElement;
+
+      const fmtHour = (h: number) => {
+        const ampm = h < 12 ? 'AM' : 'PM';
+        const hr = h % 12 === 0 ? 12 : h % 12;
+        return `${hr}:00 ${ampm}`;
+      };
+      for (let h = 0; h < 24; h++) {
+        const o = document.createElement('option');
+        o.value = String(h);
+        o.textContent = fmtHour(h);
+        hourSel.appendChild(o);
+      }
+      hourSel.value = String(state.pref.hour);
+      const on = state.pref.enabled && state.permission === 'granted';
+      toggle.checked = on;
+      timeRow.hidden = !on;
+      if (state.permission === 'denied') {
+        note.textContent =
+          'Notifications are blocked — enable them in your browser settings to use reminders.';
+      }
+
+      toggle.addEventListener('change', async () => {
+        if (toggle.checked) {
+          note.textContent = 'Enabling…';
+          const res = await enableReminder(Number(hourSel.value));
+          if (res === 'ok') {
+            timeRow.hidden = false;
+            note.textContent = `Reminder set for ${fmtHour(Number(hourSel.value))} — we'll only nudge you if you haven't played.`;
+          } else {
+            toggle.checked = false;
+            timeRow.hidden = true;
+            note.textContent =
+              res === 'denied'
+                ? 'Notifications are blocked — enable them in your browser settings.'
+                : "Couldn't enable reminders right now. Please try again.";
+          }
+        } else {
+          await disableReminder();
+          timeRow.hidden = true;
+          note.textContent = 'Daily reminder turned off.';
+        }
+      });
+
+      hourSel.addEventListener('change', async () => {
+        await updateReminderHour(Number(hourSel.value));
+        if (toggle.checked) note.textContent = `Reminder set for ${fmtHour(Number(hourSel.value))}.`;
+      });
     }
   </script>
 </Layout>

@@ -45,6 +45,16 @@ export interface SiteConfig {
     /** Supabase anon/public key (safe in the browser; protected by RLS). */
     supabaseAnonKey: string;
   };
+  push: {
+    /**
+     * Opt-in daily-reminder web push. When false, the reminder toggle is
+     * hidden. Flip true once the Supabase backend (subscriptions table +
+     * scheduled edge function) is deployed and the VAPID private key is set.
+     */
+    enabled: boolean;
+    /** VAPID application-server public key (base64url) — safe in the browser. */
+    vapidPublicKey: string;
+  };
   /** Show ad placeholders even when ads are disabled (handy in development). */
   showAdPlaceholders: boolean;
 }
@@ -65,6 +75,10 @@ export const SITE_CONFIG: SiteConfig = {
     enabled: true,
     supabaseUrl: 'https://fyymkznfrxvnbfolttuq.supabase.co',
     supabaseAnonKey: 'sb_publishable_yUrVqY3hJXhD4zV6SdASaA_ntTBZQBm',
+  },
+  push: {
+    enabled: false,
+    vapidPublicKey: 'BPyH1wGhE0WOa42W7Pra1t_3MEICY4hD3QaqE5gEVTizxbVsx_Fg1JkBafWVuVAzg-WmxtBBv83GpxP8x8PYRFE',
   },
   showAdPlaceholders: false,
 };

@@ -128,11 +128,13 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
       import { initAccount, syncUp } from '../lib/account';
       import { initAdRefresh } from '../lib/ads';
       import { initDailyReminder } from '../lib/daily-reminder';
+      import { syncDailySolvedCache } from '../lib/push';
 
       initAnalytics();
       initAdRefresh();
       void initAccount();
       initDailyReminder();
+      void syncDailySolvedCache();
 
       // Celebrate badges the moment they unlock, after any game result.
       const queue: { icon: string; name: string }[] = [];
@@ -162,6 +164,7 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
         }
         flush();
         void syncUp();
+        void syncDailySolvedCache();
       });
 
       // Register the service worker for installability + fast repeat loads.

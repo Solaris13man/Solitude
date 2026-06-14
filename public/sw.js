@@ -58,3 +58,58 @@ self.addEventListener('fetch', (event) => {
     ),
   );
 });
+
+// ---- Daily reminder push -------------------------------------------------
+// Show one gentle notification when a daily reminder arrives — but skip it if
+// the client already mirrored today's daily as solved (see push.ts).
+self.addEventListener('push', (event) => {
+  const payload = (() => {
+    try {
+      return event.data ? event.data.json() : {};
+    } catch {
+      return {};
+    }
+  })();
+  const title = payload.title || 'CardHearth Daily Challenge';
+  const body = payload.body || "Today's Daily Challenge is ready — keep your streak going!";
+  const url = payload.url || '/daily-challenge/';
+
+  event.waitUntil(
+    (async () => {
+      // If today's daily is already solved, don't nag.
+      try {
+        const cache = await caches.open('cardhearth-daily');
+        const res = await cache.match('/__daily_solved');
+        if (res) {
+          const solvedKey = (await res.text()).trim();
+          if (solvedKey === new Date().toISOString().slice(0, 10)) return;
+        }
+      } catch {
+        /* fall through and show it */
+      }
+      await self.registration.showNotification(title, {
+        body,
+        icon: '/logo.png',
+        badge: '/favicon.svg',
+        tag: 'cardhearth-daily',
+        data: { url },
+      });
+    })(),
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || '/daily-challenge/';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const c of clients) {
+        if ('focus' in c) {
+          c.navigate(url);
+          return c.focus();
+        }
+      }
+      return self.clients.openWindow(url);
+    }),
+  );
+});
