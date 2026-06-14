@@ -4,7 +4,7 @@
  * Deliberately conservative: it never serves a stale HTML document while
  * online, so updates ship immediately.
  */
-const CACHE = 'cardhearth-v1';
+const CACHE = 'cardhearth-v2';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -44,7 +44,12 @@ self.addEventListener('fetch', (event) => {
       (cached) =>
         cached ||
         fetch(req).then((res) => {
-          if (res.ok && (url.pathname.startsWith('/_astro/') || url.pathname.endsWith('.png'))) {
+          if (
+            res.ok &&
+            (url.pathname.startsWith('/_astro/') ||
+              url.pathname.endsWith('.webp') ||
+              url.pathname.endsWith('.png'))
+          ) {
             const copy = res.clone();
             caches.open(CACHE).then((c) => c.put(req, copy));
           }

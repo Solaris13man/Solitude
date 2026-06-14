@@ -44,13 +44,12 @@ const { title, description, heading, subtitle, updated, schema, breadcrumb, cta 
     <header class="pt-4 pb-2">
       <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h1>
       {subtitle && <p class="mt-3 text-lg opacity-80">{subtitle}</p>}
-      {
-        updated && (
-          <p class="mt-3 text-xs uppercase tracking-wide opacity-55">
-            Last reviewed {new Date(updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </p>
-        )
-      }
+      <p class="mt-3 text-xs uppercase tracking-wide opacity-55">
+        By <a href="/about/" class="underline-offset-2 hover:underline">Jared</a>
+        {updated && (
+          <> · Last reviewed {new Date(updated).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</>
+        )}
+      </p>
       {
         cta && (
           <p class="mt-5">

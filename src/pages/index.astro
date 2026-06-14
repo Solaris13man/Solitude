@@ -79,12 +79,12 @@ const schema = [
       <a href="/daily-challenge/" class="daily-feature">
         <span class="daily-feature-art" aria-hidden="true"><GameArt game="daily" /></span>
         <span class="daily-feature-body">
-          <span class="daily-feature-eyebrow">⭐ Daily Challenge</span>
-          <span class="daily-feature-title">A new game every day</span>
-          <span class="daily-feature-tag">
+          <span class="daily-feature-eyebrow" id="daily-eyebrow">⭐ Daily Challenge</span>
+          <span class="daily-feature-title" id="daily-title">A new game every day</span>
+          <span class="daily-feature-tag" id="daily-tag">
             One puzzle, the same for everyone — build your streak and fill your calendar.
           </span>
-          <span class="daily-feature-play">Play today's challenge →</span>
+          <span class="daily-feature-play" id="daily-play">Play today's challenge →</span>
         </span>
       </a>
 
@@ -222,6 +222,37 @@ const schema = [
     if (user) {
       const label = document.getElementById('account-link-label');
       if (label) label.textContent = user.name.split(' ')[0] || 'Account';
+    }
+  </script>
+
+  <script>
+    // Make the homepage Daily Challenge card live: today's game, your streak,
+    // and whether you've already solved it. Enhances the static fallback.
+    import { dailyGame, loadDaily, currentDailyStreak, isDailySolved } from '../lib/daily';
+    try {
+      const game = dailyGame();
+      const record = loadDaily();
+      const streak = currentDailyStreak(record);
+      const solved = isDailySolved();
+      const $ = (id: string) => document.getElementById(id);
+      const title = $('daily-title');
+      const tag = $('daily-tag');
+      const play = $('daily-play');
+      const eyebrow = $('daily-eyebrow');
+      if (title) title.textContent = `Today: ${game.label}`;
+      if (eyebrow) eyebrow.textContent = streak > 0 ? `⭐ Daily Challenge · 🔥 ${streak}-day streak` : '⭐ Daily Challenge';
+      if (tag) {
+        tag.textContent = solved
+          ? streak > 0
+            ? `Solved today — your streak is ${streak} 🔥. Come back tomorrow to keep it going.`
+            : 'Solved today ✓ — come back tomorrow for the next one.'
+          : streak > 0
+            ? `You're on a ${streak}-day streak 🔥 — play today's game to keep it alive.`
+            : "One puzzle, the same for everyone — build your streak and fill your calendar.";
+      }
+      if (play) play.textContent = solved ? "See your calendar →" : "Play today's challenge →";
+    } catch (e) {
+      /* keep the static fallback */
     }
   </script>
 </Layout>

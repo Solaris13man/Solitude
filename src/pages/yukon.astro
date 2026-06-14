@@ -58,7 +58,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="yukon" heading="Yukon Solitaire">
+  <GameShell
+    gameId="yukon"
+    heading="Yukon Solitaire"
+    guide={{ href: '/guides/yukon-solitaire-rules/', label: 'Yukon rules guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play Yukon Solitaire</h2>
     <p class="mb-3">
       Yukon is Klondike's bolder cousin. All seven columns are dealt face-up at the top — there's

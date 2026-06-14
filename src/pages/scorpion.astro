@@ -58,7 +58,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="scorpion" heading="Scorpion Solitaire">
+  <GameShell
+    gameId="scorpion"
+    heading="Scorpion Solitaire"
+    guide={{ href: '/guides/scorpion-solitaire-rules/', label: 'Scorpion rules guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play Scorpion Solitaire</h2>
     <p class="mb-3">
       Scorpion crosses Spider with Yukon. You have seven columns and you build them

@@ -58,7 +58,11 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <GameShell gameId="eightoff" heading="Eight Off Solitaire">
+  <GameShell
+    gameId="eightoff"
+    heading="Eight Off Solitaire"
+    guide={{ href: '/guides/eight-off-rules/', label: 'Eight Off rules guide' }}
+  >
     <h2 class="mb-2 text-lg font-bold">How to play Eight Off Solitaire</h2>
     <p class="mb-3">
       Eight Off is a friendlier member of the FreeCell family. Every card is dealt face-up across

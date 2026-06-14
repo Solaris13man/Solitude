@@ -66,11 +66,11 @@ export function cardArtById(id: string): { face: string; back: string } | null {
   if (set === 'classic') return null;
   // 'ink' sets are single-back hand-drawn decks; the others pair a design with a back colour.
   if (set === 'ink' || set === 'ink-shadow') {
-    return { face: `/cards/${set}/${id}.png`, back: `/cards/${set}/back.png` };
+    return { face: `/cards/${set}/${id}.webp`, back: `/cards/${set}/back.webp` };
   }
   const design = set.startsWith('vintage') ? 'vintage' : 'new';
   const color = set.endsWith('red') ? 'red' : 'blue';
-  return { face: `/cards/${design}/${id}.png`, back: `/cards/${design}/back-${color}.png` };
+  return { face: `/cards/${design}/${id}.webp`, back: `/cards/${design}/back-${color}.webp` };
 }
 
 export function cardArt(card: Card): { face: string; back: string } | null {
@@ -82,6 +82,9 @@ function makeCardImg(cls: string): HTMLImageElement {
   img.className = `card-img ${cls}`;
   img.alt = '';
   img.draggable = false;
+  img.decoding = 'async';
+  img.width = 400;
+  img.height = 554;
   img.addEventListener('error', () => img.remove(), { once: true });
   return img;
 }
@@ -145,8 +148,8 @@ export function createCardElement(card: Card): HTMLElement {
   const art = cardArt(card);
   // Premium artwork as <img> layers; if one fails to load it's removed and the
   // drawn pips/back below take over (CSS :has() hides them only while present).
-  const faceImg = art ? `<img class="card-img card-face-img" alt="" draggable="false" src="${art.face}">` : '';
-  const backImg = art ? `<img class="card-img card-back-img" alt="" draggable="false" src="${art.back}">` : '';
+  const faceImg = art ? `<img class="card-img card-face-img" alt="" draggable="false" decoding="async" width="400" height="554" src="${art.face}">` : '';
+  const backImg = art ? `<img class="card-img card-back-img" alt="" draggable="false" decoding="async" width="400" height="554" src="${art.back}">` : '';
   el.innerHTML = `
     <div class="card-inner">
       <div class="card-face card-front card-${color}" aria-hidden="true">

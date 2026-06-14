@@ -1,0 +1,195 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Forty Thieves Rules: How to Play (Complete Guide) | CardHearth';
+const description =
+  'Learn the rules of Forty Thieves: the two-deck deal, building down in suit, moving one card at a time, the stock and waste, and how to win this tough game.';
+const updated = '2026-06-14';
+const heading = 'Forty Thieves Rules: How to Play';
+const subtitle =
+  'Everything you need to play Forty Thieves correctly — the two-deck deal, the strict same-suit builds, the single-card moves, and why this is one of the hardest solitaires around.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Forty Thieves Rules', href: '/guides/forty-thieves-rules/' },
+];
+
+const faq = [
+  {
+    q: 'How many decks does Forty Thieves use?',
+    a: 'Two. You shuffle two standard 52-card decks together for 104 cards in total, which is why there are eight foundations — two of each suit — rather than the usual four. The extra deck is a large part of what makes the game so demanding.',
+  },
+  {
+    q: 'Can you move more than one card at a time?',
+    a: 'No. Forty Thieves only ever moves a single card between tableau columns. To relocate a run you move its cards one at a time, parking them on other columns or in empty spaces and rebuilding the run elsewhere. That restriction, combined with same-suit building, is what makes the game so tight.',
+  },
+  {
+    q: 'Can you redeal the stock?',
+    a: 'No. You turn the stock one card at a time onto the waste pile, and once the stock is exhausted it is gone — there is no redeal. Every card you flip is a card you may never see again, so the order you take from the waste matters a great deal.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Forty Thieves Rules: How to Play (Complete Guide)',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/forty-thieves-rules/',
+    image: 'https://cardhearth.com/og/forty-thieves.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/forty-thieves/', label: 'Play Forty Thieves' }}
+>
+  <p>
+    Forty Thieves is the patience game for people who want a real fight. Two full decks, strict
+    same-suit building, and single-card moves combine to make it one of the toughest solitaires in
+    common play — which is exactly why it has so many devoted fans. This page is a complete
+    reference to the rules: the deal, the objective, the legal moves, the stock, and how you win. If
+    you'd rather learn at the table, you can <a href="/forty-thieves/">play Forty Thieves</a> right
+    away.
+  </p>
+
+  <h2>What is Forty Thieves?</h2>
+  <p>
+    Forty Thieves is a solitaire game played with <strong>two standard decks shuffled together</strong>
+    — 104 cards in all. It takes its name from the forty cards dealt face up into the tableau at the
+    start. The table has three areas: ten <strong>tableau columns</strong> where you do your
+    untangling, a face-down <strong>stock</strong> with its face-up <strong>waste</strong> pile, and
+    eight <strong>foundations</strong> where the winning piles are built. The double deck and its
+    strict rules give the game a reputation for being unforgiving, and clearing one is genuinely
+    satisfying.
+  </p>
+
+  <h2>The deal</h2>
+  <p>
+    Shuffle the two decks together and deal <strong>ten tableau columns of four cards each, all face
+    up</strong>. That is 10&nbsp;&times;&nbsp;4 = <strong>40 cards</strong> on the table, which is
+    where the name comes from. The remaining <strong>64 cards form the stock</strong>, placed face
+    down to one side. The eight foundations all start empty. Because every tableau card is face up,
+    you can read the whole layout from the first move — the only hidden cards are the ones still
+    waiting in the stock.
+  </p>
+
+  <h2>The objective</h2>
+  <p>
+    You win by building all eight <strong>foundations</strong> up by suit, each running from
+    <strong>Ace to King</strong>. Because you are playing two decks, there are eight foundations —
+    <strong>two for each suit</strong> — and each fills with thirteen cards. When every foundation
+    holds a complete Ace-to-King suit, all <strong>104 cards</strong> are home and the game is won.
+  </p>
+
+  <h2>Legal moves</h2>
+  <p>
+    Forty Thieves has a short, strict set of rules. The two that define the game are same-suit
+    building and single-card moves.
+  </p>
+  <ul>
+    <li>
+      <strong>Tableau builds down in suit.</strong> You may place a card on a tableau column only if
+      it is the <em>same suit</em> as the top card and exactly one rank lower — a 9&spades; goes
+      only on a 10&spades;, never on a 10 of another suit. This is far more restrictive than the
+      alternating-colour building you may know from other games.
+    </li>
+    <li>
+      <strong>You move one card at a time.</strong> There is no group or sequence move. To shift a
+      run you relocate its cards one by one, using other columns and empty spaces as relays and
+      rebuilding the run where you want it.
+    </li>
+    <li>
+      <strong>Foundations build up by suit from the Ace.</strong> A card goes to a foundation only
+      if it is an Ace starting an empty foundation, or the next rank up in the same suit as that
+      foundation's top card.
+    </li>
+    <li>
+      <strong>An empty column accepts any single card.</strong> When a tableau column is cleared,
+      you may place any one card there — a precious resource, since empty columns are your main tool
+      for shuffling cards around.
+    </li>
+  </ul>
+
+  <h2>The stock and waste</h2>
+  <p>
+    When you run out of useful tableau moves, you turn the <strong>stock</strong> one card at a time
+    onto a face-up <strong>waste</strong> pile. The <strong>top card of the waste is always
+    available</strong> to play to a foundation or onto a tableau column, but the cards beneath it
+    are locked until you deal past them. Crucially, there is <strong>no redeal</strong>: once the
+    stock is used up, it is gone for good. Every flip is a one-way decision, so think before you
+    dig — a card buried in the waste, or one you fail to use when it surfaces, may never come back.
+  </p>
+
+  <h2>Why Forty Thieves is hard</h2>
+  <p>
+    Three rules stack against you. <strong>Same-suit building</strong> means a 9&spades; will only
+    sit on a 10&spades; — your options at any moment are narrow. <strong>Single-card moves</strong>
+    mean even a short run takes several careful steps and several free spaces to relocate. And the
+    <strong>no-redeal stock</strong> punishes any card you misplay or fail to use in time. Taken
+    together, only a relatively low share of deals are winnable even with good play. That difficulty
+    is the appeal: every game won is earned, and the planning rewards patience.
+  </p>
+
+  <h2>How you win</h2>
+  <p>
+    The game is won the moment all <strong>104 cards</strong> sit on the eight foundations — two
+    complete suits in each colour, every one built cleanly from Ace to King. The tableau and the
+    waste end up empty and the stock exhausted. Get there and you have beaten one of solitaire's
+    sterner tests; if you don't, undo is there to back up and try a different line.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Now that you know the rules, <a href="/forty-thieves/">play Forty Thieves</a> and see how far
+    you can get. When you want a gentler two-deck-strength challenge, try the open layout of
+    <a href="/freecell/">FreeCell</a> or the spacious <a href="/eight-off/">Eight Off</a>, or browse
+    everything in our <a href="/guides/">guides hub</a>.
+  </p>
+</Article>
