@@ -1,0 +1,155 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Hearts vs Euchre: What’s the Difference? | CardHearth';
+const description =
+  'Hearts vs Euchre compared: deck size, trump and the bowers, partnerships, scoring and pace — so you can pick the trick-taking card game that suits you.';
+const updated = '2026-06-14';
+const heading = 'Hearts vs Euchre';
+const subtitle =
+  'Two trick-taking games that feel worlds apart — one a solo game of dodging points with no trump, the other a fast partnership game ruled by two special Jacks. Here’s how they compare.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Hearts vs Euchre', href: '/guides/hearts-vs-euchre/' },
+];
+
+const faq = [
+  {
+    q: 'Is Hearts or Euchre easier to learn?',
+    a: 'Hearts is usually the gentler start: no trump, no partner, no bidding — you just avoid points. Euchre adds a chosen trump suit, the right and left bowers, partnerships and calling trump, so there’s a bit more to take in, though hands are very short.',
+  },
+  {
+    q: 'Do Hearts and Euchre use trump?',
+    a: 'Euchre does — a trump suit is chosen each hand, and the two Jacks (the bowers) become the top trumps. Hearts has no trump at all; the highest card of the led suit simply wins each trick.',
+  },
+  {
+    q: 'Which is better for solo play vs the computer?',
+    a: 'Hearts is every-player-for-themselves, so playing solo against three AI players feels natural. Euchre is a partnership game, so solo play means relying on a computer partner. Both are free on CardHearth.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Hearts vs Euchre: What’s the Difference?',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Organization', name: 'CardHearth' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/hearts-vs-euchre/',
+    image: 'https://cardhearth.com/og/hearts.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/hearts/', label: 'Play Hearts' }}
+>
+  <p>
+    <a href="/hearts/">Hearts</a> and <a href="/euchre/">Euchre</a> are both trick-taking games, but
+    that's nearly where the resemblance ends. Hearts is a solo game of <em>avoiding</em> points with no
+    trump suit; Euchre is a fast partnership game built around a chosen trump and two all-powerful
+    Jacks. Here's how they line up.
+  </p>
+
+  <h2>What they share</h2>
+  <ul>
+    <li>Four players and follow-suit trick-taking.</li>
+    <li>Played over several hands to a target score.</li>
+    <li>A standard pack of cards (though Euchre uses only part of it).</li>
+  </ul>
+
+  <h2>The deck and pace</h2>
+  <p>
+    <strong>Hearts uses the full 52-card deck</strong> and deals 13 cards each, so a hand is 13 tricks.
+    <strong>Euchre uses a 24-card deck</strong> (9 through Ace) and deals 5, so a hand is just five
+    tricks and a game to 10 finishes fast. Euchre is the quicker, punchier game; Hearts hands take
+    longer and build more tension.
+  </p>
+
+  <h2>Trump and the bowers</h2>
+  <p>
+    <strong>Hearts has no trump</strong> — the highest card of the led suit wins, and an off-suit card
+    can never take a trick (which is how you dump points). <strong>Euchre is all about trump:</strong>
+    a suit is chosen each hand, and the <strong>right bower</strong> (Jack of trump) and
+    <strong>left bower</strong> (the same-colour Jack) become the two strongest cards in the game.
+    Learning the bowers is central to Euchre and has no parallel in Hearts.
+  </p>
+
+  <h2>Solo vs partnership, and the goal</h2>
+  <p>
+    <strong>Hearts is every player for themselves</strong>, and the aim is to take as <em>few</em>
+    points as possible — the <strong>lowest</strong> score wins. <strong>Euchre is a partnership</strong>
+    game where your team calls trump and tries to <em>win</em> at least three of the five tricks. One
+    game punishes winning the wrong cards; the other rewards winning the right ones.
+  </p>
+
+  <h2>Scoring and the big play</h2>
+  <p>
+    Hearts puts 26 points on the table each hand (hearts and the Queen of Spades) and runs to 100, with
+    <strong>shooting the moon</strong> as its dramatic swing. Euchre scores 1–4 points a hand and runs
+    to 10, with <strong>going alone</strong> — benching your partner for a shot at all five tricks — as
+    its bold move.
+  </p>
+
+  <h2>Which should you play?</h2>
+  <ul>
+    <li><strong>Play Hearts</strong> for a solo, no-trump game of careful avoidance and card-counting.</li>
+    <li><strong>Play Euchre</strong> for a quick partnership game with trump, the bowers, and fast swings.</li>
+  </ul>
+  <p>Both are free with no sign-up, so try each and see which fits your mood.</p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+
+  <h2>Keep going</h2>
+  <p>
+    Try them both: <a href="/hearts/">play Hearts</a> or <a href="/euchre/">play Euchre</a>. Learn the
+    details in the <a href="/guides/hearts-rules/">Hearts rules</a> and
+    <a href="/guides/euchre-rules/">Euchre rules</a>, compare more in
+    <a href="/guides/hearts-vs-spades/">Hearts vs Spades</a>, or see all four in our
+    <a href="/guides/best-free-card-games/">best free card games</a> roundup.
+  </p>
+</Article>

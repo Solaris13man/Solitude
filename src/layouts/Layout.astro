@@ -23,7 +23,25 @@ const OG_SLUGS = new Set([
   'minesweeper-expert', '2048', 'daily-challenge',
 ]);
 const slug = Astro.url.pathname.replace(/^\/|\/$/g, '');
-const ogImage = new URL(OG_SLUGS.has(slug) ? `/og/${slug}.png` : '/og.png', Astro.site);
+// Guide pages reuse the relevant game's share image, matched by the slug's
+// leading game name (e.g. /guides/hearts-rules -> /og/hearts.png). Anything
+// without a clear game prefix falls back to the generic image.
+const GUIDE_OG: [string, string][] = [
+  ['gin-rummy', 'gin'], ['hearts', 'hearts'], ['spades', 'spades'], ['euchre', 'euchre'],
+  ['freecell', 'freecell'], ['spider', 'spider'], ['klondike', 'klondike'], ['pyramid', 'pyramid'],
+  ['tripeaks', 'tripeaks'], ['golf', 'golf'], ['sudoku', 'sudoku'], ['mahjong', 'mahjong'],
+  ['minesweeper', 'minesweeper'], ['2048', '2048'], ['best-free-card', 'hearts'],
+];
+function ogPathFor(s: string): string {
+  if (OG_SLUGS.has(s)) return `/og/${s}.png`;
+  if (s.startsWith('guides/')) {
+    const name = s.slice('guides/'.length);
+    const hit = GUIDE_OG.find(([prefix]) => name.startsWith(prefix));
+    if (hit) return `/og/${hit[1]}.png`;
+  }
+  return '/og.png';
+}
+const ogImage = new URL(ogPathFor(slug), Astro.site);
 const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient;
 const ga = SITE_CONFIG.analytics;
 const gaLive = ga.provider === 'ga' && !!ga.measurementId;
@@ -97,7 +115,10 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
     </script>
   </head>
   <body>
-    <slot />
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="main-content" tabindex="-1">
+      <slot />
+    </div>
     <div id="badge-toast" class="badge-toast" role="status" aria-live="polite" hidden></div>
     <script>
       import { initAnalytics, track } from '../lib/analytics';

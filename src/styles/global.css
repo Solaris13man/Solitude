@@ -767,6 +767,27 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 }
 .stats-grid dd.stats-section { border-bottom: 1px solid rgb(127 127 127 / 0.3); }
 
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  margin: 0.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: #135c32;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid #ffd95e;
+  outline-offset: 2px;
+}
+
 .field {
   display: flex;
   align-items: center;
