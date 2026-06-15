@@ -9,6 +9,12 @@ import {
 } from './stats';
 import { type DailyRecord, loadDaily, replaceDaily } from './daily';
 import { earnedBadgeIds, loadUnlocked, saveUnlocked } from './achievements';
+import {
+  type Settings,
+  loadSettings,
+  loadSettingsUpdatedAt,
+  applyRemoteSettings,
+} from './settings';
 
 /**
  * Optional accounts. By default the whole site is guest/local — this module
@@ -34,6 +40,10 @@ export interface PlayerData {
   stats: Record<string, Stats>;
   daily: DailyRecord;
   badges: string[];
+  /** Display preferences (theme, table surface, cards, tiles, …). */
+  settings?: Settings;
+  /** When `settings` last changed on the writing device (epoch ms). */
+  settingsUpdatedAt?: number;
   updatedAt: number;
 }
 
@@ -55,6 +65,8 @@ export function collectLocalData(): PlayerData {
     stats,
     daily: loadDaily(),
     badges: [...loadUnlocked()],
+    settings: loadSettings(),
+    settingsUpdatedAt: loadSettingsUpdatedAt(),
     updatedAt: Date.now(),
   };
 }
@@ -65,6 +77,7 @@ export function applyLocalData(data: PlayerData): void {
   }
   if (data.daily) replaceDaily(data.daily);
   if (data.badges) saveUnlocked(new Set(data.badges));
+  if (data.settings) applyRemoteSettings(data.settings, data.settingsUpdatedAt ?? Date.now());
 }
 
 // ----- pure merge (never lose progress) -----------------------------------
@@ -115,10 +128,23 @@ export function mergePlayerData(a: PlayerData, b: PlayerData): PlayerData {
       b.stats[game] ?? { variants: {} },
     );
   }
+  // Settings aren't "best of both" — they're a single current choice, so the
+  // most recently changed side wins (last-write-wins by change-time).
+  const aTs = a.settingsUpdatedAt ?? 0;
+  const bTs = b.settingsUpdatedAt ?? 0;
+  let settings = a.settings;
+  let settingsUpdatedAt = aTs;
+  if (b.settings && (bTs > aTs || !a.settings)) {
+    settings = b.settings;
+    settingsUpdatedAt = bTs;
+  }
+
   return {
     stats,
     daily: mergeDaily(a.daily, b.daily),
     badges: [...new Set([...a.badges, ...b.badges])],
+    settings,
+    settingsUpdatedAt,
     updatedAt: Date.now(),
   };
 }
@@ -238,10 +264,27 @@ async function sync(authToken: string, uid: string): Promise<void> {
   const local = collectLocalData();
   const cloud = await fetchCloudData(authToken, uid);
   const merged = cloud ? mergePlayerData(local, cloud) : local;
+  const settingsBefore = JSON.stringify(local.settings);
   applyLocalData(merged);
   // re-evaluate badges against the merged stats so earned set is consistent
   saveUnlocked(new Set([...merged.badges, ...earnedBadgeIds()]));
   await pushCloudData(authToken, uid, merged);
+  // If the cloud brought different display settings, reload once so already
+  // rendered cards/tiles pick them up (theme and surface update live, but card
+  // and tile art needs a fresh render).
+  maybeReloadForSettings(settingsBefore, JSON.stringify(merged.settings));
+}
+
+/** Reload a single time when synced-down settings differ from this device's. */
+function maybeReloadForSettings(before: string, after: string): void {
+  if (typeof window === 'undefined' || before === after) return;
+  try {
+    if (sessionStorage.getItem('cardhearth.settings.synced')) return;
+    sessionStorage.setItem('cardhearth.settings.synced', '1');
+    location.reload();
+  } catch {
+    /* ignore */
+  }
 }
 
 // ----- lifecycle ----------------------------------------------------------

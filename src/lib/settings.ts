@@ -32,6 +32,7 @@ export interface Settings {
 }
 
 const KEY = 'solitude.settings.v1';
+const TS_KEY = 'solitude.settings.v1.ts';
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'auto',
@@ -66,12 +67,44 @@ export function loadSettings(): Settings {
   }
 }
 
-export function saveSettings(settings: Settings): void {
+function writeSettings(settings: Settings, updatedAt: number): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(settings));
+    localStorage.setItem(TS_KEY, String(updatedAt));
   } catch {
     // Storage unavailable; settings just won't persist.
   }
+}
+
+/** Persist a user-made settings change and let listeners (e.g. cloud sync) react. */
+export function saveSettings(settings: Settings, updatedAt: number = Date.now()): void {
+  writeSettings(settings, updatedAt);
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent('cardhearth:settings'));
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/** When this device's settings last changed (epoch ms); 0 if never. */
+export function loadSettingsUpdatedAt(): number {
+  try {
+    return Number(localStorage.getItem(TS_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Apply settings that arrived from the cloud: persist them (preserving the
+ * remote change-time) and reflect them on the document, WITHOUT emitting the
+ * change event — so syncing down never bounces a redundant push back up.
+ */
+export function applyRemoteSettings(settings: Settings, updatedAt: number): void {
+  writeSettings(settings, updatedAt);
+  applySettings(settings);
 }
 
 /** Reflect settings onto the document so CSS custom properties pick them up. */

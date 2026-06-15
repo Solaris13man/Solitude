@@ -167,6 +167,10 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
         void syncDailySolvedCache();
       });
 
+      // Push display-preference changes (theme, cards, tiles, …) to the cloud
+      // for signed-in players so they follow them across devices.
+      window.addEventListener('cardhearth:settings', () => void syncUp());
+
       // Register the service worker for installability + fast repeat loads.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
