@@ -4,7 +4,7 @@ Paste-ready outreach assets. Nothing here is automated — each item is a
 form to submit, a post to publish, or an email to send from your own
 accounts. Pitches lead with the real differentiator: **every puzzle is
 guaranteed solvable** (Sudoku by logic with no guessing; Mahjong by
-construction), plus free / no sign-up / 11 games + Daily Challenge.
+construction), plus free / no sign-up / 20 games + Daily Challenge.
 
 > Verify each destination is still active and read its current rules before
 > posting. Communities change; never paste the same blurb into five threads
@@ -18,7 +18,7 @@ construction), plus free / no sign-up / 11 games + Daily Challenge.
 > Free classic games where every puzzle is guaranteed solvable.
 
 **One-liner (≤25 words):**
-> CardHearth is a free, fast home for 11 classic games — Klondike, Spider, FreeCell, Sudoku, Mahjong, Minesweeper, 2048 and more. No download, no sign-up.
+> CardHearth is a free, fast home for 20 classic games — Klondike, Spider, FreeCell, Hearts, Spades, Euchre, Sudoku, Mahjong, Minesweeper, 2048 and more. No download, no sign-up.
 
 **Short description (~50 words):**
 > CardHearth is a free, no-sign-up home for classic solitaire and puzzle games — Klondike, Spider, FreeCell, Pyramid, TriPeaks, Golf, Sudoku, Mahjong, Minesweeper and 2048 — plus a rotating Daily Challenge. Every Sudoku is solvable by pure logic with no guessing, and every Mahjong board is guaranteed solvable.
@@ -117,7 +117,7 @@ Find articles ranking for "best free solitaire sites", "best free sudoku online"
 >
 > I read your piece on [ARTICLE TITLE] — the [specific thing you liked] was a good call.
 >
-> I run CardHearth (cardhearth.com), a free, no-sign-up home for 11 classic games — solitaire, Sudoku, Mahjong, Minesweeper, 2048 and more. One thing that genuinely sets it apart and might be worth a mention: **every Sudoku is verified solvable by pure logic with no guessing, and every Mahjong board is guaranteed clearable** — most free sites can't claim that. No ads in your face, works on mobile, installable.
+> I run CardHearth (cardhearth.com), a free, no-sign-up home for 20 classic games — solitaire, Hearts, Spades, Euchre, Sudoku, Mahjong, Minesweeper, 2048 and more. One thing that genuinely sets it apart and might be worth a mention: **every Sudoku is verified solvable by pure logic with no guessing, and every Mahjong board is guaranteed clearable** — most free sites can't claim that. No ads in your face, works on mobile, installable.
 >
 > If it's a fit for the list I'd be grateful for the mention; if not, no worries at all. Happy to answer anything.
 >
