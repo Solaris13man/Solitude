@@ -29,6 +29,8 @@ export interface Settings {
   sounds: boolean;
   /** Per-game variant choice (Klondike draw count, Spider suit count, …). */
   variants: Record<string, number>;
+  /** Preferred local hour (0–23) for the daily-reminder push. */
+  reminderHour: number;
 }
 
 const KEY = 'solitude.settings.v1';
@@ -45,6 +47,7 @@ export const DEFAULT_SETTINGS: Settings = {
   animations: true,
   sounds: true,
   variants: {},
+  reminderHour: 19,
 };
 
 export function loadSettings(): Settings {

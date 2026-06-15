@@ -422,6 +422,7 @@ class SudokuController {
         animations: anim.checked,
         sounds: snd.checked,
         variants,
+        reminderHour: this.settings.reminderHour,
       };
       saveSettings(this.settings);
       applySettings(this.settings);

@@ -1,14 +1,19 @@
 import { SITE_CONFIG } from './site-config';
 import { isDailySolved, utcDateKey } from './daily';
+import { loadSettings, saveSettings } from './settings';
 
 /**
  * Opt-in daily-reminder web push (off by default). The browser subscribes via
  * the service worker and the subscription is stored in Supabase; a scheduled
  * edge function sends one gentle reminder per day at the user's chosen local
  * hour. Everything here no-ops unless SITE_CONFIG.push.enabled is true.
+ *
+ * The "enabled" state is device-specific (a push subscription belongs to one
+ * browser), so it lives in local storage. The preferred hour is a synced
+ * Settings value, so it follows a signed-in player across devices.
  */
 
-const PREF_KEY = 'cardhearth.push.pref.v1';
+const ENABLED_KEY = 'cardhearth.push.enabled.v1';
 const SOLVED_CACHE = 'cardhearth-daily';
 const SOLVED_URL = '/__daily_solved';
 
@@ -38,22 +43,35 @@ export function pushSupported(): boolean {
   );
 }
 
-export function loadPref(): ReminderPref {
+function loadEnabled(): boolean {
   try {
-    const raw = localStorage.getItem(PREF_KEY);
-    if (raw) return { enabled: false, hour: 19, ...(JSON.parse(raw) as Partial<ReminderPref>) };
+    return localStorage.getItem(ENABLED_KEY) === '1';
   } catch {
-    /* ignore */
+    return false;
   }
-  return { enabled: false, hour: 19 };
 }
 
-function savePref(pref: ReminderPref): void {
+function setEnabled(on: boolean): void {
   try {
-    localStorage.setItem(PREF_KEY, JSON.stringify(pref));
+    if (on) localStorage.setItem(ENABLED_KEY, '1');
+    else localStorage.removeItem(ENABLED_KEY);
   } catch {
     /* ignore */
   }
+}
+
+/** Preferred reminder hour — a synced Settings value (defaults to 19). */
+function getHour(): number {
+  const h = loadSettings().reminderHour;
+  return Number.isInteger(h) && h >= 0 && h <= 23 ? h : 19;
+}
+
+function setHour(hour: number): void {
+  saveSettings({ ...loadSettings(), reminderHour: hour });
+}
+
+export function loadPref(): ReminderPref {
+  return { enabled: loadEnabled(), hour: getHour() };
 }
 
 export function reminderState(): ReminderState {
@@ -124,23 +142,23 @@ export async function enableReminder(hour: number): Promise<'ok' | 'denied' | 'u
       body: JSON.stringify(body),
     });
     if (!res.ok) return 'error';
-    savePref({ enabled: true, hour });
+    setHour(hour); // synced preference
+    setEnabled(true); // device-local
     return 'ok';
   } catch {
     return 'error';
   }
 }
 
-/** Update the reminder hour for an already-enabled subscription. */
+/** Update the reminder hour (synced); re-upsert this device's subscription if on. */
 export async function updateReminderHour(hour: number): Promise<void> {
-  const pref = loadPref();
-  savePref({ ...pref, hour });
-  if (pref.enabled) await enableReminder(hour); // re-upsert with the new hour
+  setHour(hour);
+  if (loadEnabled()) await enableReminder(hour); // re-upsert with the new hour
 }
 
 /** Turn the reminder off: unsubscribe and remove the stored subscription. */
 export async function disableReminder(): Promise<void> {
-  savePref({ ...loadPref(), enabled: false });
+  setEnabled(false);
   try {
     const reg = await getRegistration();
     const sub = await reg?.pushManager.getSubscription();
