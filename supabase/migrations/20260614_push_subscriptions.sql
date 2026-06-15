@@ -15,17 +15,20 @@ create table if not exists public.push_subscriptions (
 
 alter table public.push_subscriptions enable row level security;
 
--- Only insert/update/delete for anon; no select (subscriptions stay private).
-grant insert, update, delete on public.push_subscriptions to anon;
+-- Browsers register/update/remove their own subscription (keyed by the opaque
+-- push endpoint). Granted to both anon and authenticated, and policies target
+-- `public` so they apply whatever role the request runs as. No select — only
+-- the service role (in the edge function) reads/sends, so subscriptions stay
+-- private.
+grant insert, update, delete on public.push_subscriptions to anon, authenticated;
 
 drop policy if exists "anon can register" on public.push_subscriptions;
-create policy "anon can register" on public.push_subscriptions
-  for insert to anon with check (true);
-
 drop policy if exists "anon can update own" on public.push_subscriptions;
-create policy "anon can update own" on public.push_subscriptions
-  for update to anon using (true) with check (true);
-
 drop policy if exists "anon can remove" on public.push_subscriptions;
-create policy "anon can remove" on public.push_subscriptions
-  for delete to anon using (true);
+drop policy if exists "push insert" on public.push_subscriptions;
+drop policy if exists "push update" on public.push_subscriptions;
+drop policy if exists "push delete" on public.push_subscriptions;
+
+create policy "push insert" on public.push_subscriptions for insert to public with check (true);
+create policy "push update" on public.push_subscriptions for update to public using (true) with check (true);
+create policy "push delete" on public.push_subscriptions for delete to public using (true);
