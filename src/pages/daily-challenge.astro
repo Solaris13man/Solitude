@@ -175,37 +175,40 @@ const schema = [
       month: 'long',
       day: 'numeric',
     });
-    const record = loadDaily();
-    const solved = isDailySolved();
-    const today = record.days[utcDateKey()];
-
     const set = (id: string, text: string) => {
       const el = document.getElementById(id);
       if (el) el.textContent = text;
     };
     set('daily-hero-date', `Daily #${dailyNumber()} · ${dateStr}`);
     set('daily-hero-game', entry.label);
-    set(
-      'daily-hero-status',
-      solved && today
-        ? `Solved in ${formatTime(today.timeMs)} ✓ — next game in ${formatCountdown(msUntilNextDaily())}`
-        : `The same for everyone — next game in ${formatCountdown(msUntilNextDaily())}`,
-    );
 
     const play = document.getElementById('daily-play') as HTMLAnchorElement | null;
-    if (play) {
-      play.href = `${entry.path}?daily=1`;
-      play.textContent = solved ? 'Play again →' : "Play today's challenge →";
-    }
+    if (play) play.href = `${entry.path}?daily=1`;
 
-    const stats = document.getElementById('daily-hero-stats');
-    if (stats) {
-      stats.innerHTML = [
-        `<dt>Current streak</dt><dd>${currentDailyStreak(record)} 🔥</dd>`,
-        `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
-        `<dt>Days solved</dt><dd>${totalDailySolves(record)}</dd>`,
-      ].join('');
+    // The solved/streak parts depend on saved progress, which can arrive a beat
+    // later from cloud sync — so re-run them on the synced event too.
+    function renderHero() {
+      const record = loadDaily();
+      const solved = isDailySolved();
+      const today = record.days[utcDateKey()];
+      set(
+        'daily-hero-status',
+        solved && today
+          ? `Solved in ${formatTime(today.timeMs)} ✓ — next game in ${formatCountdown(msUntilNextDaily())}`
+          : `The same for everyone — next game in ${formatCountdown(msUntilNextDaily())}`,
+      );
+      if (play) play.textContent = solved ? 'Play again →' : "Play today's challenge →";
+      const stats = document.getElementById('daily-hero-stats');
+      if (stats) {
+        stats.innerHTML = [
+          `<dt>Current streak</dt><dd>${currentDailyStreak(record)} 🔥</dd>`,
+          `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
+          `<dt>Days solved</dt><dd>${totalDailySolves(record)}</dd>`,
+        ].join('');
+      }
     }
+    renderHero();
+    window.addEventListener('cardhearth:synced', renderHero);
   </script>
 
   <script>
@@ -296,6 +299,7 @@ const schema = [
         }
       });
       render();
+      window.addEventListener('cardhearth:synced', render);
     }
   </script>
 

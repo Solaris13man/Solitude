@@ -50,6 +50,7 @@ export interface PlayerData {
 const GAME_IDS = GAMES.map((g) => g.id).filter((id) => id !== 'daily');
 const TOKEN_KEY = 'solitude.account.token';
 const USER_KEY = 'solitude.account.user';
+const REFRESH_KEY = 'solitude.account.refresh';
 
 export function accountsEnabled(): boolean {
   const a = SITE_CONFIG.accounts;
@@ -187,6 +188,65 @@ function headers(authToken: string): Record<string, string> {
   };
 }
 
+function loadRefresh(): string | null {
+  try {
+    return localStorage.getItem(REFRESH_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/** Exchange the stored refresh token for a fresh access token (Supabase). */
+async function refreshSession(): Promise<string | null> {
+  const rt = loadRefresh();
+  if (!rt) return null;
+  try {
+    const res = await fetch(
+      `${SITE_CONFIG.accounts.supabaseUrl}/auth/v1/token?grant_type=refresh_token`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: SITE_CONFIG.accounts.supabaseAnonKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: rt }),
+      },
+    );
+    if (!res.ok) return null;
+    const j = (await res.json()) as { access_token?: string; refresh_token?: string };
+    if (!j.access_token) return null;
+    try {
+      localStorage.setItem(TOKEN_KEY, j.access_token);
+      if (j.refresh_token) localStorage.setItem(REFRESH_KEY, j.refresh_token);
+    } catch {
+      /* ignore */
+    }
+    return j.access_token;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Authenticated request to the Supabase REST/data API. If the access token has
+ * expired (401), refresh it once and retry — so a session survives well beyond
+ * the ~1-hour access-token lifetime.
+ */
+async function cloudFetch(path: string, init: RequestInit = {}): Promise<Response | null> {
+  const current = token();
+  if (!current) return null;
+  const build = (tok: string): RequestInit => ({
+    ...init,
+    headers: { ...headers(tok), ...((init.headers as Record<string, string>) ?? {}) },
+  });
+  let res = await fetch(`${SITE_CONFIG.accounts.supabaseUrl}${path}`, build(current));
+  if (res.status === 401) {
+    const fresh = await refreshSession();
+    if (fresh) res = await fetch(`${SITE_CONFIG.accounts.supabaseUrl}${path}`, build(fresh));
+  }
+  return res;
+}
+
 /** Begin Google sign-in by redirecting to Supabase's OAuth endpoint. */
 export function signInWithGoogle(): void {
   if (!accountsEnabled()) return;
@@ -208,6 +268,11 @@ export async function signOut(): Promise<void> {
     }
   }
   setSession(null, null);
+  try {
+    localStorage.removeItem(REFRESH_KEY);
+  } catch {
+    /* ignore */
+  }
   emit(null);
 }
 
@@ -233,13 +298,10 @@ async function fetchUser(authToken: string): Promise<AccountUser | null> {
   }
 }
 
-async function fetchCloudData(authToken: string, uid: string): Promise<PlayerData | null> {
+async function fetchCloudData(uid: string): Promise<PlayerData | null> {
   try {
-    const res = await fetch(
-      `${SITE_CONFIG.accounts.supabaseUrl}/rest/v1/profiles?id=eq.${uid}&select=data`,
-      { headers: headers(authToken) },
-    );
-    if (!res.ok) return null;
+    const res = await cloudFetch(`/rest/v1/profiles?id=eq.${uid}&select=data`);
+    if (!res || !res.ok) return null;
     const rows = (await res.json()) as { data: PlayerData }[];
     return rows[0]?.data ?? null;
   } catch {
@@ -247,11 +309,11 @@ async function fetchCloudData(authToken: string, uid: string): Promise<PlayerDat
   }
 }
 
-async function pushCloudData(authToken: string, uid: string, data: PlayerData): Promise<void> {
+async function pushCloudData(uid: string, data: PlayerData): Promise<void> {
   try {
-    await fetch(`${SITE_CONFIG.accounts.supabaseUrl}/rest/v1/profiles`, {
+    await cloudFetch('/rest/v1/profiles', {
       method: 'POST',
-      headers: { ...headers(authToken), Prefer: 'resolution=merge-duplicates' },
+      headers: { Prefer: 'resolution=merge-duplicates' },
       body: JSON.stringify({ id: uid, data, updated_at: new Date().toISOString() }),
     });
   } catch {
@@ -260,15 +322,23 @@ async function pushCloudData(authToken: string, uid: string, data: PlayerData): 
 }
 
 /** Merge cloud ↔ local both directions so neither side loses progress. */
-async function sync(authToken: string, uid: string): Promise<void> {
+async function sync(uid: string): Promise<void> {
   const local = collectLocalData();
-  const cloud = await fetchCloudData(authToken, uid);
+  const cloud = await fetchCloudData(uid);
   const merged = cloud ? mergePlayerData(local, cloud) : local;
   const settingsBefore = JSON.stringify(local.settings);
   applyLocalData(merged);
   // re-evaluate badges against the merged stats so earned set is consistent
   saveUnlocked(new Set([...merged.badges, ...earnedBadgeIds()]));
-  await pushCloudData(authToken, uid, merged);
+  // Let pages (e.g. the Daily hero) re-render now that cloud data is applied.
+  if (typeof window !== 'undefined') {
+    try {
+      window.dispatchEvent(new CustomEvent('cardhearth:synced'));
+    } catch {
+      /* ignore */
+    }
+  }
+  await pushCloudData(uid, merged);
   // If the cloud brought different display settings, reload once so already
   // rendered cards/tiles pick them up (theme and surface update live, but card
   // and tile art needs a fresh render).
@@ -313,13 +383,21 @@ export async function initAccount(): Promise<void> {
   if (window.location.hash.includes('access_token=')) {
     const params = new URLSearchParams(window.location.hash.slice(1));
     const access = params.get('access_token');
+    const refresh = params.get('refresh_token');
     if (access) {
       const user = await fetchUser(access);
       if (user) {
         setSession(access, user);
+        if (refresh) {
+          try {
+            localStorage.setItem(REFRESH_KEY, refresh);
+          } catch {
+            /* ignore */
+          }
+        }
         history.replaceState(null, '', window.location.pathname + window.location.search);
         emit(user);
-        await sync(access, user.id);
+        await sync(user.id);
         return;
       }
     }
@@ -328,7 +406,7 @@ export async function initAccount(): Promise<void> {
   const cached = getCachedUser();
   if (t && cached) {
     emit(cached);
-    await sync(t, cached.id);
+    await sync(cached.id);
   }
 }
 
@@ -337,5 +415,5 @@ export async function syncUp(): Promise<void> {
   const t = token();
   const user = getCachedUser();
   if (!accountsEnabled() || !t || !user) return;
-  await pushCloudData(t, user.id, collectLocalData());
+  await pushCloudData(user.id, collectLocalData());
 }
