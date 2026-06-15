@@ -77,7 +77,7 @@ export const SITE_CONFIG: SiteConfig = {
     supabaseAnonKey: 'sb_publishable_yUrVqY3hJXhD4zV6SdASaA_ntTBZQBm',
   },
   push: {
-    enabled: false,
+    enabled: true,
     vapidPublicKey: 'BPyH1wGhE0WOa42W7Pra1t_3MEICY4hD3QaqE5gEVTizxbVsx_Fg1JkBafWVuVAzg-WmxtBBv83GpxP8x8PYRFE',
   },
   showAdPlaceholders: false,
