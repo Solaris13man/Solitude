@@ -300,7 +300,7 @@ const schema = [
   </script>
 
   <script>
-    import { reminderState, enableReminder, disableReminder, updateReminderHour } from '../lib/push';
+    import { reminderState, enableReminder, disableReminder, updateReminderHour, lastPushError } from '../lib/push';
 
     const wrap = document.getElementById('daily-reminder');
     const state = reminderState();
@@ -344,7 +344,7 @@ const schema = [
             note.textContent =
               res === 'denied'
                 ? 'Notifications are blocked — enable them in your browser settings.'
-                : "Couldn't enable reminders right now. Please try again.";
+                : `Couldn't enable reminders — ${lastPushError() || 'please try again'}.`;
           }
         } else {
           await disableReminder();

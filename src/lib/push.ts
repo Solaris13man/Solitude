@@ -112,22 +112,42 @@ async function getRegistration(): Promise<ServiceWorkerRegistration | null> {
   return (await navigator.serviceWorker.getRegistration()) ?? (await navigator.serviceWorker.ready);
 }
 
+/** Last failure detail (human-readable), surfaced in the UI for debugging. */
+let lastError = '';
+export function lastPushError(): string {
+  return lastError;
+}
+
 /** Turn the reminder on: request permission, subscribe, and store it. */
 export async function enableReminder(hour: number): Promise<'ok' | 'denied' | 'unsupported' | 'error'> {
-  if (!pushSupported() || !pushConfigured()) return 'unsupported';
+  lastError = '';
+  if (!pushSupported() || !pushConfigured()) {
+    lastError = 'push not supported or not configured on this device';
+    return 'unsupported';
+  }
   let permission = Notification.permission;
   if (permission === 'default') permission = await Notification.requestPermission();
   if (permission !== 'granted') return 'denied';
 
+  let sub: PushSubscription;
   try {
     const reg = await getRegistration();
-    if (!reg) return 'error';
-    const sub =
+    if (!reg) {
+      lastError = 'no service worker registration';
+      return 'error';
+    }
+    sub =
       (await reg.pushManager.getSubscription()) ??
       (await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(SITE_CONFIG.push.vapidPublicKey),
       }));
+  } catch (err) {
+    lastError = 'subscribe failed: ' + ((err as Error)?.message || String(err));
+    return 'error';
+  }
+
+  try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
     const body = {
       endpoint: sub.endpoint,
@@ -141,13 +161,18 @@ export async function enableReminder(hour: number): Promise<'ok' | 'denied' | 'u
       headers: { ...restHeaders(), Prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify(body),
     });
-    if (!res.ok) return 'error';
-    setHour(hour); // synced preference
-    setEnabled(true); // device-local
-    return 'ok';
-  } catch {
+    if (!res.ok) {
+      const detail = await res.text().catch(() => '');
+      lastError = `save failed (HTTP ${res.status}) ${detail.slice(0, 140)}`.trim();
+      return 'error';
+    }
+  } catch (err) {
+    lastError = 'network error saving subscription: ' + ((err as Error)?.message || String(err));
     return 'error';
   }
+  setHour(hour); // synced preference
+  setEnabled(true); // device-local
+  return 'ok';
 }
 
 /** Update the reminder hour (synced); re-upsert this device's subscription if on. */
