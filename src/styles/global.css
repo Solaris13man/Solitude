@@ -1608,7 +1608,11 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .seat-east .opp-hand .hcard {
   --hc-w: clamp(1.8rem, 6vw, 3.2rem);
   margin-left: 0;
-  margin-top: calc(var(--hc-w) * -0.93);
+  /* Rotated a quarter turn so they read as a hand held at the side. Rotation
+     is around the centre, so the flow box stays W×1.4W while the card *looks*
+     1.4W wide × W tall; the -1.0×W top margin overlaps them to a ~0.4W band. */
+  transform: rotate(90deg);
+  margin-top: calc(var(--hc-w) * -1);
 }
 .seat-west .opp-hand .hcard:first-child,
 .seat-east .opp-hand .hcard:first-child {
