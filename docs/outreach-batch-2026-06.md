@@ -264,3 +264,150 @@ fields below. Verify each destination's current rules first.
 
 > Want me to regenerate this batch monthly with fresh prospects? Say so and I'll
 > re-run the search and produce a new dated file.
+
+---
+
+## 6. Backlink-gap prospects (from Ahrefs competitor backlinks, June 2026)
+
+Real targets pulled from the **referring domains of three competitors** — `sudoku.com`,
+`solitaire.com`, and `solitaired.com` — i.e. sites that already link to a direct
+competitor and could plausibly link to CardHearth too.
+
+**How this was sourced (and its limits — read before trusting it):**
+- Built from saved Ahrefs *Backlinks* reports (the account couldn't export CSV and
+  doesn't include the Link-Intersect tool, so this is a hand-diffed gap).
+- **Sample size is small:** ~47 backlinks per competitor (one report page each),
+  default-sorted toward the highest-DR domains. This is a *starter* list, not the
+  full link profile — there are many more prospects deeper in each profile.
+- **No `cardhearth.com` subtraction:** the API key was out of units, so I couldn't
+  pull CardHearth's own backlinks to exclude. CardHearth is new and none of these
+  appear to already link to it, so the gap ≈ the full editorial set below. Re-run the
+  subtraction once the Ahrefs API has units (or paste CardHearth's referring domains).
+- **Excluded as un-pitchable:** search engines / social / platform-UGC domains
+  (google.*, bing, t.me, bsky, *.github.io, *.substack.com, *.notion.site,
+  *.beehiiv.com, *.carrd.co, *.pages.dev, *.vercel.app, *.netlify.app, etc.),
+  the competitors' own properties, Dutch "startpagina" link-directory networks
+  (uwpagina/allepaginas/links.nl/goedbegin/favos/startze/startkabel — link-farm grade),
+  `scamadviser.com` (automated), and `blog.hubspot.com/.../neal-taparia` (Solitaired's
+  own founder's author page).
+- **DR caveat:** for `*.pages.dev` / `*.vercel.app` / `*.netlify.app` style rows, the
+  DR shown is the *hosting platform's*, not the blog's own authority — treated as lower
+  in the ranking below regardless of the number.
+
+### Tier A — direct "best free solitaire" roundups (pitch these first)
+
+These already publish exactly the kind of list CardHearth belongs on. Highest intent.
+
+| # | Site | DR | Article (the page that links the competitor) | Links to |
+|---|---|----|---|---|
+| A1 | rigorousthemes.com | 76 | "Best World of Solitaire Alternatives" — https://rigorousthemes.com/blog/best-world-of-solitaire-alternatives/ | solitaire.com |
+| A2 | wordleweb.io | 71 | "Best Free Solitaire Websites and Apps for 2026" — https://wordleweb.io/best-free-solitaire-websites-and-apps-for-2026 | solitaire.com |
+| A3 | playmyworld.com | 70 | "The Best Sites to Play Solitaire Online in 2026" — https://playmyworld.com/2026/04/29/the-best-sites-to-play-solitaire-online-in-2026/ | solitaire.com |
+| A4 | jayisgames.com | 68 | "Best Sites to Play Spider Solitaire Online for Free in 2026" — https://jayisgames.com/review/best-sites-to-play-spider-solitaire-online-for-free-in-2026.html | solitaire.com |
+| A5 | naijaknowhoww.pages.dev | (plat.) | "Best Websites to Play Solitaire Games Online for Free" — https://naijaknowhoww.pages.dev/posts/best-websites-to-play-solitaire-games-online-for-fre | solitaired.com |
+
+### Tier B — high-authority editorial features (long-shot, but big if it lands)
+
+Broad lifestyle/news pieces on card games, solitaire, or sudoku. They rarely add a
+small site cold, but a genuinely good differentiator (the solvability guarantee) is
+the kind of thing an editor *might* fold into a refresh. Pitch sparingly.
+
+| # | Site | DR | Article | Links to | Angle |
+|---|---|----|---|---|---|
+| B1 | apartmenttherapy.com | 87 | "One-Player Card Games" — https://www.apartmenttherapy.com/one-player-card-games-37303845 | solitaire.com | solitaire variety + no-download |
+| B2 | lovetoknow.com | 80 | "Play Regular Solitaire" — https://www.lovetoknow.com/life/lifestyle/play-regular-solitaire | solitaire.com | free, no sign-up |
+| B3 | analyticsinsight.net | 80 | "How to Play Card Games Online" — https://www.analyticsinsight.net/games/how-to-play-card-games-online | solitaire.com | Hearts/Spades/Euchre vs. computer |
+| B4 | wikihow.com | 91 | "Sudoku Tricks" — https://www.wikihow.com/Sudoku-Tricks | sudoku.com | user-editable references → add solver-gated Sudoku |
+| B5 | tedium.co | 71 | solitaire history feature — https://tedium.co/2026/04/09/solitaire-card-game-types-history/ | solitaire.com | link CardHearth's history-of-solitaire guide |
+| B6 | thecanary.co | 68 | "The quiet resurgence of solitaire" — https://www.thecanary.co/discovery/sport-and-gaming/2026/04/30/ | solitaire.com | fairness angle as a fresh hook |
+| B7 | betterthisworld.com | 71 | "Mastering Spades Online…" — https://betterthisworld.com/gaming/mastering-spades-online-strategy-teamwork-and-mental-ag | solitaire.com | CardHearth Spades + strategy guide |
+| B8 | gamificationsummit.com | 69 | "Solitaire Nights…" — https://gamificationsummit.com/2025/05/09/solitaire-nights-the-way-people-are-connecting-i | solitaire.com | seeded/shareable deals |
+
+### Tier C — niche sudoku-enthusiast & free-resource targets
+
+| # | Site | DR | Page | Angle |
+|---|---|----|---|---|
+| C1 | magictour.free.fr | 91* | classic sudoku resource — http://magictour.free.fr/sudoku.htm | this crowd cares about the no-guessing logic solver + technique-based difficulty |
+| C2 | jcbonsai.free.fr | 91* | sudoku solver user-guide — http://jcbonsai.free.fr/sudoku/ | same solver/technique angle |
+| C3 | fmhy (FreeMediaHeckYeah) | 93* | curated free-stuff "gaming" list — https://fmhy.pages.dev/gaming | community-curated; submit via their GitHub repo, not email |
+
+> \* `.free.fr` rows share that host's DR; FMHY is platform-hosted. Treat authority as
+> "niche-relevant" rather than literal DR. Still worth the low-effort ask.
+
+### Email drafts — Tier A (personalize the first line before sending)
+
+**A1 — rigorousthemes.com ("World of Solitaire alternatives")**
+**Subject:** A solitaire alternative worth adding to your list
+
+> Hi [NAME],
+>
+> Your "Best World of Solitaire Alternatives" piece is a useful list — ‹specific
+> alternative you agreed with›.
+>
+> One more that fits the "alternative" framing: CardHearth (https://cardhearth.com) —
+> free, no sign-up, ten solitaire variants (Klondike, Spider, FreeCell, Yukon, Forty
+> Thieves and more) plus Sudoku, Mahjong and others. The differentiator vs. most
+> alternatives: every deal is seeded and numbered (shareable/replayable), and every
+> Sudoku is logic-solvable with no guessing. No interstitial ads.
+>
+> If it earns a spot, I'd be grateful; if not, no worries.
+>
+> [YOUR NAME]
+
+**A2 — wordleweb.io ("Best Free Solitaire Websites and Apps for 2026")**
+**Subject:** One more free solitaire site for your 2026 list
+
+> Hi [NAME],
+>
+> Liked your 2026 roundup of free solitaire sites — ‹specific detail›.
+>
+> CardHearth (https://cardhearth.com) might fit: free, no login, 20 games incl. ten
+> solitaires, with seeded shareable deal numbers, unlimited undo/hints, dark mode, and
+> PWA install. The hook your current picks don't have — every Sudoku is guaranteed
+> logic-solvable and every Mahjong board guaranteed clearable.
+>
+> Either way, thanks for keeping the list current.
+>
+> [YOUR NAME]
+
+**A3 — playmyworld.com ("Best Sites to Play Solitaire Online in 2026")**
+**Subject:** Free, no-login solitaire site for your 2026 roundup
+
+> Hi [NAME],
+>
+> Your April piece on the best sites to play solitaire online in 2026 was a good
+> rundown — ‹specific detail›.
+>
+> I run CardHearth (https://cardhearth.com): free, no sign-up, ten solitaire variants
+> plus Hearts/Spades/Euchre vs. the computer. Players seem to like that every deal is
+> seeded and numbered, so you can share or replay an exact game. No ads in your face,
+> installs as a PWA.
+>
+> If it's a fit for the list I'd appreciate the mention.
+>
+> [YOUR NAME]
+
+**A4 — jayisgames.com ("Best Sites to Play Spider Solitaire Online for Free in 2026")**
+**Subject:** Spider (and 9 more solitaires) for your free-solitaire roundup
+
+> Hi [NAME],
+>
+> Enjoyed your 2026 guide to free Spider Solitaire sites — ‹specific detail›.
+>
+> CardHearth (https://cardhearth.com/spider/) has Spider in 1/2/4-suit plus nine other
+> solitaires, free and no sign-up, with seeded shareable deals and unlimited undo. Worth
+> a look for the list — and every Sudoku/Mahjong on the same site is guaranteed solvable,
+> which is a fair-play angle most free sites can't claim.
+>
+> Thanks for a genuinely useful roundup,
+> [YOUR NAME]
+
+**A5 — naijaknowhoww.pages.dev** — same angle as A2/A3; lower authority (platform-hosted),
+so send only after the higher-value ones, or skip if you're rationing outreach.
+
+> **Reminder:** the personalization rule from §2 still applies — real name, one true
+> detail from the article, correct game URL, your real sign-off. Send a few at a time.
+
+> **Next pull:** when the Ahrefs API has units (or you can paste deeper report pages),
+> re-run this with (a) CardHearth's own backlinks subtracted, and (b) more than the top
+> ~47 rows per competitor — the long tail is where most reachable blogs live.
