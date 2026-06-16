@@ -66,8 +66,8 @@ export const SITE_CONFIG: SiteConfig = {
     measurementId: 'G-2QD63X4RF2',
   },
   ads: {
-    enabled: false,
-    adsenseClient: '',
+    enabled: true,
+    adsenseClient: 'ca-pub-5533908969125832',
     inContentSlot: '',
     refreshOnGameEnd: false,
   },
