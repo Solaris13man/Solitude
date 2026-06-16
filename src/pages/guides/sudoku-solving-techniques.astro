@@ -38,7 +38,7 @@ const schema = [
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Organization', name: 'CardHearth' },
+    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
@@ -68,6 +68,105 @@ const schema = [
     })),
   },
 ];
+
+// --- Inline diagram generator -------------------------------------------
+// Builds a small, theme-aware 9×9 SVG from a sparse cell map. `given` is a
+// fixed digit, `note` is a candidate annotation, and `hl` tints a cell:
+// 'b' = the cells forming the pattern, 'a' = the forced placement,
+// 'elim' = a candidate that the pattern lets you eliminate.
+interface DCell {
+  given?: number;
+  note?: string;
+  hl?: 'a' | 'b' | 'elim';
+}
+function sudokuDiagram(cells: Record<string, DCell>, label: string): string {
+  const S = 32;
+  const O = 1;
+  const N = 9;
+  const dim = O * 2 + N * S;
+  let rects = '';
+  let texts = '';
+  let lines = '';
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      const cell = cells[`${r},${c}`];
+      if (!cell) continue;
+      const x = O + c * S;
+      const y = O + r * S;
+      if (cell.hl) rects += `<rect x="${x}" y="${y}" width="${S}" height="${S}" class="sdk-${cell.hl}"/>`;
+      const cx = x + S / 2;
+      const cy = y + S / 2;
+      if (cell.given != null) {
+        texts += `<text x="${cx}" y="${cy}" class="sdk-given">${cell.given}</text>`;
+      } else if (cell.note) {
+        const strike = cell.hl === 'elim' ? ' sdk-strike' : '';
+        texts += `<text x="${cx}" y="${cy}" class="sdk-note${strike}">${cell.note}</text>`;
+      }
+    }
+  }
+  for (let i = 0; i <= N; i++) {
+    const p = O + i * S;
+    const cls = i % 3 === 0 ? 'sdk-thick' : 'sdk-thin';
+    lines += `<line x1="${p}" y1="${O}" x2="${p}" y2="${O + N * S}" class="${cls}"/>`;
+    lines += `<line x1="${O}" y1="${p}" x2="${O + N * S}" y2="${p}" class="${cls}"/>`;
+  }
+  return `<svg viewBox="0 0 ${dim} ${dim}" class="sdk-svg" role="img" aria-label="${label}">${rects}${lines}${texts}</svg>`;
+}
+
+// Hidden single: 4 is blocked from every cell of the top-left box but one.
+const tlBox: Record<string, DCell> = {};
+for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) tlBox[`${r},${c}`] = { hl: 'b' };
+const figHiddenSingle = sudokuDiagram(
+  {
+    ...tlBox,
+    '2,2': { note: '4', hl: 'a' },
+    '0,6': { given: 4 },
+    '1,3': { given: 4 },
+    '4,1': { given: 4 },
+    '5,0': { given: 4 },
+  },
+  'A 9 by 9 Sudoku grid: 4s in the surrounding rows and columns block every cell of the top-left box except one, where 4 is forced.',
+);
+
+// Naked pair: two cells share only {4,9}, clearing them from the rest of the row.
+const figNakedPair = sudokuDiagram(
+  {
+    '0,1': { note: '49', hl: 'b' },
+    '0,4': { note: '49', hl: 'b' },
+    '0,3': { note: '49', hl: 'elim' },
+    '0,6': { note: '49', hl: 'elim' },
+    '0,8': { note: '49', hl: 'elim' },
+  },
+  'A Sudoku row where two cells share the candidates 4 and 9, so 4 and 9 are eliminated from the other cells of the row.',
+);
+
+// Locked candidate (pointing): 3 confined to one row of a box → cleared from the rest of that row.
+const figLocked = sudokuDiagram(
+  {
+    '2,0': { note: '3', hl: 'b' },
+    '2,1': { note: '3', hl: 'b' },
+    '2,2': { note: '3', hl: 'b' },
+    '2,4': { note: '3', hl: 'elim' },
+    '2,5': { note: '3', hl: 'elim' },
+    '2,7': { note: '3', hl: 'elim' },
+  },
+  'A Sudoku box where the digit 3 can only lie in one row, so 3 is eliminated from the rest of that row in the other boxes.',
+);
+
+// X-Wing on 5: locked to two columns across two rows → cleared from those columns elsewhere.
+const figXWing = sudokuDiagram(
+  {
+    '1,2': { note: '5', hl: 'b' },
+    '1,6': { note: '5', hl: 'b' },
+    '5,2': { note: '5', hl: 'b' },
+    '5,6': { note: '5', hl: 'b' },
+    '3,2': { note: '5', hl: 'elim' },
+    '7,2': { note: '5', hl: 'elim' },
+    '3,6': { note: '5', hl: 'elim' },
+    '8,6': { note: '5', hl: 'elim' },
+  },
+  'A Sudoku grid showing an X-Wing: the digit 5 sits at four corners spanning two rows and two columns, so 5 is eliminated elsewhere in those two columns.',
+);
 ---
 
 <Article
@@ -122,6 +221,14 @@ const schema = [
     for that digit, the ninth is forced. This single idea solves most of an Easy puzzle and a
     great deal of harder ones.
   </p>
+  <figure class="sudoku-fig">
+    <Fragment set:html={figHiddenSingle} />
+    <figcaption>
+      <strong>Hidden single.</strong> The four 4s in the surrounding rows and columns block every
+      cell of the top-left box except one (green) — so 4 is forced there, even though that cell
+      could still hold other candidates.
+    </figcaption>
+  </figure>
 
   <h3>3. Locked candidates (pointing and claiming)</h3>
   <p>
@@ -143,6 +250,14 @@ const schema = [
     Neither places a digit directly; both remove candidates, which then unlocks singles. Reach for
     this when scanning for singles stalls.
   </p>
+  <figure class="sudoku-fig">
+    <Fragment set:html={figLocked} />
+    <figcaption>
+      <strong>Locked candidate (pointing).</strong> Inside this box, 3 can only sit in one row
+      (blue). It must take that row here — so 3 is eliminated from the rest of that row in the
+      other boxes (red).
+    </figcaption>
+  </figure>
 
   <h3>4. Naked pairs (and triples)</h3>
   <p>
@@ -155,6 +270,13 @@ const schema = [
     elsewhere in the unit. These eliminations frequently expose a hidden single you could not see
     before.
   </p>
+  <figure class="sudoku-fig">
+    <Fragment set:html={figNakedPair} />
+    <figcaption>
+      <strong>Naked pair.</strong> Two cells in this row hold only {'{4, 9}'} (blue). Between them
+      they use up both digits, so 4 and 9 are removed from every other cell in the row (red).
+    </figcaption>
+  </figure>
 
   <h3>5. Hidden pairs</h3>
   <p>
@@ -180,6 +302,14 @@ const schema = [
     from those rows elsewhere. The X-Wing places nothing on its own; like locked candidates, it is
     an elimination that breaks a puzzle back open.
   </p>
+  <figure class="sudoku-fig">
+    <Fragment set:html={figXWing} />
+    <figcaption>
+      <strong>X-Wing.</strong> In two rows, 5 has only two possible cells, and they line up in the
+      same two columns — the four blue corners. Whichever way they resolve, 5 owns both columns
+      here, so it's eliminated from those columns everywhere else (red).
+    </figcaption>
+  </figure>
 
   <h2>How the techniques map to CardHearth difficulties</h2>
   <p>
@@ -245,3 +375,60 @@ const schema = [
     <a href="/guides/">guides hub</a> covers the whole CardHearth library.
   </p>
 </Article>
+
+<style is:global>
+  .sudoku-fig {
+    margin: 1.5rem auto;
+    text-align: center;
+  }
+  .sudoku-fig .sdk-svg {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
+  .sudoku-fig figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    opacity: 0.8;
+  }
+  /* Theme-aware: lines and fixed digits follow the text colour; tints are
+     semi-transparent so they read on both light and dark backgrounds. */
+  .sdk-thin {
+    stroke: currentColor;
+    stroke-opacity: 0.22;
+    stroke-width: 1;
+  }
+  .sdk-thick {
+    stroke: currentColor;
+    stroke-opacity: 0.6;
+    stroke-width: 2;
+  }
+  .sdk-given {
+    fill: currentColor;
+    font-size: 18px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  .sdk-note {
+    fill: #2563eb;
+    font-size: 13px;
+    font-weight: 600;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  .sdk-strike {
+    fill: #dc2626;
+    text-decoration: line-through;
+  }
+  .sdk-a {
+    fill: rgba(34, 197, 94, 0.24);
+  }
+  .sdk-b {
+    fill: rgba(37, 99, 235, 0.18);
+  }
+  .sdk-elim {
+    fill: rgba(220, 38, 38, 0.15);
+  }
+</style>

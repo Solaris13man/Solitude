@@ -110,7 +110,9 @@ const {
   <!-- Populated by the controller only when a game runs as today's daily. -->
   <div id="daily-banner" class="daily-banner" hidden></div>
 
-  <div class="hud" role="status" aria-label="Game status">
+  <!-- A labelled group, not a live region: the timer ticks every 500ms and
+       would otherwise make screen readers announce the clock continuously. -->
+  <div class="hud" role="group" aria-label="Game status">
     <span><span class="hud-label">Time</span><span id="stat-time">0:00</span></span>
     <span><span class="hud-label">Moves</span><span id="stat-moves">0</span></span>
     <span><span class="hud-label">{scoreLabel}</span><span id="stat-score">0</span></span>

@@ -112,9 +112,19 @@ export class DailyMode {
       ? `${window.location.origin}${this.entry.path}?daily=${utcDateKey(ref)}`
       : `${window.location.origin}/daily-challenge/`;
     const num = dailyNumber(ref);
-    const text = solved
-      ? `CardHearth Daily #${num} (${this.entry.label}) solved in ${formatTime(elapsedMs)}. Same challenge for everyone — can you beat it?`
-      : `CardHearth Daily Challenge #${num}: ${this.entry.label}, the same for everyone. Can you solve it?`;
+    if (!solved) {
+      return {
+        url,
+        text: `CardHearth Daily Challenge #${num}: ${this.entry.label}, the same for everyone. Can you solve it?`,
+      };
+    }
+    // A compact, "Wordle-style" brag: game, time, and the streak as social proof.
+    const streak = currentDailyStreak(loadDaily());
+    const streakLine = streak > 1 ? `\n🔥 ${streak}-day streak` : '';
+    const text =
+      `🃏 CardHearth Daily #${num} — ${this.entry.label}\n` +
+      `⏱️ Solved in ${formatTime(elapsedMs)}${streakLine}\n` +
+      `Same puzzle for everyone — beat my time:`;
     return { url, text };
   }
 
