@@ -232,7 +232,7 @@ async function refreshSession(): Promise<string | null> {
  * expired (401), refresh it once and retry — so a session survives well beyond
  * the ~1-hour access-token lifetime.
  */
-async function cloudFetch(path: string, init: RequestInit = {}): Promise<Response | null> {
+export async function cloudFetch(path: string, init: RequestInit = {}): Promise<Response | null> {
   const current = token();
   if (!current) return null;
   const build = (tok: string): RequestInit => ({

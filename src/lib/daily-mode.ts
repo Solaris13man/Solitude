@@ -15,6 +15,7 @@ import {
 } from './daily';
 import { formatTime } from './stats';
 import { track } from './analytics';
+import { submitDailyScore } from './leaderboard';
 
 /**
  * Encapsulates Daily Challenge mode for any game's controller. A controller
@@ -101,6 +102,8 @@ export class DailyMode {
     const dateKey = utcDateKey(this.date ?? new Date());
     const record = recordDailyWin(dateKey, { timeMs, moves, score, game });
     track('daily_solved', { game, seconds: Math.round(timeMs / 1000), archive: this.isArchive });
+    // Post to the public leaderboard (no-op for guests / when accounts are off).
+    void submitDailyScore(dateKey);
     this.refreshBanner();
     return currentDailyStreak(record);
   }

@@ -97,6 +97,17 @@ const schema = [
       </div>
     </section>
 
+    <!-- Today's leaderboard — the daily is identical for everyone, so times
+         are directly comparable. Filled client-side; signed-in players appear. -->
+    <section class="daily-leaderboard" id="daily-leaderboard" aria-label="Today's leaderboard" hidden>
+      <h2 class="lb-title">Today's fastest</h2>
+      <p class="lb-sub" id="lb-sub">
+        The daily is the same puzzle for everyone — see who solved it quickest.
+      </p>
+      <ol class="lb-list" id="lb-list"></ol>
+      <p class="lb-empty" id="lb-empty" hidden></p>
+    </section>
+
     <section class="daily-calendar" aria-label="Daily Challenge calendar">
       <div class="cal-head">
         <button id="cal-prev" class="btn" type="button" aria-label="Previous year">‹</button>
@@ -363,4 +374,137 @@ const schema = [
       });
     }
   </script>
+
+  <script>
+    import { utcDateKey } from '../lib/daily';
+    import { fetchDailyLeaderboard } from '../lib/leaderboard';
+    import { accountsEnabled, getCachedUser, signInWithGoogle } from '../lib/account';
+    import { formatTime } from '../lib/stats';
+
+    const section = document.getElementById('daily-leaderboard');
+    const listEl = document.getElementById('lb-list');
+    const subEl = document.getElementById('lb-sub');
+    const emptyEl = document.getElementById('lb-empty');
+
+    if (section && listEl && subEl && emptyEl && accountsEnabled()) {
+      section.hidden = false;
+      const esc = (s: string) =>
+        s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      function renderSub() {
+        if (!getCachedUser()) {
+          subEl!.innerHTML =
+            'The daily is the same puzzle for everyone. <button id="lb-signin" class="lb-signin" type="button">Sign in</button> to add your time to the board.';
+        } else {
+          subEl!.textContent =
+            'The daily is the same puzzle for everyone — see who solved it quickest.';
+        }
+      }
+
+      async function renderBoard() {
+        const rows = await fetchDailyLeaderboard(utcDateKey(), 20);
+        if (!rows) {
+          listEl!.innerHTML = '';
+          emptyEl!.hidden = false;
+          emptyEl!.textContent = 'Leaderboard is unavailable right now.';
+          return;
+        }
+        if (rows.length === 0) {
+          listEl!.innerHTML = '';
+          emptyEl!.hidden = false;
+          emptyEl!.textContent = getCachedUser()
+            ? 'No solves yet today — be the first!'
+            : 'No solves yet today. Sign in and play to claim the top spot.';
+          return;
+        }
+        emptyEl!.hidden = true;
+        listEl!.innerHTML = rows
+          .map(
+            (r, i) =>
+              `<li class="lb-row${r.me ? ' lb-me' : ''}">` +
+              `<span class="lb-rank">${i + 1}</span>` +
+              `<span class="lb-name">${esc(r.name)}${r.me ? ' (you)' : ''}</span>` +
+              `<span class="lb-time">${formatTime(r.timeMs)}</span></li>`,
+          )
+          .join('');
+      }
+
+      section.addEventListener('click', (e) => {
+        const t = e.target as HTMLElement | null;
+        if (t && t.id === 'lb-signin') signInWithGoogle();
+      });
+
+      renderSub();
+      void renderBoard();
+      // Re-render after a cloud sync or a sign-in/out so "(you)" + the board update.
+      window.addEventListener('cardhearth:synced', () => {
+        renderSub();
+        void renderBoard();
+      });
+      window.addEventListener('cardhearth:account', () => {
+        renderSub();
+        void renderBoard();
+      });
+    }
+  </script>
+
+  <style is:global>
+    .daily-leaderboard {
+      margin: 0 auto 1.5rem;
+      width: 100%;
+      max-width: 32rem;
+    }
+    .daily-leaderboard .lb-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+    .daily-leaderboard .lb-sub {
+      margin: 0.25rem 0 0.75rem;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+    .daily-leaderboard .lb-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .daily-leaderboard .lb-row {
+      display: grid;
+      grid-template-columns: 2rem 1fr auto;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 0.5rem;
+      background: rgba(127, 127, 127, 0.1);
+    }
+    .daily-leaderboard .lb-row.lb-me {
+      background: rgba(34, 197, 94, 0.2);
+      font-weight: 700;
+    }
+    .daily-leaderboard .lb-rank {
+      text-align: center;
+      opacity: 0.6;
+      font-variant-numeric: tabular-nums;
+    }
+    .daily-leaderboard .lb-time {
+      opacity: 0.9;
+      font-variant-numeric: tabular-nums;
+    }
+    .daily-leaderboard .lb-empty {
+      font-size: 0.9rem;
+      opacity: 0.75;
+    }
+    .daily-leaderboard .lb-signin {
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
 </Layout>
