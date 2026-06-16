@@ -1567,7 +1567,7 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .seat-chip-you { background: rgb(255 217 94 / 0.18); border-color: rgb(255 217 94 / 0.5); }
 
 .hcard {
-  --hc-w: clamp(2.1rem, 7vw, 3.3rem);
+  --hc-w: clamp(2.4rem, 8vw, 3.9rem);
   width: var(--hc-w);
   aspect-ratio: 150 / 210;
   flex: none;
@@ -1593,13 +1593,13 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .hcard-black { color: var(--card-text-black); }
 
 .opp-hand { display: flex; }
-.opp-hand .hcard { --hc-w: clamp(1.35rem, 4.4vw, 2.1rem); margin-left: calc(var(--hc-w) * -0.62); }
+.opp-hand .hcard { --hc-w: clamp(1.6rem, 5.2vw, 2.8rem); margin-left: calc(var(--hc-w) * -0.62); }
 .opp-hand .hcard:first-child { margin-left: 0; }
 
 .my-hand { display: flex; justify-content: center; padding-top: 0.4rem; }
 .my-hand .hcard {
-  --hc-w: clamp(2.2rem, 8.5vw, 3.6rem);
-  margin-left: calc(var(--hc-w) * -0.42);
+  --hc-w: clamp(2.5rem, 11vw, 5rem);
+  margin-left: calc(var(--hc-w) * -0.5);
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
@@ -1614,11 +1614,11 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 
 .hearts-trick {
   position: relative;
-  width: clamp(8rem, 30vw, 12rem);
-  height: clamp(9rem, 34vw, 13rem);
+  width: clamp(10rem, 40vw, 15rem);
+  height: clamp(11rem, 44vw, 16.5rem);
   margin: 0 auto;
 }
-.hearts-trick .hcard { position: absolute; --hc-w: clamp(2.2rem, 7vw, 3.1rem); left: 50%; top: 50%; }
+.hearts-trick .hcard { position: absolute; --hc-w: clamp(2.9rem, 9.5vw, 4.5rem); left: 50%; top: 50%; }
 .hearts-trick .trick-you { transform: translate(-50%, 6%); }
 .hearts-trick .trick-west { transform: translate(-92%, -50%); }
 .hearts-trick .trick-north { transform: translate(-50%, -104%); }
@@ -1677,7 +1677,7 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   gap: 0.2rem;
   margin: 0 auto 0.4rem;
 }
-.euchre-up .hcard { --hc-w: clamp(2.3rem, 8vw, 3.1rem); }
+.euchre-up .hcard { --hc-w: clamp(2.9rem, 9.5vw, 4.5rem); }
 .euchre-up-label { font-size: 0.7rem; opacity: 0.78; text-transform: uppercase; letter-spacing: 0.04em; }
 .euchre-bid {
   display: flex;
@@ -1738,7 +1738,7 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   display: grid;
   place-items: center;
 }
-.gin-pile .hcard { --hc-w: clamp(2.6rem, 11vw, 3.6rem); width: 100%; box-shadow: none; }
+.gin-pile .hcard { --hc-w: clamp(3rem, 12vw, 4.8rem); width: 100%; box-shadow: none; }
 .gin-pile.drawable { border-color: #ffd95e; cursor: pointer; box-shadow: 0 0 0 3px rgb(255 217 94 / 0.3); }
 .gin-pile:focus-visible { outline: 3px solid #ffd95e; outline-offset: 2px; }
 .pile-count { position: absolute; bottom: -1.25rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; opacity: 0.6; }
