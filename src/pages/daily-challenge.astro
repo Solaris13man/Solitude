@@ -404,11 +404,12 @@ const schema = [
       async function renderBoard() {
         const rows = await fetchDailyLeaderboard(utcDateKey(), 20);
         if (!rows) {
-          listEl!.innerHTML = '';
-          emptyEl!.hidden = false;
-          emptyEl!.textContent = 'Leaderboard is unavailable right now.';
+          // Backend not reachable yet (e.g. table not provisioned) — hide the
+          // section entirely rather than show a broken state.
+          section!.hidden = true;
           return;
         }
+        section!.hidden = false;
         if (rows.length === 0) {
           listEl!.innerHTML = '';
           emptyEl!.hidden = false;
