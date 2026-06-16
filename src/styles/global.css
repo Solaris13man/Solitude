@@ -1596,10 +1596,29 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .opp-hand .hcard { --hc-w: clamp(1.6rem, 5.2vw, 2.8rem); margin-left: calc(var(--hc-w) * -0.62); }
 .opp-hand .hcard:first-child { margin-left: 0; }
 
+/* Side opponents (West/East) fan vertically — a "hand held at the side of the
+   table". This keeps the side columns narrow so the centre trick and the
+   player's hand get the horizontal room, and stops the 13-card fans from
+   crowding the table on phones. North stays a horizontal fan across the top. */
+.seat-west .opp-hand,
+.seat-east .opp-hand {
+  flex-direction: column;
+}
+.seat-west .opp-hand .hcard,
+.seat-east .opp-hand .hcard {
+  --hc-w: clamp(1.8rem, 6vw, 3.2rem);
+  margin-left: 0;
+  margin-top: calc(var(--hc-w) * -0.93);
+}
+.seat-west .opp-hand .hcard:first-child,
+.seat-east .opp-hand .hcard:first-child {
+  margin-top: 0;
+}
+
 .my-hand { display: flex; justify-content: center; padding-top: 0.4rem; }
 .my-hand .hcard {
-  --hc-w: clamp(2.5rem, 11vw, 5rem);
-  margin-left: calc(var(--hc-w) * -0.5);
+  --hc-w: clamp(2.5rem, 12vw, 6.5rem);
+  margin-left: calc(var(--hc-w) * -0.52);
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
@@ -1614,11 +1633,11 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 
 .hearts-trick {
   position: relative;
-  width: clamp(10rem, 40vw, 15rem);
-  height: clamp(11rem, 44vw, 16.5rem);
+  width: clamp(11rem, 42vw, 17rem);
+  height: clamp(12rem, 46vw, 18rem);
   margin: 0 auto;
 }
-.hearts-trick .hcard { position: absolute; --hc-w: clamp(2.9rem, 9.5vw, 4.5rem); left: 50%; top: 50%; }
+.hearts-trick .hcard { position: absolute; --hc-w: clamp(3.1rem, 10vw, 5rem); left: 50%; top: 50%; }
 .hearts-trick .trick-you { transform: translate(-50%, 6%); }
 .hearts-trick .trick-west { transform: translate(-92%, -50%); }
 .hearts-trick .trick-north { transform: translate(-50%, -104%); }
@@ -1677,7 +1696,7 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   gap: 0.2rem;
   margin: 0 auto 0.4rem;
 }
-.euchre-up .hcard { --hc-w: clamp(2.9rem, 9.5vw, 4.5rem); }
+.euchre-up .hcard { --hc-w: clamp(3.1rem, 10vw, 5rem); }
 .euchre-up-label { font-size: 0.7rem; opacity: 0.78; text-transform: uppercase; letter-spacing: 0.04em; }
 .euchre-bid {
   display: flex;
