@@ -52,6 +52,15 @@ const TOKEN_KEY = 'solitude.account.token';
 const USER_KEY = 'solitude.account.user';
 const REFRESH_KEY = 'solitude.account.refresh';
 
+// Observability for cross-device sync. The UI (account page) can surface these
+// so a failing sync is visible instead of silent.
+let lastSyncError = '';
+let lastSyncedAt = 0;
+
+export function syncStatus(): { error: string; at: number } {
+  return { error: lastSyncError, at: lastSyncedAt };
+}
+
 export function accountsEnabled(): boolean {
   const a = SITE_CONFIG.accounts;
   return a.enabled && !!a.supabaseUrl && !!a.supabaseAnonKey;
@@ -298,33 +307,58 @@ async function fetchUser(authToken: string): Promise<AccountUser | null> {
   }
 }
 
-async function fetchCloudData(uid: string): Promise<PlayerData | null> {
+/**
+ * Read the cloud profile. Crucially this distinguishes a *successful* read with
+ * no row yet (`{ ok: true, data: null }`) from a *failed* read
+ * (`{ ok: false }`). Callers must never treat a failed read as "the cloud is
+ * empty", or they'd overwrite real remote progress with local data.
+ */
+async function fetchCloudData(uid: string): Promise<{ ok: boolean; data: PlayerData | null }> {
   try {
     const res = await cloudFetch(`/rest/v1/profiles?id=eq.${uid}&select=data`);
-    if (!res || !res.ok) return null;
+    if (!res) return { ok: false, data: null }; // not signed in / no token
+    if (!res.ok) {
+      lastSyncError = `cloud read failed (HTTP ${res.status})`;
+      return { ok: false, data: null };
+    }
     const rows = (await res.json()) as { data: PlayerData }[];
-    return rows[0]?.data ?? null;
-  } catch {
-    return null;
+    return { ok: true, data: rows[0]?.data ?? null };
+  } catch (err) {
+    lastSyncError = 'cloud read error: ' + ((err as Error)?.message || String(err));
+    return { ok: false, data: null };
   }
 }
 
-async function pushCloudData(uid: string, data: PlayerData): Promise<void> {
+async function pushCloudData(uid: string, data: PlayerData): Promise<boolean> {
   try {
-    await cloudFetch('/rest/v1/profiles', {
+    const res = await cloudFetch('/rest/v1/profiles', {
       method: 'POST',
       headers: { Prefer: 'resolution=merge-duplicates' },
       body: JSON.stringify({ id: uid, data, updated_at: new Date().toISOString() }),
     });
-  } catch {
-    // best effort; local data is the source of truth meanwhile
+    if (!res || !res.ok) {
+      lastSyncError = res ? `cloud write failed (HTTP ${res.status})` : 'cloud write failed (no session)';
+      return false;
+    }
+    return true;
+  } catch (err) {
+    lastSyncError = 'cloud write error: ' + ((err as Error)?.message || String(err));
+    return false;
   }
 }
 
 /** Merge cloud ↔ local both directions so neither side loses progress. */
 async function sync(uid: string): Promise<void> {
   const local = collectLocalData();
-  const cloud = await fetchCloudData(uid);
+  const read = await fetchCloudData(uid);
+  if (!read.ok) {
+    // We couldn't read the cloud. Do NOT push — pushing now would overwrite
+    // whatever is really in the cloud with this device's (possibly empty) local
+    // data, which is how a fresh sign-in could wipe synced progress. Bail and
+    // let the next load or a manual "Sync now" retry.
+    return;
+  }
+  const cloud = read.data;
   const merged = cloud ? mergePlayerData(local, cloud) : local;
   const settingsBefore = JSON.stringify(local.settings);
   applyLocalData(merged);
@@ -338,7 +372,11 @@ async function sync(uid: string): Promise<void> {
       /* ignore */
     }
   }
-  await pushCloudData(uid, merged);
+  const pushed = await pushCloudData(uid, merged);
+  if (pushed) {
+    lastSyncError = '';
+    lastSyncedAt = Date.now();
+  }
   // If the cloud brought different display settings, reload once so already
   // rendered cards/tiles pick them up (theme and surface update live, but card
   // and tile art needs a fresh render).
@@ -410,10 +448,22 @@ export async function initAccount(): Promise<void> {
   }
 }
 
-/** Push local progress to the cloud after a game (debounced by callers). */
+/**
+ * Sync after a game/settings change. Runs a full pull-merge-push (not a blind
+ * push) so a device with sparse local data can never clobber richer cloud data.
+ */
 export async function syncUp(): Promise<void> {
   const t = token();
   const user = getCachedUser();
   if (!accountsEnabled() || !t || !user) return;
-  await pushCloudData(user.id, collectLocalData());
+  await sync(user.id);
+}
+
+/** Manually trigger a sync (used by the account page's "Sync now" button). */
+export async function syncNow(): Promise<{ ok: boolean; error: string }> {
+  if (!accountsEnabled()) return { ok: false, error: 'accounts are off' };
+  const user = getCachedUser();
+  if (!user || !token()) return { ok: false, error: 'not signed in' };
+  await sync(user.id);
+  return { ok: !lastSyncError, error: lastSyncError };
 }

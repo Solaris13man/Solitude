@@ -30,6 +30,7 @@ const description =
       </div>
       <div id="account-action"></div>
     </section>
+    <p class="account-sync px-1 pt-2 text-sm opacity-70" id="account-sync" hidden></p>
 
     <section class="py-6">
       <div class="flex items-baseline justify-between">
@@ -60,9 +61,25 @@ const description =
       onAccountChange,
       signInWithGoogle,
       signOut,
+      syncNow,
+      syncStatus,
       type AccountUser,
     } from '../lib/account';
     import { BADGES, snapshot, earnedBadgeIds } from '../lib/achievements';
+
+    function showSyncStatus(msg: string): void {
+      const el = document.getElementById('account-sync');
+      if (!el) return;
+      el.textContent = msg;
+      el.hidden = !msg;
+    }
+
+    function lastSyncedMsg(): string {
+      const { error, at } = syncStatus();
+      if (error) return `Last sync failed: ${error}`;
+      if (at) return `Last synced ${new Date(at).toLocaleTimeString()}`;
+      return '';
+    }
 
     function renderBadges() {
       const grid = document.getElementById('badge-grid');
@@ -93,14 +110,27 @@ const description =
         if (user.picture) {
           avatar.innerHTML = `<img src="${user.picture}" alt="" />`;
         }
-        action.innerHTML = '<button class="btn" id="signout-btn" type="button">Sign out</button>';
+        action.innerHTML =
+          '<button class="btn btn-primary" id="syncnow-btn" type="button">Sync now</button>' +
+          '<button class="btn" id="signout-btn" type="button">Sign out</button>';
         document.getElementById('signout-btn')?.addEventListener('click', () => void signOut());
+        document.getElementById('syncnow-btn')?.addEventListener('click', async () => {
+          const btn = document.getElementById('syncnow-btn') as HTMLButtonElement | null;
+          if (btn) btn.disabled = true;
+          showSyncStatus('Syncing…');
+          const res = await syncNow();
+          showSyncStatus(res.ok ? lastSyncedMsg() || 'Synced ✓' : `Sync failed: ${res.error}`);
+          renderBadges();
+          if (btn) btn.disabled = false;
+        });
+        showSyncStatus(lastSyncedMsg());
         return;
       }
 
       name.textContent = 'Guest';
       sub.textContent = 'Playing on this device';
       avatar.textContent = '🙂';
+      showSyncStatus('');
       if (accountsEnabled()) {
         action.innerHTML =
           '<button class="btn btn-primary" id="signin-btn" type="button">Sign in with Google</button>';
@@ -117,5 +147,9 @@ const description =
     // badges may change after a sign-in merge
     window.addEventListener('cardhearth:account', renderBadges);
     window.addEventListener('cardhearth:result', renderBadges);
+    window.addEventListener('cardhearth:synced', () => {
+      renderBadges();
+      if (getCachedUser()) showSyncStatus(lastSyncedMsg());
+    });
   </script>
 </Layout>
