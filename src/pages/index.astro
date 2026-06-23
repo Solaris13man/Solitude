@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import GameArt from '../components/GameArt.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
+import { PARENT_ORG } from '../lib/site-config';
 
 const cardCount = GAMES.filter((g) => g.category === 'cards' && g.id !== 'daily').length;
 const puzzleCount = GAMES.filter((g) => g.category === 'puzzle').length;
@@ -26,6 +27,11 @@ const schema = [
     name: 'CardHearth',
     url: 'https://cardhearth.com/',
     logo: 'https://cardhearth.com/logo.png',
+    parentOrganization: {
+      '@type': 'Organization',
+      name: PARENT_ORG.name,
+      url: PARENT_ORG.url,
+    },
   },
   {
     '@context': 'https://schema.org',
