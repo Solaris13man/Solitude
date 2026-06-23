@@ -794,8 +794,12 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
 
 .btn .btn-icon { width: 1rem; height: 1rem; flex: none; }
 @media (max-width: 600px) {
-  .btn:not(.btn-primary) .btn-label { display: none; }
-  .btn { padding: 0.5rem 0.6rem; }
+  /* Collapse to icon-only only when there's an icon to show — label-only
+     buttons (the trick-card toolbars) keep their text instead of going blank. */
+  .btn:not(.btn-primary):has(.btn-icon) .btn-label { display: none; }
+  /* Comfortable ~44px tap targets for touch (matters for paid mobile traffic). */
+  .btn { padding: 0.5rem 0.6rem; min-height: 2.75rem; }
+  .btn:not(.btn-primary):has(.btn-icon) { min-width: 2.75rem; justify-content: center; }
 }
 
 .btn {

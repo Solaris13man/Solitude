@@ -1,6 +1,7 @@
 /**
- * Daily Challenge: one shared puzzle per UTC day, rotating across the whole
- * catalogue. The day's game and its deal seed both derive from the date, so
+ * Daily Challenge: one shared puzzle per UTC day, rotating across the solitaire
+ * and puzzle games (the computer card games — Hearts, Spades, Euchre, Gin — are
+ * not in it). The day's game and its deal seed both derive from the date, so
  * every player worldwide gets the identical challenge, and completion/streak
  * history is tracked locally per day.
  */
@@ -29,7 +30,7 @@ export interface DailyEntry {
 }
 
 /**
- * The rotation. Every game appears; `dailyNumber % length` picks the day, so
+ * The rotation. Every solo game appears; `dailyNumber % length` picks the day, so
  * the schedule is deterministic and shared by everyone. Day 1 is Klondike.
  */
 export const DAILY_ROTATION: DailyEntry[] = [
