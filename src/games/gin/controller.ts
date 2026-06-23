@@ -2,6 +2,7 @@ import { type Settings, applySettings, loadSettings, saveSettings } from '../../
 import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
 import { cardArt, cardArtById } from '../cards/board';
+import { activateOnKey, markHandCard } from '../cards/a11y';
 import { RANK_LABELS, SUIT_SYMBOLS, type Card, isRed } from '../cards/deck';
 import * as G from './engine';
 
@@ -59,8 +60,13 @@ class GinController {
       const c = (e.target as HTMLElement).closest<HTMLElement>('.hcard');
       if (c?.dataset.id) this.onCardClick(c.dataset.id);
     });
+    activateOnKey($('gin-hand'), '.hcard', (el) => {
+      if (el.dataset.id) this.onCardClick(el.dataset.id);
+    });
     $('gin-stock').addEventListener('click', () => this.onDraw('stock'));
     $('gin-discard').addEventListener('click', () => this.onDraw('discard'));
+    // #gin-discard is a div[role=button]; Enter/Space don't fire click natively.
+    activateOnKey($('gin-discard'), '#gin-discard', () => this.onDraw('discard'));
     $opt('btn-knock')?.addEventListener('click', () => this.toggleKnock());
     this.newGame();
   }
@@ -237,6 +243,9 @@ class GinController {
             el.classList.add('playable');
           }
         }
+        markHandCard(el, card, {
+          playable: canDiscard ? (this.knockMode ? G.canKnock(s, 0, card) : true) : undefined,
+        });
         hand.appendChild(el);
       }
       first = false;
