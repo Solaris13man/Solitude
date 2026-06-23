@@ -95,7 +95,12 @@ class CardGameController {
     this.bindSettingsDialog();
     this.bindKeyboard();
     this.bindResize();
-    window.setInterval(() => this.updateClock(), 500);
+    // Only tick while the clock is actually running — a finished/paused/
+    // backgrounded game shouldn't keep writing the DOM and refreshing the
+    // daily banner twice a second.
+    window.setInterval(() => {
+      if (this.runningSince !== null) this.updateClock();
+    }, 500);
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) this.pauseTimer();
       else if (!this.finished && this.state.moves > 0) this.resumeTimer();
@@ -330,14 +335,18 @@ class CardGameController {
     this.pauseTimer();
     this.persist();
     const elapsed = this.elapsedMs();
-    const stats = recordResult({
-      game: this.ruleset.id,
-      variant: this.state.variant,
-      won: true,
-      elapsedMs: elapsed,
-      moves: this.state.moves,
-      score: this.state.score,
-    });
+    // Replaying an already-solved daily must not re-count toward win/played/
+    // streak stats — read the existing record instead of recording again.
+    const stats = this.daily.alreadySolved()
+      ? loadStats(this.ruleset.id)
+      : recordResult({
+          game: this.ruleset.id,
+          variant: this.state.variant,
+          won: true,
+          elapsedMs: elapsed,
+          moves: this.state.moves,
+          score: this.state.score,
+        });
     const v = variantStats(stats, this.state.variant);
     const rows = [
       `<dt>Time</dt><dd>${formatTime(elapsed)}${v.bestTimeMs === elapsed ? ' — new best!' : ''}</dd>`,

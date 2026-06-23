@@ -1,9 +1,21 @@
 /**
- * Daily Challenge: one shared puzzle per UTC day, rotating across the solitaire
- * and puzzle games (the computer card games — Hearts, Spades, Euchre, Gin — are
- * not in it). The day's game and its deal seed both derive from the date, so
- * every player worldwide gets the identical challenge, and completion/streak
- * history is tracked locally per day.
+ * Daily Challenge: one shared puzzle per UTC day. The day's game and its deal
+ * seed both derive from the date, so every player worldwide gets the identical
+ * challenge, and completion/streak history is tracked locally per day.
+ *
+ * Fairness rule: because the daily is shared and carries a streak, every deal
+ * MUST be completable — an unsolvable shared deal would break everyone's streak
+ * through no fault of their own. So the rotation is limited to games where every
+ * deal is guaranteed (or, for FreeCell, all-but-certainly) solvable:
+ *   - Sudoku   — generated and verified logic-solvable, no guessing.
+ *   - Mahjong  — built in reverse so a winning path always exists.
+ *   - FreeCell — solvable for all but a vanishing fraction of deals (~1 in 1000s).
+ *   - 2048     — a skill target (reach a tile), not a deal that can be "unsolvable".
+ * The random-deal solitaires (Klondike, Spider, Yukon, Scorpion, Pyramid,
+ * TriPeaks, Golf, Forty Thieves, Eight Off) and Minesweeper (which can require
+ * guessing) are deliberately NOT in the daily — they remain fully playable on
+ * their own pages. The computer card games (Hearts, Spades, Euchre, Gin) are
+ * not in it either.
  */
 
 export interface DailyResult {
@@ -30,29 +42,24 @@ export interface DailyEntry {
 }
 
 /**
- * The rotation. Every solo game appears; `dailyNumber % length` picks the day, so
- * the schedule is deterministic and shared by everyone. Day 1 is Klondike.
+ * The rotation — only guaranteed-solvable games (see the fairness rule above).
+ * `dailyNumber % length` picks the day, so the schedule is deterministic and
+ * shared by everyone. Variety comes from the four Sudoku difficulties, the
+ * Mahjong layouts, FreeCell, and the two 2048 targets. Day 1 is Sudoku (Medium).
  */
 export const DAILY_ROTATION: DailyEntry[] = [
-  { game: 'klondike', variant: 1, label: 'Klondike (Draw 1)', path: '/klondike/' },
   { game: 'sudoku', variant: 2, label: 'Sudoku (Medium)', path: '/sudoku/' },
-  { game: 'spider', variant: 1, label: 'Spider (1 Suit)', path: '/spider/' },
   { game: 'mahjong', variant: 1, label: 'Mahjong (Turtle)', path: '/mahjong/' },
   { game: 'freecell', variant: 0, label: 'FreeCell', path: '/freecell/' },
-  { game: 'minesweeper', variant: 2, label: 'Minesweeper (Medium)', path: '/minesweeper/' },
-  { game: 'tripeaks', variant: 0, label: 'TriPeaks', path: '/tripeaks/' },
   { game: '2048', variant: 0, label: '2048 (reach 512)', path: '/2048/', target: 512 },
-  { game: 'klondike', variant: 3, label: 'Klondike (Draw 3)', path: '/klondike/' },
-  { game: 'pyramid', variant: 0, label: 'Pyramid', path: '/pyramid/' },
   { game: 'sudoku', variant: 3, label: 'Sudoku (Hard)', path: '/sudoku/' },
-  { game: 'golf', variant: 0, label: 'Golf', path: '/golf/' },
-  { game: 'spider', variant: 2, label: 'Spider (2 Suits)', path: '/spider/' },
   { game: 'mahjong', variant: 7, label: 'Mahjong (Diamond)', path: '/mahjong/' },
-  { game: 'yukon', variant: 0, label: 'Yukon', path: '/yukon/' },
+  { game: 'sudoku', variant: 1, label: 'Sudoku (Easy)', path: '/sudoku/' },
+  { game: 'mahjong', variant: 2, label: 'Mahjong (Cross)', path: '/mahjong/' },
   { game: 'freecell', variant: 0, label: 'FreeCell', path: '/freecell/' },
-  { game: 'scorpion', variant: 0, label: 'Scorpion', path: '/scorpion/' },
-  { game: 'eightoff', variant: 0, label: 'Eight Off', path: '/eight-off/' },
-  { game: 'fortythieves', variant: 0, label: 'Forty Thieves', path: '/forty-thieves/' },
+  { game: 'sudoku', variant: 4, label: 'Sudoku (Expert)', path: '/sudoku/' },
+  { game: 'mahjong', variant: 4, label: 'Mahjong (Fortress)', path: '/mahjong/' },
+  { game: '2048', variant: 0, label: '2048 (reach 1024)', path: '/2048/', target: 1024 },
 ];
 
 const KEY = 'solitude.daily.v1.klondike';

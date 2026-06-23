@@ -95,7 +95,7 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: url('/textures/felt.png');
+  background-image: url('/textures/felt.webp');
   background-size: 220px 220px;
   background-repeat: repeat;
 }
@@ -113,10 +113,10 @@ body::before {
     var(--surface-img) 0 0 / var(--surface-size, 420px) repeat;
   background-attachment: fixed;
 }
-:root[data-surface='wood-walnut'] { --surface-img: url('/textures/wood-walnut.png'); --surface-size: 460px; }
-:root[data-surface='wood-oak'] { --surface-img: url('/textures/wood-oak.png'); --surface-size: 460px; }
-:root[data-surface='marble'] { --surface-img: url('/textures/marble.png'); --surface-size: 520px; }
-:root[data-surface='granite'] { --surface-img: url('/textures/granite.png'); --surface-size: 480px; }
+:root[data-surface='wood-walnut'] { --surface-img: url('/textures/wood-walnut.webp'); --surface-size: 460px; }
+:root[data-surface='wood-oak'] { --surface-img: url('/textures/wood-oak.webp'); --surface-size: 460px; }
+:root[data-surface='marble'] { --surface-img: url('/textures/marble.webp'); --surface-size: 520px; }
+:root[data-surface='granite'] { --surface-img: url('/textures/granite.webp'); --surface-size: 480px; }
 :root[data-surface]:not([data-surface='felt']) body::before { display: none; }
 
 /* ---------- homepage trust strip (the "fair" promise) ---------- */
@@ -300,7 +300,7 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/textures/felt.png');
+  background-image: url('/textures/felt.webp');
   background-size: 150px 150px;
   opacity: 0.85;
   pointer-events: none;

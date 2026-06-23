@@ -78,27 +78,43 @@ const ahrefsLive = !!ga.ahrefsKey;
     <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#135c32" />
     {
-      gaLive && (
+      /* Warm up the DNS/TLS for the deferred third-party origins without
+         forcing an early connection on the critical path. */
+      (gaLive || ahrefsLive || adsLive) && (
         <>
-          {/* Google tag (gtag.js) */}
-          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga.measurementId}`} />
-          <script is:inline set:html={`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${ga.measurementId}');`} />
+          {gaLive && <link rel="dns-prefetch" href="https://www.googletagmanager.com" />}
+          {ahrefsLive && <link rel="dns-prefetch" href="https://analytics.ahrefs.com" />}
+          {adsLive && <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />}
         </>
       )
     }
     {
-      ahrefsLive && (
-        /* Ahrefs Web Analytics */
-        <script is:inline async src="https://analytics.ahrefs.com/analytics.js" data-key={ga.ahrefsKey} />
+      gaLive && (
+        /* GA queue stub stays in <head> so events are captured immediately;
+           gtag.js itself is loaded later (see the deferred loader below). */
+        <script is:inline set:html={`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${ga.measurementId}');`} />
       )
     }
     {
-      adsLive && (
+      (gaLive || ahrefsLive || adsLive) && (
+        /* Keep GA, Ahrefs and AdSense off the critical render path: load them
+           on the first user interaction or shortly after load, whichever comes
+           first. This protects LCP/INP without losing analytics or ads. */
         <script
           is:inline
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE_CONFIG.ads.adsenseClient}`}
-          crossorigin="anonymous"
+          define:vars={{
+            gaId: gaLive ? ga.measurementId : '',
+            ahrefsKey: ahrefsLive ? ga.ahrefsKey : '',
+            adsClient: adsLive ? SITE_CONFIG.ads.adsenseClient : '',
+          }}
+          set:html={`(function(){var done=false;var evts=['pointerdown','keydown','touchstart','scroll'];var opts={once:true,passive:true,capture:true};
+function add(src,attrs){var s=document.createElement('script');s.async=true;s.src=src;if(attrs)for(var k in attrs)s.setAttribute(k,attrs[k]);document.head.appendChild(s);}
+function go(){if(done)return;done=true;evts.forEach(function(e){window.removeEventListener(e,go,opts);});
+if(gaId)add('https://www.googletagmanager.com/gtag/js?id='+gaId);
+if(ahrefsKey)add('https://analytics.ahrefs.com/analytics.js',{'data-key':ahrefsKey});
+if(adsClient)add('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+adsClient,{crossorigin:'anonymous'});}
+evts.forEach(function(e){window.addEventListener(e,go,opts);});
+if(document.readyState==='complete')setTimeout(go,2500);else window.addEventListener('load',function(){setTimeout(go,2500);});})();`}
         />
       )
     }

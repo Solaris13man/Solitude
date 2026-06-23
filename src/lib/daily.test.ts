@@ -110,15 +110,18 @@ describe('daily rotation', () => {
     expect(day2).toBe(DAILY_ROTATION[1]);
   });
 
-  it('includes every game in the catalogue', async () => {
+  it('contains only guaranteed-solvable games (fairness invariant)', async () => {
     const { DAILY_ROTATION } = await import('./daily');
-    const games = new Set(DAILY_ROTATION.map((e) => e.game));
-    for (const g of [
-      'klondike', 'spider', 'freecell', 'pyramid', 'tripeaks',
-      'golf', 'sudoku', 'mahjong', 'minesweeper', '2048',
-    ]) {
-      expect(games.has(g)).toBe(true);
+    // The daily is shared and carries a streak, so every deal must be
+    // completable. Random-deal solitaires and Minesweeper (which can require
+    // guessing) must never appear — only these provably/effectively-solvable
+    // games are allowed.
+    const allowed = new Set(['sudoku', 'mahjong', 'freecell', '2048']);
+    for (const e of DAILY_ROTATION) {
+      expect(allowed.has(e.game)).toBe(true);
     }
+    // And it should still be varied — more than one game type.
+    expect(new Set(DAILY_ROTATION.map((e) => e.game)).size).toBeGreaterThan(1);
   });
 
   it('every rotation entry has a label and a path', async () => {
