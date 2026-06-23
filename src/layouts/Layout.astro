@@ -44,7 +44,9 @@ function ogPathFor(s: string): string {
   return '/og.png';
 }
 const ogImage = new URL(ogPathFor(slug), Astro.site);
-const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient;
+// Never serve ads on noindex/thin pages (404, account, profile) — keeps the
+// AdSense unit off low-value screens, which matters under paid traffic.
+const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient && !noindex;
 const ga = SITE_CONFIG.analytics;
 const gaLive = ga.provider === 'ga' && !!ga.measurementId;
 const ahrefsLive = !!ga.ahrefsKey;

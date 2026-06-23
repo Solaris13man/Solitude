@@ -6,6 +6,7 @@ import {
   dailyNumber,
   dailySeed,
   formatCountdown,
+  isDailySolved,
   loadDaily,
   msUntilNextDaily,
   recordDailyWin,
@@ -99,9 +100,15 @@ export class DailyMode {
 
   /** Record a solve into the daily history; returns the current streak. */
   recordSolve(timeMs: number, moves: number, score: number, game: string): number {
-    const dateKey = utcDateKey(this.date ?? new Date());
+    const refDate = this.date ?? new Date();
+    const dateKey = utcDateKey(refDate);
+    // Fire the engagement event only the first time a given day is solved;
+    // replaying an already-solved deal must not re-count it.
+    const firstSolve = !isDailySolved(refDate);
     const record = recordDailyWin(dateKey, { timeMs, moves, score, game });
-    track('daily_solved', { game, seconds: Math.round(timeMs / 1000), archive: this.isArchive });
+    if (firstSolve) {
+      track('daily_solved', { game, seconds: Math.round(timeMs / 1000), archive: this.isArchive });
+    }
     // Post to the public leaderboard (no-op for guests / when accounts are off).
     void submitDailyScore(dateKey);
     this.refreshBanner();

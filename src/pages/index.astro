@@ -4,7 +4,7 @@ import GameArt from '../components/GameArt.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
 
-const cardCount = GAMES.filter((g) => g.category === 'cards').length;
+const cardCount = GAMES.filter((g) => g.category === 'cards' && g.id !== 'daily').length;
 const puzzleCount = GAMES.filter((g) => g.category === 'puzzle').length;
 const gameCount = cardCount + puzzleCount;
 

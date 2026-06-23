@@ -1869,6 +1869,12 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   padding: 0.4rem;
   text-align: center;
 }
+/* Reserve space for the live unit before AdSense fills it, so the ad doesn't
+   shove content on arrival (CLS) — worst on mobile, where most paid clicks land. */
+.ad-slot ins.adsbygoogle {
+  display: block;
+  min-height: 90px;
+}
 .ad-slot-tag {
   display: block;
   font-size: 0.6rem;

@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
 
-const gameCount = GAMES.filter((g) => g.category === 'cards' || g.category === 'puzzle').length;
+const gameCount = GAMES.filter((g) => g.id !== 'daily' && (g.category === 'cards' || g.category === 'puzzle')).length;
 
 const title = 'The Story Behind CardHearth';
 const description =
