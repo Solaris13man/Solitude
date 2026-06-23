@@ -2,6 +2,7 @@ import { type Settings, applySettings, loadSettings, saveSettings } from '../../
 import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
 import { cardArt, cardArtById } from '../cards/board';
+import { activateOnKey, markHandCard } from '../cards/a11y';
 import { RANK_LABELS, SUIT_SYMBOLS, SUIT_NAMES, SUITS, type Card, type Suit, isRed } from '../cards/deck';
 import * as E from './engine';
 
@@ -69,6 +70,9 @@ class EuchreController {
     $('euchre-hand').addEventListener('click', (e) => {
       const card = (e.target as HTMLElement).closest<HTMLElement>('.hcard');
       if (card?.dataset.id) this.onCardClick(card.dataset.id);
+    });
+    activateOnKey($('euchre-hand'), '.hcard', (el) => {
+      if (el.dataset.id) this.onCardClick(el.dataset.id);
     });
     $('euchre-bid').addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-act]');
@@ -343,6 +347,9 @@ class EuchreController {
         el.classList.toggle('playable', legalIds.has(card.id));
         el.classList.toggle('dim', !legalIds.has(card.id));
       }
+      markHandCard(el, card, {
+        playable: this.discarding ? true : legalIds ? legalIds.has(card.id) : undefined,
+      });
       hand.appendChild(el);
     }
   }

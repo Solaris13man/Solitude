@@ -2,6 +2,7 @@ import { type Settings, applySettings, loadSettings, saveSettings } from '../../
 import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
 import { cardArt, cardArtById } from '../cards/board';
+import { activateOnKey, markHandCard } from '../cards/a11y';
 import { RANK_LABELS, SUIT_SYMBOLS, type Card, isRed } from '../cards/deck';
 import * as S from './engine';
 
@@ -67,6 +68,9 @@ class SpadesController {
     $('spades-hand').addEventListener('click', (e) => {
       const card = (e.target as HTMLElement).closest<HTMLElement>('.hcard');
       if (card?.dataset.id) this.onCardClick(card.dataset.id);
+    });
+    activateOnKey($('spades-hand'), '.hcard', (el) => {
+      if (el.dataset.id) this.onCardClick(el.dataset.id);
     });
     $('bid-bar').addEventListener('click', (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-bid]');
@@ -217,6 +221,7 @@ class SpadesController {
         el.classList.toggle('playable', legalIds.has(card.id));
         el.classList.toggle('dim', !legalIds.has(card.id));
       }
+      markHandCard(el, card, { playable: legalIds ? legalIds.has(card.id) : undefined });
       hand.appendChild(el);
     }
   }
