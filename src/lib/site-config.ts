@@ -12,6 +12,12 @@ export interface SiteConfig {
     domain: string;
     /** Google Analytics 4 measurement id, e.g. "G-XXXXXXXXXX". */
     measurementId: string;
+    /**
+     * Ahrefs Web Analytics data-key. Empty disables it. Loads alongside GA
+     * (independent of `provider`) — a lightweight, privacy-friendly second
+     * source, handy for the paid-traffic test.
+     */
+    ahrefsKey: string;
   };
   ads: {
     /** When false, AdSlot renders a clearly-labelled placeholder only. */
@@ -64,6 +70,7 @@ export const SITE_CONFIG: SiteConfig = {
     provider: 'ga',
     domain: 'cardhearth.com',
     measurementId: 'G-2QD63X4RF2',
+    ahrefsKey: 'ds7WpxvZ8jfYj963CCJkng',
   },
   ads: {
     enabled: true,

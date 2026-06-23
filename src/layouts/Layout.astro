@@ -47,6 +47,7 @@ const ogImage = new URL(ogPathFor(slug), Astro.site);
 const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient;
 const ga = SITE_CONFIG.analytics;
 const gaLive = ga.provider === 'ga' && !!ga.measurementId;
+const ahrefsLive = !!ga.ahrefsKey;
 ---
 
 <!doctype html>
@@ -81,6 +82,12 @@ const gaLive = ga.provider === 'ga' && !!ga.measurementId;
           <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga.measurementId}`} />
           <script is:inline set:html={`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${ga.measurementId}');`} />
         </>
+      )
+    }
+    {
+      ahrefsLive && (
+        /* Ahrefs Web Analytics */
+        <script is:inline async src="https://analytics.ahrefs.com/analytics.js" data-key={ga.ahrefsKey} />
       )
     }
     {
