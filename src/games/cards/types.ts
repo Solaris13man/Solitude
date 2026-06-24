@@ -53,6 +53,9 @@ export interface Ruleset {
   /** Golf: the waste pile is the play/drop target. */
   wasteDrop?: boolean;
   defaultVariant: number;
+  /** Game-specific random deal number for "new game" (e.g. FreeCell keeps to
+   *  the Windows 1–1,000,000 numbering). Falls back to a generic 32-bit seed. */
+  randomSeed?: () => number;
   deal(seed: number, variant: number): GameState;
   canMove(state: GameState, from: PileRef, to: PileRef, count: number): boolean;
   applyMove(state: GameState, move: Move): void;

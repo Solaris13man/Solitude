@@ -175,7 +175,11 @@ class CardGameController {
         score: this.state.score,
       });
     }
-    const dealSeed = seed ?? (this.daily.active ? this.daily.seed : randomSeed());
+    const dealSeed =
+      seed ??
+      (this.daily.active
+        ? this.daily.seed
+        : (this.ruleset.randomSeed ?? randomSeed)());
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.variant());
     this.state = this.ruleset.deal(dealSeed, dealVariant);
     track('game_started', { game: this.ruleset.id, variant: dealVariant });

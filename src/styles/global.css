@@ -688,8 +688,7 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
 .tldr ul { margin-top: 0.5rem; margin-bottom: 0; }
 
 .deal-jump { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 0.6rem 0 0.2rem; }
-.deal-jump input {
-  width: 9rem;
+.deal-jump input, .deal-jump select {
   padding: 0.5rem 0.7rem;
   border-radius: 10px;
   border: 1px solid rgb(255 255 255 / 0.18);
@@ -697,6 +696,7 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
   color: inherit;
   font-size: 1rem;
 }
+.deal-jump input { width: 9rem; }
 .deal-list li { margin-top: 0.5rem; }
 
 .daily-archive-nav {

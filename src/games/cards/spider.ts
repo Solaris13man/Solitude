@@ -1,4 +1,5 @@
 import { type Card, type Suit, createSpiderDeck, shuffle } from './deck';
+import { friendlyDealSeed } from './rng';
 import {
   type GameState,
   type Move,
@@ -235,6 +236,7 @@ export const spiderRules: Ruleset = {
     { value: 4, label: '4 suits' },
   ],
   defaultVariant: 1,
+  randomSeed: friendlyDealSeed,
   deal,
   canMove,
   applyMove,

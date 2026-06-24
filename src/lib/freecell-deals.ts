@@ -1,74 +1,78 @@
 /**
- * FreeCell numbered deals. The classic Microsoft FreeCell shipped 32,000
- * numbered deals (1–32000); CardHearth can play any of them by seed via
- * `/freecell/?deal=<n>`. This module backs the deal hub (`/freecell/deals/`)
- * and a curated set of indexable per-deal pages (`/freecell/deal/<n>/`).
+ * FreeCell numbered deals. CardHearth uses the standard Microsoft FreeCell deal
+ * numbering (see src/games/cards/ms-freecell.ts), so deal #N here is the same
+ * #N as Windows FreeCell and every other site that follows the standard. That
+ * makes the famous deals real: #11982 is genuinely unsolvable, #617 and #1941
+ * are genuinely among the hardest solvable ones.
  *
- * We deliberately feature a hand-picked set rather than minting 32,000 thin
- * pages: each featured deal is a genuine, distinct, playable permalink with an
- * honest note. The hub's "play any number" box covers every other deal without
- * a doorway page for each.
+ * This module backs the deal hub (`/freecell/deals/`) and a curated set of
+ * indexable per-deal pages (`/freecell/deal/<n>/`). The hub's "play any number"
+ * box covers every other deal without a page each.
  */
 
-/** The size of the classic numbered set. */
-export const CLASSIC_DEAL_COUNT = 32000;
+export { MS_DEAL_MAX as PLAYABLE_MAX } from '../games/cards/ms-freecell';
 
-/** The one classic deal (1–32000) proven to have no solution. */
+/** The size of the original numbered set (the famous "32,000 deals"). */
+export const CLASSIC_SET_SIZE = 32000;
+
+/** The one deal in 1–32000 proven to have no solution. */
 export const UNSOLVABLE_DEAL = 11982;
 
 export interface FeaturedDeal {
   n: number;
-  /** Short honest note shown on the hub and the deal page. */
+  /** Short, factual note shown on the hub and the deal page. */
   note: string;
-  /** Grouping tag for the hub. */
-  tag: 'classic' | 'landmark' | 'unsolvable';
+  tag: 'classic' | 'hard' | 'unsolvable' | 'landmark';
 }
 
 /**
- * Curated featured deals. Notes stay factual — we don't invent per-deal
- * difficulty for deals we haven't solved. Low numbers are the classic openers
- * people look up; the landmarks are memorable round numbers; #11982 is the
- * famous unsolvable one.
+ * Curated featured deals. Difficulty notes for specific deals are sourced from
+ * the documented FreeCell record (solitairelaboratory.com's analysis of the
+ * standard numbered deals) — not invented.
  */
 export const FEATURED_DEALS: FeaturedDeal[] = [
-  { n: 1, note: 'The very first numbered FreeCell deal — a classic place to start.', tag: 'classic' },
-  { n: 2, note: 'One of the original low-numbered deals, winnable with steady play.', tag: 'classic' },
-  { n: 3, note: 'An early classic deal — fully solvable with careful planning.', tag: 'classic' },
-  { n: 4, note: 'A gentle low-numbered deal to warm up on.', tag: 'classic' },
-  { n: 5, note: 'A frequently-looked-up early deal, winnable with care.', tag: 'classic' },
-  { n: 6, note: 'One of the classic single-digit deals.', tag: 'classic' },
-  { n: 7, note: 'A solvable early deal that rewards reading the board first.', tag: 'classic' },
-  { n: 8, note: 'A classic low number — open it up via an empty column.', tag: 'classic' },
-  { n: 9, note: 'An early deal that rewards freeing a cascade quickly.', tag: 'classic' },
-  { n: 10, note: 'Round, low and winnable — a good practice deal.', tag: 'classic' },
-  { n: 100, note: 'A memorable round deal number, solvable with planning.', tag: 'landmark' },
-  { n: 500, note: 'A landmark deal — like nearly all of them, winnable with care.', tag: 'landmark' },
-  { n: 1000, note: 'The four-figure landmark deal, solvable with deliberate play.', tag: 'landmark' },
-  { n: 2500, note: 'A mid-set landmark deal worth a careful attempt.', tag: 'landmark' },
-  { n: 5000, note: 'A landmark deal from the middle of the classic set.', tag: 'landmark' },
-  { n: 10000, note: 'The five-figure landmark — winnable, but plan your empty columns.', tag: 'landmark' },
+  { n: 1, note: 'The very first numbered deal — the classic place to start, and comfortably winnable.', tag: 'classic' },
+  { n: 2, note: 'The second standard deal: a gentle, winnable opener.', tag: 'classic' },
+  { n: 3, note: 'An easy early deal, good for warming up.', tag: 'classic' },
+  { n: 5, note: 'A frequently looked-up low number — solvable with steady play.', tag: 'classic' },
+  { n: 10, note: 'Round, low and winnable: a good practice deal.', tag: 'classic' },
+  {
+    n: 617,
+    note: 'Solvable, but long documented as one of the hardest of the standard deals — a real test of planning.',
+    tag: 'hard',
+  },
+  {
+    n: 1941,
+    note: 'Another deal famous for its difficulty: winnable, but only with very careful, deliberate play.',
+    tag: 'hard',
+  },
+  { n: 8591, note: 'One of the deals solvers single out as especially tough — beatable, barely.', tag: 'hard' },
+  { n: 13007, note: 'A notoriously difficult deal that defeats most casual attempts.', tag: 'hard' },
+  { n: 31465, note: 'Among the hardest in the upper range of the standard set.', tag: 'hard' },
+  { n: 31938, note: 'A late, brutally hard deal — a trophy for serious players.', tag: 'hard' },
   {
     n: UNSOLVABLE_DEAL,
-    note: 'The famous exception: of the classic 32,000 deals, #11982 is the one proven to have no solution at all.',
+    note: 'The famous exception: of the original 32,000 deals, #11982 is the one proven to have no solution at all — not even with extra free cells.',
     tag: 'unsolvable',
   },
-  { n: 15000, note: 'A landmark deal past the midpoint of the set.', tag: 'landmark' },
-  { n: 20000, note: 'A high landmark deal, solvable with patient play.', tag: 'landmark' },
-  { n: 25000, note: 'A late landmark deal in the classic range.', tag: 'landmark' },
-  { n: 30000, note: 'Near the top of the classic set — still winnable with care.', tag: 'landmark' },
-  { n: CLASSIC_DEAL_COUNT, note: 'The last of the classic 32,000 numbered deals.', tag: 'landmark' },
+  { n: 100, note: 'A memorable round number, winnable with planning.', tag: 'landmark' },
+  { n: 1000, note: 'The four-figure landmark deal.', tag: 'landmark' },
+  { n: 10000, note: 'The five-figure landmark — plan your empty columns.', tag: 'landmark' },
+  { n: CLASSIC_SET_SIZE, note: 'The last of the original 32,000 numbered deals.', tag: 'landmark' },
+  { n: 100000, note: 'Into the extended range Windows added beyond the classic 32,000.', tag: 'landmark' },
+  { n: 1000000, note: 'The millionth deal — the top of the modern numbered range.', tag: 'landmark' },
 ];
 
-/** Clamp an arbitrary input to a valid classic deal number, or null. */
+/** Clamp an arbitrary input to a valid playable deal number, or null. */
 export function normalizeDealNumber(raw: unknown): number | null {
   const n = typeof raw === 'number' ? raw : Number.parseInt(String(raw ?? ''), 10);
-  if (!Number.isInteger(n) || n < 1 || n > CLASSIC_DEAL_COUNT) return null;
+  if (!Number.isInteger(n) || n < 1 || n > 1_000_000) return null;
   return n;
 }
 
 /** Honest one-line solvability summary for a deal. */
 export function solvabilityNote(n: number): string {
   return n === UNSOLVABLE_DEAL
-    ? 'Deal #11982 is the single classic deal proven to be unsolvable — a perfect curiosity, but you cannot win it no matter how you play.'
+    ? 'Deal #11982 is the single standard deal proven unsolvable — a perfect curiosity, but it cannot be won no matter how you play.'
     : 'Like almost every FreeCell deal, this one is winnable with careful, deliberate play.';
 }

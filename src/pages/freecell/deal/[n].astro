@@ -3,7 +3,6 @@ import Layout from '../../../layouts/Layout.astro';
 import Footer from '../../../components/Footer.astro';
 import {
   FEATURED_DEALS,
-  CLASSIC_DEAL_COUNT,
   UNSOLVABLE_DEAL,
   solvabilityNote,
 } from '../../../lib/freecell-deals';
@@ -77,10 +76,10 @@ const schema = [
 
     <article class="prose py-4">
       <p>
-        This is deal <strong>#{n}</strong> of the classic {CLASSIC_DEAL_COUNT.toLocaleString()}
-        numbered FreeCell games. The deal number fixes the shuffle, so you'll get
-        <strong>exactly these cards every time</strong> — handy for retrying a tough game, comparing
-        a line of play, or challenging a friend on identical cards.
+        This is FreeCell deal <strong>#{n}</strong>, using the
+        <strong>same numbering as Windows FreeCell</strong> — so it's the exact game #{n} you'd get
+        in the classic, on identical cards every time. That makes it handy for retrying a tough deal,
+        comparing a line of play, or challenging a friend on the same game.
       </p>
       <p>{solvabilityNote(n)}</p>
 
@@ -111,7 +110,7 @@ const schema = [
         ))}
         <li>
           <a href="/freecell/deals/">Browse all FreeCell deal numbers →</a> (or jump to any number
-          from 1 to {CLASSIC_DEAL_COUNT.toLocaleString()}).
+          from 1 to 1,000,000).
         </li>
       </ul>
     </article>

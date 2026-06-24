@@ -1,0 +1,105 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'Spider Deal Numbers — Replay or Share Any Deal | CardHearth';
+const description =
+  'Every Spider deal on CardHearth has a number you can replay or share — type a deal number to play those exact cards at 1, 2 or 4 suits. Reproducible and shareable.';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Spider Deal Numbers',
+    description,
+    url: 'https://cardhearth.com/spider/deals/',
+    isPartOf: { '@type': 'WebSite', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Spider', item: 'https://cardhearth.com/spider/' },
+      { '@type': 'ListItem', position: 3, name: 'Deal numbers', item: 'https://cardhearth.com/spider/deals/' },
+    ],
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/spider/">Spider</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Deal numbers</span>
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Spider deal numbers</h1>
+      <p class="mt-3 text-lg opacity-80">
+        Every Spider deal here has a number — you'll see it as <strong>#12345</strong> while you play.
+        Type any number below to deal those <strong>exact cards</strong> again at 1, 2 or 4 suits, so
+        you can retry a deal, share one with a friend, or compare a different line on the same game.
+      </p>
+    </header>
+
+    <article class="prose py-4">
+      <h2>Play a deal by number</h2>
+      <p>Pick a suit count, enter a deal number, and we'll deal that exact game.</p>
+      <form id="deal-jump" class="deal-jump" role="search" aria-label="Play a Spider deal by number">
+        <label for="deal-n" class="visually-hidden">Spider deal number</label>
+        <input id="deal-n" name="n" type="number" inputmode="numeric" min="1" max="1000000" placeholder="e.g. 4821" required />
+        <label for="deal-mode" class="visually-hidden">Suit count</label>
+        <select id="deal-mode" name="mode">
+          <option value="1">1 suit</option>
+          <option value="2">2 suits</option>
+          <option value="4">4 suits</option>
+        </select>
+        <button class="btn btn-primary" type="submit">▶ Play this deal</button>
+      </form>
+
+      <h2>How deal numbers work</h2>
+      <p>
+        The deal number is the seed for the shuffle, so the same number always produces the same cards
+        — fully reproducible. To share the deal you're on, use the <strong>Share deal</strong> button
+        in any game; to replay a number someone sent you, type it in above. (These are CardHearth's own
+        deal numbers, not a Windows standard.) Note that the same number is a different game at each
+        suit count, so include the suit count when you share.
+      </p>
+
+      <h2>Are all Spider deals winnable?</h2>
+      <p>
+        No. Spider deals aren't screened for solvability, and difficulty scales sharply with the suit
+        count: <strong>1-suit</strong> deals are usually winnable, while <a href="/spider-2-suits/">2</a>
+        and especially <a href="/spider-4-suits/">4 suits</a> include deals that can't be won no matter
+        how you play. Replay a number to test a new order of play, and see the
+        <a href="/guides/spider-solitaire-strategy/">Spider strategy guide</a> and
+        <a href="/guides/are-solitaire-games-winnable/">are solitaire games winnable?</a> for more.
+      </p>
+    </article>
+
+    <p class="py-6">
+      <a class="guide-cta" href="/spider/">▶ Play Spider (random deal)</a>
+    </p>
+
+    <Footer />
+  </main>
+</Layout>
+
+<script>
+  const form = document.getElementById('deal-jump') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('deal-n') as HTMLInputElement | null;
+    const mode = (document.getElementById('deal-mode') as HTMLSelectElement | null)?.value ?? '1';
+    const n = Math.floor(Number(input?.value));
+    if (!Number.isFinite(n) || n < 1 || n > 1_000_000) {
+      input?.focus();
+      return;
+    }
+    window.location.href = `/spider/?deal=${n}&mode=${mode}`;
+  });
+</script>

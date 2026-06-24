@@ -1,4 +1,5 @@
 import { type Card, isRed, shuffledDeck } from './deck';
+import { friendlyDealSeed } from './rng';
 import {
   type GameState,
   type Move,
@@ -311,6 +312,7 @@ export const klondikeRules: Ruleset = {
     { value: 3, label: 'Draw 3' },
   ],
   defaultVariant: 1,
+  randomSeed: friendlyDealSeed,
   deal,
   canMove,
   applyMove,

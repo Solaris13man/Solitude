@@ -3,17 +3,19 @@ import Layout from '../../layouts/Layout.astro';
 import Footer from '../../components/Footer.astro';
 import {
   FEATURED_DEALS,
-  CLASSIC_DEAL_COUNT,
+  CLASSIC_SET_SIZE,
+  PLAYABLE_MAX,
   UNSOLVABLE_DEAL,
 } from '../../lib/freecell-deals';
 
-const title = 'FreeCell Deal Numbers — Play Any of the 32,000 Deals | CardHearth';
+const title = 'FreeCell Deal Numbers — Play Any Microsoft Deal Free | CardHearth';
 const description =
-  'Play any of the classic 32,000 numbered FreeCell deals by its number — including #11982, the one deal proven unsolvable. Jump to any deal, or pick a featured one.';
+  'Play any FreeCell deal by its number — the same numbering as Windows FreeCell. Includes the famous hard deals like #617 and #1941, and #11982, the one deal proven unsolvable.';
 
 const classics = FEATURED_DEALS.filter((d) => d.tag === 'classic');
-const landmarks = FEATURED_DEALS.filter((d) => d.tag === 'landmark');
+const hard = FEATURED_DEALS.filter((d) => d.tag === 'hard');
 const unsolvable = FEATURED_DEALS.filter((d) => d.tag === 'unsolvable');
+const landmarks = FEATURED_DEALS.filter((d) => d.tag === 'landmark');
 
 const schema = [
   {
@@ -49,18 +51,19 @@ const schema = [
     <header class="pt-4 pb-2">
       <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">FreeCell deal numbers</h1>
       <p class="mt-3 text-lg opacity-80">
-        Every FreeCell deal has a number. The classic game shipped
-        <strong>{CLASSIC_DEAL_COUNT.toLocaleString()} numbered deals</strong>, and you can play any
-        of them here on the exact same cards — to retry a deal, settle a "was that even winnable?"
-        argument, or race a friend on identical cards.
+        CardHearth uses the <strong>same deal numbering as Windows FreeCell</strong>, so deal #N here
+        is the exact game #N you know from the classic — including the famously hard ones and the one
+        that can't be won. Play any of them on the same cards: to retry a deal, settle a "was that even
+        winnable?" argument, or race a friend.
       </p>
     </header>
 
     <article class="prose py-4">
       <h2>Play any deal by number</h2>
       <p>
-        Enter a number from 1 to {CLASSIC_DEAL_COUNT.toLocaleString()} and we'll deal you that exact
-        game.
+        Enter a number from 1 to {PLAYABLE_MAX.toLocaleString()} (the original set ran to
+        {CLASSIC_SET_SIZE.toLocaleString()}; Windows later extended it to a million) and we'll deal
+        you that exact game.
       </p>
       <form id="deal-jump" class="deal-jump" role="search" aria-label="Play a FreeCell deal by number">
         <label for="deal-n" class="visually-hidden">FreeCell deal number</label>
@@ -70,8 +73,8 @@ const schema = [
           type="number"
           inputmode="numeric"
           min="1"
-          max={CLASSIC_DEAL_COUNT}
-          placeholder="e.g. 1982"
+          max={PLAYABLE_MAX}
+          placeholder="e.g. 617"
           required
         />
         <button class="btn btn-primary" type="submit">▶ Play this deal</button>
@@ -79,16 +82,15 @@ const schema = [
 
       <h2>Are FreeCell deals winnable?</h2>
       <p>
-        Almost always. Because every card is dealt face up, FreeCell is a fully open puzzle, and
-        the overwhelming majority of deals can be won with careful play. The famous exception is
-        <a href={`/freecell/deal/${UNSOLVABLE_DEAL}/`}>deal #{UNSOLVABLE_DEAL}</a> — the single deal
-        of the classic {CLASSIC_DEAL_COUNT.toLocaleString()} proven to have no solution at all. For
-        the full picture, see <a href="/guides/are-solitaire-games-winnable/">are solitaire games
-        winnable?</a> and the <a href="/guides/freecell-strategy/">FreeCell strategy guide</a>.
+        Almost always. Because every card is dealt face up, FreeCell is a fully open puzzle, and the
+        overwhelming majority of deals can be won with careful play. The famous exception is
+        <a href={`/freecell/deal/${UNSOLVABLE_DEAL}/`}>deal #{UNSOLVABLE_DEAL}</a> — the single deal of
+        the original {CLASSIC_SET_SIZE.toLocaleString()} proven to have no solution at all. For the full
+        picture see <a href="/guides/are-solitaire-games-winnable/">are solitaire games winnable?</a>
+        and the <a href="/guides/freecell-strategy/">FreeCell strategy guide</a>.
       </p>
 
-      <h2>Featured deals</h2>
-      <h3>Classic low-numbered deals</h3>
+      <h2>Easy deals to start with</h2>
       <ul class="deal-list">
         {classics.map((d) => (
           <li>
@@ -97,16 +99,25 @@ const schema = [
         ))}
       </ul>
 
-      <h3>The unsolvable one</h3>
+      <h2>The hardest solvable deals</h2>
       <ul class="deal-list">
-        {unsolvable.map((d) => (
+        {hard.map((d) => (
           <li>
-            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n}</a> — {d.note}
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n.toLocaleString()}</a> — {d.note}
           </li>
         ))}
       </ul>
 
-      <h3>Landmark deals</h3>
+      <h2>The unsolvable one</h2>
+      <ul class="deal-list">
+        {unsolvable.map((d) => (
+          <li>
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n.toLocaleString()}</a> — {d.note}
+          </li>
+        ))}
+      </ul>
+
+      <h2>Landmark numbers</h2>
       <ul class="deal-list">
         {landmarks.map((d) => (
           <li>
@@ -125,14 +136,14 @@ const schema = [
 </Layout>
 
 <script>
-  // Send the player to the exact deal they typed, using the game's own
-  // ?deal= loader. No page per number needed — every deal is reachable.
+  // Send the player to the exact deal they typed, using the game's own ?deal=
+  // loader. No page per number needed — every deal is reachable.
   const form = document.getElementById('deal-jump') as HTMLFormElement | null;
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
     const input = document.getElementById('deal-n') as HTMLInputElement | null;
     const n = Math.floor(Number(input?.value));
-    if (!Number.isFinite(n) || n < 1 || n > 32000) {
+    if (!Number.isFinite(n) || n < 1 || n > 1_000_000) {
       input?.focus();
       return;
     }
