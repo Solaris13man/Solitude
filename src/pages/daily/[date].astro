@@ -1,0 +1,144 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+import { DAILY_EPOCH_UTC, dailyGame, dailyNumber } from '../../lib/daily';
+
+const DAY_MS = 86_400_000;
+
+function keyOf(ms: number): string {
+  return new Date(ms).toISOString().slice(0, 10);
+}
+
+export function getStaticPaths() {
+  // Note: getStaticPaths runs in isolation — it can only use imports, so the
+  // day constant and key helper are inlined here rather than shared from above.
+  const DAY = 86_400_000;
+  const key = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+  const today = new Date();
+  const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const paths = [];
+  for (let t = DAILY_EPOCH_UTC; t <= todayUTC; t += DAY) {
+    const d = new Date(t);
+    const entry = dailyGame(d);
+    paths.push({
+      params: { date: key(t) },
+      props: {
+        ms: t,
+        num: dailyNumber(d),
+        label: entry.label,
+        game: entry.game,
+        path: entry.path,
+      },
+    });
+  }
+  return paths;
+}
+
+const { ms, num, label, path } = Astro.props;
+const date = new Date(ms);
+const dateKey = date.toISOString().slice(0, 10);
+const longDate = date.toLocaleDateString('en-US', {
+  timeZone: 'UTC',
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const playUrl = `${path}?daily=${dateKey}`;
+const canonicalPath = `/daily/${dateKey}/`;
+
+// Neighbours for prev/next navigation, bounded by the launch epoch and today.
+const prevMs = ms - DAY_MS;
+const nextMs = ms + DAY_MS;
+const todayUTC = (() => {
+  const n = new Date();
+  return Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate());
+})();
+const prevKey = prevMs >= DAILY_EPOCH_UTC ? keyOf(prevMs) : null;
+const nextKey = nextMs <= todayUTC ? keyOf(nextMs) : null;
+const isToday = ms === todayUTC;
+
+const title = `Daily Challenge #${num} — ${label}, ${longDate} | CardHearth`;
+const description = `The CardHearth Daily Challenge for ${longDate} was ${label}. Play that exact puzzle — the same for everyone — and fill in your streak calendar. Free, no sign-up.`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: `CardHearth Daily Challenge #${num} — ${label}`,
+    url: `https://cardhearth.com${canonicalPath}`,
+    description,
+    genre: 'Puzzle',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    datePublished: dateKey,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/daily-challenge.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Daily Challenge', item: 'https://cardhearth.com/daily-challenge/' },
+      { '@type': 'ListItem', position: 3, name: `#${num}`, item: `https://cardhearth.com${canonicalPath}` },
+    ],
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/daily-challenge/">Daily Challenge</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">#{num}</span>
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+        Daily Challenge #{num}: {label}
+      </h1>
+      <p class="mt-3 text-lg opacity-80">
+        {longDate}{isToday && ' — today’s challenge'}. The same puzzle for every player
+        worldwide, and — like every CardHearth daily — guaranteed solvable.
+      </p>
+      <p class="mt-5">
+        <a class="guide-cta" href={playUrl}>▶ Play this challenge</a>
+      </p>
+    </header>
+
+    <article class="prose py-4">
+      <p>
+        On {longDate}, the CardHearth Daily Challenge was <strong>{label}</strong>. The game and its
+        deal are both generated from the date, so everyone who played it got the identical puzzle —
+        which makes finishing times directly comparable. {isToday
+          ? 'Solve it before midnight UTC to extend your streak.'
+          : 'Missed it? Play it now to fill in that day on your streak calendar — past days still count toward your completed-year badge.'}
+      </p>
+      <p>
+        Every game in the daily rotation — Sudoku, Mahjong, FreeCell and 2048 — is guaranteed
+        solvable, so a shared challenge can never be an unwinnable deal. Read more about how the
+        <a href="/daily-challenge/">Daily Challenge</a> works, or browse all the
+        <a href="/">games on CardHearth</a>.
+      </p>
+
+      <nav class="daily-archive-nav" aria-label="Nearby daily challenges">
+        {prevKey ? <a href={`/daily/${prevKey}/`}>← Previous day</a> : <span></span>}
+        <a href="/daily-challenge/">All daily challenges</a>
+        {nextKey ? <a href={`/daily/${nextKey}/`}>Next day →</a> : <span></span>}
+      </nav>
+    </article>
+
+    <p class="py-6">
+      <a class="guide-cta" href={playUrl}>▶ Play Daily Challenge #{num}</a>
+    </p>
+
+    <Footer />
+  </main>
+</Layout>

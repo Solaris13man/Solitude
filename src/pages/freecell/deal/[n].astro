@@ -1,0 +1,125 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Footer from '../../../components/Footer.astro';
+import {
+  FEATURED_DEALS,
+  CLASSIC_DEAL_COUNT,
+  UNSOLVABLE_DEAL,
+  solvabilityNote,
+} from '../../../lib/freecell-deals';
+
+export function getStaticPaths() {
+  return FEATURED_DEALS.map((d) => ({ params: { n: String(d.n) }, props: { deal: d } }));
+}
+
+const { deal } = Astro.props;
+const n = deal.n;
+const isUnsolvable = n === UNSOLVABLE_DEAL;
+const playUrl = `/freecell/?deal=${n}`;
+const canonicalPath = `/freecell/deal/${n}/`;
+
+const title = `FreeCell Deal #${n} — Play This Exact Game Free | CardHearth`;
+const description = isUnsolvable
+  ? `Play FreeCell deal #${n}, the one classic deal proven unsolvable. See the board for yourself — every card face up, unlimited undo, free in your browser.`
+  : `Play FreeCell deal #${n} free in your browser — the exact same cards every time. Unlimited undo and hints, no download, no sign-up.`;
+
+// A couple of nearby featured deals to keep the cluster interlinked.
+const others = FEATURED_DEALS.filter((d) => d.n !== n).slice(0, 6);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: `FreeCell Deal #${n}`,
+    url: `https://cardhearth.com${canonicalPath}`,
+    description,
+    genre: 'Card game',
+    gamePlatform: 'Web browser',
+    applicationCategory: 'Game',
+    operatingSystem: 'Any',
+    playMode: 'SinglePlayer',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    image: 'https://cardhearth.com/og/freecell.png',
+    publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'FreeCell Solitaire', item: 'https://cardhearth.com/freecell/' },
+      { '@type': 'ListItem', position: 3, name: 'Deal numbers', item: 'https://cardhearth.com/freecell/deals/' },
+      { '@type': 'ListItem', position: 4, name: `Deal #${n}`, item: `https://cardhearth.com${canonicalPath}` },
+    ],
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/freecell/">FreeCell</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/freecell/deals/">Deals</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">#{n}</span>
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">FreeCell deal #{n}</h1>
+      <p class="mt-3 text-lg opacity-80">{deal.note}</p>
+      <p class="mt-5">
+        <a class="guide-cta" href={playUrl}>▶ Play deal #{n}</a>
+      </p>
+    </header>
+
+    <article class="prose py-4">
+      <p>
+        This is deal <strong>#{n}</strong> of the classic {CLASSIC_DEAL_COUNT.toLocaleString()}
+        numbered FreeCell games. The deal number fixes the shuffle, so you'll get
+        <strong>exactly these cards every time</strong> — handy for retrying a tough game, comparing
+        a line of play, or challenging a friend on identical cards.
+      </p>
+      <p>{solvabilityNote(n)}</p>
+
+      {isUnsolvable ? (
+        <p>
+          Deal #{n} is a genuine curiosity: it's the one deal in the classic set with
+          <strong>no winning line at all</strong>. It's worth opening just to see a FreeCell board
+          that truly can't be cleared — then move on to a deal you <em>can</em> beat. For the wider
+          story of which games are and aren't winnable, see
+          <a href="/guides/are-solitaire-games-winnable/">are solitaire games winnable?</a>
+        </p>
+      ) : (
+        <p>
+          Stuck? Remember the essentials: keep your free cells empty, dig out the Aces and Twos
+          early, and work toward an empty column — one open cascade doubles how many cards you can
+          move at once. The full playbook is in the
+          <a href="/guides/freecell-strategy/">FreeCell strategy guide</a>, and unlimited undo lets
+          you explore a line and take it back if it dead-ends.
+        </p>
+      )}
+
+      <h2>More numbered deals</h2>
+      <ul class="deal-list">
+        {others.map((d) => (
+          <li>
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n.toLocaleString()}</a> — {d.note}
+          </li>
+        ))}
+        <li>
+          <a href="/freecell/deals/">Browse all FreeCell deal numbers →</a> (or jump to any number
+          from 1 to {CLASSIC_DEAL_COUNT.toLocaleString()}).
+        </li>
+      </ul>
+    </article>
+
+    <p class="py-6">
+      <a class="guide-cta" href={playUrl}>▶ Play deal #{n}</a>
+    </p>
+
+    <Footer />
+  </main>
+</Layout>
