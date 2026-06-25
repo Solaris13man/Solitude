@@ -18,21 +18,48 @@ const schema = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': 'https://cardhearth.com/#website',
     name: 'CardHearth',
     url: 'https://cardhearth.com/',
     description,
+    publisher: { '@id': 'https://cardhearth.com/#organization' },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    // Stable @id so other pages can reference this one canonical entity rather
+    // than re-declaring an anonymous Organization. TODO: add `sameAs` with real
+    // social/Wikidata profiles once they exist — the strongest AI-trust signal.
+    '@id': 'https://cardhearth.com/#organization',
     name: 'CardHearth',
     url: 'https://cardhearth.com/',
     logo: 'https://cardhearth.com/logo.png',
+    founder: { '@id': 'https://cardhearth.com/#jared' },
     parentOrganization: {
       '@type': 'Organization',
       name: PARENT_ORG.name,
       url: PARENT_ORG.url,
     },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': 'https://cardhearth.com/#jared',
+    name: 'Jared',
+    url: 'https://cardhearth.com/about/',
+    description:
+      'Founder of CardHearth, building free, fair online solitaire, card and puzzle games.',
+    knowsAbout: [
+      'Solitaire',
+      'FreeCell',
+      'Klondike',
+      'Spider Solitaire',
+      'Sudoku',
+      'Mahjong solitaire',
+      'card games',
+      'puzzle games',
+    ],
+    worksFor: { '@id': 'https://cardhearth.com/#organization' },
   },
   {
     '@context': 'https://schema.org',

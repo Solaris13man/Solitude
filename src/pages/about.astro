@@ -19,11 +19,13 @@ const schema = [
     description,
     publisher: {
       '@type': 'Organization',
+      '@id': 'https://cardhearth.com/#organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
       logo: 'https://cardhearth.com/logo.png',
-      founder: { '@type': 'Person', name: 'Jared' },
+      founder: { '@id': 'https://cardhearth.com/#jared' },
     },
+    about: { '@id': 'https://cardhearth.com/#jared' },
   },
   {
     '@context': 'https://schema.org',
