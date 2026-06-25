@@ -27,6 +27,9 @@ interface Props {
   /** Optional related guides (comparisons, winnability, difficulty) for the
    *  internal-link cluster — rendered as a compact row under the guide link. */
   related?: { href: string; label: string }[];
+  /** Compact at-a-glance facts shown as one muted line under the board —
+   *  orients newcomers and gives AI a liftable fact block. */
+  keyFacts?: string[];
 }
 
 const {
@@ -40,6 +43,7 @@ const {
   breadcrumb,
   guide,
   related,
+  keyFacts,
 } = Astro.props;
 ---
 
@@ -126,6 +130,19 @@ const {
   <div class="board-scroll">
     <div id="board" class="board" aria-label="Game board"></div>
   </div>
+
+  {
+    keyFacts && keyFacts.length > 0 && (
+      <p class="key-facts" aria-label="At a glance">
+        {keyFacts.map((f, i) => (
+          <>
+            {i > 0 && <span class="key-facts-sep" aria-hidden="true">·</span>}
+            <span>{f}</span>
+          </>
+        ))}
+      </p>
+    )
+  }
 
   <slot name="after-board" />
 
