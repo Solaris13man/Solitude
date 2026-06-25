@@ -27,9 +27,8 @@ const schema = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    // Stable @id so other pages can reference this one canonical entity rather
-    // than re-declaring an anonymous Organization. TODO: add `sameAs` with real
-    // social/Wikidata profiles once they exist — the strongest AI-trust signal.
+    // Stable @id so other pages reference this one canonical entity rather than
+    // re-declaring an anonymous Organization.
     '@id': 'https://cardhearth.com/#organization',
     name: 'CardHearth',
     url: 'https://cardhearth.com/',
@@ -37,8 +36,11 @@ const schema = [
     founder: { '@id': 'https://cardhearth.com/#jared' },
     parentOrganization: {
       '@type': 'Organization',
+      '@id': 'https://einherjarventures.com/#organization',
       name: PARENT_ORG.name,
       url: PARENT_ORG.url,
+      email: 'einherjarventures@gmail.com',
+      founder: { '@id': 'https://cardhearth.com/#jared' },
     },
   },
   {
@@ -59,6 +61,7 @@ const schema = [
       'card games',
       'puzzle games',
     ],
+    sameAs: ['https://www.linkedin.com/in/jared-waterworth'],
     worksFor: { '@id': 'https://cardhearth.com/#organization' },
   },
   {
