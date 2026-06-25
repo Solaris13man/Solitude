@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Sudoku",
+      "description": "The rules of Sudoku and how to start solving, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/how-to-play-sudoku/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Understand the grid",
+              "text": "Sudoku is a 9x9 grid divided into nine 3x3 boxes, partly filled with starting numbers."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the one rule",
+              "text": "Fill every empty cell so that each row, each column, and each 3x3 box contains the digits 1 to 9 exactly once."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Find forced cells",
+              "text": "Look for a cell where only one digit is possible because the others already appear in its row, column, or box."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Use pencil marks",
+              "text": "Note the candidate digits for tricky cells, then eliminate them as you place numbers elsewhere."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Solve by logic, never guess",
+              "text": "Every CardHearth puzzle has a single solution reachable by reasoning alone — if you are stuck, there is always a logical next step to find."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Finish the grid",
+              "text": "Complete every cell following the one-of-each rule to solve the puzzle."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'How to Play Sudoku: Rules for Beginners',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

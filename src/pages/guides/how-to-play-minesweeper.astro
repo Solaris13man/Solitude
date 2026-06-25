@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Minesweeper",
+      "description": "The rules of Minesweeper and how to read the board, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/how-to-play-minesweeper/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Understand the board",
+              "text": "The grid hides a fixed number of mines. Your job is to reveal every safe square without detonating one."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Make the first click",
+              "text": "Your first click is always safe and opens an area; numbers then appear around it."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Read the numbers",
+              "text": "Each number tells you how many mines touch that square among its eight neighbours."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Flag the mines",
+              "text": "When a number's count matches the unrevealed squares around it, those squares are mines — flag them."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Open the safe squares",
+              "text": "When a number is already satisfied by its flags, its other neighbours are safe to open."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Win the game",
+              "text": "Reveal all non-mine squares to win. A few boards need a final guess when logic runs out."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'How to Play Minesweeper: Rules for Beginners',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

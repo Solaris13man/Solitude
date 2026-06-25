@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Euchre",
+      "description": "The complete rules of Euchre, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/euchre-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Set up the short deck",
+              "text": "Euchre uses 24 cards (9 through Ace). Four players in two partnerships each receive five cards, and one card is turned up to propose trump."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the bowers",
+              "text": "In the trump suit the Jack is the highest card (the right bower), and the other Jack of the same colour is second highest (the left bower) and counts as trump."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Name trump",
+              "text": "Across two rounds of bidding, players order up the turned card or name a different suit as trump; the side that names it are the makers."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Play the tricks",
+              "text": "Follow the led suit if you can; otherwise play any card. The highest trump wins, or the highest card of the led suit if no trump is played."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Go alone for more points",
+              "text": "A maker may play alone without their partner for the chance at a larger score."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Score the hand",
+              "text": "Makers taking three or four tricks score 1; all five score 2 (or 4 if alone). If the makers fail to take three, the other side is euchred and scores 2."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Euchre Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

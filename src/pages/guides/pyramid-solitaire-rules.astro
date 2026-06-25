@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Pyramid Solitaire",
+      "description": "The complete rules of Pyramid Solitaire, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/pyramid-solitaire-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Set up the pyramid",
+              "text": "Deal 28 cards into a pyramid of seven overlapping rows, then keep the rest as a stock with a waste pile."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the goal",
+              "text": "Remove all the cards by pairing them to a total of 13."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Pair exposed cards to 13",
+              "text": "Remove two uncovered cards whose ranks add to 13 — a 5 with an 8, a 4 with a 9, an Ace with a Queen. A King is worth 13 and is removed on its own."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Free covered cards",
+              "text": "A card can only be played once both cards resting on top of it have been removed, so plan which pairs to take first."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Use the stock",
+              "text": "Turn cards from the stock to the waste to find partners for the cards still on the board."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Win the game",
+              "text": "Clear the entire pyramid to win."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Pyramid Solitaire Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

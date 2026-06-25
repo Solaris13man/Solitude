@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Gin Rummy",
+      "description": "The complete rules of Gin Rummy, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/gin-rummy-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Deal the cards",
+              "text": "Two players each receive ten cards; the rest form the stock, with one card turned up to start the discard pile."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the goal",
+              "text": "Arrange your hand into melds — sets of the same rank or runs of three or more in one suit — and minimise your leftover deadwood."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Draw and discard",
+              "text": "On your turn, draw the top stock or discard card, then discard one card, improving your melds each turn."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Knock when ready",
+              "text": "When your unmatched deadwood totals 10 points or fewer, you can knock to end the hand."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Go gin for a bonus",
+              "text": "If every card melds with zero deadwood, you go gin for an extra bonus."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Score the hand",
+              "text": "The knocker scores the difference in deadwood; if the opponent has equal or less, they undercut and score the difference plus a bonus."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Gin Rummy Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

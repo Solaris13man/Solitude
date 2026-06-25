@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play 2048",
+      "description": "The rules of 2048 and how to reach the 2048 tile, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/how-to-play-2048/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Understand the board",
+              "text": "2048 is played on a 4x4 grid that starts with two numbered tiles."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Slide the tiles",
+              "text": "Use the arrow keys or swipe to slide every tile in one direction until it hits a wall or another tile."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Merge matching tiles",
+              "text": "When two tiles of the same number collide they merge into one of double the value, and a new tile appears after each move that changes the board."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Aim for the 2048 tile",
+              "text": "Keep merging upward — 2, 4, 8, 16 and so on — until you create the 2048 tile to win."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Keep your biggest tile cornered",
+              "text": "Build toward one corner so your largest tiles stay together and the board doesn't clog."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Avoid filling the board",
+              "text": "The game ends when no moves remain, so leave room to keep merging — and you can play on past 2048 for a higher score."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'How to Play 2048: Rules & Controls for Beginners',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

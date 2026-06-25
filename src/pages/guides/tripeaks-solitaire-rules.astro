@@ -32,13 +32,58 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play TriPeaks Solitaire",
+      "description": "The complete rules of TriPeaks Solitaire, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/tripeaks-solitaire-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Set up three peaks",
+              "text": "Deal 28 cards into three overlapping pyramids — the three peaks — with face-up cards available along the base, and keep the rest as a stock."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the goal",
+              "text": "Clear every card from all three peaks."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Play one rank up or down",
+              "text": "Take any exposed peak card that is exactly one rank above or below the top card of your waste pile. Rank wraps, so an Ace can follow a King and a King can follow an Ace."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Chain long streaks",
+              "text": "Each card you clear becomes the new base for the next, so consecutive plays build a streak that scores more the longer it runs."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Draw from the stock",
+              "text": "When no exposed card fits, turn a card from the stock to the waste to continue."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Win the game",
+              "text": "Remove all 28 peak cards to clear the board."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'TriPeaks Solitaire Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',

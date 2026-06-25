@@ -4,7 +4,7 @@ import Article from '../../components/Article.astro';
 const title = 'Solitaire & Card Game Glossary: Key Terms Explained | CardHearth';
 const description =
   'A clear, beginner-friendly glossary of solitaire and card-game terms: foundation, tableau, stock, waste, build down, free cells, cascade, supermoves, redeals and more — explained in plain language.';
-const updated = '2026-06-13';
+const updated = '2026-06-24';
 const heading = 'Solitaire & Card Game Glossary';
 const subtitle =
   'The vocabulary behind every patience game — defined plainly, so the rules and strategy guides make sense.';
@@ -15,6 +15,42 @@ const breadcrumb = [
   { name: 'Solitaire & Card Game Glossary', href: '/guides/solitaire-glossary/' },
 ];
 
+// Plain-text definitions power the DefinedTermSet schema (the visible <dd>s
+// below carry the same meaning plus helpful links).
+const TERM_SET_ID = 'https://cardhearth.com/guides/solitaire-glossary/#termset';
+const terms = [
+  { id: 'foundation', term: 'Foundation', def: 'The destination piles where you build a complete suit, almost always from Ace up to King. Clearing every card to the foundations is how you win Klondike, Spider, FreeCell and most patience games. There are usually four, one per suit (Spider uses eight).' },
+  { id: 'tableau', term: 'Tableau', def: 'The main playing area — the grid of columns where most of the work happens. You rearrange cards here to free hidden ones and assemble sequences before sending them to the foundations.' },
+  { id: 'stock', term: 'Stock', def: 'The face-down pile of undealt cards you draw from when you run out of moves in the tableau. In Klondike you flip the stock into the waste; in Spider a stock click deals a new row across all columns.' },
+  { id: 'waste', term: 'Waste (Talon)', def: 'The face-up pile of cards turned over from the stock. Only the top card of the waste is playable. "Talon" is the older name for the same pile; the terms are interchangeable.' },
+  { id: 'pile', term: 'Pile / Column', def: 'A single stack of cards. In the tableau these are usually called columns; "pile" is the more general word and also covers the stock, waste and foundations.' },
+  { id: 'run', term: 'Run / Sequence', def: 'A group of cards in consecutive rank order, such as 9-8-7-6. Whether a run can be moved as a group depends on the game’s building rules.' },
+  { id: 'build-down', term: 'Build down / Build up', def: 'Build down means placing cards in descending rank (a Seven on an Eight) — the tableau rule in Klondike, FreeCell and Spider. Build up means ascending rank (Ace, Two, Three…), which is how foundations are built in nearly every game.' },
+  { id: 'alternating-colour', term: 'Alternating colour', def: 'A building rule where each card must be the opposite colour of the one beneath it (a red card on a black card). This is the tableau rule in Klondike and FreeCell.' },
+  { id: 'same-suit-build', term: 'Same-suit build', def: 'A building rule where cards must match suit to form a movable sequence. Spider uses this: you can always stack by rank, but only a same-suit run lifts as a unit, and completing a King-to-Ace same-suit run removes it from play.' },
+  { id: 'face-up', term: 'Face-up / Face-down', def: 'Whether a card’s value is visible. Face-down cards hide information; revealing them is usually the most valuable thing you can do. FreeCell deals every card face-up, which is why it is almost always solvable, while Klondike and Spider keep many cards hidden.' },
+  { id: 'free-cell', term: 'Free cell', def: 'A single-card holding space, the signature feature of FreeCell. Each of the four free cells parks one card temporarily. The more free cells (and empty columns) you have open, the larger the run you can effectively move at once.' },
+  { id: 'cascade', term: 'Cascade', def: 'Another name for a tableau column, especially in FreeCell, where the eight columns of overlapping face-up cards are called cascades.' },
+  { id: 'supermove', term: 'Supermove', def: 'Moving a whole sequence of cards in one action even when the game technically allows only one card to move at a time, by relaying cards through empty spaces. Capacity is (1 + free cells) × 2^(empty columns): with all four FreeCell cells open and no empty columns you can move five cards, and each empty column doubles that.' },
+  { id: 'deal', term: 'Deal', def: 'The initial layout of cards at the start of a game, and also the act of dealing more cards (as when you click the stock in Spider to deal a fresh row).' },
+  { id: 'redeal', term: 'Recycle / Redeal', def: 'Turning the waste back into the stock to go through it again once exhausted. Some games allow unlimited redeals, some limit them, and some allow none — the redeal rule has a big effect on how winnable a game is.' },
+  { id: 'auto-finish', term: 'Auto-finish', def: 'A one-click action that sends every remaining card to the foundations once the outcome is certain, saving the tedious clicks at the end of a won game.' },
+  { id: 'hint', term: 'Hint', def: 'A suggested legal move when you are stuck. Hints point out an available play but will not always pick the best one, so treat them as a nudge rather than a solver.' },
+  { id: 'seed', term: 'Seed / Deal number', def: 'The identifier that fixes how a deal is shuffled. Because every CardHearth deal has a number, the same seed always produces the same layout, so you can replay an exact hand, retry a different line, or share a deal to race the same cards.' },
+  { id: 'peaks', term: 'Peaks', def: 'The pyramids of cards you clear in TriPeaks by playing a card one rank above or below the top of the waste pile.' },
+  { id: 'matching-pairs', term: 'Matching pairs', def: 'Two exposed cards whose ranks add up to 13 — the heart of Pyramid, where you remove such pairs to clear the board (a King counts as 13 and is removed on its own).' },
+  { id: 'strokes', term: 'Strokes (Golf)', def: 'In Golf solitaire, you build a single waste pile up or down by one rank regardless of suit, aiming to clear the tableau in as few moves ("strokes") as possible.' },
+];
+
+const sections = [
+  { h: 'The layout', ids: ['foundation', 'tableau', 'stock', 'waste', 'pile'] },
+  { h: 'Cards and sequences', ids: ['run', 'build-down', 'alternating-colour', 'same-suit-build', 'face-up'] },
+  { h: 'Special spaces and moves', ids: ['free-cell', 'cascade', 'supermove', 'deal', 'redeal'] },
+  { h: 'Game features and helpers', ids: ['auto-finish', 'hint', 'seed'] },
+  { h: 'Game-specific terms', ids: ['peaks', 'matching-pairs', 'strokes'] },
+];
+const byId = Object.fromEntries(terms.map((t) => [t.id, t]));
+
 const schema = [
   {
     '@context': 'https://schema.org',
@@ -23,7 +59,7 @@ const schema = [
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
@@ -32,6 +68,20 @@ const schema = [
     },
     mainEntityOfPage: 'https://cardhearth.com/guides/solitaire-glossary/',
     image: 'https://cardhearth.com/og.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    '@id': TERM_SET_ID,
+    name: 'Solitaire & Card Game Glossary',
+    url: 'https://cardhearth.com/guides/solitaire-glossary/',
+    hasDefinedTerm: terms.map((t) => ({
+      '@type': 'DefinedTerm',
+      '@id': `https://cardhearth.com/guides/solitaire-glossary/#${t.id}`,
+      name: t.term,
+      description: t.def,
+      inDefinedTermSet: TERM_SET_ID,
+    })),
   },
   {
     '@context': 'https://schema.org',
@@ -64,115 +114,142 @@ const schema = [
   </p>
 
   <h2>The layout</h2>
-  <p>
-    <strong>Foundation</strong> — the destination piles where you build a complete suit, almost
-    always from Ace up to King. Clearing every card to the foundations is how you win in
-    <a href="/klondike/">Klondike</a>, <a href="/spider/">Spider</a>,
-    <a href="/freecell/">FreeCell</a> and most other patience games. There are usually four, one
-    per suit (Spider uses eight).
-  </p>
-  <p>
-    <strong>Tableau</strong> — the main playing area, the grid of columns where most of the work
-    happens. You rearrange cards here to free hidden ones and assemble sequences before sending
-    them to the foundations.
-  </p>
-  <p>
-    <strong>Stock</strong> — the face-down pile of undealt cards you draw from when you run out of
-    moves in the tableau. In <a href="/klondike/">Klondike</a> you flip the stock into the waste; in
-    <a href="/spider/">Spider</a> a stock click deals a new row across all columns.
-  </p>
-  <p>
-    <strong>Waste (Talon)</strong> — the face-up pile of cards turned over from the stock. Only the
-    top card of the waste is playable. "Talon" is the older name for the same pile; the two terms
-    are interchangeable.
-  </p>
-  <p>
-    <strong>Pile / Column</strong> — a single stack of cards. In the tableau these are usually
-    called columns; "pile" is the more general word and also covers the stock, waste and
-    foundations.
-  </p>
+  <dl class="glossary">
+    <dt id="foundation">Foundation</dt>
+    <dd>
+      The destination piles where you build a complete suit, almost always from Ace up to King.
+      Clearing every card to the foundations is how you win <a href="/klondike/">Klondike</a>,
+      <a href="/spider/">Spider</a>, <a href="/freecell/">FreeCell</a> and most other patience games.
+      There are usually four, one per suit (Spider uses eight).
+    </dd>
+    <dt id="tableau">Tableau</dt>
+    <dd>
+      The main playing area — the grid of columns where most of the work happens. You rearrange
+      cards here to free hidden ones and assemble sequences before sending them to the foundations.
+    </dd>
+    <dt id="stock">Stock</dt>
+    <dd>
+      The face-down pile of undealt cards you draw from when you run out of moves in the tableau. In
+      <a href="/klondike/">Klondike</a> you flip the stock into the waste; in
+      <a href="/spider/">Spider</a> a stock click deals a new row across all columns.
+    </dd>
+    <dt id="waste">Waste (Talon)</dt>
+    <dd>
+      The face-up pile of cards turned over from the stock. Only the top card of the waste is
+      playable. "Talon" is the older name for the same pile; the two terms are interchangeable.
+    </dd>
+    <dt id="pile">Pile / Column</dt>
+    <dd>
+      A single stack of cards. In the tableau these are usually called columns; "pile" is the more
+      general word and also covers the stock, waste and foundations.
+    </dd>
+  </dl>
 
   <h2>Cards and sequences</h2>
-  <p>
-    <strong>Run / Sequence</strong> — a group of cards in consecutive rank order, such as
-    9-8-7-6. Whether a run can be moved as a group depends on the game's building rules (see below).
-  </p>
-  <p>
-    <strong>Build down</strong> — placing cards in descending rank (a Seven on an Eight). Tableau
-    play in Klondike, FreeCell and Spider is built down. <strong>Build up</strong> — placing cards
-    in ascending rank (Ace, Two, Three…), which is how the foundations are built in nearly every
-    game.
-  </p>
-  <p>
-    <strong>Alternating colour</strong> — a building rule where each card must be the opposite
-    colour of the one beneath it (a red card on a black card). This is the tableau rule in
-    <a href="/klondike/">Klondike</a> and <a href="/freecell/">FreeCell</a>.
-  </p>
-  <p>
-    <strong>Same-suit build</strong> — a building rule where cards must match suit to form a
-    movable sequence. <a href="/spider/">Spider</a> uses this: you can always stack by rank, but
-    only a same-suit run lifts as a single unit, and completing a King-to-Ace same-suit run removes
-    it from play.
-  </p>
-  <p>
-    <strong>Face-up / Face-down</strong> — whether a card's value is visible. Face-down cards hide
-    information; revealing them is usually the most valuable thing you can do. FreeCell deals every
-    card face-up, which is why it's almost always solvable, while Klondike and Spider keep many
-    cards hidden.
-  </p>
+  <dl class="glossary">
+    <dt id="run">Run / Sequence</dt>
+    <dd>
+      A group of cards in consecutive rank order, such as 9-8-7-6. Whether a run can be moved as a
+      group depends on the game's building rules.
+    </dd>
+    <dt id="build-down">Build down / Build up</dt>
+    <dd>
+      <strong>Build down</strong> is placing cards in descending rank (a Seven on an Eight) — the
+      tableau rule in Klondike, FreeCell and Spider. <strong>Build up</strong> is ascending rank
+      (Ace, Two, Three…), which is how the foundations are built in nearly every game.
+    </dd>
+    <dt id="alternating-colour">Alternating colour</dt>
+    <dd>
+      A building rule where each card must be the opposite colour of the one beneath it (a red card
+      on a black card). This is the tableau rule in <a href="/klondike/">Klondike</a> and
+      <a href="/freecell/">FreeCell</a>.
+    </dd>
+    <dt id="same-suit-build">Same-suit build</dt>
+    <dd>
+      A building rule where cards must match suit to form a movable sequence.
+      <a href="/spider/">Spider</a> uses this: you can always stack by rank, but only a same-suit run
+      lifts as a single unit, and completing a King-to-Ace same-suit run removes it from play.
+    </dd>
+    <dt id="face-up">Face-up / Face-down</dt>
+    <dd>
+      Whether a card's value is visible. Face-down cards hide information; revealing them is usually
+      the most valuable thing you can do. FreeCell deals every card face-up, which is why it's almost
+      always solvable, while Klondike and Spider keep many cards hidden.
+    </dd>
+  </dl>
 
   <h2>Special spaces and moves</h2>
-  <p>
-    <strong>Free cell</strong> — a single-card holding space, the signature feature of
-    <a href="/freecell/">FreeCell</a>. Each of the four free cells parks one card temporarily, giving
-    you room to manoeuvre. The more free cells (and empty columns) you have open, the larger the run
-    you can effectively move at once.
-  </p>
-  <p>
-    <strong>Cascade</strong> — another name for a tableau column, especially in FreeCell, where the
-    eight columns of overlapping face-up cards are called cascades.
-  </p>
-  <p>
-    <strong>Supermove</strong> — moving a whole sequence of cards in one action even when the game
-    technically only allows one card to move at a time. It works because the program shuffles cards
-    through your empty spaces behind the scenes. The number of cards you can move at once is
-    <strong>(1 + free cells) × 2^(empty columns)</strong>: with all four FreeCell free cells open
-    and no empty columns you can move five cards, and each empty column doubles that capacity.
-  </p>
-  <p>
-    <strong>Deal</strong> — the initial layout of cards at the start of a game, and also the act of
-    dealing more cards (as when you click the stock in Spider to deal a fresh row).
-  </p>
-  <p>
-    <strong>Recycle / Redeal</strong> — turning the waste back into the stock to go through it
-    again once you've exhausted it. Some games allow unlimited redeals, some limit them, and some
-    allow none. The redeal rule has a big effect on how winnable a game is.
-  </p>
+  <dl class="glossary">
+    <dt id="free-cell">Free cell</dt>
+    <dd>
+      A single-card holding space, the signature feature of <a href="/freecell/">FreeCell</a>. Each
+      of the four free cells parks one card temporarily, giving you room to manoeuvre. The more free
+      cells (and empty columns) you have open, the larger the run you can effectively move at once.
+    </dd>
+    <dt id="cascade">Cascade</dt>
+    <dd>
+      Another name for a tableau column, especially in FreeCell, where the eight columns of
+      overlapping face-up cards are called cascades.
+    </dd>
+    <dt id="supermove">Supermove</dt>
+    <dd>
+      Moving a whole sequence of cards in one action even when the game technically only allows one
+      card to move at a time. It works because the program relays cards through your empty spaces
+      behind the scenes. Capacity is
+      <strong>(1 + free cells) × 2^(empty columns)</strong>: with all four FreeCell free cells open
+      and no empty columns you can move five cards, and each empty column doubles that.
+    </dd>
+    <dt id="deal">Deal</dt>
+    <dd>
+      The initial layout of cards at the start of a game, and also the act of dealing more cards (as
+      when you click the stock in Spider to deal a fresh row).
+    </dd>
+    <dt id="redeal">Recycle / Redeal</dt>
+    <dd>
+      Turning the waste back into the stock to go through it again once you've exhausted it. Some
+      games allow unlimited redeals, some limit them, and some allow none. The redeal rule has a big
+      effect on how winnable a game is.
+    </dd>
+  </dl>
 
   <h2>Game features and helpers</h2>
-  <p>
-    <strong>Auto-finish</strong> — a one-click action that sends every remaining card to the
-    foundations once the outcome is certain, saving you the tedious clicks at the end of a won game.
-  </p>
-  <p>
-    <strong>Hint</strong> — a suggested legal move when you're stuck. Hints point out an available
-    play but won't always pick the <em>best</em> one, so treat them as a nudge rather than a
-    solver.
-  </p>
-  <p>
-    <strong>Seed / Deal number</strong> — the identifier that fixes how a deal is shuffled. Because
-    every CardHearth deal has a number, the same seed always produces the same layout, so you can
-    replay an exact hand, retry a different line, or share a deal with a friend to race the same
-    cards.
-  </p>
-  <p>
-    A few game-specific words are worth knowing too: <strong>peaks</strong> are the pyramids of
-    cards you clear in <a href="/tripeaks/">TriPeaks</a> by playing cards one rank above or below
-    the waste; <strong>matching pairs</strong> that add to 13 are the heart of
-    <a href="/pyramid/">Pyramid</a>; and in <a href="/golf/">Golf</a> you build a single waste pile
-    up or down by one rank regardless of suit, aiming to clear the tableau in as few "strokes" as
-    possible.
-  </p>
+  <dl class="glossary">
+    <dt id="auto-finish">Auto-finish</dt>
+    <dd>
+      A one-click action that sends every remaining card to the foundations once the outcome is
+      certain, saving you the tedious clicks at the end of a won game.
+    </dd>
+    <dt id="hint">Hint</dt>
+    <dd>
+      A suggested legal move when you're stuck. Hints point out an available play but won't always
+      pick the <em>best</em> one, so treat them as a nudge rather than a solver.
+    </dd>
+    <dt id="seed">Seed / Deal number</dt>
+    <dd>
+      The identifier that fixes how a deal is shuffled. Because every CardHearth deal has a number,
+      the same seed always produces the same layout, so you can replay an exact hand, retry a
+      different line, or share a deal with a friend to race the same cards.
+    </dd>
+  </dl>
+
+  <h2>Game-specific terms</h2>
+  <dl class="glossary">
+    <dt id="peaks">Peaks</dt>
+    <dd>
+      The pyramids of cards you clear in <a href="/tripeaks/">TriPeaks</a> by playing a card one rank
+      above or below the top of the waste pile.
+    </dd>
+    <dt id="matching-pairs">Matching pairs</dt>
+    <dd>
+      Two exposed cards whose ranks add up to 13 — the heart of <a href="/pyramid/">Pyramid</a>,
+      where you remove such pairs to clear the board (a King counts as 13 and is removed on its own).
+    </dd>
+    <dt id="strokes">Strokes (Golf)</dt>
+    <dd>
+      In <a href="/golf/">Golf</a> solitaire, you build a single waste pile up or down by one rank
+      regardless of suit, aiming to clear the tableau in as few moves ("strokes") as possible.
+    </dd>
+  </dl>
 
   <h2>Keep going</h2>
   <p>

@@ -652,6 +652,9 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: 800
 .prose ul, .prose ol { padding-left: 1.4rem; }
 .prose li { margin-top: 0.4rem; opacity: 0.92; }
 .prose li::marker { color: #ffd95e; }
+.prose .glossary { margin-top: 1rem; }
+.prose .glossary dt { font-weight: 700; color: #fff; margin-top: 1.1rem; scroll-margin-top: 1rem; }
+.prose .glossary dd { margin: 0.25rem 0 0; padding-left: 0; opacity: 0.92; }
 .prose a { color: #ffe08a; text-decoration: underline; text-underline-offset: 2px; }
 .prose a:hover { color: #fff; }
 .prose strong { color: #fff; }
