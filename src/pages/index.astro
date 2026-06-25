@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import GameArt from '../components/GameArt.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
+import { BADGES } from '../lib/achievements';
 import { PARENT_ORG } from '../lib/site-config';
 
 const cardCount = GAMES.filter((g) => g.category === 'cards' && g.id !== 'daily').length;
@@ -156,7 +157,7 @@ const schema = [
         <li>
           <span class="why-icon" aria-hidden="true">📈</span>
           <strong>Track your progress</strong>
-          Per-game stats, win streaks, and 20 achievements to unlock.
+          Per-game stats, win streaks, and {BADGES.length} achievements to unlock.
         </li>
         <li>
           <span class="why-icon" aria-hidden="true">📲</span>

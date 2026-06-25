@@ -24,6 +24,9 @@ interface Props {
   breadcrumb?: { name: string; href: string }[];
   /** Optional link to this game's in-depth strategy guide. */
   guide?: { href: string; label: string };
+  /** Optional related guides (comparisons, winnability, difficulty) for the
+   *  internal-link cluster — rendered as a compact row under the guide link. */
+  related?: { href: string; label: string }[];
 }
 
 const {
@@ -36,6 +39,7 @@ const {
   tileSettings = false,
   breadcrumb,
   guide,
+  related,
 } = Astro.props;
 ---
 
@@ -151,6 +155,17 @@ const {
       <p class="game-guide-link">
         <a class="guide-cta" href={guide.href}>📖 {guide.label}</a>
       </p>
+    )
+  }
+
+  {
+    related && related.length > 0 && (
+      <nav class="game-related mx-auto w-full max-w-2xl" aria-label="Related guides">
+        <span class="game-related-label">Related:</span>
+        {related.map((r) => (
+          <a href={r.href}>{r.label}</a>
+        ))}
+      </nav>
     )
   }
 
