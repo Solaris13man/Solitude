@@ -3,9 +3,12 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
+import cloudflare from "@astrojs/cloudflare";
+
 export default defineConfig({
   site: 'https://cardhearth.com',
   trailingSlash: 'always',
+
   integrations: [
     sitemap({
       // Keep noindex utility pages out of the sitemap so we don't send Google
@@ -14,7 +17,10 @@ export default defineConfig({
         !['/account/', '/profile/', '/404/'].some((p) => page.endsWith(p)),
     }),
   ],
+
   vite: {
     plugins: [tailwindcss()],
   },
+
+  adapter: cloudflare()
 });
