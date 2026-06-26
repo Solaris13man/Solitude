@@ -22,7 +22,7 @@ const schema = [
       '@id': 'https://cardhearth.com/#organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: 'https://cardhearth.com/logo.png',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
       founder: { '@id': 'https://cardhearth.com/#jared' },
     },
     about: { '@id': 'https://cardhearth.com/#jared' },
