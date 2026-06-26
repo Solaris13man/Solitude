@@ -4,6 +4,12 @@ The site is a static Astro build (`npm run build` → `dist/`). These steps take
 it live on **Cloudflare Pages** with the **cardhearth.com** domain (bought at
 Namecheap), then turn on Search Console and AdSense.
 
+> **Already wired for Cloudflare Workers Builds.** The repo is connected to
+> Cloudflare Workers Builds and ships a `wrangler.jsonc` that serves `dist/` as
+> an **assets-only Worker** (no SSR). Pushes build and deploy automatically —
+> there is no `main`/Worker script, because the static build never emits one.
+> The Pages instructions below remain a valid alternative if you prefer Pages.
+
 ---
 
 ## 1. Put the code on GitHub
