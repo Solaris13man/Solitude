@@ -1,6 +1,6 @@
 /**
  * Generates seamless, tileable table-surface textures into public/textures/:
- *   wood-walnut.png, wood-oak.png, marble.png, granite.png
+ *   wood-walnut.webp, wood-oak.webp, marble.webp, granite.webp
  * All are produced from seeded tileable value-noise (periodic over the tile),
  * so they repeat without visible seams. Original/owned art.
  * Re-run: node scripts/generate-table-textures.mjs
@@ -78,8 +78,8 @@ const set = {
 };
 for (const [name, fn] of Object.entries(set)) {
   const raw = buffer(fn);
-  const png = await sharp(raw, { raw: { width: S, height: S, channels: 4 } }).png().toBuffer();
-  writeFileSync(`public/textures/${name}.png`, png);
+  const png = await sharp(raw, { raw: { width: S, height: S, channels: 4 } }).webp({ quality: 82, effort: 6 }).toBuffer();
+  writeFileSync(`public/textures/${name}.webp`, png);
   // 2x2 seam-check preview
   const prev = await sharp({ create: { width: S * 2, height: S * 2, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 1 } } })
     .composite([{ input: png, tile: true, blend: 'over' }]).png().toBuffer();

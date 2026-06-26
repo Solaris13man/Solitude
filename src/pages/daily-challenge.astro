@@ -2,10 +2,29 @@
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import GameNav from '../components/GameNav.astro';
+import { DAILY_EPOCH_UTC, dailyGame, dailyNumber } from '../lib/daily';
+
+// Recent challenges, newest first — server-rendered so the per-day archive
+// pages are crawlable (the calendar above is client-only). Bounded by launch.
+const DAY_MS = 86_400_000;
+const nowD = new Date();
+const todayUTC = Date.UTC(nowD.getUTCFullYear(), nowD.getUTCMonth(), nowD.getUTCDate());
+const recentDailies = [];
+for (let t = todayUTC; t >= DAILY_EPOCH_UTC && recentDailies.length < 21; t -= DAY_MS) {
+  const d = new Date(t);
+  const key = d.toISOString().slice(0, 10);
+  recentDailies.push({
+    key,
+    num: dailyNumber(d),
+    label: dailyGame(d).label,
+    long: d.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' }),
+    isToday: t === todayUTC,
+  });
+}
 
 const title = 'Daily Challenge — A New Game Every Day | CardHearth';
 const description =
-  "The CardHearth Daily Challenge rotates across our solitaire and puzzle games — Klondike, Spider, FreeCell, Sudoku, Mahjong, Minesweeper, 2048 and more. One puzzle a day, identical for everyone. Build a streak, free, no sign-up.";
+  "The CardHearth Daily Challenge rotates across Sudoku, Mahjong, FreeCell and 2048 — one puzzle a day, identical for everyone, and every deal is guaranteed solvable so your streak is never broken by an unwinnable game. Build a streak, free, no sign-up.";
 
 const faq = [
   {
@@ -14,7 +33,7 @@ const faq = [
   },
   {
     q: 'Which games are in the rotation?',
-    a: 'Every solitaire and puzzle game takes a turn — Klondike (Draw 1 and Draw 3), Spider, FreeCell, Yukon, Scorpion, Eight Off, Forty Thieves, Pyramid, TriPeaks, Golf, Sudoku, Mahjong, Minesweeper, and 2048 — cycling so each one comes around. (The four card games you play against the computer — Hearts, Spades, Euchre and Gin — aren\'t part of the daily.) The same game and puzzle appear for everyone on a given day.',
+    a: 'Sudoku (Easy through Expert), Mahjong (across its layouts), FreeCell, and 2048 — cycling so each one comes around, with the same game and puzzle for everyone on a given day. The daily deliberately sticks to games where every deal is guaranteed solvable, so a shared challenge can never be unwinnable and cost you your streak. Our other games — Klondike, Spider and the rest of the solitaires, plus Minesweeper — use random deals that can occasionally be unwinnable, so they stay on their own pages rather than the streak-carrying daily.',
   },
   {
     q: 'Is the daily the same for everyone?',
@@ -129,14 +148,33 @@ const schema = [
       </ul>
     </section>
 
+    <section class="mx-auto w-full max-w-2xl pb-2" aria-label="Recent daily challenges">
+      <h2 class="mb-2 text-lg font-bold">Recent challenges</h2>
+      <ul class="recent-dailies">
+        {
+          recentDailies.map((d) => (
+            <li>
+              <a href={`/daily/${d.key}/`}>
+                <span class="rd-date">{d.long}</span>
+                <span class="rd-label">{d.label}</span>
+                {d.isToday && <span class="rd-today">Today</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
     <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
       <h2 class="mb-2 text-lg font-bold">One game. Everyone. Every day.</h2>
       <p class="mb-3">
-        The Daily Challenge rotates across CardHearth's solitaire and puzzle games — one day it's
-        Klondike, the next Sudoku, then Mahjong, Minesweeper, 2048 and on through the rest.
+        The Daily Challenge rotates across Sudoku, Mahjong, FreeCell and 2048 — one day it's a
+        Sudoku, the next a Mahjong layout, then FreeCell or a 2048 target, and on around.
         Whatever the day's game is, <strong>everyone in the world gets the identical puzzle</strong>,
-        generated from the date itself. Finish it before midnight UTC to grow your
-        <strong>daily streak</strong>, then share your time and dare a friend to beat it.
+        generated from the date itself — and because every one of these games is
+        <strong>guaranteed solvable</strong>, a shared deal can never be unwinnable and cost you your
+        streak. Finish it before midnight UTC to grow your <strong>daily streak</strong>, then share
+        your time and dare a friend to beat it.
       </p>
       <h2 class="mb-2 text-lg font-bold">How streaks work</h2>
       <p class="mb-3">

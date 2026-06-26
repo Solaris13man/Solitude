@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import GameArt from '../components/GameArt.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
+import { BADGES } from '../lib/achievements';
+import { PARENT_ORG } from '../lib/site-config';
 
 const cardCount = GAMES.filter((g) => g.category === 'cards' && g.id !== 'daily').length;
 const puzzleCount = GAMES.filter((g) => g.category === 'puzzle').length;
@@ -16,16 +18,51 @@ const schema = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': 'https://cardhearth.com/#website',
     name: 'CardHearth',
     url: 'https://cardhearth.com/',
     description,
+    publisher: { '@id': 'https://cardhearth.com/#organization' },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    // Stable @id so other pages reference this one canonical entity rather than
+    // re-declaring an anonymous Organization.
+    '@id': 'https://cardhearth.com/#organization',
     name: 'CardHearth',
     url: 'https://cardhearth.com/',
-    logo: 'https://cardhearth.com/logo.png',
+    logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
+    founder: { '@id': 'https://cardhearth.com/#jared' },
+    parentOrganization: {
+      '@type': 'Organization',
+      '@id': 'https://einherjarventures.com/#organization',
+      name: PARENT_ORG.name,
+      url: PARENT_ORG.url,
+      email: 'einherjarventures@gmail.com',
+      founder: { '@id': 'https://cardhearth.com/#jared' },
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': 'https://cardhearth.com/#jared',
+    name: 'Jared Waterworth',
+    url: 'https://cardhearth.com/about/',
+    description:
+      'Founder of CardHearth, building free, fair online solitaire, card and puzzle games.',
+    knowsAbout: [
+      'Solitaire',
+      'FreeCell',
+      'Klondike',
+      'Spider Solitaire',
+      'Sudoku',
+      'Mahjong solitaire',
+      'card games',
+      'puzzle games',
+    ],
+    sameAs: ['https://www.linkedin.com/in/jared-waterworth'],
+    worksFor: { '@id': 'https://cardhearth.com/#organization' },
   },
   {
     '@context': 'https://schema.org',
@@ -150,7 +187,7 @@ const schema = [
         <li>
           <span class="why-icon" aria-hidden="true">📈</span>
           <strong>Track your progress</strong>
-          Per-game stats, win streaks, and 20 achievements to unlock.
+          Per-game stats, win streaks, and {BADGES.length} achievements to unlock.
         </li>
         <li>
           <span class="why-icon" aria-hidden="true">📲</span>

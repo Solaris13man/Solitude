@@ -1,0 +1,152 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+import {
+  FEATURED_DEALS,
+  CLASSIC_SET_SIZE,
+  PLAYABLE_MAX,
+  UNSOLVABLE_DEAL,
+} from '../../lib/freecell-deals';
+
+const title = 'FreeCell Deal Numbers — Play Any Microsoft Deal Free | CardHearth';
+const description =
+  'Play any FreeCell deal by its number — the same numbering as Windows FreeCell. Includes the famous hard deals like #617 and #1941, and #11982, the one deal proven unsolvable.';
+
+const classics = FEATURED_DEALS.filter((d) => d.tag === 'classic');
+const hard = FEATURED_DEALS.filter((d) => d.tag === 'hard');
+const unsolvable = FEATURED_DEALS.filter((d) => d.tag === 'unsolvable');
+const landmarks = FEATURED_DEALS.filter((d) => d.tag === 'landmark');
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'FreeCell Deal Numbers',
+    description,
+    url: 'https://cardhearth.com/freecell/deals/',
+    isPartOf: { '@type': 'WebSite', name: 'CardHearth', url: 'https://cardhearth.com/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' },
+      { '@type': 'ListItem', position: 2, name: 'FreeCell Solitaire', item: 'https://cardhearth.com/freecell/' },
+      { '@type': 'ListItem', position: 3, name: 'Deal numbers', item: 'https://cardhearth.com/freecell/deals/' },
+    ],
+  },
+];
+---
+
+<Layout title={title} description={description} schema={schema}>
+  <main class="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4">
+    <nav class="breadcrumb pt-6" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/freecell/">FreeCell</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Deal numbers</span>
+    </nav>
+
+    <header class="pt-4 pb-2">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">FreeCell deal numbers</h1>
+      <p class="mt-3 text-lg opacity-80">
+        CardHearth uses the <strong>same deal numbering as Windows FreeCell</strong>, so deal #N here
+        is the exact game #N you know from the classic — including the famously hard ones and the one
+        that can't be won. Play any of them on the same cards: to retry a deal, settle a "was that even
+        winnable?" argument, or race a friend.
+      </p>
+    </header>
+
+    <article class="prose py-4">
+      <h2>Play any deal by number</h2>
+      <p>
+        Enter a number from 1 to {PLAYABLE_MAX.toLocaleString()} (the original set ran to
+        {CLASSIC_SET_SIZE.toLocaleString()}; Windows later extended it to a million) and we'll deal
+        you that exact game.
+      </p>
+      <form id="deal-jump" class="deal-jump" role="search" aria-label="Play a FreeCell deal by number">
+        <label for="deal-n" class="visually-hidden">FreeCell deal number</label>
+        <input
+          id="deal-n"
+          name="n"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          max={PLAYABLE_MAX}
+          placeholder="e.g. 617"
+          required
+        />
+        <button class="btn btn-primary" type="submit">▶ Play this deal</button>
+      </form>
+
+      <h2>Are FreeCell deals winnable?</h2>
+      <p>
+        Almost always. Because every card is dealt face up, FreeCell is a fully open puzzle, and the
+        overwhelming majority of deals can be won with careful play. The famous exception is
+        <a href={`/freecell/deal/${UNSOLVABLE_DEAL}/`}>deal #{UNSOLVABLE_DEAL}</a> — the single deal of
+        the original {CLASSIC_SET_SIZE.toLocaleString()} proven to have no solution at all. For the full
+        picture see <a href="/guides/are-solitaire-games-winnable/">are solitaire games winnable?</a>
+        and the <a href="/guides/freecell-strategy/">FreeCell strategy guide</a>.
+      </p>
+
+      <h2>Easy deals to start with</h2>
+      <ul class="deal-list">
+        {classics.map((d) => (
+          <li>
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n}</a> — {d.note}
+          </li>
+        ))}
+      </ul>
+
+      <h2>The hardest solvable deals</h2>
+      <ul class="deal-list">
+        {hard.map((d) => (
+          <li>
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n.toLocaleString()}</a> — {d.note}
+          </li>
+        ))}
+      </ul>
+
+      <h2>The unsolvable one</h2>
+      <ul class="deal-list">
+        {unsolvable.map((d) => (
+          <li>
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n.toLocaleString()}</a> — {d.note}
+          </li>
+        ))}
+      </ul>
+
+      <h2>Landmark numbers</h2>
+      <ul class="deal-list">
+        {landmarks.map((d) => (
+          <li>
+            <a href={`/freecell/deal/${d.n}/`}>Deal #{d.n.toLocaleString()}</a> — {d.note}
+          </li>
+        ))}
+      </ul>
+    </article>
+
+    <p class="py-6">
+      <a class="guide-cta" href="/freecell/">▶ Play FreeCell (random deal)</a>
+    </p>
+
+    <Footer />
+  </main>
+</Layout>
+
+<script>
+  // Send the player to the exact deal they typed, using the game's own ?deal=
+  // loader. No page per number needed — every deal is reachable.
+  const form = document.getElementById('deal-jump') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('deal-n') as HTMLInputElement | null;
+    const n = Math.floor(Number(input?.value));
+    if (!Number.isFinite(n) || n < 1 || n > 1_000_000) {
+      input?.focus();
+      return;
+    }
+    window.location.href = `/freecell/?deal=${n}`;
+  });
+</script>

@@ -7,8 +7,8 @@
   "background_color": "#135c32",
   "theme_color": "#135c32",
   "icons": [
-    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/app-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/app-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "categories": ["games", "entertainment"]
 }

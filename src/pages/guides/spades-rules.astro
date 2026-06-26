@@ -32,18 +32,63 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Spades",
+      "description": "The complete rules of Spades, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/spades-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Form partnerships and deal",
+              "text": "Four players in two partnerships each receive 13 cards; spades are always the trump suit."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Bid your tricks",
+              "text": "Each player bids how many tricks they expect to win, and partners' bids combine into one team contract."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Lead and follow suit",
+              "text": "Follow the led suit if you can; otherwise play a spade or any card. The highest spade wins, or the highest card of the led suit if no spade is played."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Hold off leading spades",
+              "text": "You cannot lead spades until they have been broken by being played on an earlier trick, unless your hand is only spades."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Score the contract",
+              "text": "Make your combined bid to score 10 points per bid trick; miss it and you lose 10 per bid trick."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Watch bags and nil",
+              "text": "Each overtrick is a bag worth 1 point, but ten bags cost 100. A nil bid scores +100 if you take no tricks and -100 if you take any."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Spades Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
     },
     mainEntityOfPage: 'https://cardhearth.com/guides/spades-rules/',
     image: 'https://cardhearth.com/og/spades.png',

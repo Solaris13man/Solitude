@@ -64,8 +64,14 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="sudoku"
+    keyFacts={["Sudoku", "9x9 grid", "fill 1-9 with no repeats", "every puzzle solvable by logic"]}
     heading="Sudoku"
     guide={{ href: '/guides/sudoku-solving-techniques/', label: 'Sudoku techniques guide' }}
+    related={[
+      { href: '/guides/how-to-play-sudoku/', label: 'How to play' },
+      { href: '/guides/sudoku-difficulty-levels/', label: 'Difficulty levels' },
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Always solvable?' },
+    ]}
     variantLabel="Difficulty"
     variantOptions={[
       { value: 1, label: 'Easy' },

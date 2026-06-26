@@ -64,8 +64,13 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="pyramid"
+    keyFacts={["Pyramid", "1 deck", "pair cards to 13", "clear the pyramid"]}
     heading="Pyramid"
     guide={{ href: '/guides/pyramid-solitaire-strategy/', label: 'Pyramid strategy guide' }}
+    related={[
+      { href: '/guides/pyramid-vs-tripeaks/', label: 'Pyramid vs TriPeaks' },
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Are these winnable?' },
+    ]}
   >
     <h2 class="mb-2 text-lg font-bold">How to play Pyramid Solitaire</h2>
     <p class="mb-3">

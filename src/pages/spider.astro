@@ -64,8 +64,15 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="spider"
+    keyFacts={["Spider", "2 decks", "10 columns", "1, 2 or 4 suits", "build same-suit runs"]}
     heading="Spider Solitaire"
     guide={{ href: '/guides/spider-solitaire-strategy/', label: 'Spider strategy guide' }}
+    related={[
+      { href: '/guides/spider-1-2-4-suits/', label: '1, 2 or 4 suits?' },
+      { href: '/guides/spider-vs-freecell/', label: 'Spider vs FreeCell' },
+      { href: '/guides/klondike-vs-spider/', label: 'Klondike vs Spider' },
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Are these winnable?' },
+    ]}
     variantLabel="Suits"
     variantOptions={[
       { value: 1, label: '1 suit (easy)' },
@@ -109,6 +116,10 @@ const schema = [
         </details>
       ))
     }
+    <p class="mt-4 opacity-90">
+      Want to replay or share a specific game? Every deal has a number — play any of them at 1, 2 or
+      4 suits on the <a class="underline" href="/spider/deals/">Spider deal numbers</a> page.
+    </p>
     <p class="mt-6 opacity-75">
       Prefer the classics? Play <a class="underline" href="/klondike/">Klondike Solitaire</a> or
       <a class="underline" href="/freecell/">FreeCell</a> — both free, right in your browser.

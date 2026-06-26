@@ -24,6 +24,12 @@ interface Props {
   breadcrumb?: { name: string; href: string }[];
   /** Optional link to this game's in-depth strategy guide. */
   guide?: { href: string; label: string };
+  /** Optional related guides (comparisons, winnability, difficulty) for the
+   *  internal-link cluster — rendered as a compact row under the guide link. */
+  related?: { href: string; label: string }[];
+  /** Compact at-a-glance facts shown as one muted line under the board —
+   *  orients newcomers and gives AI a liftable fact block. */
+  keyFacts?: string[];
 }
 
 const {
@@ -36,6 +42,8 @@ const {
   tileSettings = false,
   breadcrumb,
   guide,
+  related,
+  keyFacts,
 } = Astro.props;
 ---
 
@@ -123,6 +131,19 @@ const {
     <div id="board" class="board" aria-label="Game board"></div>
   </div>
 
+  {
+    keyFacts && keyFacts.length > 0 && (
+      <p class="key-facts" aria-label="At a glance">
+        {keyFacts.map((f, i) => (
+          <>
+            {i > 0 && <span class="key-facts-sep" aria-hidden="true">·</span>}
+            <span>{f}</span>
+          </>
+        ))}
+      </p>
+    )
+  }
+
   <slot name="after-board" />
 
   <p class="visually-hidden" id="announcer" aria-live="polite"></p>
@@ -151,6 +172,17 @@ const {
       <p class="game-guide-link">
         <a class="guide-cta" href={guide.href}>📖 {guide.label}</a>
       </p>
+    )
+  }
+
+  {
+    related && related.length > 0 && (
+      <nav class="game-related mx-auto w-full max-w-2xl" aria-label="Related guides">
+        <span class="game-related-label">Related:</span>
+        {related.map((r) => (
+          <a href={r.href}>{r.label}</a>
+        ))}
+      </nav>
     )
   }
 
@@ -270,6 +302,13 @@ const {
 <dialog id="win-dialog" aria-labelledby="win-title">
   <p id="win-title" class="dialog-title dialog-title-lg">🎉 You won!</p>
   <dl id="win-summary" class="stats-grid"></dl>
+  {
+    guide && (
+      <p class="win-guide-cta mt-1 mb-3 text-sm opacity-90">
+        Want to win more often? <a class="underline" href={guide.href}>{guide.label} →</a>
+      </p>
+    )
+  }
   <div class="flex flex-wrap justify-end gap-2">
     <button class="btn" type="button" data-close-dialog>Close</button>
     <button id="btn-share" class="btn" type="button">Share deal</button>

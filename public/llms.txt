@@ -1,0 +1,47 @@
+# CardHearth
+
+> CardHearth is a free online home for classic solitaire, card and puzzle games — played in the browser with no download and no sign-up. It is built around fairness: every Sudoku is solvable by pure logic, every Mahjong board is guaranteed clearable, and FreeCell uses the standard Microsoft deal numbering (so deal #11982 is the one famously unsolvable deal). Operated by Einherjar Ventures LLC.
+
+## Games
+
+- [Klondike Solitaire](https://cardhearth.com/klondike/): the classic one-deck solitaire (Draw 1 or Draw 3).
+- [Spider Solitaire](https://cardhearth.com/spider/): two-deck suit-building at 1, 2 or 4 suits.
+- [FreeCell](https://cardhearth.com/freecell/): open, almost-always-winnable solitaire with Microsoft deal numbering.
+- [Pyramid](https://cardhearth.com/pyramid/): pair cards that sum to 13.
+- [TriPeaks](https://cardhearth.com/tripeaks/): clear three peaks on a rank-by-rank streak.
+- [Golf](https://cardhearth.com/golf/): quick play-up-or-down rounds.
+- [Yukon](https://cardhearth.com/yukon/): move any face-up pile, no stock.
+- [Scorpion](https://cardhearth.com/scorpion/): build down in suit and untangle the sting.
+- [Forty Thieves](https://cardhearth.com/forty-thieves/): two decks, a serious challenge.
+- [Eight Off](https://cardhearth.com/eight-off/): eight free cells; almost every deal winnable.
+- [Hearts](https://cardhearth.com/hearts/): trick-taking vs the computer — dodge the points.
+- [Spades](https://cardhearth.com/spades/): bid, partner up, take the tricks vs the computer.
+- [Gin Rummy](https://cardhearth.com/gin/): meld sets and runs and knock, vs the computer.
+- [Euchre](https://cardhearth.com/euchre/): order up trump and name the bowers, vs the computer.
+- [Sudoku](https://cardhearth.com/sudoku/): logic puzzle, four difficulties, every puzzle solvable by logic.
+- [Mahjong](https://cardhearth.com/mahjong/): match free tiles; every board guaranteed solvable.
+- [Minesweeper](https://cardhearth.com/minesweeper/): read the numbers, dodge the mines.
+- [2048](https://cardhearth.com/2048/): slide and merge to the 2048 tile.
+- [Daily Challenge](https://cardhearth.com/daily-challenge/): one shared, always-solvable puzzle a day; keep a streak.
+
+## Guides
+
+- [Guides hub](https://cardhearth.com/guides/): rules, strategy and comparison guides for every game.
+- [Are solitaire games winnable?](https://cardhearth.com/guides/are-solitaire-games-winnable/): the honest, game-by-game answer, with a winnability table.
+- [How to win Klondike](https://cardhearth.com/guides/how-to-win-klondike-solitaire/)
+- [FreeCell strategy](https://cardhearth.com/guides/freecell-strategy/)
+- [Spider strategy](https://cardhearth.com/guides/spider-solitaire-strategy/)
+- [Sudoku solving techniques](https://cardhearth.com/guides/sudoku-solving-techniques/)
+- [Solitaire & card game glossary](https://cardhearth.com/guides/solitaire-glossary/)
+- Comparisons: [FreeCell vs Klondike](https://cardhearth.com/guides/freecell-vs-klondike/), [Spider vs FreeCell](https://cardhearth.com/guides/spider-vs-freecell/), [Klondike vs Spider](https://cardhearth.com/guides/klondike-vs-spider/), [Pyramid vs TriPeaks](https://cardhearth.com/guides/pyramid-vs-tripeaks/).
+
+## Deal numbers
+
+- [FreeCell deal numbers](https://cardhearth.com/freecell/deals/): play any deal by its Windows/Microsoft number (1–1,000,000), including the unsolvable #11982.
+- [Klondike deal numbers](https://cardhearth.com/klondike/deals/): replay or share any Klondike deal by number.
+- [Spider deal numbers](https://cardhearth.com/spider/deals/): replay or share any Spider deal by number.
+
+## About
+
+- [About CardHearth](https://cardhearth.com/about/): who builds it and the fairness philosophy.
+- [Privacy](https://cardhearth.com/privacy/)

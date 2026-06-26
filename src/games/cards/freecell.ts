@@ -1,4 +1,5 @@
-import { type Card, isRed, shuffledDeck } from './deck';
+import { type Card, isRed } from './deck';
+import { msFreecellDealOrder, randomMsDeal } from './ms-freecell';
 import {
   type GameState,
   type Move,
@@ -9,7 +10,9 @@ import {
 } from './types';
 
 export function deal(seed: number): GameState {
-  const deck = shuffledDeck(seed);
+  // FreeCell uses the standard Microsoft deal numbering, so deal #N here is the
+  // same #N as Windows FreeCell (and the deal pages can name famous ones).
+  const deck = msFreecellDealOrder(seed);
   const tableau: Card[][] = Array.from({ length: 8 }, () => []);
   deck.forEach((card, i) => {
     tableau[i % 8]!.push({ ...card, faceUp: true });
@@ -237,6 +240,8 @@ export const freecellRules: Ruleset = {
   variants: [],
   defaultVariant: 0,
   deal: (seed) => deal(seed),
+  // Keep "new game" deal numbers in the familiar Windows range (1–1,000,000).
+  randomSeed: randomMsDeal,
   canMove,
   applyMove,
   canDraw: () => false,

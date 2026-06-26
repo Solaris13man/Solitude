@@ -64,8 +64,15 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="freecell"
+    keyFacts={["FreeCell", "1 deck", "8 cascades", "4 free cells", "almost every deal winnable"]}
     heading="FreeCell Solitaire"
     guide={{ href: '/guides/freecell-strategy/', label: 'FreeCell strategy guide' }}
+    related={[
+      { href: '/freecell/deals/', label: 'Deal numbers' },
+      { href: '/guides/freecell-vs-klondike/', label: 'FreeCell vs Klondike' },
+      { href: '/guides/spider-vs-freecell/', label: 'Spider vs FreeCell' },
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Are these winnable?' },
+    ]}
   >
     <h2 class="mb-2 text-lg font-bold">How to play FreeCell</h2>
     <p class="mb-3">
@@ -99,6 +106,12 @@ const schema = [
         </details>
       ))
     }
+    <p class="mt-4 opacity-90">
+      Want a specific game? Play any of the classic
+      <a class="underline" href="/freecell/deals/">32,000 numbered FreeCell deals</a> by its number —
+      including <a class="underline" href="/freecell/deal/11982/">#11982</a>, the one deal proven
+      unsolvable.
+    </p>
     <p class="mt-6 opacity-75">
       Want more? Play <a class="underline" href="/klondike/">Klondike Solitaire</a> or
       <a class="underline" href="/spider/">Spider Solitaire</a> — both free, right in your browser.

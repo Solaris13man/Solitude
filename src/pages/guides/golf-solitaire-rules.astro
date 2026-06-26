@@ -32,18 +32,63 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Golf Solitaire",
+      "description": "The complete rules of Golf Solitaire, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/golf-solitaire-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Set up the course",
+              "text": "Deal 35 cards face up into seven columns of five; the remaining 17 form the stock, with one card turned up as the starting waste."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the goal",
+              "text": "Clear all the tableau columns by moving their cards onto the waste pile."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Play up or down by one",
+              "text": "Move any exposed column card onto the waste if it is one rank higher or lower, regardless of suit — a 7 onto a 6 or an 8."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Note the no-wrap rule",
+              "text": "Rank does not wrap: you cannot play an Ace on a King or a King on an Ace, so an Ace can end a sequence."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Turn the stock when stuck",
+              "text": "When no column card fits, flip the next stock card to the waste and continue."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Win the game",
+              "text": "Clear every column before the stock runs out to win the hole."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Golf Solitaire Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
     },
     mainEntityOfPage: 'https://cardhearth.com/guides/golf-solitaire-rules/',
     image: 'https://cardhearth.com/og/golf.png',

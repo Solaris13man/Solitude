@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import { GAMES } from '../games/registry';
+import { PARENT_ORG } from '../lib/site-config';
 
 const gameCount = GAMES.filter((g) => g.id !== 'daily' && (g.category === 'cards' || g.category === 'puzzle')).length;
 
@@ -18,11 +19,13 @@ const schema = [
     description,
     publisher: {
       '@type': 'Organization',
+      '@id': 'https://cardhearth.com/#organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: 'https://cardhearth.com/logo.png',
-      founder: { '@type': 'Person', name: 'Jared' },
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
+      founder: { '@id': 'https://cardhearth.com/#jared' },
     },
+    about: { '@id': 'https://cardhearth.com/#jared' },
   },
   {
     '@context': 'https://schema.org',
@@ -52,7 +55,7 @@ const schema = [
 
     <article class="prose py-4">
       <p>
-        Hi — I'm Jared. I work in aerospace, and on the side I build websites. CardHearth started
+        Hi — I'm Jared Waterworth. I work in aerospace, and on the side I build websites. CardHearth started
         the way a lot of side projects do: I went looking for a tired, neglected corner of the
         web that I could honestly make better. Free online solitaire and puzzles turned out to be
         exactly that. The games are timeless and beloved, but so many of the places to play them
@@ -129,7 +132,14 @@ const schema = [
         I genuinely want to hear it — <a href="mailto:hello@cardhearth.com">hello@cardhearth.com</a>.
       </p>
 
-      <p class="opacity-75">— Jared, CardHearth</p>
+      <p class="opacity-75">
+        — Jared Waterworth, CardHearth ·
+        <a href="https://www.linkedin.com/in/jared-waterworth" rel="nofollow noopener" target="_blank">LinkedIn</a>
+      </p>
+
+      <p class="opacity-75 text-sm">
+        CardHearth is operated by <a href={PARENT_ORG.url} rel="nofollow">{PARENT_ORG.name}</a>.
+      </p>
     </article>
 
     <p class="py-6">

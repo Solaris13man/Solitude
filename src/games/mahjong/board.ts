@@ -8,7 +8,7 @@ function currentTileSet(): string {
 
 /** Image path for a tile face in the current set; `sel` is the selected art. */
 function tileSrc(kind: string, sel: boolean): string {
-  return `/tiles/${currentTileSet()}/${sel ? 'sel/' : ''}${kind}.png`;
+  return `/tiles/${currentTileSet()}/${sel ? 'sel/' : ''}${kind}.webp`;
 }
 
 /** Visual faces for each tile kind: corner label + main glyph + color. */

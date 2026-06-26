@@ -32,18 +32,63 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Spider Solitaire",
+      "description": "The complete rules of Spider Solitaire, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/spider-solitaire-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Set up two decks",
+              "text": "Spider uses 104 cards across ten columns; the first four columns get six cards and the rest five, with only the top card of each face up. The remaining 50 cards form the stock."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the goal",
+              "text": "Assemble eight complete King-to-Ace runs, each in a single suit. Each completed run is removed; clear all eight to win."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Build down by rank",
+              "text": "Stack any card on a card one rank higher regardless of suit — but only a same-suit run moves as a single group."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Complete and remove suit runs",
+              "text": "When a full King-to-Ace sequence forms in one suit, it is lifted off the board automatically."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Deal from the stock when stuck",
+              "text": "Click the stock to deal one new card onto every column at once. You cannot deal while any column is empty."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Choose your difficulty",
+              "text": "One suit is easiest, two suits is the popular middle ground, and four suits is the serious challenge."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Spider Solitaire Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
     },
     mainEntityOfPage: 'https://cardhearth.com/guides/spider-solitaire-rules/',
     image: 'https://cardhearth.com/og/spider.png',

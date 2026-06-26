@@ -32,18 +32,63 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Hearts",
+      "description": "The complete rules of Hearts, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/hearts-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Deal the cards",
+              "text": "Four players each receive 13 cards from a standard 52-card deck."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Pass three cards",
+              "text": "At the start of each hand, pass three cards to an opponent; the direction rotates left, right, across, then a no-pass hand."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Know the goal",
+              "text": "Avoid taking penalty cards: each heart is worth 1 point and the Queen of Spades is worth 13. The lowest score wins."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Play the tricks",
+              "text": "The holder of the 2 of clubs leads it first. Follow the led suit if you can; otherwise play any card. The highest card of the led suit wins the trick and leads the next."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Respect the rule on hearts",
+              "text": "You cannot lead a heart until hearts have been broken by being discarded on an earlier trick."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Consider shooting the moon",
+              "text": "If you take every heart and the Queen of Spades in one hand, you score zero and add 26 points to each opponent instead."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Hearts Rules: How to Play (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
     },
     mainEntityOfPage: 'https://cardhearth.com/guides/hearts-rules/',
     image: 'https://cardhearth.com/og/hearts.png',

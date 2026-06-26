@@ -60,8 +60,13 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="golf"
+    keyFacts={["Golf", "1 deck", "7 columns", "play up or down by one", "no rank wrap"]}
     heading="Golf"
     guide={{ href: '/guides/golf-solitaire-strategy/', label: 'Golf strategy guide' }}
+    related={[
+      { href: '/guides/golf-solitaire-rules/', label: 'Golf rules' },
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Are these winnable?' },
+    ]}
   >
     <h2 class="mb-2 text-lg font-bold">How to play Golf Solitaire</h2>
     <p class="mb-3">

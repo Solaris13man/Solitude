@@ -1,0 +1,145 @@
+---
+import Article from '../../components/Article.astro';
+
+const title = 'Klondike vs Spider: Which Solitaire Is Right for You? | CardHearth';
+const description =
+  'Klondike or Spider? The classic one-deck game everyone knows, versus the two-deck suit-building marathon. How they differ in rules, length and difficulty — and which to play.';
+const updated = '2026-06-24';
+const heading = 'Klondike vs Spider';
+const subtitle =
+  'The solitaire everyone has played, and the two-deck challenge that hooks people for hours — compared honestly so you can pick.';
+
+const breadcrumb = [
+  { name: 'CardHearth', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: 'Klondike vs Spider', href: '/guides/klondike-vs-spider/' },
+];
+
+const faq = [
+  {
+    q: 'Is Spider harder than Klondike?',
+    a: 'It depends on the suit count. One-suit Spider is roughly as approachable as Klondike Draw 1. Two-suit Spider is a real step up, and four-suit Spider is much harder than standard Klondike. Spider games also take longer because you are managing two decks across ten columns.',
+  },
+  {
+    q: 'Which is faster to play?',
+    a: 'Klondike. A Klondike game is one deck and usually wraps up in a few minutes. Spider uses two decks and tends to run longer, with more back-and-forth before runs come together — it is more of a sit-down game.',
+  },
+  {
+    q: 'Which is better for beginners?',
+    a: 'Klondike is the natural starting point — almost everyone already knows it, and Draw 1 is forgiving. If you want to try Spider, begin with one suit, then move to two and four as the build-and-clear rhythm clicks.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Klondike vs Spider: Which Solitaire Is Right for You?',
+    description,
+    datePublished: updated,
+    dateModified: updated,
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CardHearth',
+      url: 'https://cardhearth.com/',
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
+    },
+    mainEntityOfPage: 'https://cardhearth.com/guides/klondike-vs-spider/',
+    image: 'https://cardhearth.com/og.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: `https://cardhearth.com${c.href}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Article
+  title={title}
+  description={description}
+  heading={heading}
+  subtitle={subtitle}
+  updated={updated}
+  schema={schema}
+  breadcrumb={breadcrumb}
+  cta={{ href: '/klondike/', label: 'Play Klondike' }}
+>
+  <div class="tldr">
+    <p class="tldr-title">The short version</p>
+    <ul>
+      <li><strong>Play <a href="/klondike/">Klondike</a></strong> for the quick, familiar one-deck classic — a few minutes a game.</li>
+      <li><strong>Play <a href="/spider/">Spider</a></strong> for a longer two-deck challenge of building suit runs across ten columns.</li>
+      <li><strong>Difficulty dial:</strong> Klondike Draw 1 → one-suit Spider → Klondike Draw 3 → two-suit Spider → four-suit Spider.</li>
+    </ul>
+  </div>
+
+  <p>
+    <a href="/klondike/">Klondike</a> is the solitaire most people picture when they hear the word —
+    the one that shipped with Windows. <a href="/spider/">Spider</a> is the other heavyweight: a
+    two-deck game that trades Klondike's quick rounds for a longer, more absorbing build. They share
+    DNA (stacking cards in descending order) but they play very differently.
+  </p>
+
+  <h2>Rules at a glance</h2>
+  <p>
+    <strong>Klondike</strong> uses one deck across seven columns, with a stock you turn either
+    <a href="/guides/klondike-draw-1-vs-draw-3/">one card (Draw 1) or three at a time (Draw 3)</a>. You
+    build four foundations from Ace to King by suit, stacking columns down in alternating colours.
+    <strong>Spider</strong> uses two decks across ten columns and no separate foundations — you build
+    King-to-Ace runs <em>in a single suit</em> directly in the columns, and each completed run lifts
+    off. When you're stuck, the stock deals a fresh card onto every column at once.
+  </p>
+
+  <h2>Length and feel</h2>
+  <p>
+    Klondike is a <strong>sprint</strong>: one deck, quick to set up, quick to resolve, easy to play a
+    few rounds back to back. Spider is a <strong>marathon</strong>: twice the cards, more columns to
+    track, and a slower march toward those eight suit-runs. If you've got five minutes, Klondike fits;
+    if you want to sink into something, Spider rewards the time.
+  </p>
+
+  <h2>Difficulty and winnability</h2>
+  <p>
+    Neither game screens its deals, so both include hands that simply can't be won. Klondike Draw 1 is
+    the gentler end (around 80% of deals are theoretically winnable); Draw 3 is tougher. Spider scales
+    with its suit count: one suit is forgiving, <a href="/spider-2-suits/">two</a> is a real challenge,
+    and <a href="/spider-4-suits/">four</a> is genuinely hard. For the honest, game-by-game picture,
+    see <a href="/guides/are-solitaire-games-winnable/">are solitaire games winnable?</a>
+  </p>
+
+  <h2>Which should you play?</h2>
+  <p>
+    Reach for <strong>Klondike</strong> when you want the familiar classic in bite-size rounds, and
+    <strong>Spider</strong> when you want a longer, suit-focused puzzle to get lost in. Level up with the
+    <a href="/guides/how-to-win-klondike-solitaire/">how to win Klondike</a> and
+    <a href="/guides/spider-solitaire-strategy/">Spider strategy</a> guides — or, if you'd rather a game
+    where almost every deal is winnable, try <a href="/guides/spider-vs-freecell/">Spider vs FreeCell</a>
+    next.
+  </p>
+
+  <h2>Frequently asked questions</h2>
+  {
+    faq.map((f) => (
+      <details class="faq">
+        <summary class="cursor-pointer font-semibold">{f.q}</summary>
+        <p class="mt-2 opacity-90">{f.a}</p>
+      </details>
+    ))
+  }
+</Article>

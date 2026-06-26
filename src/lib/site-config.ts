@@ -89,3 +89,14 @@ export const SITE_CONFIG: SiteConfig = {
   },
   showAdPlaceholders: false,
 };
+
+/**
+ * The parent company that operates this site. Surfaced as an E-E-A-T /
+ * entity-transparency signal only — a single footer credit and the About-page
+ * operator line — never as a sitewide or promotional link. Keep this the one
+ * place the name/URL lives.
+ */
+export const PARENT_ORG = {
+  name: 'Einherjar Ventures LLC',
+  url: 'https://einherjarventures.com',
+} as const;

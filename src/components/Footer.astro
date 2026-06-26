@@ -1,5 +1,6 @@
 ---
 import { GAMES } from '../games/registry';
+import { PARENT_ORG } from '../lib/site-config';
 ---
 
 <footer class="mt-auto border-t border-white/10 py-8 text-sm opacity-80">
@@ -12,6 +13,9 @@ import { GAMES } from '../games/registry';
       <a class="hover:underline" href="/about/">About</a>
       <a class="hover:underline" href="/privacy/">Privacy</a>
     </nav>
-    <p>© {new Date().getFullYear()} CardHearth. Free to play, made with care.</p>
+    <p>
+      © {new Date().getFullYear()} CardHearth, a project of{' '}
+      <a class="hover:underline" href={PARENT_ORG.url} rel="nofollow">{PARENT_ORG.name}</a>.
+    </p>
   </div>
 </footer>

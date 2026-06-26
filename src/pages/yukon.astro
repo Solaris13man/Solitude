@@ -60,8 +60,12 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="yukon"
+    keyFacts={["Yukon", "1 deck", "7 columns", "no stock", "move any face-up pile"]}
     heading="Yukon Solitaire"
     guide={{ href: '/guides/yukon-solitaire-rules/', label: 'Yukon rules guide' }}
+    related={[
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Are these winnable?' },
+    ]}
   >
     <h2 class="mb-2 text-lg font-bold">How to play Yukon Solitaire</h2>
     <p class="mb-3">

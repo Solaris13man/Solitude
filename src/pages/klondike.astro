@@ -13,7 +13,7 @@ const faq = [
   },
   {
     q: 'What is the difference between Draw 1 and Draw 3?',
-    a: 'In Draw 1, one card is turned from the stock at a time and every stock card is reachable each pass — win rates around 30–45% are realistic. In Draw 3, cards turn over three at a time so only every third card is initially available, which makes planning your stock passes much more important. You can switch modes in Settings; the change applies to your next deal.',
+    a: 'In Draw 1, one card is turned from the stock at a time and every stock card is reachable each pass — win rates around 35–45% are realistic. In Draw 3, cards turn over three at a time so only every third card is initially available, which makes planning your stock passes much more important. You can switch modes in Settings; the change applies to your next deal.',
   },
   {
     q: 'How does Klondike scoring work?',
@@ -64,8 +64,15 @@ const schema = [
 <Layout title={title} description={description} schema={schema}>
   <GameShell
     gameId="klondike"
+    keyFacts={["Klondike", "1 deck", "7 columns", "Draw 1 or Draw 3", "~80% of deals winnable"]}
     heading="Klondike Solitaire"
     guide={{ href: '/guides/how-to-win-klondike-solitaire/', label: 'Klondike strategy guide' }}
+    related={[
+      { href: '/guides/klondike-draw-1-vs-draw-3/', label: 'Draw 1 vs Draw 3' },
+      { href: '/guides/freecell-vs-klondike/', label: 'FreeCell vs Klondike' },
+      { href: '/guides/klondike-vs-spider/', label: 'Klondike vs Spider' },
+      { href: '/guides/are-solitaire-games-winnable/', label: 'Are these winnable?' },
+    ]}
     variantLabel="Draw mode"
     variantOptions={[
       { value: 1, label: 'Draw 1' },
@@ -118,6 +125,10 @@ const schema = [
         </details>
       ))
     }
+    <p class="mt-4 opacity-90">
+      Want to replay or share a specific game? Every deal has a number — play any of them on the
+      <a class="underline" href="/klondike/deals/">Klondike deal numbers</a> page.
+    </p>
     <p class="mt-6 opacity-75">
       CardHearth is always free to play, runs entirely in your browser, and saves your games,
       settings and statistics on your device. Also try

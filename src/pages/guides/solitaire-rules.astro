@@ -32,18 +32,63 @@ const faq = [
 
 const schema = [
   {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to play Klondike Solitaire",
+      "description": "The complete rules of Klondike Solitaire, step by step.",
+      "mainEntityOfPage": "https://cardhearth.com/guides/solitaire-rules/",
+      "step": [
+          {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Set up the board",
+              "text": "Deal 28 cards into seven tableau columns of one to seven cards, with only the top card of each column face up. The remaining 24 cards form the stock."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Know the goal",
+              "text": "Build all four foundation piles up from Ace to King, one per suit. You win when every card has reached the foundations."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Build the tableau down in alternating colours",
+              "text": "In the columns, stack cards in descending rank and alternating colour — for example a red Six on a black Seven. Move a single card or an ordered group to another column."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Turn cards from the stock",
+              "text": "When you run out of moves, deal from the stock to the waste — one card at a time in Draw 1, three at a time in Draw 3 — and play the top card of the waste."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Send cards to the foundations",
+              "text": "Move Aces and Twos up as soon as they appear, then build each foundation in suit, uncovering face-down cards whenever you can."
+          },
+          {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Win the game",
+              "text": "Keep building until all 52 cards sit on the foundations, Ace through King in every suit."
+          }
+      ]
+  },
+  {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: 'Solitaire Rules: How to Play Klondike (Complete Guide)',
     description,
     datePublished: updated,
     dateModified: updated,
-    author: { '@type': 'Person', name: 'Jared', url: 'https://cardhearth.com/about/' },
+    author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
     publisher: {
       '@type': 'Organization',
       name: 'CardHearth',
       url: 'https://cardhearth.com/',
-      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png' },
+      logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
     },
     mainEntityOfPage: 'https://cardhearth.com/guides/solitaire-rules/',
     image: 'https://cardhearth.com/og/klondike.png',

@@ -55,6 +55,13 @@ export class DailyMode {
     return this.active && stateSeed === this.seed;
   }
 
+  /** True when the daily being played was already solved on a prior visit.
+   *  Used to avoid re-inflating per-variant stats when a player replays an
+   *  already-completed deal. */
+  alreadySolved(): boolean {
+    return this.active && this.date !== null && isDailySolved(this.date);
+  }
+
   /** Reveal and populate the banner host that GameShell always renders. */
   mountBanner(): void {
     const host = document.getElementById('daily-banner');

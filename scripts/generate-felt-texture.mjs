@@ -1,5 +1,5 @@
 /**
- * Generates a subtle, seamless felt-grain overlay (public/textures/felt.png):
+ * Generates a subtle, seamless felt-grain overlay (public/textures/felt.webp):
  * a transparent RGBA tile of soft dark/light specks. Layered over the felt
  * colour gradient it reads as woven cloth and works for every felt colour, so
  * one tile serves green/blue/slate/crimson. Re-run: node scripts/generate-felt-texture.mjs
@@ -45,8 +45,8 @@ for (let i = 0; i < n.length; i++) {
   buf[i * 4 + 3] = a;
 }
 mkdirSync('public/textures', { recursive: true });
-const png = await sharp(buf, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
-writeFileSync('public/textures/felt.png', png);
+const png = await sharp(buf, { raw: { width: W, height: H, channels: 4 } }).webp({ quality: 82, effort: 6 }).toBuffer();
+writeFileSync('public/textures/felt.webp', png);
 
 // preview: tile the grain over a felt-green square so we can eyeball it
 const tile = await sharp(buf, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
@@ -56,4 +56,4 @@ const base = await sharp({ create: { width: 512, height: 512, channels: 4, backg
     // top sheen + bottom vignette approximations are skipped; this is just the grain check
   ]).png().toBuffer();
 writeFileSync('/tmp/felt-preview.png', base);
-console.log('wrote public/textures/felt.png and /tmp/felt-preview.png');
+console.log('wrote public/textures/felt.webp and /tmp/felt-preview.png');
