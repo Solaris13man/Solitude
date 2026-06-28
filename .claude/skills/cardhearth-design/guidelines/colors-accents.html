@@ -1,0 +1,30 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Game accent inks" subtitle="Puzzle numerals & tile suits — blue, green, violet, teal" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; }
+  .wrap { padding: 18px 20px; }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .sw { border-radius: 10px; height: 88px; background: var(--card-cream); border: 1px solid rgb(0 0 0 / 0.12); display: flex; flex-direction: column; justify-content: space-between; padding: 10px; box-shadow: var(--shadow-card); }
+  .glyph { font-size: 30px; font-weight: 800; line-height: 1; }
+  .name { font-size: 11px; font-weight: 700; color: #1d2230; }
+  .hex { font-size: 10.5px; color: #5b6660; font-variant-numeric: tabular-nums; }
+  .cap { font-size: 11px; color: #5b6660; margin: 0 0 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="cap">Sudoku entries, Minesweeper counts and Mahjong suits draw from a small ink set on cream.</p>
+    <div class="row">
+      <div class="sw"><span class="glyph" style="color:var(--accent-blue)">2</span><span><span class="name">Blue</span><br><span class="hex">#2c5fa8</span></span></div>
+      <div class="sw"><span class="glyph" style="color:var(--accent-green)">3</span><span><span class="name">Green</span><br><span class="hex">#2e7d32</span></span></div>
+      <div class="sw"><span class="glyph" style="color:var(--suit-red)">中</span><span><span class="name">Red</span><br><span class="hex">#c2273a</span></span></div>
+      <div class="sw"><span class="glyph" style="color:var(--accent-violet)">4</span><span><span class="name">Violet</span><br><span class="hex">#5e35b1</span></span></div>
+      <div class="sw"><span class="glyph" style="color:var(--accent-teal)">6</span><span><span class="name">Teal</span><br><span class="hex">#00838f</span></span></div>
+    </div>
+  </div>
+</body>
+</html>

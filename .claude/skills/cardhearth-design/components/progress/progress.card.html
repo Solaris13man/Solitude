@@ -1,0 +1,51 @@
+<!-- @dsCard group="Components" viewport="700x380" name="Progress — StreakCalendar, BadgeShelf" subtitle="Daily-streak month grid and the achievements teaser" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--surface-table-bg); color: var(--chrome-text); min-height: 100vh; }
+  #root { padding: 22px; display: grid; grid-template-columns: 320px 1fr; gap: 18px; align-items: start; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.5; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { StreakCalendar, BadgeShelf } = window.CardHearthDesignSystem_7eedad;
+    function Demo() {
+      return (
+        <>
+          <div className="stack">
+            <span className="lbl">StreakCalendar</span>
+            <StreakCalendar year={2026} month={5} today={28}
+              solved={[1,2,3,5,6,7,9,10,11,13,14,15,17,18,19,21,22,23,25,26,27]} />
+          </div>
+          <div className="stack">
+            <span className="lbl">BadgeShelf</span>
+            <BadgeShelf summary="3 of 24 unlocked" href="#" badges={[
+              {icon:'🃏',name:'First win',earned:true},
+              {icon:'🔥',name:'5-day streak',earned:true},
+              {icon:'🎯',name:'No hints',earned:true},
+              {icon:'🧩',name:'Puzzle master',earned:false},
+              {icon:'🏔️',name:'Spider IV',earned:false},
+            ]} />
+            <BadgeShelf label="Collection" summary="Locked preview" badges={[
+              {icon:'⭐',name:'Daily x30',earned:false},
+              {icon:'⚡',name:'Speed run',earned:false},
+              {icon:'🏆',name:'Grand slam',earned:false},
+            ]} />
+          </div>
+        </>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!-- @dsCard group="Effects" viewport="700x210" name="Elevation on felt" subtitle="Soft dark shadows lift cards & menus off the table" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--surface-table-bg); color: var(--chrome-text); }
+  .wrap { padding: 24px 22px; display: flex; gap: 22px; flex-wrap: wrap; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .box { width: 120px; height: 76px; border-radius: var(--radius-xl); background: var(--on-felt-fill); border: 1px solid var(--on-felt-line); display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+  .t { font-size: 10.5px; opacity: 0.72; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="item"><div class="box" style="box-shadow: var(--shadow-card)">card</div><span class="t">rest<br>0 4px 16px /.20</span></div>
+    <div class="item"><div class="box" style="box-shadow: var(--shadow-hover); transform: translateY(-4px)">hover</div><span class="t">lifted -4px<br>0 14px 34px /.38</span></div>
+    <div class="item"><div class="box" style="box-shadow: var(--shadow-pop); background: var(--surface-chrome)">menu</div><span class="t">dropdown<br>0 14px 34px /.42</span></div>
+    <div class="item"><div class="box" style="box-shadow: var(--shadow-dialog); background: var(--panel-light); color: var(--panel-text); border: none">dialog</div><span class="t">modal<br>0 24px 60px /.45</span></div>
+  </div>
+</body>
+</html>

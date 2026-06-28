@@ -1,0 +1,32 @@
+<!-- @dsCard group="Brand" viewport="700x220" name="Logo & mark" subtitle="A cream card bearing a gold heart — Card + Heart = Hearth" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); }
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; }
+  .light { background: #fff; padding: 22px; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+  .felt { background: var(--surface-table-bg); padding: 22px; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+  .row { display: flex; align-items: center; gap: 16px; }
+  img.mark { width: 56px; height: 56px; }
+  img.lock { height: 40px; }
+  .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .light .lbl { color: #5b6660; }
+  .felt .lbl { color: var(--gold); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="light">
+      <span class="lbl">On light</span>
+      <div class="row"><img class="mark" src="../assets/logo-mark.svg" alt="CardHearth mark"><img class="lock" src="../assets/logo-lockup.svg" alt="CardHearth"></div>
+    </div>
+    <div class="felt">
+      <span class="lbl">On felt — reversed</span>
+      <div class="row"><img class="mark" src="../assets/app-icon.png" alt="CardHearth app icon" style="border-radius: 14px;"><img class="lock" src="../assets/logo-lockup-reversed.svg" alt="CardHearth"></div>
+    </div>
+  </div>
+</body>
+</html>

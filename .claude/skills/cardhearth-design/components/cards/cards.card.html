@@ -1,0 +1,59 @@
+<!-- @dsCard group="Components" viewport="760x520" name="Cards — PlayingCard, CardFan" subtitle="The rendered table deck: faces, courts, backs, and an arced hand" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--surface-table-bg); color: var(--chrome-text); min-height: 100vh; }
+  #root { padding: 24px; display: flex; flex-direction: column; gap: 22px; }
+  .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.5; font-weight: 700; margin-bottom: 10px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { PlayingCard, CardFan } = window.CardHearthDesignSystem_7eedad;
+    function Demo() {
+      return (
+        <>
+          <div>
+            <div className="lbl">Faces · pips · court · ace · back</div>
+            <div className="row">
+              <PlayingCard rank="A" suit="S" />
+              <PlayingCard rank="7" suit="H" />
+              <PlayingCard rank="10" suit="D" />
+              <PlayingCard rank="J" suit="C" />
+              <PlayingCard rank="Q" suit="H" />
+              <PlayingCard rank="K" suit="S" selected />
+              <PlayingCard faceDown />
+            </div>
+          </div>
+          <div>
+            <div className="lbl">CardFan — your hand (click to lift) + a concealed hand</div>
+            <div className="row" style={{ gap: 40, alignItems: 'flex-start' }}>
+              <CardFan
+                cards={[
+                  { rank: 'A', suit: 'S' }, { rank: 'K', suit: 'H' },
+                  { rank: 'Q', suit: 'H' }, { rank: '10', suit: 'D' },
+                  { rank: '8', suit: 'C' }, { rank: '4', suit: 'D' },
+                ]}
+                width={86}
+                selectedIndex={1}
+                onSelect={() => {}}
+              />
+              <CardFan cards={Array(8).fill({})} faceDown width={52} spread={6} />
+            </div>
+          </div>
+        </>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+  </script>
+</body>
+</html>

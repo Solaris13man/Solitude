@@ -1,0 +1,43 @@
+<!-- @dsCard group="Effects" viewport="700x214" name="Focus, motion & states" subtitle="Gold focus ring, card-landing easings, hover/press feedback" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--surface-table-bg); color: var(--chrome-text); }
+  .wrap { padding: 20px 22px; display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; gap: 9px; }
+  .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.5; font-weight: 700; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); background: var(--gold); color: var(--gold-ink); font-size: 13px; font-weight: 700; }
+  .ring { outline: var(--focus-outline); outline-offset: var(--focus-offset); }
+  .ease { width: 150px; height: 38px; border-radius: var(--radius-sm); background: var(--on-felt-fill); border: 1px solid var(--on-felt-line); position: relative; overflow: hidden; }
+  .dot { position: absolute; top: 7px; left: 7px; width: 24px; height: 24px; border-radius: 6px; background: var(--gold); animation: slide 2.2s var(--ease-land) infinite; }
+  @keyframes slide { 0%,12% { left: 7px } 55%,70% { left: 119px } 100% { left: 7px } }
+  .t { font-size: 10.5px; opacity: 0.72; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="col">
+      <span class="lbl">Focus ring</span>
+      <span class="chip ring">Play now</span>
+      <span class="t">3px gold, 2px offset</span>
+    </div>
+    <div class="col">
+      <span class="lbl">Card landing — ease-land</span>
+      <div class="ease"><div class="dot"></div></div>
+      <span class="t">cubic-bezier(.3,1.25,.55,1) — slight overshoot</span>
+    </div>
+    <div class="col">
+      <span class="lbl">States</span>
+      <div style="display:flex; gap:8px">
+        <span class="chip" style="background: var(--on-felt-glass); color: var(--chrome-text); border:1px solid var(--on-felt-line)">rest</span>
+        <span class="chip" style="background: var(--on-felt-glass-hover); color: var(--chrome-text); border:1px solid var(--on-felt-line)">hover</span>
+        <span class="chip" style="background: var(--gold); color: var(--gold-ink); filter: brightness(0.96); transform: scale(0.98)">press</span>
+      </div>
+      <span class="t">hover lightens glass · press dims + 0.98 scale</span>
+    </div>
+  </div>
+</body>
+</html>

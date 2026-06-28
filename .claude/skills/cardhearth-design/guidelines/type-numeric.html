@@ -1,0 +1,34 @@
+<!-- @dsCard group="Type" viewport="700x190" name="Numeric, eyebrow & serif" subtitle="Tabular HUD figures, uppercase eyebrows, court-card serif" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--surface-table-bg); color: var(--chrome-text); }
+  .wrap { padding: 20px 22px; display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.5; font-weight: 700; }
+  .hud { display: inline-flex; gap: 18px; padding: 8px 18px; border-radius: var(--radius-pill); background: var(--on-felt-fill); border: 1px solid var(--on-felt-line-soft); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hud .k { font-weight: 500; opacity: 0.8; margin-right: 6px; }
+  .eyebrow { font-size: var(--text-2xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gold); }
+  .serif { font-family: var(--font-serif); font-weight: 700; font-size: 40px; color: var(--card-cream); line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="col">
+      <span class="lbl">HUD — tabular numeric</span>
+      <span class="hud"><span><span class="k">Time</span>2:14</span><span><span class="k">Moves</span>38</span><span><span class="k">Score</span>120</span></span>
+    </div>
+    <div class="col">
+      <span class="lbl">Eyebrow</span>
+      <span class="eyebrow">⭐ Daily Challenge</span>
+    </div>
+    <div class="col">
+      <span class="lbl">Court serif</span>
+      <span class="serif">K Q J</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!-- @dsCard group="Colors" viewport="700x214" name="Gold — the hearth glow" subtitle="Brand accent, primary actions, focus & highlights" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--felt-green-edge); }
+  .wrap { padding: 18px 20px; }
+  .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .sw { border-radius: 10px; height: 78px; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; box-shadow: var(--shadow-card); }
+  .name { font-size: 12px; font-weight: 800; }
+  .hex { font-size: 11px; opacity: 0.85; font-variant-numeric: tabular-nums; }
+  .cap { font-size: 11px; color: var(--gold); margin: 0 0 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .dark { color: #43320a; }
+  .light { color: #f3f6f2; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="cap">Card + Heart = Hearth — gold is the warm light over the table</p>
+    <div class="row">
+      <div class="sw dark" style="background: var(--gold)"><span class="name">Gold</span><span class="hex">#ffd95e</span></div>
+      <div class="sw dark" style="background: var(--gold-soft)"><span class="name">Gold soft (hover)</span><span class="hex">#ffe389</span></div>
+      <div class="sw light" style="background: var(--gold-warm)"><span class="name">Gold warm (mark)</span><span class="hex">#f5b13a</span></div>
+      <div class="sw light" style="background: var(--gold-ink)"><span class="name">Gold ink (text on gold)</span><span class="hex">#43320a</span></div>
+      <div class="sw dark" style="background: var(--gold-mint)"><span class="name">Mint (fair/positive)</span><span class="hex">#8be0a8</span></div>
+      <div class="sw light" style="background: var(--felt-green-deep); border: 1px solid var(--gold-veil)"><span class="name" style="color:var(--gold)">Gold veil border</span><span class="hex" style="color:var(--chrome-text)">on felt panels</span></div>
+    </div>
+  </div>
+</body>
+</html>

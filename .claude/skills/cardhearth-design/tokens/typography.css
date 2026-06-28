@@ -1,0 +1,53 @@
+/* ============================================================
+   CardHearth — Typography tokens
+   System UI sans for all chrome (no bundled webfonts — fast,
+   native, friendly). A serif is used only for court-card letters
+   and decorative numerals, echoing engraved playing-card faces.
+   ============================================================ */
+
+:root {
+  /* ---- Families ---- */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  /* Court-card letters & engraved numerals (K/Q/J, calendar dates) */
+  --font-serif: Georgia, 'Times New Roman', serif;
+  /* Stats, timers, deal numbers — tabular alignment */
+  --font-numeric: ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Type scale (rem) ---- */
+  --text-2xs:  0.7rem;    /* eyebrows, hud labels, legends */
+  --text-xs:   0.78rem;   /* fine print, taglines */
+  --text-sm:   0.85rem;   /* buttons, secondary copy */
+  --text-base: 1rem;      /* body */
+  --text-md:   1.05rem;   /* lead / prose */
+  --text-lg:   1.1rem;    /* card titles */
+  --text-xl:   1.4rem;    /* section titles, daily-feature title */
+  --text-2xl:  1.5rem;    /* prose H2 */
+  --text-3xl:  1.8rem;    /* daily-hero game name */
+  --text-4xl:  2.25rem;   /* page H1 (mobile) */
+  --text-5xl:  3rem;      /* page H1 (desktop) */
+
+  /* ---- Weights ---- */
+  --weight-normal:   400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extra:    800;   /* CardHearth loves 800 for titles */
+
+  /* ---- Line heights ---- */
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.7;   /* long-form strategy guides */
+
+  /* ---- Letter spacing ---- */
+  --tracking-tight: -0.01em;  /* big bold headings */
+  --tracking-wide:  0.04em;   /* uppercase eyebrows */
+  --tracking-wider: 0.06em;   /* tiny uppercase labels */
+
+  /* ---- Semantic roles ---- */
+  --type-display:  var(--weight-extra) var(--text-5xl)/var(--leading-tight) var(--font-sans);
+  --type-title:    var(--weight-extra) var(--text-xl)/var(--leading-snug) var(--font-sans);
+  --type-body:     var(--weight-normal) var(--text-base)/var(--leading-normal) var(--font-sans);
+  --type-eyebrow:  var(--weight-bold) var(--text-2xs)/1 var(--font-sans);
+}
