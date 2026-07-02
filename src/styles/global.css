@@ -146,15 +146,27 @@
 /* ---------- page chrome ---------- */
 
 body {
-  background:
-    radial-gradient(140% 110% at 50% -10%, rgb(255 255 255 / 0.07) 0%, transparent 45%),
-    radial-gradient(130% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.3) 100%),
-    radial-gradient(120% 90% at 50% 0%, var(--felt) 0%, var(--felt-edge) 100%);
-  background-attachment: fixed;
+  /* Solid fallback; the painted table lives on the fixed ::after layer below —
+     background-attachment: fixed defeats composited scrolling in several
+     browsers (full repaint per scroll frame), a fixed pseudo-element doesn't. */
+  background: var(--felt-edge);
   color: var(--chrome-text);
   min-height: 100dvh;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* The felt-table backdrop: warm top sheen + vignette + felt gradient. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(140% 110% at 50% -10%, rgb(255 255 255 / 0.07) 0%, transparent 45%),
+    radial-gradient(130% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.3) 100%),
+    radial-gradient(120% 90% at 50% 0%, var(--felt) 0%, var(--felt-edge) 100%);
 }
 
 /* Woven-felt grain over the colour gradient — one neutral tile that reads on
@@ -173,15 +185,14 @@ body::before {
 /* ---------- alternate table surfaces (wood / marble / granite) ---------- */
 /* These replace the felt-colour gradient with a tiled texture, keeping a
    sheen + vignette for depth. The felt grain overlay is hidden for them. */
-:root[data-surface='wood-walnut'] body,
-:root[data-surface='wood-oak'] body,
-:root[data-surface='marble'] body,
-:root[data-surface='granite'] body {
+:root[data-surface='wood-walnut'] body::after,
+:root[data-surface='wood-oak'] body::after,
+:root[data-surface='marble'] body::after,
+:root[data-surface='granite'] body::after {
   background:
     radial-gradient(140% 110% at 50% -10%, rgb(255 255 255 / 0.10) 0%, transparent 45%),
     radial-gradient(130% 100% at 50% 60%, transparent 50%, rgb(0 0 0 / 0.34) 100%),
     var(--surface-img) 0 0 / var(--surface-size, 420px) repeat;
-  background-attachment: fixed;
 }
 :root[data-surface='wood-walnut'] { --surface-img: url('/textures/wood-walnut.webp'); --surface-size: 460px; }
 :root[data-surface='wood-oak'] { --surface-img: url('/textures/wood-oak.webp'); --surface-size: 460px; }
@@ -395,7 +406,7 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
 }
 .menu-card-tag {
   font-size: 0.8rem;
-  opacity: 0.72;
+  opacity: 0.88;
 }
 .menu-card-highlight {
   margin-top: 0.35rem;
@@ -601,7 +612,7 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
   font-weight: var(--weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  opacity: 0.55;
+  opacity: 0.8;
 }
 .game-nav-link {
   display: inline-flex;
@@ -878,9 +889,10 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
   gap: 0.3rem 0.5rem;
   margin: 0.5rem auto 0;
   font-size: 0.82rem;
-  opacity: 0.65;
+  /* >= 4.5:1 on the lightest felt — 0.65 fell to ~3:1 */
+  opacity: 0.88;
 }
-.key-facts > span:first-child { font-weight: var(--weight-semibold); opacity: 0.85; }
+.key-facts > span:first-child { font-weight: var(--weight-semibold); }
 .key-facts-sep { opacity: 0.5; }
 
 .hud {
@@ -1553,6 +1565,9 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   display: grid;
   grid-template-columns: repeat(var(--ms-cols), 1fr);
   width: min(100%, calc(var(--ms-cols) * 2.2rem));
+  /* Expert is 30 columns — never shrink below tappable (~28px) cells; the
+     board scrolls sideways inside .board-scroll instead. */
+  min-width: calc(var(--ms-cols) * 1.75rem);
   border: 3px solid #1d2230;
   border-radius: 8px;
   overflow: hidden;
@@ -1921,7 +1936,7 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   gap: 0.35rem;
   align-items: center;
   font-size: 0.8rem;
-  opacity: 0.75;
+  opacity: 0.9;
   margin-bottom: 0.6rem;
 }
 .breadcrumb a { color: inherit; text-decoration: none; }
@@ -2019,7 +2034,12 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
    shove content on arrival (CLS) — worst on mobile, where most paid clicks land. */
 .ad-slot ins.adsbygoogle {
   display: block;
-  min-height: 90px;
+  /* Mobile responsive fills commonly render 250-320px tall; 90px reserved
+     ~200px of shove on arrival. Desktop keeps the shorter leaderboard space. */
+  min-height: 280px;
+}
+@media (min-width: 728px) {
+  .ad-slot ins.adsbygoogle { min-height: 90px; }
 }
 .ad-slot-tag {
   display: block;

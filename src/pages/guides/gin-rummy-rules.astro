@@ -148,6 +148,14 @@ const schema = [
     turn you draw one card and discard one, so your hand is always 10 cards at the end of your turn.
   </p>
 
+  <h2>The first turn</h2>
+  <p>
+    Traditional Gin opens with a small ritual around that first upcard: the non-dealer may take it;
+    if they decline, the dealer may; and if both pass, the non-dealer draws from the stock instead.
+    On CardHearth this is simplified — the non-dealer just takes a normal first turn, drawing from
+    the stock or the discard pile like any other turn.
+  </p>
+
   <h2>Melds: sets and runs</h2>
   <p>A meld is a valid group of cards. There are two kinds:</p>
   <ul>
@@ -216,7 +224,8 @@ const schema = [
     Points accumulate hand by hand: the knocker scores the deadwood difference, a gin adds 25, and an
     undercut gives the bonus to the defender. The first player to reach <strong>100 points</strong>
     wins the game. If the stock runs too low to continue (only two cards left) before anyone knocks,
-    the hand is a wash and no one scores.
+    the hand is a wash and no one scores. CardHearth plays without the Big Gin variant — going gin
+    always pays the flat 25-point bonus.
   </p>
 
   <h2>Frequently asked questions</h2>

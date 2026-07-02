@@ -202,6 +202,11 @@ class PeaksController {
   private afterMove(): void {
     if (this.state.moves > 0 && this.runningSince === null) this.resumeTimer();
     this.refresh(true);
+    // Surface dead ends proactively — a stuck player who never presses Hint
+    // otherwise gets no signal at all that the game is over.
+    if (!this.finished && this.rules.hint(this.state) === null) {
+      this.announce('No moves left — this one is over. Undo to try another line, or deal a new game.', true);
+    }
   }
 
   private hint(): void {

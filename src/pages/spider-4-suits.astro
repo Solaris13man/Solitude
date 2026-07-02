@@ -34,7 +34,7 @@ const schema = [
     operatingSystem: 'Any',
     playMode: 'SinglePlayer',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    image: 'https://cardhearth.com/og.png',
+    image: 'https://cardhearth.com/og/spider-4-suits.png',
     publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
   },
   {
@@ -62,6 +62,12 @@ const schema = [
   <GameShell
     gameId="spider"
     heading="Spider — 4 Suits"
+    guide={{ href: '/guides/spider-1-2-4-suits/', label: '1, 2 or 4 suits — which to play' }}
+    related={[
+      { href: '/guides/spider-solitaire-strategy/', label: 'Spider strategy guide' },
+      { href: '/spider/', label: 'Spider Solitaire' },
+      { href: '/spider-2-suits/', label: '2 suit Spider' },
+    ]}
     breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Spider', href: '/spider/' }, { name: '4 Suits', href: '/spider-4-suits/' }]}
   >
     <h2 class="mb-2 text-lg font-bold">The expert's Spider</h2>

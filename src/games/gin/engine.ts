@@ -32,6 +32,8 @@ export interface GinState {
   scores: number[]; // length 2 cumulative
   lastResult: RoundResult | null;
   justDrewDiscard: boolean; // true if the player drew the upcard this turn
+  /** id of the card taken from the discard this turn — it may not go straight back. */
+  drawnDiscardId: string | null;
 }
 
 export const TARGET_SCORE = 100;
@@ -58,6 +60,7 @@ export function newGame(seed: number): GinState {
     scores: [0, 0],
     lastResult: null,
     justDrewDiscard: false,
+    drawnDiscardId: null,
   };
   dealRound(state);
   return state;
@@ -84,6 +87,7 @@ function dealRound(state: GinState): void {
   state.turn = nonDealer(state.dealer);
   state.phase = 'draw';
   state.justDrewDiscard = false;
+  state.drawnDiscardId = null;
 }
 
 function faceUp(card: Card): Card {
@@ -152,13 +156,11 @@ function candidateMelds(cards: Card[]): Meld[] {
         j++;
       }
       // sorted[i..j] is a maximal run. Emit every contiguous sub-run len >= 3.
-      const runLen = j - i + 1;
       for (let start = i; start <= j; start++) {
         for (let end = start + 2; end <= j; end++) {
           melds.push({ type: 'run', cards: sorted.slice(start, end + 1) });
         }
       }
-      void runLen;
       i = j + 1;
     }
   }
@@ -256,6 +258,7 @@ export function drawStock(state: GinState, player: number): void {
   const card = faceUp(state.stock.pop()!);
   state.hands[player]!.push(card);
   state.justDrewDiscard = false;
+  state.drawnDiscardId = null;
   state.phase = 'discard';
 }
 
@@ -266,6 +269,7 @@ export function drawDiscard(state: GinState, player: number): void {
   const card = faceUp(state.discard.pop()!);
   state.hands[player]!.push(card);
   state.justDrewDiscard = true;
+  state.drawnDiscardId = card.id;
   state.phase = 'discard';
 }
 
@@ -274,6 +278,9 @@ export function canKnock(state: GinState, player: number, discardCard: Card): bo
   if (state.phase !== 'discard' || state.turn !== player) return false;
   const hand = state.hands[player]!;
   if (!hand.some((c) => c.id === discardCard.id)) return false;
+  // Standard rule: the card just taken from the discard pile may not be
+  // discarded (or knocked with) on the same turn.
+  if (state.justDrewDiscard && discardCard.id === state.drawnDiscardId) return false;
   const remaining = hand.filter((c) => c.id !== discardCard.id);
   return deadwoodValue(remaining) <= 10;
 }
@@ -282,12 +289,16 @@ export function discard(state: GinState, player: number, card: Card): void {
   if (state.phase !== 'discard' || state.turn !== player) {
     throw new Error('Cannot discard now');
   }
+  if (state.justDrewDiscard && card.id === state.drawnDiscardId) {
+    throw new Error('Cannot discard the card just drawn from the discard pile');
+  }
   const hand = state.hands[player]!;
   const idx = hand.findIndex((c) => c.id === card.id);
   if (idx === -1) throw new Error('Card not in hand');
   const [removed] = hand.splice(idx, 1);
   state.discard.push(faceUp(removed!));
   state.justDrewDiscard = false;
+  state.drawnDiscardId = null;
 
   // If the stock now has <= 2 cards, the round ends as a WASH.
   if (state.stock.length <= 2) {
@@ -458,9 +469,8 @@ export function aiChooseDiscard(
 ): { card: Card; knock: boolean } {
   const hand = state.hands[player]!;
   // Candidate discards: every card, except the card just drawn from the
-  // discard pile (cannot re-discard it the same turn). drawDiscard pushes the
-  // upcard to the end of the hand, so the blocked card is the last one.
-  const blockedId = state.justDrewDiscard ? hand[hand.length - 1]?.id : undefined;
+  // discard pile (cannot re-discard it the same turn).
+  const blockedId = state.justDrewDiscard ? state.drawnDiscardId : undefined;
 
   let bestCard: Card | null = null;
   let bestDeadwood = Infinity;

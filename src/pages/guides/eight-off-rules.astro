@@ -156,20 +156,18 @@ const schema = [
     Like FreeCell, most apps — CardHearth included — let you drag a whole descending, same-suit run
     in one gesture. This is the <strong>supermove</strong>, and it is purely a convenience: it
     automates a series of legal single moves that shuffle cards through your empty free cells and
-    empty columns and back. Because of that, the number of cards you can move at once is limited by
-    how much temporary space you have. The rule is:
+    back. Because of that, the number of cards you can move at once is limited by how much
+    temporary space you have. The rule is:
   </p>
   <p>
-    <strong>(1 + empty free cells) &times; 2<sup>(empty columns)</sup></strong>
+    <strong>1 + empty free cells</strong>
   </p>
   <p>
-    In words: take one, add the number of empty free cells, then double the result once for each
-    empty column. Eight Off starts with four cells free and no empty columns, so right off the deal
-    you can move five cards (1 + 4 = 5). Empty a column and that doubles to ten; if you somehow had
-    all eight cells free with one empty column you could move (1 + 8)&nbsp;&times;&nbsp;2 = eighteen.
-    One important caveat: when you are moving a run <em>onto</em> an empty column, that destination
-    column does not count toward the doubling, because it is where the run is going rather than a
-    relay space.
+    In words: one card, plus one more for each empty free cell. Eight Off starts with four cells
+    free, so right off the deal you can move five cards (1 + 4 = 5); with all eight cells free the
+    limit is nine. Unlike FreeCell, empty columns don't raise the limit here: an empty Eight Off
+    column accepts only a King, so it can't act as a relay space for the cards being shuffled
+    through.
   </p>
 
   <h2>Eight Off vs FreeCell</h2>

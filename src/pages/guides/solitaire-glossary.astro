@@ -19,7 +19,7 @@ const breadcrumb = [
 // below carry the same meaning plus helpful links).
 const TERM_SET_ID = 'https://cardhearth.com/guides/solitaire-glossary/#termset';
 const terms = [
-  { id: 'foundation', term: 'Foundation', def: 'The destination piles where you build a complete suit, almost always from Ace up to King. Clearing every card to the foundations is how you win Klondike, Spider, FreeCell and most patience games. There are usually four, one per suit (Spider uses eight).' },
+  { id: 'foundation', term: 'Foundation', def: 'The destination piles where you build a complete suit, almost always from Ace up to King. Clearing every card to the foundations is how you win Klondike, FreeCell and most patience games. There are usually four, one per suit (Spider has none — a completed King-to-Ace run is simply removed from play instead).' },
   { id: 'tableau', term: 'Tableau', def: 'The main playing area — the grid of columns where most of the work happens. You rearrange cards here to free hidden ones and assemble sequences before sending them to the foundations.' },
   { id: 'stock', term: 'Stock', def: 'The face-down pile of undealt cards you draw from when you run out of moves in the tableau. In Klondike you flip the stock into the waste; in Spider a stock click deals a new row across all columns.' },
   { id: 'waste', term: 'Waste (Talon)', def: 'The face-up pile of cards turned over from the stock. Only the top card of the waste is playable. "Talon" is the older name for the same pile; the terms are interchangeable.' },
@@ -119,8 +119,9 @@ const schema = [
     <dd>
       The destination piles where you build a complete suit, almost always from Ace up to King.
       Clearing every card to the foundations is how you win <a href="/klondike/">Klondike</a>,
-      <a href="/spider/">Spider</a>, <a href="/freecell/">FreeCell</a> and most other patience games.
-      There are usually four, one per suit (Spider uses eight).
+      <a href="/freecell/">FreeCell</a> and most other patience games.
+      There are usually four, one per suit (<a href="/spider/">Spider</a> has none — a completed
+      King-to-Ace run is simply removed from play instead).
     </dd>
     <dt id="tableau">Tableau</dt>
     <dd>

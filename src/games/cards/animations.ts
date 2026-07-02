@@ -70,9 +70,12 @@ export function winCascade(board: Board, state: GameState, enabled: boolean, onD
     if (stopped) return;
     stopped = true;
     board.container.removeEventListener('pointerdown', stop);
+    document.removeEventListener('keydown', stop);
     onDone();
   };
   board.container.addEventListener('pointerdown', stop);
+  // Keyboard players shouldn't have to sit through the full cascade.
+  document.addEventListener('keydown', stop);
 
   const tick = (now: number) => {
     if (stopped) return;

@@ -173,14 +173,18 @@ class G2048Controller {
     this.board.applyMove(this.state, events);
     this.refreshHud(true);
     this.checkDailyTarget();
-    if (this.state.reached2048 && !this.resultRecorded) {
+    const justWon = this.state.reached2048 && !this.resultRecorded;
+    if (justWon) {
       this.recordOutcome(true);
       this.showOutcome('🎉 2048!', true);
-    } else if (isOver(this.state)) {
+    }
+    // Not an else: the same move can reach 2048 AND deadlock the board, and
+    // the game must still end (the win dialog already covers the celebration).
+    if (isOver(this.state)) {
       this.finished = true;
       if (!this.resultRecorded) this.recordOutcome(false);
       this.persist();
-      this.showOutcome('No more moves', false);
+      if (!justWon) this.showOutcome('No more moves', false);
     }
   }
 

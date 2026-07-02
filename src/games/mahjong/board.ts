@@ -1,4 +1,4 @@
-import { type MahjongState, type TileSlot, isFree, layoutOf } from './engine';
+import { type MahjongState, type TileSlot, freeMap, layoutOf } from './engine';
 
 /** The active tile-art set, from the persisted setting (applied to <html>). */
 function currentTileSet(): string {
@@ -129,6 +129,7 @@ export class MahjongBoard {
 
   render(state: MahjongState, selected: number | null): void {
     if (this.tileEls.length === 0) this.mount(state);
+    const free = freeMap(state);
     state.tiles.forEach((tile, i) => {
       const el = this.tileEls[i]!;
       if (tile.removed) {
@@ -137,11 +138,11 @@ export class MahjongBoard {
         return;
       }
       el.classList.remove('tile-removed');
-      const free = isFree(state, i);
-      el.classList.toggle('tile-free', free);
+      const isTileFree = free[i]!;
+      el.classList.toggle('tile-free', isTileFree);
       el.classList.toggle('tile-selected', i === selected);
-      el.tabIndex = free ? 0 : -1;
-      el.setAttribute('aria-label', `${describeKind(tile.kind)}${free ? '' : ', blocked'}`);
+      el.tabIndex = isTileFree ? 0 : -1;
+      el.setAttribute('aria-label', `${describeKind(tile.kind)}${isTileFree ? '' : ', blocked'}`);
       // Reflect the current tile set + selected artwork (re-pointing is a
       // no-op when the URL is unchanged, so it's cheap to call every render).
       const img = el.querySelector<HTMLImageElement>('img.tile-img');

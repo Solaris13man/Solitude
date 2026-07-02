@@ -202,6 +202,14 @@ export function findHint(state: GameState): Move | null {
   for (let i = 0; i < state.tableau.length; i++) {
     const pile = state.tableau[i]!;
     if (pile.length === 0) continue;
+    // With two decks, equal tops are common — a card already sitting on a
+    // same-suit build shouldn't be bounced sideways to an identical build
+    // (the hint would ping-pong between the twins forever).
+    const lead = pile[pile.length - 1]!;
+    const beneath = pile[pile.length - 2];
+    const onSameSuitBuild =
+      !!beneath && beneath.suit === lead.suit && beneath.rank === lead.rank + 1;
+    if (onSameSuitBuild) continue;
     const from: PileRef = { kind: 'tableau', index: i };
     for (let j = 0; j < state.tableau.length; j++) {
       if (j === i) continue;

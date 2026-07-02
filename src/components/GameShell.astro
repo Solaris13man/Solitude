@@ -48,6 +48,7 @@ const {
 ---
 
 <main class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4">
+  <a href="#board-region" class="skip-link">Skip to game board</a>
   <header class="flex flex-wrap items-center justify-between gap-2 py-3">
     <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
       {heading}
@@ -124,10 +125,10 @@ const {
     <span><span class="hud-label">Time</span><span id="stat-time">0:00</span></span>
     <span><span class="hud-label">Moves</span><span id="stat-moves">0</span></span>
     <span><span class="hud-label">{scoreLabel}</span><span id="stat-score">0</span></span>
-    <span class="hud-deal" title="Deal number — share it to challenge a friend on the same cards"><span id="stat-deal">#0</span></span>
+    <span class="hud-deal" title="Deal number — share it to challenge a friend on the same cards"><span class="hud-label">Deal</span><span id="stat-deal">#0</span></span>
   </div>
 
-  <div class="board-scroll">
+  <div class="board-scroll" id="board-region" tabindex="-1">
     <div id="board" class="board" aria-label="Game board"></div>
   </div>
 
@@ -165,6 +166,22 @@ const {
         localStorage.setItem('cardhearth:instructions-seen', '1');
       }
     } catch (e) {}
+    // The games dropdown overlays the board — close it on Escape or an
+    // outside click/tap like any other popover.
+    (function () {
+      var menu = document.querySelector('details.games-menu');
+      if (!menu) return;
+      document.addEventListener('click', function (e) {
+        if (menu.hasAttribute('open') && !menu.contains(e.target)) menu.removeAttribute('open');
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.hasAttribute('open')) {
+          menu.removeAttribute('open');
+          var summary = menu.querySelector('summary');
+          if (summary) summary.focus();
+        }
+      });
+    })();
   </script>
 
   {

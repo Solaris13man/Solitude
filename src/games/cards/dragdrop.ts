@@ -62,10 +62,14 @@ export function attachDragDrop(board: Board, callbacks: DragCallbacks): void {
       const o = s.origins[i]!;
       s.els[i]!.style.transform = `translate3d(${o.x + dx + sd}px, ${o.y + dy}px, 0)`;
     }
+    // The transform coordinates ARE board coordinates, so the lead card's
+    // center is pure arithmetic — no getBoundingClientRect (which would force
+    // a reflow on every pointermove, the hottest interaction path on phones).
     const lead = s.els[0]!;
-    const rect = lead.getBoundingClientRect();
-    const p = board.toBoardCoords(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    callbacks.onDragOver(s.ref, s.depth + 1, board.dropTargetAt(p.x, p.y));
+    const o0 = s.origins[0]!;
+    const cx = o0.x + dx + sd + lead.offsetWidth / 2;
+    const cy = o0.y + dy + lead.offsetHeight / 2;
+    callbacks.onDragOver(s.ref, s.depth + 1, board.dropTargetAt(cx, cy));
   };
 
   /** Scroll the wrapper one step if the pointer is hugging an edge. */

@@ -3,7 +3,7 @@ import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
 import { cardArt, cardArtById } from '../cards/board';
 import { activateOnKey, markHandCard } from '../cards/a11y';
-import { RANK_LABELS, SUIT_SYMBOLS, type Card, isRed } from '../cards/deck';
+import { RANK_LABELS, SUIT_SYMBOLS, type Card, cardName, isRed } from '../cards/deck';
 import * as G from './engine';
 
 function $(id: string): HTMLElement {
@@ -71,7 +71,11 @@ class GinController {
     this.newGame();
   }
 
+  // Wall-clock start of the current game, for the best-time stat.
+  private startedAt = Date.now();
+
   private newGame(): void {
+    this.startedAt = Date.now();
     this.state = G.newGame((Date.now() ^ (Math.random() * 0xffffffff)) >>> 0);
     this.knockMode = false;
     this.render();
@@ -114,6 +118,10 @@ class GinController {
       this.onEnd();
       return;
     }
+    if (s.justDrewDiscard && card.id === s.drawnDiscardId) {
+      this.setStatus("You can't discard the card you just took — play it or discard another.");
+      return;
+    }
     G.discard(s, 0, card);
     this.sound.play('place');
     this.render();
@@ -144,8 +152,20 @@ class GinController {
     this.busy = true;
     this.setStatus('Opponent is drawing…');
     await delay(620);
-    if (G.aiChooseDraw(s, 1) === 'discard') G.drawDiscard(s, 1);
-    else G.drawStock(s, 1);
+    // Announce the draw: taking from the discard is public info (card and
+    // all); a stock draw only reveals that the stock was used.
+    if (G.aiChooseDraw(s, 1) === 'discard') {
+      const taken = s.discard[s.discard.length - 1];
+      G.drawDiscard(s, 1);
+      this.setStatus(
+        taken
+          ? `Opponent takes the ${cardName(taken)} from the discard.`
+          : 'Opponent draws from the discard.',
+      );
+    } else {
+      G.drawStock(s, 1);
+      this.setStatus('Opponent draws from the stock.');
+    }
     this.sound.play('flip');
     this.render();
     await delay(640);
@@ -156,7 +176,10 @@ class GinController {
     this.busy = false;
     this.render();
     if (ended(s)) this.onEnd();
-    else this.setStatus('Your turn — draw from the stock or the discard pile.');
+    else
+      this.setStatus(
+        `Opponent discards the ${cardName(choice.card)}. Your turn — draw from the stock or the discard pile.`,
+      );
   }
 
   private onEnd(): void {
@@ -169,7 +192,7 @@ class GinController {
         game: 'gin',
         variant: 0,
         won: winner === 0,
-        elapsedMs: 0,
+        elapsedMs: Date.now() - this.startedAt,
         moves: s.round + 1,
         score: s.scores[0]!,
       });
@@ -218,11 +241,22 @@ class GinController {
     const disc = $('gin-discard');
     disc.replaceChildren();
     const topCard = s.discard[s.discard.length - 1] ?? null;
-    if (topCard) disc.appendChild(cardEl(topCard, true));
+    if (topCard) {
+      const topEl = cardEl(topCard, true);
+      topEl.setAttribute('role', 'img');
+      topEl.setAttribute('aria-label', cardName(topCard));
+      disc.appendChild(topEl);
+    }
     disc.classList.toggle('drawable', G.canDrawDiscard(s, 0));
 
-    // your hand, grouped by best melds
+    // your hand, grouped by best melds — keep keyboard focus on the same
+    // card across the rebuild
     const hand = $('gin-hand');
+    const active = document.activeElement as HTMLElement | null;
+    const focusedId =
+      active && hand.contains(active)
+        ? (active.closest<HTMLElement>('.hcard')?.dataset.id ?? null)
+        : null;
     hand.replaceChildren();
     const best = G.bestMelds(s.hands[0]!);
     const groups: Card[][] = [...best.melds.map((m) => m.cards), best.deadwood];
@@ -244,11 +278,18 @@ class GinController {
           }
         }
         markHandCard(el, card, {
-          playable: canDiscard ? (this.knockMode ? G.canKnock(s, 0, card) : true) : undefined,
+          playable: canDiscard
+            ? this.knockMode
+              ? G.canKnock(s, 0, card)
+              : !(s.justDrewDiscard && card.id === s.drawnDiscardId)
+            : undefined,
         });
         hand.appendChild(el);
       }
       first = false;
+    }
+    if (focusedId) {
+      hand.querySelector<HTMLElement>(`[data-id="${CSS.escape(focusedId)}"]`)?.focus();
     }
 
     // deadwood readout + knock button
@@ -346,7 +387,6 @@ class GinController {
   }
 }
 
-export { meldLabel };
 export function startGin(): void {
   new GinController();
 }

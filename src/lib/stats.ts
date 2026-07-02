@@ -93,7 +93,8 @@ export function recordResult(result: GameResult): Stats {
     v.currentStreak++;
     v.bestStreak = Math.max(v.bestStreak, v.currentStreak);
     v.bestScore = Math.max(v.bestScore, result.score);
-    if (v.bestTimeMs === null || result.elapsedMs < v.bestTimeMs) {
+    // elapsedMs <= 0 means the game didn't track time — never a real best.
+    if (result.elapsedMs > 0 && (v.bestTimeMs === null || result.elapsedMs < v.bestTimeMs)) {
       v.bestTimeMs = result.elapsedMs;
     }
   } else {

@@ -43,12 +43,29 @@ export class MinesweeperBoard {
     const grid = document.createElement('div');
     grid.className = 'ms-grid';
     grid.style.setProperty('--ms-cols', String(state.width));
-    grid.setAttribute('role', 'grid');
+    grid.setAttribute('role', 'group');
     grid.setAttribute('aria-label', 'Minesweeper board');
+    // Roving tabindex: one tab stop for the whole board, arrows move between
+    // cells (Expert is 480 cells — per-cell tab stops are unusable).
+    grid.addEventListener('keydown', (e) => {
+      const dx = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      const dy = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+      if (dx === 0 && dy === 0) return;
+      const active = document.activeElement;
+      const cur = this.cells.indexOf(active as HTMLButtonElement);
+      if (cur === -1) return;
+      const w = state.width;
+      const x = (cur % w) + dx;
+      const y = Math.floor(cur / w) + dy;
+      if (x < 0 || x >= w || y < 0 || y >= state.height) return;
+      e.preventDefault();
+      this.focusCell(y * w + x);
+    });
     for (let i = 0; i < state.width * state.height; i++) {
       const cell = document.createElement('button');
       cell.type = 'button';
       cell.className = 'ms-cell';
+      cell.tabIndex = i === 0 ? 0 : -1;
       cell.addEventListener('click', () => {
         if (this.longPressed) {
           this.longPressed = false;
@@ -81,6 +98,15 @@ export class MinesweeperBoard {
     }
     this.container.appendChild(grid);
     this.grid = grid;
+  }
+
+  /** Move the single roving tab stop (and focus) to cell i. */
+  private focusCell(i: number): void {
+    const cell = this.cells[i];
+    if (!cell) return;
+    for (const c of this.cells) c.tabIndex = -1;
+    cell.tabIndex = 0;
+    cell.focus();
   }
 
   render(state: MinesweeperState): void {

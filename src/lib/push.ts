@@ -149,16 +149,18 @@ export async function enableReminder(hour: number): Promise<'ok' | 'denied' | 'u
 
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    // Writes go through a SECURITY DEFINER RPC scoped to this endpoint —
+    // direct table INSERT/UPDATE is revoked (see the hardening migration).
     const body = {
-      endpoint: sub.endpoint,
-      p256dh: keyToBase64(sub.getKey('p256dh')),
-      auth: keyToBase64(sub.getKey('auth')),
-      tz,
-      hour,
+      _endpoint: sub.endpoint,
+      _p256dh: keyToBase64(sub.getKey('p256dh')),
+      _auth: keyToBase64(sub.getKey('auth')),
+      _tz: tz,
+      _hour: hour,
     };
-    const res = await fetch(`${SITE_CONFIG.accounts.supabaseUrl}/rest/v1/push_subscriptions`, {
+    const res = await fetch(`${SITE_CONFIG.accounts.supabaseUrl}/rest/v1/rpc/upsert_push_subscription`, {
       method: 'POST',
-      headers: { ...restHeaders(), Prefer: 'resolution=merge-duplicates,return=minimal' },
+      headers: restHeaders(),
       body: JSON.stringify(body),
     });
     if (!res.ok) {
@@ -190,10 +192,11 @@ export async function disableReminder(): Promise<void> {
     if (sub) {
       const endpoint = sub.endpoint;
       await sub.unsubscribe();
-      await fetch(
-        `${SITE_CONFIG.accounts.supabaseUrl}/rest/v1/push_subscriptions?endpoint=eq.${encodeURIComponent(endpoint)}`,
-        { method: 'DELETE', headers: restHeaders() },
-      );
+      await fetch(`${SITE_CONFIG.accounts.supabaseUrl}/rest/v1/rpc/delete_push_subscription`, {
+        method: 'POST',
+        headers: restHeaders(),
+        body: JSON.stringify({ _endpoint: endpoint }),
+      });
     }
   } catch {
     /* best effort */

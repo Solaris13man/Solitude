@@ -3,7 +3,7 @@ import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
 import { cardArt, cardArtById } from '../cards/board';
 import { activateOnKey, markHandCard } from '../cards/a11y';
-import { RANK_LABELS, SUIT_SYMBOLS, type Card, isRed } from '../cards/deck';
+import { RANK_LABELS, SUIT_SYMBOLS, type Card, cardName, isRed } from '../cards/deck';
 import * as S from './engine';
 
 const NAMES = ['You', 'West', 'North', 'East'];
@@ -79,7 +79,11 @@ class SpadesController {
     this.newGame();
   }
 
+  // Wall-clock start of the current game, for the best-time stat.
+  private startedAt = Date.now();
+
   private newGame(): void {
+    this.startedAt = Date.now();
     this.state = S.newGame((Date.now() ^ (Math.random() * 0xffffffff)) >>> 0);
     this.render();
     void this.advance();
@@ -88,6 +92,9 @@ class SpadesController {
   private async advance(): Promise<void> {
     if (this.busy) return;
     this.busy = true;
+    // Pending announcement (an AI play or a trick result) prepended to the
+    // next status message so the live region actually gets to read it out.
+    let note = '';
     while (true) {
       const s = this.state;
       if (s.phase === 'bidding') {
@@ -111,22 +118,27 @@ class SpadesController {
       }
       if (s.trick.length === 4) {
         this.render();
+        if (note) this.setStatus(note.trim());
         await delay(850);
-        S.resolveTrick(s);
+        const winner = S.resolveTrick(s);
         this.sound.play('place');
+        note = `${winner === 0 ? 'You take' : `${NAMES[winner]} takes`} the trick. `;
         this.render();
         continue;
       }
       if (s.turn === 0) {
         this.busy = false;
         this.render();
-        this.setStatus(s.trick.length === 0 ? 'Your lead.' : 'Your turn.');
+        this.setStatus(`${note}${s.trick.length === 0 ? 'Your lead.' : 'Your turn.'}`);
         return;
       }
-      this.setStatus(`${NAMES[s.turn]} is thinking…`);
+      const seat = NAMES[s.turn];
+      this.setStatus(`${note}${seat} is thinking…`);
+      note = '';
       await delay(500);
       const card = S.aiPlay(s, s.turn);
       S.playCard(s, s.turn, card);
+      note = `${seat} plays the ${cardName(card)}. `;
       this.sound.play('flip');
       this.render();
     }
@@ -166,7 +178,7 @@ class SpadesController {
         game: 'spades',
         variant: 0,
         won: youWon,
-        elapsedMs: 0,
+        elapsedMs: Date.now() - this.startedAt,
         moves: s.round + 1,
         score: s.scores[S.teamOf(0)]!,
       });
@@ -208,10 +220,18 @@ class SpadesController {
     for (const tc of s.trick) {
       const el = cardEl(tc.card, true);
       el.classList.add(`trick-${NAMES[tc.player]!.toLowerCase()}`);
+      el.setAttribute('role', 'img');
+      el.setAttribute('aria-label', `${NAMES[tc.player]}: ${cardName(tc.card)}`);
       trick.appendChild(el);
     }
 
+    // your hand — keep keyboard focus on the same card across the rebuild
     const hand = $('spades-hand');
+    const active = document.activeElement as HTMLElement | null;
+    const focusedId =
+      active && hand.contains(active)
+        ? (active.closest<HTMLElement>('.hcard')?.dataset.id ?? null)
+        : null;
     hand.replaceChildren();
     const legal = s.phase === 'playing' && s.turn === 0 ? S.legalPlays(s, 0) : null;
     const legalIds = legal ? new Set(legal.map((c) => c.id)) : null;
@@ -223,6 +243,9 @@ class SpadesController {
       }
       markHandCard(el, card, { playable: legalIds ? legalIds.has(card.id) : undefined });
       hand.appendChild(el);
+    }
+    if (focusedId) {
+      hand.querySelector<HTMLElement>(`[data-id="${CSS.escape(focusedId)}"]`)?.focus();
     }
   }
 

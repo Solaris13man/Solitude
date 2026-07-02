@@ -39,6 +39,7 @@ function stateWith(overrides: Partial<GinState> = {}): GinState {
     scores: [0, 0],
     lastResult: null,
     justDrewDiscard: false,
+    drawnDiscardId: null,
     ...overrides,
   };
 }
@@ -224,6 +225,42 @@ describe('gin draw actions', () => {
     expect(s.discard.map((c) => c.id)).toEqual(['S8']);
     expect(s.phase).toBe('discard');
     expect(s.justDrewDiscard).toBe(true);
+    expect(s.drawnDiscardId).toBe('D4');
+  });
+
+  it('the card just drawn from the discard cannot go straight back', () => {
+    const s = stateWith({
+      turn: 0,
+      phase: 'draw',
+      hands: [[card('H', 3), card('C', 9)], []],
+      discard: [card('S', 8), card('D', 4)],
+      stock: [card('C', 2), card('C', 3), card('C', 4), card('C', 5)],
+    });
+    drawDiscard(s, 0);
+    expect(() => discard(s, 0, card('D', 4))).toThrow();
+    // knocking with it is equally illegal
+    expect(canKnock(s, 0, card('D', 4))).toBe(false);
+    // any other card is a legal discard, and the flag clears afterwards
+    discard(s, 0, card('C', 9));
+    expect(s.justDrewDiscard).toBe(false);
+    expect(s.drawnDiscardId).toBe(null);
+  });
+
+  it('the AI never discards the card it just took from the discard', () => {
+    // Give the AI a hand where the drawn upcard is its worst card — the old
+    // hand-order heuristic would have blocked the wrong card if hand order
+    // ever changed, so the id-based rule is what we assert.
+    const s = stateWith({
+      turn: 1,
+      phase: 'draw',
+      hands: [[], [card('H', 2), card('H', 3), card('H', 4), card('C', 9), card('C', 10),
+                   card('D', 5), card('D', 6), card('S', 12), card('S', 11), card('C', 2)]],
+      discard: [card('S', 13)],
+      stock: [card('C', 3), card('C', 4), card('C', 5), card('C', 6)],
+    });
+    drawDiscard(s, 1);
+    const choice = aiChooseDiscard(s, 1);
+    expect(choice.card.id).not.toBe('S13');
   });
 });
 

@@ -48,16 +48,13 @@ export function fitsOnFoundation(card: Card, pile: Card[]): boolean {
 }
 
 /**
- * Supermove capacity: (empty cells + 1) × 2^(empty columns). Moving *to* an
- * empty column can't count that column as a relay.
+ * Supermove capacity: empty cells + 1. Unlike FreeCell there is no doubling
+ * for empty columns — an empty Eight Off column only accepts a King, so it
+ * can never relay part of an arbitrary run.
  */
-export function moveCapacity(state: GameState, excludeTableau: number | null): number {
+export function moveCapacity(state: GameState, _excludeTableau: number | null): number {
   const freeCells = state.cells.filter((c) => c.length === 0).length;
-  let emptyCols = 0;
-  state.tableau.forEach((p, i) => {
-    if (p.length === 0 && i !== excludeTableau) emptyCols++;
-  });
-  return (freeCells + 1) * 2 ** emptyCols;
+  return freeCells + 1;
 }
 
 /** Is the suffix starting `depth` from the top a valid same-suit descending run? */

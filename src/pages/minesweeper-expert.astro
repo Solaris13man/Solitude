@@ -13,7 +13,7 @@ const faq = [
 ];
 
 const schema = [
-  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Expert Minesweeper', url: 'https://cardhearth.com/minesweeper-expert/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Expert Minesweeper', url: 'https://cardhearth.com/minesweeper-expert/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og/minesweeper-expert.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Minesweeper', item: 'https://cardhearth.com/minesweeper/' }, { '@type': 'ListItem', position: 3, name: 'Expert', item: 'https://cardhearth.com/minesweeper-expert/' } ] },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
@@ -25,6 +25,11 @@ const schema = [
     heading="Expert Minesweeper"
     scoreLabel="Mines"
     cardSettings={false}
+    guide={{ href: '/guides/minesweeper-strategy/', label: 'Minesweeper strategy guide' }}
+    related={[
+      { href: '/guides/how-to-play-minesweeper/', label: 'How to play' },
+      { href: '/minesweeper/', label: 'Minesweeper' },
+    ]}
     breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Minesweeper', href: '/minesweeper/' }, { name: 'Expert', href: '/minesweeper-expert/' }]}
   >
     <div slot="after-board" class="ms-modebar" role="group" aria-label="Input mode">

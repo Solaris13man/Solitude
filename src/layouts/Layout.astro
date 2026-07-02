@@ -33,6 +33,11 @@ const GUIDE_OG: [string, string][] = [
   ['minesweeper', 'minesweeper'], ['2048', '2048'], ['best-free-card', 'hearts'],
   ['rummy', 'gin'], ['yukon', 'yukon'], ['scorpion', 'scorpion'],
   ['forty-thieves', 'forty-thieves'], ['eight-off', 'eight-off'],
+  ['how-to-win-klondike', 'klondike'], ['how-to-play-sudoku', 'sudoku'],
+  ['how-to-play-minesweeper', 'minesweeper'], ['how-to-play-2048', '2048'],
+  ['what-is-mahjong', 'mahjong'], ['solitaire-rules', 'klondike'],
+  ['solitaire-glossary', 'klondike'], ['are-solitaire', 'klondike'],
+  ['best-free-solitaire', 'klondike'],
 ];
 function ogPathFor(s: string): string {
   if (OG_SLUGS.has(s)) return `/og/${s}.png`;
@@ -44,9 +49,18 @@ function ogPathFor(s: string): string {
   return '/og.png';
 }
 const ogImage = new URL(ogPathFor(slug), Astro.site);
+// Guides are articles; everything else (games, hubs) is closest to "website".
+const ogType = slug.startsWith('guides/') && slug !== 'guides' ? 'article' : 'website';
 // Never serve ads on noindex/thin pages (404, account, profile) — keeps the
 // AdSense unit off low-value screens, which matters under paid traffic.
-const adsLive = SITE_CONFIG.ads.enabled && !!SITE_CONFIG.ads.adsenseClient && !noindex;
+// Ads are "live" only when a real unit can render — client id AND slot id.
+// Without the slot, AdSlot renders nothing, so loading adsbygoogle.js
+// would be pure dead weight on every page.
+const adsLive =
+  SITE_CONFIG.ads.enabled &&
+  !!SITE_CONFIG.ads.adsenseClient &&
+  !!SITE_CONFIG.ads.inContentSlot &&
+  !noindex;
 const ga = SITE_CONFIG.analytics;
 const gaLive = ga.provider === 'ga' && !!ga.measurementId;
 const ahrefsLive = !!ga.ahrefsKey;
@@ -64,7 +78,7 @@ const ahrefsLive = !!ga.ahrefsKey;
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/app-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="CardHearth" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -72,6 +86,7 @@ const ahrefsLive = !!ga.ahrefsKey;
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -146,7 +161,7 @@ if(document.readyState==='complete')setTimeout(go,2500);else window.addEventList
     <div id="main-content" tabindex="-1">
       <slot />
     </div>
-    <div id="badge-toast" class="badge-toast" role="status" aria-live="polite" hidden></div>
+    <div id="badge-toast" class="badge-toast" role="status" aria-live="polite"></div>
     <script>
       import { initAnalytics, track } from '../lib/analytics';
       import { checkForNewBadges } from '../lib/achievements';
@@ -171,12 +186,11 @@ if(document.readyState==='complete')setTimeout(go,2500);else window.addEventList
         if (!next) return;
         showing = true;
         toast.innerHTML = `<span class="badge-toast-icon">${next.icon}</span><span><b>Badge unlocked!</b><br>${next.name}</span>`;
-        toast.hidden = false;
         toast.classList.add('show');
         window.setTimeout(() => {
           toast.classList.remove('show');
           window.setTimeout(() => {
-            toast.hidden = true;
+            toast.innerHTML = '';
             showing = false;
             flush();
           }, 300);

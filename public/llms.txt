@@ -22,7 +22,7 @@
 - [Mahjong](https://cardhearth.com/mahjong/): match free tiles; every board guaranteed solvable.
 - [Minesweeper](https://cardhearth.com/minesweeper/): read the numbers, dodge the mines.
 - [2048](https://cardhearth.com/2048/): slide and merge to the 2048 tile.
-- [Daily Challenge](https://cardhearth.com/daily-challenge/): one shared, always-solvable puzzle a day; keep a streak.
+- [Daily Challenge](https://cardhearth.com/daily-challenge/): one shared puzzle a day, rotating Sudoku, Mahjong, FreeCell and 2048 — every deal solvable, except FreeCell where unsolvable deals are about 1 in 76,000; keep a streak.
 
 ## Guides
 

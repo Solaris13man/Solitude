@@ -116,7 +116,7 @@ describe('eightoff supermoves', () => {
     // A same-suit descending 3-run: S8 S7 S6.
     s.tableau[0] = [card('S', 8), card('S', 7), card('S', 6)];
     s.tableau[1] = [card('S', 9)]; // run lands on the 9 of spades
-    // Fill all 8 cells so capacity = (0+1) * 2^0 = 1 (no empty columns either).
+    // Fill all 8 cells so capacity = 0 + 1 = 1 (no empty columns either).
     const fillers: Suit[] = ['H', 'H', 'H', 'H', 'D', 'D', 'D', 'D'];
     s.cells = fillers.map((suit, i) => [card(suit, i + 1)]);
     // Keep remaining columns occupied so there are no empty columns.
@@ -124,11 +124,27 @@ describe('eightoff supermoves', () => {
     expect(moveCapacity(s, null)).toBe(1);
     expect(canMove(s, { kind: 'tableau', index: 0 }, { kind: 'tableau', index: 1 }, 3)).toBe(false);
 
-    // Free two cells: capacity = (2+1) * 2^0 = 3 ≥ 3.
+    // Free two cells: capacity = 2 + 1 = 3 ≥ 3.
     s.cells[0] = [];
     s.cells[1] = [];
     expect(moveCapacity(s, null)).toBe(3);
     expect(canMove(s, { kind: 'tableau', index: 0 }, { kind: 'tableau', index: 1 }, 3)).toBe(true);
+  });
+
+  it('empty columns do NOT multiply supermove capacity (they only take Kings)', () => {
+    const s = emptyState();
+    // A same-suit descending 3-run: S8 S7 S6, landing on the 9 of spades.
+    s.tableau[0] = [card('S', 8), card('S', 7), card('S', 6)];
+    s.tableau[1] = [card('S', 9)];
+    // All cells full, but two empty columns available.
+    const fillers: Suit[] = ['H', 'H', 'H', 'H', 'D', 'D', 'D', 'D'];
+    s.cells = fillers.map((suit, i) => [card(suit, i + 1)]);
+    for (let i = 4; i < 8; i++) s.tableau[i] = [card('C', 13)];
+    // tableau[2] and tableau[3] stay empty. Under the old (cells+1)*2^empty
+    // formula capacity would be 4 — but a non-King can't relay through an
+    // empty column, so the only legal unit move is a single card.
+    expect(moveCapacity(s, null)).toBe(1);
+    expect(canMove(s, { kind: 'tableau', index: 0 }, { kind: 'tableau', index: 1 }, 3)).toBe(false);
   });
 
   it('only a same-suit descending suffix is pickable', () => {

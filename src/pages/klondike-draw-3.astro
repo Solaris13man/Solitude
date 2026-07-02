@@ -13,7 +13,7 @@ const faq = [
   },
   {
     q: 'How much harder is Draw 3 to win?',
-    a: 'Considerably. Skilled players win perhaps 15–25% of Draw 3 games versus 30–45% in Draw 1, because key cards can cycle out of phase and never surface. Unlimited passes through the stock (as played here) keep it fair; unlimited undo lets you experiment with stock timing.',
+    a: 'Considerably. Skilled players win perhaps 10–15% of Draw 3 games versus 35–45% in Draw 1, because key cards can cycle out of phase and never surface. Unlimited passes through the stock (as played here) keep it fair; unlimited undo lets you experiment with stock timing.',
   },
   {
     q: 'Does scoring change in Draw 3?',
@@ -34,7 +34,7 @@ const schema = [
     operatingSystem: 'Any',
     playMode: 'SinglePlayer',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    image: 'https://cardhearth.com/og.png',
+    image: 'https://cardhearth.com/og/klondike-draw-3.png',
     publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' },
   },
   {
@@ -62,6 +62,12 @@ const schema = [
   <GameShell
     gameId="klondike"
     heading="Klondike Draw 3"
+    guide={{ href: '/guides/klondike-draw-1-vs-draw-3/', label: 'Draw 1 vs Draw 3 — which to play' }}
+    related={[
+      { href: '/guides/how-to-win-klondike-solitaire/', label: 'Klondike strategy guide' },
+      { href: '/klondike/', label: 'Klondike Draw 1' },
+      { href: '/klondike/deals/', label: 'Klondike deal numbers' },
+    ]}
     breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Klondike', href: '/klondike/' }, { name: 'Draw 3', href: '/klondike-draw-3/' }]}
   >
     <h2 class="mb-2 text-lg font-bold">Klondike Solitaire, the hard way</h2>
