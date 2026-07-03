@@ -62,6 +62,7 @@ const adsLive =
   !!SITE_CONFIG.ads.inContentSlot &&
   !noindex;
 const ga = SITE_CONFIG.analytics;
+const plausibleLive = ga.plausibleEnabled && !!ga.domain;
 const gaLive = ga.provider === 'ga' && !!ga.measurementId;
 const ahrefsLive = !!ga.ahrefsKey;
 ---
@@ -92,6 +93,11 @@ const ahrefsLive = !!ga.ahrefsKey;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="theme-color" content="#135c32" />
+    {
+      plausibleLive && (
+        <script defer src="/js/script.js" data-domain={ga.domain} data-api="/api/event" />
+      )
+    }
     {
       /* Warm up the DNS/TLS for the deferred third-party origins without
          forcing an early connection on the critical path. */

@@ -1,14 +1,16 @@
 {
-  // CardHearth is a fully static Astro build (no SSR adapter), so this is an
-  // assets-only Worker: `npm run build` produces ./dist, and Cloudflare serves
-  // it directly. There is intentionally no `main`/Worker script — the autoconfig
-  // default pointed at dist/_worker.js (an SSR entrypoint this site never emits),
-  // which is why the Workers build failed.
+  // CardHearth is a fully static Astro build (no SSR adapter). The tiny worker
+  // in ./worker/index.js exists only to proxy the self-hosted Plausible
+  // endpoints (/js/script.js and /api/event) first-party so ad blockers don't
+  // filter them; every other request is served from ./dist via the ASSETS
+  // binding, same as the previous assets-only setup.
   "name": "cardhearth",
+  "main": "worker/index.js",
   "compatibility_date": "2026-06-26",
   "observability": { "enabled": true },
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     // Serve the built 404.astro page (dist/404.html) for unmatched routes.
     "not_found_handling": "404-page"
   }
