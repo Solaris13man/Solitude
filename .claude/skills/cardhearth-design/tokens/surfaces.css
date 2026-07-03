@@ -1,0 +1,40 @@
+/* ============================================================
+   CardHearth — Surfaces & fonts
+   The felt table backdrop, alternate table materials (wood/stone),
+   and the woven-felt grain overlay. Use --surface-table-bg as a
+   ready-made background for any full-bleed CardHearth scene.
+   Texture binaries ship with the design system under assets/textures/.
+   ============================================================ */
+
+:root {
+  --texture-felt:        url('../assets/textures/felt.webp');         /* @kind other */
+  --texture-wood-oak:    url('../assets/textures/wood-oak.webp');     /* @kind other */
+  --texture-wood-walnut: url('../assets/textures/wood-walnut.webp');  /* @kind other */
+  --texture-marble:      url('../assets/textures/marble.webp');       /* @kind other */
+  --texture-granite:     url('../assets/textures/granite.webp');      /* @kind other */
+
+  /* The canonical CardHearth backdrop: a warm top sheen, a dark vignette,
+     and a green felt gradient. Layer the felt grain over it with
+     --surface-felt-grain on a ::before. */
+  /* The canonical CardHearth backdrop: a warm top sheen, a dark vignette,
+     and a green felt gradient. Layer the felt grain over it with
+     --surface-felt-grain on a ::before. */
+  --surface-table-bg:
+    radial-gradient(140% 110% at 50% -10%, rgb(255 255 255 / 0.07) 0%, transparent 45%),
+    radial-gradient(130% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.30) 100%),
+    radial-gradient(120% 90% at 50% 0%, var(--felt-green) 0%, var(--felt-green-edge) 100%); /* @kind other */
+
+  --surface-felt-grain: var(--texture-felt);  /* @kind other */
+  --surface-felt-grain-size: 220px 220px;     /* @kind spacing */
+
+  /* A felt "thumbnail" tile background (menu card art wells) */
+  --surface-thumb-bg:
+    radial-gradient(120% 130% at 50% 0%, rgb(255 255 255 / 0.12) 0%, transparent 55%),
+    radial-gradient(130% 120% at 50% 125%, rgb(0 0 0 / 0.30) 0%, transparent 60%),
+    linear-gradient(160deg, #207e48 0%, #11542f 100%); /* @kind other */
+}
+
+/* No bundled @font-face — CardHearth uses the native system font stack by
+   design (see CREDITS in the source: "system font stack only; no bundled
+   fonts"). This file exists so the token closure documents that decision and
+   to centralize the texture assets the brand depends on. */

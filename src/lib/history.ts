@@ -26,6 +26,12 @@ export class History<T> {
     this.future = [];
   }
 
+  /** Drop the most recent snapshot — for when a fallible apply throws after
+   *  push, so Undo never "restores" to a move that never happened. */
+  discardLast(): void {
+    this.past.pop();
+  }
+
   /** Returns the state to restore, or null. `current` goes onto the redo stack. */
   undo(current: T): T | null {
     const prev = this.past.pop();

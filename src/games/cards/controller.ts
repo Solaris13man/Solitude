@@ -244,7 +244,14 @@ class CardGameController {
     if (this.finished) return;
     if (this.state.moves === 0) this.resumeTimer();
     this.history.push(this.state);
-    this.ruleset.applyMove(this.state, move);
+    try {
+      this.ruleset.applyMove(this.state, move);
+    } catch (err) {
+      // Call sites gate on canMove, so this is a belt-and-braces guard — but a
+      // throw must not leave a bogus undo entry behind.
+      this.history.discardLast();
+      throw err;
+    }
     if (this.runningSince === null) this.resumeTimer();
     if (move.type === 'draw') this.sound.play('flip');
     else if (move.type === 'recycle') this.sound.play('shuffle');

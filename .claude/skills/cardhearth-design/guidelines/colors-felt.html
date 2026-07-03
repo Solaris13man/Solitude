@@ -1,0 +1,28 @@
+<!-- @dsCard group="Colors" viewport="700x196" name="Felt greens" subtitle="The signature table surface — default felt + chrome + edge" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; }
+  .wrap { padding: 18px 20px; }
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .sw { border-radius: 10px; height: 92px; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; color: #f3f6f2; box-shadow: var(--shadow-card); }
+  .name { font-size: 12px; font-weight: 700; }
+  .hex { font-size: 11px; opacity: 0.8; font-variant-numeric: tabular-nums; }
+  .cap { font-size: 11px; color: #5b6660; margin: 0 0 12px; font-weight: 600; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="cap">CardHearth runs on green felt — a warm, lamplit card table.</p>
+    <div class="row">
+      <div class="sw" style="background: var(--felt-green)"><span class="name">Felt</span><span class="hex">#1d7a45</span></div>
+      <div class="sw" style="background: var(--felt-green-edge)"><span class="name">Felt edge</span><span class="hex">#135c32</span></div>
+      <div class="sw" style="background: var(--felt-green-deep)"><span class="name">Chrome</span><span class="hex">#0e3d23</span></div>
+      <div class="sw" style="background: var(--felt-green-ink)"><span class="name">Felt ink</span><span class="hex">#0c3a1e</span></div>
+    </div>
+  </div>
+</body>
+</html>

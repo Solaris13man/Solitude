@@ -1,0 +1,90 @@
+/* ============================================================
+   CardHearth — Color tokens
+   The brand lives on a green felt card table lit warm by a gold
+   "hearth" glow. Base palette below; semantic aliases at the end.
+   ============================================================ */
+
+:root {
+  /* ---- Felt / table greens (the signature surface) ---- */
+  --felt-green:        #1d7a45;   /* default felt */
+  --felt-green-edge:   #135c32;   /* darker felt at the table's edge / vignette */
+  --felt-green-deep:   #0e3d23;   /* chrome / menu panel green */
+  --felt-green-ink:    #0c3a1e;   /* darkest felt (dark theme edge) */
+
+  /* alternate felt colors (settings) */
+  --felt-blue:         #1d5e8a;
+  --felt-blue-edge:    #134462;
+  --felt-slate:        #3d4757;
+  --felt-slate-edge:   #2b323e;
+  --felt-crimson:      #8a2433;
+  --felt-crimson-edge: #631823;
+
+  /* ---- Gold — the hearth glow, brand accent & primary action ---- */
+  --gold:        #ffd95e;   /* primary accent: CTAs, highlights, focus */
+  --gold-soft:   #ffe389;   /* hover lift on gold surfaces */
+  --gold-bright: #ffe486;
+  --gold-warm:   #f5b13a;   /* the heart mark / logo gold */
+  --gold-ink:    #43320a;   /* text on gold (dark amber-brown) */
+  --gold-mint:   #8be0a8;   /* positive/"fair" highlight text on felt */
+
+  /* ---- Card surface (the playing card itself) ---- */
+  --card-cream:    #fcfcf7;  /* card face */
+  --card-cream-2:  #fbf8ef;  /* warmer cream (logo card) */
+  --ink-black:     #1d2230;  /* spades/clubs + dark card text */
+  --suit-red:      #c2273a;  /* hearts/diamonds + red card text */
+  --card-back-a:   #b03030;  /* classic red card-back gradient (light) */
+  --card-back-b:   #8c1f26;  /* classic red card-back gradient (deep) */
+
+  /* ---- Neutral panels (dialogs / light prose surfaces) ---- */
+  --panel-light:   #ffffff;
+  --panel-light-2: #f4f4ee;
+  --panel-dark:    #1c2128;  /* dark-theme dialog */
+  --panel-text:    #1d2230;
+  --panel-text-dark: #e6e9ee;
+
+  /* ---- On-felt chrome text ---- */
+  --chrome-text:   #f3f6f2;  /* near-white text on felt */
+
+  /* ---- Game accent ink (puzzle numbers, suits, tiles) ---- */
+  --accent-blue:   #2c5fa8;  /* sudoku entry / minesweeper "1" / pips */
+  --accent-green:  #2e7d32;  /* minesweeper "2", bamboo tiles */
+  --accent-violet: #5e35b1;  /* minesweeper "4" */
+  --accent-teal:   #00838f;  /* minesweeper "6" */
+  --dialog-green:  #2c7a4b;  /* dialog primary button (on light) */
+
+  /* ---- Translucent overlays used everywhere on felt ---- */
+  --on-felt-fill:        rgb(0 0 0 / 0.22);   /* card/panel fill over felt */
+  --on-felt-fill-soft:   rgb(0 0 0 / 0.18);
+  --on-felt-fill-strong: rgb(0 0 0 / 0.30);
+  --on-felt-line:        rgb(255 255 255 / 0.14);  /* hairline border on felt */
+  --on-felt-line-soft:   rgb(255 255 255 / 0.12);
+  --on-felt-glass:       rgb(255 255 255 / 0.10);  /* button / pill glass */
+  --on-felt-glass-hover: rgb(255 255 255 / 0.22);
+  --gold-veil:           rgb(255 217 94 / 0.35);   /* gold-tinted border */
+}
+
+/* ============================================================
+   Semantic aliases — prefer these in component code.
+   ============================================================ */
+:root {
+  --surface-table:      var(--felt-green);
+  --surface-table-edge: var(--felt-green-edge);
+  --surface-chrome:     var(--felt-green-deep);
+  --surface-card:       var(--on-felt-fill);     /* a card sitting on the felt */
+  --surface-panel:      var(--panel-light);      /* a dialog / light sheet */
+  --surface-playcard:   var(--card-cream);       /* an actual playing card */
+
+  --text-on-felt:       var(--chrome-text);
+  --text-on-panel:      var(--panel-text);
+  --text-muted:         rgb(243 246 242 / 0.80);
+  --text-faint:         rgb(243 246 242 / 0.62);
+
+  --accent:             var(--gold);
+  --accent-hover:       var(--gold-soft);
+  --accent-text:        var(--gold-ink);
+  --positive:           var(--gold-mint);
+
+  --border-hairline:    var(--on-felt-line);
+  --border-accent:      var(--gold-veil);
+  --focus-ring:         var(--gold);
+}

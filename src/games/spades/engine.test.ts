@@ -399,6 +399,60 @@ describe('spades aiBid', () => {
   });
 });
 
+describe('spades aiPlay covers a nil partner', () => {
+  it('overtakes when the nil partner is currently winning the trick', () => {
+    // Player 0 bid nil; partner is player 2 (same team). Trick so far:
+    // P3 led H5, nil P0 was forced up to H9 (currently winning), P1 dumped H2.
+    // P2 holds a heart that can overtake — covering the nil is mandatory,
+    // even though "the partner is winning".
+    const hands: Card[][] = [
+      [],
+      [],
+      [card('H', 10), card('H', 3), card('C', 4)],
+      [],
+    ];
+    const s = stateWithHands(hands, {
+      leader: 3,
+      turn: 2,
+      bids: [0, 3, 3, 3],
+      trick: [
+        { player: 3, card: card('H', 5) },
+        { player: 0, card: card('H', 9) },
+        { player: 1, card: card('H', 2) },
+      ],
+    });
+    const chosen = aiPlay(s, 2);
+    expect(chosen.id).toBe('H10');
+  });
+
+  it('still ducks when the winning teammate is not the nil player', () => {
+    // Same layout but nobody bid nil: P2 should duck under its partner's H9.
+    const hands: Card[][] = [
+      [],
+      [],
+      [card('H', 10), card('H', 3), card('C', 4)],
+      [],
+    ];
+    const s = stateWithHands(hands, {
+      leader: 3,
+      turn: 2,
+      bids: [3, 3, 3, 3],
+      trick: [
+        { player: 3, card: card('H', 5) },
+        { player: 0, card: card('H', 9) },
+        { player: 1, card: card('H', 2) },
+      ],
+    });
+    const chosen = aiPlay(s, 2);
+    expect(chosen.id).toBe('H3');
+  });
+
+  it('rejects a NaN bid', () => {
+    const s = stateWithHands([[], [], [], []], { phase: 'bidding', bids: [-1, -1, -1, -1], turn: 0 });
+    expect(() => placeBid(s, 0, Number('x'))).toThrow();
+  });
+});
+
 describe('spades aiPlay full game', () => {
   it('plays a whole all-AI game to gameOver with legal moves', () => {
     const s = newGame(2024);

@@ -30,7 +30,7 @@ const description =
       </div>
       <div id="account-action"></div>
     </section>
-    <p class="account-sync px-1 pt-2 text-sm opacity-70" id="account-sync" hidden></p>
+    <p class="account-sync px-1 pt-2 text-sm opacity-70" id="account-sync" role="status" aria-live="polite"></p>
 
     <section class="py-6">
       <div class="flex items-baseline justify-between">
@@ -70,8 +70,9 @@ const description =
     function showSyncStatus(msg: string): void {
       const el = document.getElementById('account-sync');
       if (!el) return;
+      // A live region inside display:none is not announced — keep the element
+      // rendered and let empty text collapse it instead of toggling [hidden].
       el.textContent = msg;
-      el.hidden = !msg;
     }
 
     function lastSyncedMsg(): string {
@@ -108,7 +109,10 @@ const description =
         name.textContent = user.name;
         sub.textContent = user.email + ' · synced';
         if (user.picture) {
-          avatar.innerHTML = `<img src="${user.picture}" alt="" />`;
+          const img = document.createElement('img');
+          img.src = user.picture;
+          img.alt = '';
+          avatar.replaceChildren(img);
         }
         action.innerHTML =
           '<button class="btn btn-primary" id="syncnow-btn" type="button">Sync now</button>' +

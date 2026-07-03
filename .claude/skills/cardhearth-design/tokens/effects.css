@@ -1,0 +1,57 @@
+/* ============================================================
+   CardHearth — Effects: radii, borders, shadows, motion
+   Soft rounded chrome on felt; cards round at ~7.5% of width and
+   cast a real drop shadow. Motion is gentle with a slight overshoot
+   so cards "land" rather than stop dead. Everything respects
+   prefers-reduced-motion.
+   ============================================================ */
+
+:root {
+  /* ---- Radii ---- */
+  --radius-xs:   0.45rem;   /* select / small control */
+  --radius-sm:   0.55rem;   /* buttons */
+  --radius-md:   0.8rem;    /* hud pill base, daily hero */
+  --radius-lg:   12px;      /* trust cards, guide cards */
+  --radius-xl:   1.1rem;    /* menu cards, daily feature */
+  --radius-2xl:  1rem;      /* dialogs */
+  --radius-pill: 999px;     /* nav links, feature pills, chips */
+  --radius-card: 7.5%;      /* a playing card's corner (relative to width) */
+
+  /* ---- Borders ---- */
+  --border-w:        1px;
+  --border-w-strong: 1.5px;
+  --border-felt:     1px solid var(--on-felt-line);
+  --border-gold:     1px solid var(--gold-veil);
+
+  /* ---- Shadows ---- */
+  /* On-felt elevation — soft, dark, for cards & menus floating on the table */
+  --shadow-card:   0 4px 16px rgb(0 0 0 / 0.20);
+  --shadow-hover:  0 14px 34px rgb(0 0 0 / 0.38);   /* menu card lift */
+  --shadow-pop:    0 14px 34px rgb(0 0 0 / 0.42);   /* dropdown panel */
+  --shadow-dialog: 0 24px 60px rgb(0 0 0 / 0.45);
+  --shadow-toast:  0 8px 24px rgb(0 0 0 / 0.40);
+
+  /* A real playing card's drop shadow */
+  --shadow-playcard:       0 1px 3px rgb(0 0 0 / 0.35);
+  --shadow-playcard-hover: 0 4px 10px rgb(0 0 0 / 0.40);
+  --shadow-playcard-drag:  0 14px 28px rgb(0 0 0 / 0.50);
+
+  /* Inset sheen used on felt slots & 2048/mahjong tiles */
+  --shadow-inset-slot: inset 0 2px 10px rgb(0 0 0 / 0.20);
+
+  /* Gold focus glow */
+  --ring-gold: 0 0 0 3px rgb(255 217 94 / 0.55);
+
+  /* ---- Motion ---- */
+  --ease-land:   cubic-bezier(0.3, 1.25, 0.55, 1);   /* @kind other */ /* card overshoot landing */
+  --ease-spring: cubic-bezier(0.26, 1.55, 0.45, 1);  /* @kind other */ /* released-drag settle */
+  --ease-out:    ease;    /* @kind other */
+  --dur-fast:    0.12s;   /* @kind other */
+  --dur-base:    0.16s;   /* @kind other */
+  --dur-card:    0.28s;   /* @kind other */
+  --dur-flip:    0.3s;    /* @kind other */
+
+  /* ---- Focus ---- */
+  --focus-outline: 3px solid var(--focus-ring);
+  --focus-offset:  2px;
+}

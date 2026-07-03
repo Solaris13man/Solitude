@@ -1,0 +1,35 @@
+<!-- @dsCard group="Spacing" viewport="700x180" name="Space scale" subtitle="Rem-based spacing rhythm from 4px to 48px" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: #1d2230; }
+  .wrap { padding: 20px 22px; }
+  .row { display: flex; align-items: flex-end; gap: 14px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .bar { background: linear-gradient(160deg, var(--felt-green), var(--felt-green-edge)); border-radius: 4px; width: 22px; }
+  .t { font-size: 10px; color: #5b6660; font-variant-numeric: tabular-nums; }
+  .n { font-size: 10px; font-weight: 700; }
+  .cap { font-size: 11px; color: #5b6660; margin: 0 0 16px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="cap">A relaxed scale — gaps of 0.4–1.3rem dominate the chrome.</p>
+    <div class="row">
+      <div class="item"><div class="bar" style="height: 4px"></div><span class="n">1</span><span class="t">4px</span></div>
+      <div class="item"><div class="bar" style="height: 6.4px"></div><span class="n">2</span><span class="t">6.4</span></div>
+      <div class="item"><div class="bar" style="height: 9.6px"></div><span class="n">3</span><span class="t">9.6</span></div>
+      <div class="item"><div class="bar" style="height: 12.8px"></div><span class="n">4</span><span class="t">12.8</span></div>
+      <div class="item"><div class="bar" style="height: 16px"></div><span class="n">5</span><span class="t">16</span></div>
+      <div class="item"><div class="bar" style="height: 20.8px"></div><span class="n">6</span><span class="t">20.8</span></div>
+      <div class="item"><div class="bar" style="height: 25.6px"></div><span class="n">7</span><span class="t">25.6</span></div>
+      <div class="item"><div class="bar" style="height: 32px"></div><span class="n">8</span><span class="t">32</span></div>
+      <div class="item"><div class="bar" style="height: 44px"></div><span class="n">10</span><span class="t">44</span></div>
+      <div class="item"><div class="bar" style="height: 48px"></div><span class="n">12</span><span class="t">48</span></div>
+    </div>
+  </div>
+</body>
+</html>

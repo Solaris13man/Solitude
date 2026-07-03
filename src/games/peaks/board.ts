@@ -96,6 +96,20 @@ export class PeaksBoard {
     const availW = this.container.clientWidth || 700;
     const cx = availW / 2;
     const slotY = this.slotY();
+    // Every card the state still knows about. Cards paired away *from the
+    // waste* leave state entirely, so their persistent elements would
+    // otherwise keep sitting (face up, on top) at the waste position.
+    const live = new Set<string>();
+    state.cells.forEach((c) => live.add(c.card.id));
+    state.stock.forEach((c) => live.add(c.id));
+    state.waste.forEach((c) => live.add(c.id));
+    for (const [id, el] of this.cardEls) {
+      if (live.has(id)) continue;
+      el.classList.add('peaks-removed');
+      el.classList.remove('movable', 'peaks-selected');
+      el.tabIndex = -1;
+      el.dataset.target = '';
+    }
 
     state.cells.forEach((cell, i) => {
       const el = this.ensureCardEl(cell.card);

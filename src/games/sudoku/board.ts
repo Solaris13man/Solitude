@@ -20,7 +20,9 @@ export class SudokuBoard {
     this.container.classList.add('sudoku-host');
     const grid = document.createElement('div');
     grid.className = 'sudoku-grid';
-    grid.setAttribute('role', 'grid');
+    // Not role="grid": that promises row/gridcell semantics we don't build,
+    // and breaks SR table navigation. Document-level arrow keys move selection.
+    grid.setAttribute('role', 'group');
     grid.setAttribute('aria-label', 'Sudoku grid');
     for (let i = 0; i < 81; i++) {
       const cell = document.createElement('button');

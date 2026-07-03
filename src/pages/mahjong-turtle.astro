@@ -13,7 +13,7 @@ const faq = [
 ];
 
 const schema = [
-  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Turtle Mahjong Solitaire', url: 'https://cardhearth.com/mahjong-turtle/', description, genre: 'Tile-matching puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Turtle Mahjong Solitaire', url: 'https://cardhearth.com/mahjong-turtle/', description, genre: 'Tile-matching puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og/mahjong-turtle.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Mahjong', item: 'https://cardhearth.com/mahjong/' }, { '@type': 'ListItem', position: 3, name: 'Turtle', item: 'https://cardhearth.com/mahjong-turtle/' } ] },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
@@ -26,6 +26,11 @@ const schema = [
     scoreLabel="Pairs left"
     cardSettings={false}
     tileSettings={true}
+    guide={{ href: '/guides/mahjong-solitaire-strategy/', label: 'Mahjong strategy guide' }}
+    related={[
+      { href: '/guides/what-is-mahjong-solitaire/', label: 'What is Mahjong solitaire?' },
+      { href: '/mahjong/', label: 'All Mahjong layouts' },
+    ]}
     breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Mahjong', href: '/mahjong/' }, { name: 'Turtle', href: '/mahjong-turtle/' }]}
   >
     <h2 class="mb-2 text-lg font-bold">The classic Turtle, every board solvable</h2>

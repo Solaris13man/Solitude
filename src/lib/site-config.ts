@@ -18,6 +18,14 @@ export interface SiteConfig {
      * source, handy for the paid-traffic test.
      */
     ahrefsKey: string;
+    /**
+     * Self-hosted Plausible (stats.einherjarventures.com), loaded site-wide
+     * through the first-party proxy (/js/script.js + /api/event, see
+     * worker/index.js) so ad blockers don't filter it. Independent of
+     * `provider`, like Ahrefs — runs alongside GA. Uses `domain` above as
+     * the data-domain.
+     */
+    plausibleEnabled: boolean;
   };
   ads: {
     /** When false, AdSlot renders a clearly-labelled placeholder only. */
@@ -71,6 +79,7 @@ export const SITE_CONFIG: SiteConfig = {
     domain: 'cardhearth.com',
     measurementId: 'G-2QD63X4RF2',
     ahrefsKey: 'ds7WpxvZ8jfYj963CCJkng',
+    plausibleEnabled: true,
   },
   ads: {
     enabled: true,

@@ -93,18 +93,32 @@ export function applyLocalData(data: PlayerData): void {
 // ----- pure merge (never lose progress) -----------------------------------
 
 function mergeVariant(a: VariantStats, b: VariantStats): VariantStats {
+  // currentStreak is NOT monotonic — a loss resets it to 0, and taking the max
+  // would resurrect the pre-loss streak on every sync. The side that has seen
+  // more games has the newer streak state; only a genuine tie falls back to max.
+  const currentStreak =
+    a.gamesPlayed > b.gamesPlayed ? a.currentStreak
+    : b.gamesPlayed > a.gamesPlayed ? b.currentStreak
+    : Math.max(a.currentStreak, b.currentStreak);
   return {
     gamesPlayed: Math.max(a.gamesPlayed, b.gamesPlayed),
     gamesWon: Math.max(a.gamesWon, b.gamesWon),
-    currentStreak: Math.max(a.currentStreak, b.currentStreak),
+    currentStreak,
     bestStreak: Math.max(a.bestStreak, b.bestStreak),
     totalMoves: Math.max(a.totalMoves, b.totalMoves),
     bestScore: Math.max(a.bestScore, b.bestScore),
-    bestTimeMs:
-      a.bestTimeMs === null ? b.bestTimeMs
-      : b.bestTimeMs === null ? a.bestTimeMs
-      : Math.min(a.bestTimeMs, b.bestTimeMs),
+    bestTimeMs: mergeBestTime(a.bestTimeMs, b.bestTimeMs),
   };
+}
+
+/** Min of the two best times, ignoring 0/negative values — a 0 "best" is a
+ *  legacy artifact of games that didn't track time, not a real record. */
+function mergeBestTime(a: number | null, b: number | null): number | null {
+  const av = a !== null && a > 0 ? a : null;
+  const bv = b !== null && b > 0 ? b : null;
+  if (av === null) return bv;
+  if (bv === null) return av;
+  return Math.min(av, bv);
 }
 
 function mergeStats(a: Stats, b: Stats): Stats {
@@ -348,7 +362,19 @@ async function pushCloudData(uid: string, data: PlayerData): Promise<boolean> {
 }
 
 /** Merge cloud ↔ local both directions so neither side loses progress. */
-async function sync(uid: string): Promise<void> {
+let syncInFlight: Promise<void> | null = null;
+
+function sync(uid: string): Promise<void> {
+  // Result events, settings changes and initAccount can all request a sync at
+  // once; interleaved read-merge-push cycles race, so share one in-flight run.
+  if (syncInFlight) return syncInFlight;
+  syncInFlight = doSync(uid).finally(() => {
+    syncInFlight = null;
+  });
+  return syncInFlight;
+}
+
+async function doSync(uid: string): Promise<void> {
   const local = collectLocalData();
   const read = await fetchCloudData(uid);
   if (!read.ok) {

@@ -12,14 +12,19 @@ let initialized = false;
 export function initAnalytics(): void {
   if (initialized || typeof window === 'undefined') return;
   initialized = true;
-  const { provider, domain } = SITE_CONFIG.analytics;
-  if (provider === 'plausible') {
+  const { provider, domain, plausibleEnabled } = SITE_CONFIG.analytics;
+  if (provider === 'plausible' && !plausibleEnabled) {
+    // Provider-mode fallback when the site-wide head script (Layout.astro)
+    // isn't on. Loads through the same first-party proxy (worker/index.js).
     const s = document.createElement('script');
     s.defer = true;
     s.setAttribute('data-domain', domain);
-    s.src = 'https://plausible.io/js/script.tagged-events.js';
+    s.setAttribute('data-api', '/api/event');
+    s.src = '/js/script.js';
     document.head.appendChild(s);
-    // Plausible's queue shim so events fired before load aren't lost.
+  }
+  if (provider === 'plausible' || plausibleEnabled) {
+    // Plausible's queue shim so events fired before the script loads aren't lost.
     const w = window as unknown as { plausible?: (...a: unknown[]) => void; };
     w.plausible =
       w.plausible ||
@@ -37,11 +42,12 @@ export function initAnalytics(): void {
 export function track(event: string, props?: Record<string, string | number | boolean>): void {
   if (typeof window === 'undefined') return;
   try {
-    const provider = SITE_CONFIG.analytics.provider;
-    if (provider === 'plausible') {
+    const { provider, plausibleEnabled } = SITE_CONFIG.analytics;
+    if (provider === 'plausible' || plausibleEnabled) {
       const w = window as unknown as { plausible?: (e: string, o?: object) => void };
       w.plausible?.(event, props ? { props } : undefined);
-    } else if (provider === 'ga') {
+    }
+    if (provider === 'ga') {
       const w = window as unknown as { gtag?: (...a: unknown[]) => void };
       w.gtag?.('event', event, props ?? {});
     }

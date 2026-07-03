@@ -48,6 +48,9 @@ class MinesweeperController {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  // Stats are recorded at most once per board — undoing a loss resumes play,
+  // but the loss already counted.
+  private resultRecorded = false;
   private toastTimer = 0;
   private daily = new DailyMode(GAME_ID);
   private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
@@ -130,7 +133,7 @@ class MinesweeperController {
   }
 
   private newGame(countAbandon: boolean, seed?: number, variantOverride?: number): void {
-    if (countAbandon && this.state && this.state.moves > 0 && !this.finished) {
+    if (countAbandon && this.state && this.state.moves > 0 && !this.finished && !this.resultRecorded) {
       recordResult({
         game: GAME_ID,
         variant: this.state.variant,
@@ -146,6 +149,7 @@ class MinesweeperController {
     track('game_started', { game: GAME_ID, variant: dealVariant });
     this.history.clear();
     this.finished = false;
+    this.resultRecorded = false;
     this.accumulatedMs = 0;
     this.runningSince = null;
     this.board.mount(this.state);
@@ -188,8 +192,10 @@ class MinesweeperController {
       this.handleFlag(i);
       return;
     }
-    this.history.push(this.state);
+    const before = cloneState(this.state);
     reveal(this.state, i);
+    if (this.state.moves === before.moves) return; // revealing a flagged cell is a no-op
+    this.history.push(before);
     if (this.runningSince === null) this.resumeTimer();
     this.sound.play(this.state.status === 'lost' ? 'shuffle' : 'place');
     this.refresh(true);
@@ -197,8 +203,10 @@ class MinesweeperController {
 
   private handleFlag(i: number): void {
     if (this.finished) return;
-    this.history.push(this.state);
+    const before = cloneState(this.state);
     toggleFlag(this.state, i);
+    if (this.state.moves === before.moves) return; // flagging a revealed cell is a no-op
+    this.history.push(before);
     if (this.runningSince === null) this.resumeTimer();
     this.sound.play('flip');
     this.refresh(true);
@@ -285,14 +293,21 @@ class MinesweeperController {
     this.pauseTimer();
     this.persist();
     const elapsed = this.elapsedMs();
-    const stats = recordResult({
-      game: GAME_ID,
-      variant: this.state.variant,
-      won,
-      elapsedMs: elapsed,
-      moves: this.state.moves,
-      score: 0,
-    });
+    let stats;
+    if (this.resultRecorded) {
+      // This board already counted (a loss that was undone) — don't count it twice.
+      stats = loadStats(GAME_ID);
+    } else {
+      this.resultRecorded = true;
+      stats = recordResult({
+        game: GAME_ID,
+        variant: this.state.variant,
+        won,
+        elapsedMs: elapsed,
+        moves: this.state.moves,
+        score: 0,
+      });
+    }
     const v = variantStats(stats, this.state.variant);
     $('win-title').textContent = won ? '🎉 Swept clean!' : '✸ Boom!';
     const rows = [

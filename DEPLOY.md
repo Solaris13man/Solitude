@@ -10,6 +10,19 @@ Namecheap), then turn on Search Console and AdSense.
 > there is no `main`/Worker script, because the static build never emits one.
 > The Pages instructions below remain a valid alternative if you prefer Pages.
 
+> **Enable the scheduled daily deploy.** The Daily Challenge archive is baked
+> at build time, so `.github/workflows/daily-deploy.yml` rebuilds and deploys
+> every night at 00:10 UTC. It needs two GitHub repository secrets (Settings →
+> Secrets and variables → Actions): `CLOUDFLARE_API_TOKEN` (API token created
+> from the "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`
+> (shown on the Workers overview page). Until they're set, the nightly job
+> fails with a clear message and nothing deploys.
+
+> **Cache headers ship in `public/_headers`.** Hashed `/_astro/*` assets are
+> immutable for a year; card/tile/texture art caches for a week; `sw.js` is
+> never cached. Cloudflare (Workers assets and Pages) picks the file up
+> automatically — no dashboard config needed.
+
 ---
 
 ## 1. Put the code on GitHub

@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro';
 
 const title = 'Privacy Policy — CardHearth';
 const description =
-  'CardHearth privacy policy: what we store (your game data, on your device), what we collect (nothing today), and how to contact us.';
+  'CardHearth privacy policy: what we store (your game data, on your device), the analytics and advertising services we use, optional accounts, and how to contact us.';
 ---
 
 <Layout title={title} description={description}>
@@ -19,20 +19,30 @@ const description =
       <p class="mb-3">
         CardHearth saves your in-progress games, settings (theme, card backs, sound preferences,
         and similar), and play statistics (games played, wins, streaks, best times) in your
-        browser's local storage. This data never leaves your device, is not transmitted to us,
-        and is not linked to your identity. You can erase it at any time by clearing your
-        browser's site data for cardhearth.com.
+        browser's local storage. This data stays on your device — it is not transmitted to us
+        and is not linked to your identity — unless you choose to sign in and sync it (see
+        "Optional accounts" below). You can erase it at any time by clearing your browser's
+        site data for cardhearth.com.
       </p>
       <h2 class="mb-2 mt-4 text-lg font-bold">What we collect</h2>
       <p class="mb-3">
-        Today: nothing. CardHearth has no accounts, no sign-up, and no tracking pixels. We do
-        not collect personal information.
+        We use two analytics services to understand how the site is used — which games people
+        enjoy, and where things break. <strong>Google Analytics</strong> collects standard usage
+        data (pages visited, approximate location, device and browser type) using cookies.
+        <strong>Ahrefs Analytics</strong> is cookieless and gives us only aggregate counts.
+        Neither tells us who you are, and we don't use them for anything else.
       </p>
       <p class="mb-3">
-        In the future we may add privacy-respecting, aggregate analytics (to understand which
-        games people enjoy) and advertising to keep the site free. If we do, this policy will be
-        updated first, any advertising partners will be listed here, and where required you will
-        be asked for consent before any advertising cookies are set.
+        Advertising keeps the site free. We use <strong>Google AdSense</strong>, which loads its
+        own script and may set advertising cookies to measure ads and — where permitted —
+        personalize them. Where the law requires it, you will be asked for consent before any
+        advertising cookies are set, and you can decline personalized ads there or in your
+        Google ad settings at any time.
+      </p>
+      <p class="mb-3">
+        If you turn on the optional daily-reminder notification, we store the web push endpoint
+        your browser gives us, plus your chosen reminder hour and timezone — enough to send the
+        reminder, and not linked to your identity. Turning the reminder off removes it.
       </p>
       <h2 class="mb-2 mt-4 text-lg font-bold">Optional accounts</h2>
       <p class="mb-3">
@@ -46,7 +56,7 @@ const description =
       <h2 class="mb-2 mt-4 text-lg font-bold">Children</h2>
       <p class="mb-3">
         CardHearth is a general-audience site and does not knowingly collect personal
-        information from anyone, including children.
+        information from children.
       </p>
       <h2 class="mb-2 mt-4 text-lg font-bold">Contact</h2>
       <p class="mb-3">

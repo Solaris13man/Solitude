@@ -52,7 +52,7 @@ export const FEATURED_DEALS: FeaturedDeal[] = [
   { n: 31938, note: 'A late, brutally hard deal — a trophy for serious players.', tag: 'hard' },
   {
     n: UNSOLVABLE_DEAL,
-    note: 'The famous exception: of the original 32,000 deals, #11982 is the one proven to have no solution at all — not even with extra free cells.',
+    note: 'The famous exception: of the original 32,000 deals, #11982 is the one proven to have no solution in standard four-cell FreeCell.',
     tag: 'unsolvable',
   },
   { n: 100, note: 'A memorable round number, winnable with planning.', tag: 'landmark' },

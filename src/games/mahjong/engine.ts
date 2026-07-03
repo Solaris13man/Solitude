@@ -245,6 +245,14 @@ export function isFree(state: MahjongState, index: number): boolean {
   return freeIn(layoutOf(state.variant).slots, state.tiles.map((t) => !t.removed), index);
 }
 
+/** Free flag for every tile, sharing one occupancy pass (for full renders —
+ *  per-tile isFree would rebuild the occupied array 144 times). */
+export function freeMap(state: MahjongState): boolean[] {
+  const slots = layoutOf(state.variant).slots;
+  const occupied = state.tiles.map((t) => !t.removed);
+  return state.tiles.map((t, i) => (t.removed ? false : freeIn(slots, occupied, i)));
+}
+
 /**
  * Canonical pair order, used to size the tile pool to smaller layouts: one
  * pair of every kind first (interleaved across suits), then the duplicates.

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="CardHearth felt page" description="A full-bleed green-felt page — logo, headline, fair-play trust panels and a gold CTA, built from CardHearth components." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+    color: var(--chrome-text, #f3f6f2);
+    background:
+      radial-gradient(140% 110% at 50% -10%, rgb(255 255 255 / 0.07) 0%, transparent 45%),
+      radial-gradient(130% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.30) 100%),
+      radial-gradient(120% 90% at 50% 0%, #1d7a45 0%, #135c32 100%);
+    background-attachment: fixed;
+  }
+</style>
+</helmet>
+<main style="max-width: 60rem; margin: 0 auto; padding: 3.5rem 1.25rem 4rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+  <img src="../../assets/logo-lockup-reversed.svg" alt="CardHearth" style="height: 52px; margin-bottom: 1.75rem;" />
+  <h1 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; margin: 0; max-width: 22ch;">Free solitaire & puzzle games, the way they should be</h1>
+  <div style="width: 72px; height: 4px; border-radius: 3px; background: #ffd95e; margin: 1rem auto 0;" aria-hidden="true"></div>
+  <p style="margin: 0.9rem auto 0; max-width: 34rem; font-size: 1.05rem; line-height: 1.5; opacity: 0.88;">Your cozy home for classic card &amp; puzzle games. Pick one and play in seconds — nothing to install, no account needed.</p>
+
+  <div style="display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); max-width: 52rem; width: 100%; margin: 2.25rem auto 0; text-align: left;">
+    <x-import component-from-global-scope="CardHearthDesignSystem_7eedad.Panel" tone="gold" pad="md" hint-size="100%,84px"><strong style="display:block; margin-bottom:0.15rem; color:#ffd95e;">No guessing</strong>Every Sudoku is solvable by pure logic — guaranteed.</x-import>
+    <x-import component-from-global-scope="CardHearthDesignSystem_7eedad.Panel" tone="fill" pad="md" hint-size="100%,84px"><strong style="display:block; margin-bottom:0.15rem; color:#ffd95e;">Always solvable</strong>Every Mahjong board is winnable by design.</x-import>
+    <x-import component-from-global-scope="CardHearthDesignSystem_7eedad.Panel" tone="fill" pad="md" hint-size="100%,84px"><strong style="display:block; margin-bottom:0.15rem; color:#ffd95e;">Free &amp; private</strong>No sign-up, no download. Progress stays on your device.</x-import>
+  </div>
+
+  <div style="margin-top: 2.25rem;">
+    <x-import component-from-global-scope="CardHearthDesignSystem_7eedad.Button" variant="primary" size="lg" hint-size="14rem,2.9rem">Play today's challenge →</x-import>
+  </div>
+</main>
+
+</x-dc>
+</body>
+</html>

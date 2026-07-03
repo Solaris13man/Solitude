@@ -89,9 +89,14 @@ function sweepCompletedRun(state: GameState, pileIndex: number): boolean {
     const card = pile[i]!;
     if (!card.faceUp || card.suit !== lead.suit || card.rank !== 13 - (i - start)) return false;
   }
-  const run = pile.splice(start, 13).reverse(); // king ends up on top
   const slot = state.foundations.find((f) => f.length === 0);
-  if (slot) slot.push(...run);
+  if (!slot) {
+    // Unreachable with the shipped pile counts — but a corrupted save must
+    // fail loudly rather than silently vanish 13 cards (and still score).
+    throw new Error('No empty foundation slot for a completed run');
+  }
+  const run = pile.splice(start, 13).reverse(); // king ends up on top
+  slot.push(...run);
   state.score += 100;
   const exposed = top(pile);
   if (exposed) exposed.faceUp = true;

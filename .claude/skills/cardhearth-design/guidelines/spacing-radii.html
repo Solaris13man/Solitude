@@ -1,0 +1,30 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Radii" subtitle="Soft chrome corners; cards round at 7.5% of their width" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: #1d2230; }
+  .wrap { padding: 20px 22px; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .box { width: 74px; height: 60px; background: linear-gradient(160deg, var(--felt-green), var(--felt-green-edge)); border: 1px solid var(--gold-veil); }
+  .n { font-size: 11px; font-weight: 700; }
+  .t { font-size: 10px; color: #5b6660; font-variant-numeric: tabular-nums; }
+  .cap { font-size: 11px; color: #5b6660; margin: 0 0 14px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="cap">Pills for nav &amp; chips; 0.55rem buttons; 1.1rem cards; full-round chips.</p>
+    <div class="row">
+      <div class="item"><div class="box" style="border-radius: var(--radius-sm)"></div><span class="n">sm</span><span class="t">0.55rem · buttons</span></div>
+      <div class="item"><div class="box" style="border-radius: var(--radius-md)"></div><span class="n">md</span><span class="t">0.8rem</span></div>
+      <div class="item"><div class="box" style="border-radius: var(--radius-lg)"></div><span class="n">lg</span><span class="t">12px · trust card</span></div>
+      <div class="item"><div class="box" style="border-radius: var(--radius-xl)"></div><span class="n">xl</span><span class="t">1.1rem · menu card</span></div>
+      <div class="item"><div class="box" style="border-radius: var(--radius-pill)"></div><span class="n">pill</span><span class="t">999px</span></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -52,6 +52,26 @@ describe('account merge (never lose progress)', () => {
     expect(m.daily.days['2026-06-14']!.timeMs).toBe(100000);
   });
 
+  it('does not resurrect a reset win-streak from the other device', () => {
+    // Device A just LOST (streak reset to 0, one more game played). Device B
+    // holds the stale pre-loss state. The loss must survive the merge — the
+    // old Math.max merge would bring the dead streak back on every sync.
+    const afterLoss = { gamesPlayed: 11, gamesWon: 4, currentStreak: 0, bestStreak: 4, totalMoves: 110, bestScore: 500, bestTimeMs: 200000 };
+    const stale = { gamesPlayed: 10, gamesWon: 4, currentStreak: 4, bestStreak: 4, totalMoves: 100, bestScore: 500, bestTimeMs: 200000 };
+    const a = pd({ stats: { klondike: { variants: { v1: { ...afterLoss } } } } });
+    const b = pd({ stats: { klondike: { variants: { v1: { ...stale } } } } });
+    expect(mergePlayerData(a, b).stats.klondike!.variants.v1!.currentStreak).toBe(0);
+    expect(mergePlayerData(b, a).stats.klondike!.variants.v1!.currentStreak).toBe(0);
+  });
+
+  it('ignores a legacy 0ms "best time" when merging', () => {
+    const withZero = { gamesPlayed: 5, gamesWon: 2, currentStreak: 1, bestStreak: 2, totalMoves: 50, bestScore: 0, bestTimeMs: 0 };
+    const real = { gamesPlayed: 5, gamesWon: 2, currentStreak: 1, bestStreak: 2, totalMoves: 50, bestScore: 0, bestTimeMs: 90000 };
+    const a = pd({ stats: { hearts: { variants: { v0: { ...withZero } } } } });
+    const b = pd({ stats: { hearts: { variants: { v0: { ...real } } } } });
+    expect(mergePlayerData(a, b).stats.hearts!.variants.v0!.bestTimeMs).toBe(90000);
+  });
+
   it('is symmetric for the fields that matter', () => {
     const a = pd({ badges: ['a'], stats: { sudoku: { variants: { v3: { ...zero(), gamesWon: 2 } } } } });
     const b = pd({ badges: ['b'], stats: { sudoku: { variants: { v3: { ...zero(), gamesWon: 5 } } } } });

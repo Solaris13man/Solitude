@@ -1,0 +1,11 @@
+/* ============================================================
+   CardHearth Design System — global entry point
+   Consumers link THIS one file. It only @imports the token layers;
+   never add rules here directly.
+   ============================================================ */
+
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/effects.css';
+@import './tokens/surfaces.css';

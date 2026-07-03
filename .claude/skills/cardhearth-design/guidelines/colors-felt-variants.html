@@ -1,0 +1,28 @@
+<!-- @dsCard group="Colors" viewport="700x176" name="Felt color variants" subtitle="Player-selectable table felts: green, blue, slate, crimson" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; }
+  .wrap { padding: 18px 20px; }
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .sw { border-radius: 10px; height: 84px; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; color: #f3f6f2; box-shadow: var(--shadow-card); }
+  .name { font-size: 12px; font-weight: 700; }
+  .hex { font-size: 11px; opacity: 0.82; font-variant-numeric: tabular-nums; }
+  .cap { font-size: 11px; color: #5b6660; margin: 0 0 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="cap">Settings let players retheme the felt. Each is a base + edge pair feeding the same table gradient.</p>
+    <div class="row">
+      <div class="sw" style="background: linear-gradient(160deg, var(--felt-green), var(--felt-green-edge))"><span class="name">Green (default)</span><span class="hex">#1d7a45</span></div>
+      <div class="sw" style="background: linear-gradient(160deg, var(--felt-blue), var(--felt-blue-edge))"><span class="name">Blue</span><span class="hex">#1d5e8a</span></div>
+      <div class="sw" style="background: linear-gradient(160deg, var(--felt-slate), var(--felt-slate-edge))"><span class="name">Slate</span><span class="hex">#3d4757</span></div>
+      <div class="sw" style="background: linear-gradient(160deg, var(--felt-crimson), var(--felt-crimson-edge))"><span class="name">Crimson</span><span class="hex">#8a2433</span></div>
+    </div>
+  </div>
+</body>
+</html>

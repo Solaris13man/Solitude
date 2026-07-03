@@ -130,7 +130,7 @@ export function placeBid(state: SpadesState, player: number, bid: number): void 
   if (state.bids[player] !== -1) {
     throw new Error(`Seat ${player} has already bid.`);
   }
-  if (bid < 0 || bid > 13) {
+  if (!Number.isInteger(bid) || bid < 0 || bid > 13) {
     throw new Error(`Invalid bid ${bid}.`);
   }
   state.bids[player] = bid;
@@ -369,7 +369,15 @@ export function aiPlay(state: SpadesState, player: number): Card {
   const inSuit = legal.filter((c) => c.suit === led);
   const winners = legal.filter((c) => wouldWin(state, c));
   const cur = currentWinner(state);
-  const partnerWinning = cur !== null && teamOf(cur.player) === myTeam;
+  // A nil partner "winning" the trick is a disaster, not a win — cover them
+  // by overtaking cheaply whenever possible.
+  const partnerCoveringNil = partnerNil && cur !== null && cur.player === partner;
+  if (partnerCoveringNil && winners.length > 0) {
+    const inSuitWinners = winners.filter((c) => c.suit === led);
+    return lowest(inSuitWinners.length > 0 ? inSuitWinners : winners);
+  }
+  const partnerWinning =
+    cur !== null && teamOf(cur.player) === myTeam && !partnerCoveringNil;
 
   if (inSuit.length > 0) {
     // Must follow suit.

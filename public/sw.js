@@ -4,7 +4,13 @@
  * Deliberately conservative: it never serves a stale HTML document while
  * online, so updates ship immediately.
  */
-const CACHE = 'cardhearth-v2';
+const CACHE = 'cardhearth-v3';
+// The "daily solved today" flag lives in its own cache (see push.ts) — it must
+// survive SW updates, or players who already solved get reminded anyway.
+const KEEP_CACHES = [CACHE, 'cardhearth-daily'];
+// Rough per-cache entry cap. Hashed /_astro/ names change every deploy and the
+// old ones are never requested again, so without a cap the cache grows forever.
+const MAX_ENTRIES = 400;
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -13,11 +19,24 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))),
-    ),
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((k) => !KEEP_CACHES.includes(k)).map((k) => caches.delete(k)));
+      // Trim stranded entries (oldest hashed assets first — insertion order).
+      try {
+        const cache = await caches.open(CACHE);
+        const entries = await cache.keys();
+        if (entries.length > MAX_ENTRIES) {
+          const hashed = entries.filter((r) => new URL(r.url).pathname.startsWith('/_astro/'));
+          const excess = entries.length - MAX_ENTRIES;
+          await Promise.all(hashed.slice(0, excess).map((r) => cache.delete(r)));
+        }
+      } catch {
+        /* trimming is best-effort */
+      }
+      await self.clients.claim();
+    })(),
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -30,8 +49,11 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy));
+          // Never cache an error page as the offline fallback for this URL.
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, copy));
+          }
           return res;
         })
         .catch(() => caches.match(req).then((r) => r || caches.match('/'))),

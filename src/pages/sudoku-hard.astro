@@ -13,7 +13,7 @@ const faq = [
 ];
 
 const schema = [
-  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Hard Sudoku', url: 'https://cardhearth.com/sudoku-hard/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
+  { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Hard Sudoku', url: 'https://cardhearth.com/sudoku-hard/', description, genre: 'Puzzle', gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', playMode: 'SinglePlayer', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, image: 'https://cardhearth.com/og/sudoku-hard.png', publisher: { '@type': 'Organization', name: 'CardHearth', url: 'https://cardhearth.com/' } },
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'CardHearth', item: 'https://cardhearth.com/' }, { '@type': 'ListItem', position: 2, name: 'Sudoku', item: 'https://cardhearth.com/sudoku/' }, { '@type': 'ListItem', position: 3, name: 'Hard', item: 'https://cardhearth.com/sudoku-hard/' } ] },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
@@ -25,6 +25,12 @@ const schema = [
     heading="Hard Sudoku"
     scoreLabel="Mistakes"
     cardSettings={false}
+    guide={{ href: '/guides/sudoku-difficulty-levels/', label: 'Sudoku difficulty levels' }}
+    related={[
+      { href: '/guides/how-to-play-sudoku/', label: 'How to play' },
+      { href: '/guides/sudoku-solving-techniques/', label: 'Solving techniques' },
+      { href: '/sudoku/', label: 'Sudoku' },
+    ]}
     breadcrumb={[{ name: 'CardHearth', href: '/' }, { name: 'Sudoku', href: '/sudoku/' }, { name: 'Hard', href: '/sudoku-hard/' }]}
   >
     <div slot="after-board" class="numpad" role="group" aria-label="Number input">

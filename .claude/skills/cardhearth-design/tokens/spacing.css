@@ -1,0 +1,38 @@
+/* ============================================================
+   CardHearth — Spacing & layout tokens
+   A relaxed, rem-based scale. Containers are centered and capped;
+   the felt fills the viewport behind them.
+   ============================================================ */
+
+:root {
+  /* ---- Space scale ---- */
+  --space-0:   0;
+  --space-1:   0.25rem;
+  --space-2:   0.4rem;
+  --space-3:   0.6rem;
+  --space-4:   0.8rem;
+  --space-5:   1rem;
+  --space-6:   1.3rem;
+  --space-7:   1.6rem;
+  --space-8:   2rem;
+  --space-10:  2.75rem;   /* min touch target on mobile */
+  --space-12:  3rem;
+
+  /* ---- Container widths (centered, px-padded) ---- */
+  --container-prose: 42rem;   /* article / strategy guide column */
+  --container-menu:  56rem;   /* "why play" / trust strips */
+  --container-page:  64rem;   /* home + game board max width */
+
+  /* ---- Gutters ---- */
+  --gutter-page:  1rem;
+  --gutter-card:  0.9rem;
+
+  /* ---- Min touch target (paid mobile traffic — keep ≥44px) ---- */
+  --tap-min: 2.75rem;
+
+  /* ---- Breakpoints (mobile-first; most traffic is phones) ----
+     Use in component @media queries so the kit breaks at consistent widths. */
+  --bp-sm: 30rem;   /* 480px — large phone: icon-only secondary buttons, single column */
+  --bp-md: 48rem;   /* 768px — tablet: 2-up menus, side-by-side hero */
+  --bp-lg: 64rem;   /* 1024px — desktop: full page width */
+}
