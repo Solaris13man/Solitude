@@ -1,0 +1,140 @@
+---
+title: 'FreeCell Rules: How to Play (Complete Guide) | CardHearth'
+description: 'A complete guide to the rules of FreeCell Solitaire: the layout, the deal, legal moves, the four free cells and foundations, the supermove limit, and how to win.'
+heading: 'FreeCell Rules: How to Play'
+subtitle: 'Everything you need to know to play FreeCell correctly — the setup, the legal moves, and the one piece of arithmetic that explains how many cards you can shift at once.'
+updated: '2026-06-13'
+headline: 'FreeCell Rules: How to Play (Complete Guide)'
+image: 'https://cardhearth.com/og/freecell.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'FreeCell Rules', href: '/guides/freecell-rules/' }
+faq:
+  - q: 'How many free cells are there?'
+    a: 'Four. Each free cell holds exactly one card, so you have four temporary parking spaces in total. They are open storage you can move any single card into, and you can move that card back out to a tableau column or a foundation whenever it fits.'
+  - q: 'How many cards can you move at once?'
+    a: 'Strictly, one — FreeCell only ever moves a single card. Moving a run is shorthand for a sequence of single moves relayed through your free cells and empty columns. The most you can shift in one "supermove" is (1 + empty free cells) × 2 to the power of the number of empty columns. With all four cells free and no empty columns you can move five cards; one empty column doubles that to ten.'
+  - q: 'Are all FreeCell games winnable?'
+    a: 'Almost. In the classic set of 32,000 numbered deals, only one — deal #11982 — has been proven unsolvable. Every other deal in that set can be won with perfect play, which is why FreeCell is regarded as a game of skill rather than luck.'
+howTo:
+  name: 'How to play FreeCell'
+  description: 'The complete rules of FreeCell Solitaire, step by step.'
+  steps:
+    - name: 'Read the open board'
+      text: 'All 52 cards are dealt face up into eight cascades, with four empty free cells and four empty foundations. Nothing is hidden, so the whole puzzle is visible from the start.'
+    - name: 'Know the goal'
+      text: 'Build the four foundations up from Ace to King by suit. You win when every card is on the foundations.'
+    - name: 'Build the cascades down in alternating colours'
+      text: 'Stack cards in the cascades in descending rank and alternating colour, such as a black Five on a red Six.'
+    - name: 'Use the free cells'
+      text: 'Each of the four free cells holds one card as temporary storage. Use them to lift blocking cards out of the way — but the fewer cells you occupy, the more cards you can move at once.'
+    - name: 'Move runs using your spare space'
+      text: 'You can shift a sequence of cards in one go; the most you can move is (1 + empty free cells) x 2^(empty cascades), so keeping cells and columns empty increases your capacity.'
+    - name: 'Win the game'
+      text: 'Send Aces and Twos up early and keep building in suit until all four foundations run Ace to King.'
+cta: { href: '/freecell/', label: 'Play FreeCell' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+FreeCell is the open-information solitaire: there is nothing hidden, no luck of the draw, and
+nearly every deal can be won. That makes the rules easy to state and the game hard to put
+down. This page is a complete reference to how FreeCell is played — the layout, the deal, the
+legal moves, and how you win. If you'd rather learn by doing, you can
+[play FreeCell](/freecell/) straight away with unlimited undo and hints.
+
+## What is FreeCell?
+
+FreeCell is a solitaire game played with a single standard 52-card deck. Every card is dealt
+**face up**, so you can see the entire deal from the first move — there is no
+stock to draw from and nothing concealed. The table has three kinds of pile: four
+**free cells** (single-card holding spaces), four **foundations**
+(where you build winning piles), and eight **tableau columns**, also called
+cascades, where the cards start out. Your job is to use the free cells and the tableau to
+unpack the deal and feed every card onto the foundations.
+
+## The setup
+
+All 52 cards are dealt face up across the **eight tableau columns**. The deal is
+not even: the cards are dealt one at a time across the row, so the
+**first four columns get seven cards each** and the
+**last four columns get six cards each**. That is 4&nbsp;&times;&nbsp;7 plus
+4&nbsp;&times;&nbsp;6 = 28 + 24 = **52 cards**, the whole deck. The
+**four free cells** and the **four foundations** all start empty.
+Because nothing is face down, the position you see at the start is the position you have to
+solve — no surprises arrive later.
+
+## The objective
+
+You win by building all four **foundations** up by suit, each running from
+**Ace to King**. Each foundation takes one suit: you start it with that suit's
+Ace, then add the Two, the Three, and so on up to the King. When all four foundations hold a
+complete Ace-to-King suit — 13 cards each, 52 in total — the game is won.
+
+## Legal moves
+
+FreeCell has a small, strict set of rules for where a card may go. Everything else follows
+from these.
+
+- **Tableau builds down in alternating colours.** You may place a card on a
+  tableau column only if it is one rank lower than the column's top card and the
+  *opposite* colour — a red Six on a black Seven, a black Four on a red Five, and so
+  on.
+- **A free cell holds exactly one card.** You may move any single card into an
+  empty free cell, and move it back out later when it fits somewhere. A free cell that is
+  already occupied is unavailable until you empty it.
+- **Foundations build up by suit from the Ace.** A card goes to a foundation only
+  if it is the Ace of an empty foundation, or the next rank up in the same suit as the
+  foundation's top card.
+- **An empty column accepts any card.** When a tableau column is cleared, any
+  single card — or the lead of a run you can relay — may be placed there.
+
+Officially, every move is a **single card** moving between a tableau column, a
+free cell, and a foundation. There is no separate rule for moving a group.
+
+## The supermove: moving several cards at once
+
+Most FreeCell apps, CardHearth included, let you drag a whole descending, alternating-colour
+run in one gesture. This is the **supermove**, and it is purely a convenience: it
+automates a series of legal single moves that shuffle cards through your empty free cells and
+empty columns and back. Because of that, the number of cards you can move at once is limited
+by how much temporary space you have. The rule is:
+
+**(1 + empty free cells) &times; 2<sup>(empty columns)</sup>**
+
+In words: take one, add the number of empty free cells, then double the result once for each
+empty column. With all four cells free and no empty columns you can move five cards
+(1 + 4 = 5). Free up one column and that doubles to ten; a second empty column would double it
+again to twenty. One important caveat: when you are moving a run *onto* an empty column,
+that destination column does not count toward the doubling, because it is where the run is
+going rather than a relay space.
+
+## How you win
+
+The game is won the moment every card sits on a foundation — all four suits built up cleanly
+from Ace to King. Free cells and tableau columns end up empty. Once the remaining position is
+provably safe to finish, an auto-complete option appears so you don't have to click every last
+card up by hand.
+
+## Are FreeCell deals always solvable?
+
+Almost always. In the famous original collection of 32,000 numbered FreeCell deals, exactly
+one — **deal&nbsp;#11982** — has been proven impossible to win. Every other deal
+in that set is solvable with perfect play, and across random deals generally the solvable rate
+is well above 99%. That is why FreeCell is treated as a puzzle of skill: if you lose, the deal
+was almost certainly winnable, and unlimited undo lets you back up and find the line you
+missed.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Now that you know the rules, [play a hand of FreeCell](/freecell/) and put them to
+use. When you're ready to win more often, read our
+[FreeCell strategy guide](/guides/freecell-strategy/), see how the game compares in
+[FreeCell vs Klondike](/guides/freecell-vs-klondike/), look up any unfamiliar term
+in the [solitaire glossary](/guides/solitaire-glossary/), or browse everything in
+our [guides hub](/guides/).

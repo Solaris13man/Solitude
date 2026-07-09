@@ -1,0 +1,111 @@
+---
+title: 'Golf Solitaire Strategy & Tips | CardHearth'
+description: 'A clear, practical Golf Solitaire strategy guide: plan card chains before you commit, clear the tallest columns, conserve your stock draws, and reverse direction to extend long runs.'
+heading: 'Golf Solitaire Strategy'
+subtitle: 'Golf rewards planning over speed. Learn to read chains, spend stock draws wisely, and clear the board on more deals.'
+updated: '2026-06-13'
+headline: 'Golf Solitaire Strategy & Tips'
+image: 'https://cardhearth.com/og/golf.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'Golf Solitaire Strategy', href: '/guides/golf-solitaire-strategy/' }
+faq:
+  - q: 'Does the rank wrap around in Golf?'
+    a: 'No. On CardHearth, rank does not wrap around: an Ace and a King are not adjacent. You can only play a card that is exactly one rank higher or lower than the current waste card (so a 7 accepts a 6 or an 8). When the waste shows an Ace you can only play a 2 on top of it, and a King only accepts a Queen.'
+  - q: 'When should I draw from the stock?'
+    a: 'Only when no tableau move advances your plan. Each draw is one-way — there is no recycling the stock in Golf — so every card you turn over is spent for good. Exhaust the useful tableau plays first, then draw to open a fresh chain.'
+  - q: 'Are all Golf deals winnable?'
+    a: 'No. Some deals cannot be cleared no matter how you play, because the cards needed to bridge between columns are buried or the stock runs out first. CardHearth gives every deal a number, so you can replay a tough one to test a better line, and unlimited undo lets you explore without penalty.'
+cta: { href: '/golf/', label: 'Play Golf Solitaire' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+Golf Solitaire looks deceptively simple: tap a card, watch it fly to the waste pile, repeat.
+But the difference between a casual run and a cleared board is almost entirely about
+*planning the order* in which you take cards. This guide explains the rules exactly as
+CardHearth plays them, then walks through the principles that actually win games. If you just
+want to dive in, you can [play a hand](/golf/) and refer back here.
+
+## The goal, in one sentence
+
+Clear all seven **tableau** columns by moving the bottom-exposed card of any
+column onto the **waste pile** whenever it is exactly one rank higher or lower
+than the current waste card. When you run out of legal tableau moves, **draw from the
+stock** to put a fresh card on the waste and open new possibilities. Empty all seven
+columns and you win.
+
+## Does rank wrap around? No.
+
+This is the rule that trips people up, so it's worth stating plainly: **rank does not
+wrap around** on CardHearth. A card plays only if it sits exactly one rank above or
+below the waste top — a 9 accepts an 8 or a 10, and nothing else. Crucially, an **Ace
+does not connect to a King**. If the waste shows an Ace, your only legal play is a 2;
+a King will only accept a Queen. Sequences therefore dead-end at both ends of the deck rather
+than looping, which is exactly why planning the chain matters so much.
+
+One more rule with strategic weight: **the stock does not recycle**. Once you've
+turned a stock card over, it stays on the waste — you never get a second pass. Your draws are
+a finite, one-way resource.
+
+## Four principles that win games
+
+### 1. Plan the chain before you commit
+
+A single card on the waste can often start a long run: play a 6 onto a 5, then a 7, then an 8,
+and so on. But the **order you take cards changes what's exposed** underneath, so
+a greedy first move can cut a run short. Before you tap, trace the sequence: which exposed
+cards can follow, and which column they free up next. The best opening move is the one that
+leads to the longest unbroken run without needing a draw.
+
+### 2. Prioritise the tallest columns and the cards that open the most
+
+A column you never dig into is dead weight at the end of the game. Favour plays that bite into
+the **tallest stacks** early, because they hold the most cards and the most
+future options. When two moves look equally legal, take the one that exposes the most useful
+next card — the one that keeps your chain alive or unlocks a stuck column.
+
+### 3. Conserve your stock draws
+
+Because the stock is limited and never recycles, every draw is a card you can't get back. Only
+draw when **no tableau move helps your plan**. If you can keep a run going by
+playing off the columns, do that first; save the stock for the moment you're genuinely stuck
+and need a new bridge card to restart.
+
+### 4. Use reversals to extend a run
+
+Because you can move up *or* down by one, you can change direction mid-run: climb from a
+5 up to a 7, then come back down through 6 if another 6 is exposed. Spotting these
+**reversals** lets you stitch together cards you'd otherwise strand, often
+clearing two or three extra cards before you ever touch the stock.
+
+## Common mistakes that lose games
+
+- **Drawing from the stock too early** — the number-one win-killer. Spend
+  tableau moves first; a draw you make now is a card you can't make later.
+- **Taking a legal card that strands a column**, leaving a card with no
+  partner and no way to clear it.
+- **Not planning the sequence** — playing the first legal card you see instead
+  of the one that opens the longest chain.
+- **Forgetting undo exists** — on CardHearth, undo is unlimited, so test a line
+  and take it back if it dead-ends.
+
+## Practise the right way
+
+Every CardHearth deal has a number, so you can **replay the exact same hand** to
+try a smarter order, or share it with a friend to see who clears it. Because not every Golf
+deal is winnable, unlimited *Undo* is your best teacher: explore a chain, see where it
+breaks, and rewind to find the line that goes further.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Ready to put it into practice? [Play Golf Solitaire](/golf/) now, or branch out:
+our [guide to winning Klondike](/guides/how-to-win-klondike-solitaire/) rewards a
+different kind of planning, and the [best free solitaire and puzzle games](/guides/best-free-solitaire-and-puzzle-games/)
+roundup points you to more. Our
+[guides hub](/guides/) covers the whole CardHearth library.
