@@ -1,0 +1,45 @@
+# Continuous integration: typecheck, tests, build, and a dependency audit.
+#
+# Branch note: this repo's integration branch is currently
+# `claude/confident-tesla-jfu62b` (there is no `main` yet). The request was to
+# gate `main`, so `main` is listed for when it exists; the current default is
+# listed too so the gate is actually live today. Drop whichever you don't want.
+name: CI
+
+on:
+  push:
+    branches: [main, claude/confident-tesla-jfu62b]
+  pull_request:
+    branches: [main, claude/confident-tesla-jfu62b]
+
+permissions:
+  contents: read
+
+jobs:
+  # Deterministic, merge-blocking gates.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  # Dependency vulnerability audit — merge-blocking. The astro@5 HIGH advisory
+  # (define:vars XSS et al.) was resolved by upgrading to astro@7; the tree is
+  # clean at the `high` level, so a new high/critical advisory should fail CI.
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
