@@ -1,0 +1,91 @@
+---
+import { getCollection, render } from 'astro:content';
+import Article from '../../components/Article.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+const url = `https://cardhearth.com/guides/${entry.id}/`;
+
+// Build the JSON-LD graph from frontmatter, in the exact shape/key-order the
+// hand-written guides used, so output is byte-identical. Order: HowTo (if any),
+// Article, BreadcrumbList, FAQPage (if any).
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.headline,
+  description: d.description,
+  datePublished: d.updated,
+  dateModified: d.updated,
+  author: { '@type': 'Person', '@id': 'https://cardhearth.com/#jared', name: 'Jared Waterworth', url: 'https://cardhearth.com/about/' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'CardHearth',
+    url: 'https://cardhearth.com/',
+    logo: { '@type': 'ImageObject', url: 'https://cardhearth.com/logo.png', width: 512, height: 512 },
+  },
+  mainEntityOfPage: url,
+  image: d.image,
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: d.breadcrumb.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name,
+    item: `https://cardhearth.com${c.href}`,
+  })),
+};
+
+const howToSchema = d.howTo && {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: d.howTo.name,
+  description: d.howTo.description,
+  mainEntityOfPage: url,
+  step: d.howTo.steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.name,
+    text: s.text,
+  })),
+};
+
+const faqSchema = d.faq.length > 0 && {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: d.faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const schema = [
+  ...(howToSchema ? [howToSchema] : []),
+  articleSchema,
+  breadcrumbSchema,
+  ...(faqSchema ? [faqSchema] : []),
+];
+---
+
+<Article
+  title={d.title}
+  description={d.description}
+  heading={d.heading}
+  subtitle={d.subtitle}
+  updated={d.updated}
+  schema={schema}
+  breadcrumb={d.breadcrumb}
+  cta={d.cta}
+>
+  <Content />
+</Article>

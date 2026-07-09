@@ -1,0 +1,135 @@
+---
+title: 'Minesweeper Strategy: How to Read the Numbers | CardHearth'
+description: 'A practical Minesweeper strategy guide: how to read the numbers, deduce safe squares with count and subtraction logic, master the 1-2-1 pattern, chord for speed, and minimise risk when forced to guess.'
+heading: 'Minesweeper Strategy: How to Read the Numbers'
+subtitle: 'Minesweeper is a logic puzzle, not a guessing game. Learn the deductions that turn a wall of numbers into a clear map of safe squares.'
+updated: '2026-06-13'
+headline: 'Minesweeper Strategy: How to Read the Numbers'
+image: 'https://cardhearth.com/og/minesweeper.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'Minesweeper Strategy', href: '/guides/minesweeper-strategy/' }
+faq:
+  - q: 'Is the first click always safe on CardHearth?'
+    a: 'Yes. On CardHearth the mines are placed after your first click, with the board arranged so that neither the square you clicked nor its eight neighbours holds a mine. That means your opening click always reveals an empty area and cascades open, giving you numbers to start reasoning from — so click confidently in the middle of the board.'
+  - q: 'Can I undo hitting a mine?'
+    a: 'Yes. On CardHearth a fatal click no longer ends the game permanently — you can undo a misclick and carry on. That changes how you play: you can test a deduction or back out of a careless slip, though the goal is still to win by pure logic rather than leaning on undo.'
+  - q: 'Do you ever have to guess in Minesweeper?'
+    a: 'Sometimes, yes. Many boards are fully solvable by logic alone, but some positions leave no deducible safe square and you must guess. When that happens, pick the cell with the lowest mine probability, prefer edges and corners, and favour a guess that opens new information rather than one that reveals nothing useful.'
+cta: { href: '/minesweeper/', label: 'Play Minesweeper' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+Minesweeper looks like a game of nerve, but it's really a logic puzzle. Almost every move you
+make can be *deduced* — the numbers on the board tell you exactly where the mines are
+if you read them carefully. This guide shows you how to turn that wall of digits into a clear
+map of safe squares, so you spend far less time guessing and far more time reasoning. If the
+rules are new to you, the quickest way to learn is to [play a board](/minesweeper/)
+and follow along.
+
+## The goal, in one sentence
+
+Reveal every **safe** square without detonating a mine. Each number you uncover
+tells you **how many mines touch that square** across its eight surrounding
+neighbours (including diagonals). You don't have to flag anything to win — flagging is just a
+bookkeeping tool to mark squares you've proven are mines — but used well it makes the harder
+deductions far easier to see.
+
+## Two things CardHearth does differently
+
+Before the tactics, two rules on CardHearth change how you can play, and you should lean on
+both:
+
+- **The first click is always safe.** Mines are placed *after* your
+  opening click, and the board is arranged so neither the square you clicked nor any of its
+  neighbours holds a mine. So your first click never loses — and it cascades open a chunk of
+  empty board, handing you numbers to start reasoning from. Click in the open, near the
+  middle, to crack the board open fast.
+- **You can undo a misclick.** A fatal click no longer ends the game forever on
+  CardHearth — you can undo it and continue. That lets you back out of a careless slip or test
+  a line and take it back. The aim is still to win by logic, but you're never one stray click
+  from starting over.
+
+## Reading the numbers: the core deductions
+
+### 1. The basic count rule
+
+Every number is a tiny equation: it equals the number of mines among its unknown neighbours.
+Two situations let you act immediately:
+
+- **Satisfied number → the rest are safe.** If a number already touches as many
+  flagged mines as its value (a "2" with two flags beside it), every *other* covered
+  neighbour is guaranteed safe. Open them all.
+- **Forced number → the rest are mines.** If a number's count of remaining
+  *unknown* neighbours exactly equals its remaining value (a "3" with exactly three
+  covered squares left), then all of those squares are mines. Flag them.
+
+Most of any board is solved by applying just these two rules over and over, square by square.
+
+### 2. Subtraction and overlap logic
+
+When the basic rule stalls, look at **two adjacent numbers that share squares**.
+Suppose a "1" and a "2" sit side by side and share two covered cells, but the "2" also touches
+one extra covered cell the "1" doesn't. The "1" says exactly one mine sits in the shared pair.
+Subtract that from the "2": of its remaining mines, after accounting for the shared one, that
+extra cell *must* be a mine. This "subtraction" trick — taking what one number proves
+and feeding it into its neighbour — unlocks positions the count rule alone can't.
+
+### 3. The 1-2-1 and 1-2-2-1 patterns
+
+Some shapes recur so often they're worth memorising. Along an edge or wall, a row reading
+**1-2-1** against a line of covered squares forces the mines to sit under the
+*two outer* 1s, with the middle square (under the 2) safe. The longer
+**1-2-2-1** pattern forces mines under the *two middle* squares, leaving
+the outer two safe. Spotting these on sight saves you re-deriving the same subtraction every
+time — they're the most common "free" moves on a frontier.
+
+### 4. Chording for speed
+
+Once a number has all its mines correctly flagged, you can **chord** it: open all
+its remaining neighbours in a single action instead of clicking each one. This is purely a
+speed tool, but on a board where you've flagged carefully it clears huge regions instantly.
+The catch: chord only on numbers whose flags you've truly *proven* — a wrong flag turns
+a chord into a detonation.
+
+## Working the board: a game plan
+
+**Open it up first.** Click in the open to trigger a cascade and expose a big
+field of numbers — the more numbers you have, the more you can deduce. Then
+**work the frontier**: the border where revealed numbers meet covered squares is
+where every deduction lives. Walk along it applying the count rule, then the subtraction rule,
+then pattern-matching, and you'll peel the board open in waves.
+
+**When you're genuinely forced to guess**, do it intelligently. Estimate the mine
+probability for each candidate square and pick the **lowest**. Squares on edges
+and especially in **corners** touch fewer neighbours, so they're often safer
+bets, and a good guess is one that *opens new information* rather than a dead cell in a
+corner you'll never read again. Late in the game, **count**: compare the mine
+counter against the number of covered squares remaining — if eight covered squares hold two
+mines, every individual square is only 25% likely to be a mine, and sometimes the global count
+proves a square safe outright.
+
+## Common mistakes that lose games
+
+- **Flagging by guess instead of deduction.** A flag you placed on a hunch
+  poisons every number around it and leads to bad chords. Only flag what you've proven.
+- **Ignoring the mine counter late-game.** The global mine count is a free clue
+  — players who never glance at it miss forced moves that the local numbers alone can't show.
+- **Guessing when a logical safe move exists.** The most common loss isn't bad
+  luck; it's clicking a "coin-flip" square while an undisturbed corner of the frontier still
+  held a provable safe square. Exhaust the logic first.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Ready to read some numbers? [Play Minesweeper](/minesweeper/) now, or step up to
+[Expert Minesweeper](/minesweeper-expert/) once the patterns feel automatic. If you
+enjoy this style of pure-logic puzzle, try our
+[Sudoku solving techniques](/guides/sudoku-solving-techniques/), and browse the
+full library in our [guide to the best
+free solitaire and puzzle games](/guides/best-free-solitaire-and-puzzle-games/).

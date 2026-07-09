@@ -1,0 +1,18 @@
+---
+// Renders a guide's FAQ accordion. Fed from the guide's frontmatter `faq`
+// array — the same array [slug].astro turns into FAQPage JSON-LD, so the
+// visible questions and the structured data can never disagree.
+interface Props {
+  items: { q: string; a: string }[];
+}
+const { items } = Astro.props;
+---
+
+{
+  items.map((f) => (
+    <details class="faq">
+      <summary class="cursor-pointer font-semibold">{f.q}</summary>
+      <p class="mt-2 opacity-90">{f.a}</p>
+    </details>
+  ))
+}

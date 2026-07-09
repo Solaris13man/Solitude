@@ -1,0 +1,97 @@
+---
+title: 'How to Play Sudoku: Rules for Beginners | CardHearth'
+description: 'Learn how to play Sudoku from scratch. The one rule, how rows, columns and boxes work, plus the two beginner techniques — naked singles and hidden singles — and how to use pencil marks.'
+heading: 'How to Play Sudoku'
+subtitle: 'The complete beginner’s guide: one simple rule, no math required, and the handful of ideas you need to solve your first puzzle by pure logic.'
+updated: '2026-06-13'
+headline: 'How to Play Sudoku: Rules for Beginners'
+image: 'https://cardhearth.com/og/sudoku.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'How to Play Sudoku', href: '/guides/how-to-play-sudoku/' }
+faq:
+  - q: 'Do you need to be good at math to play Sudoku?'
+    a: 'No. Sudoku uses the digits 1 through 9, but you never add, subtract or do any arithmetic with them. The numbers are just nine distinct symbols — you could play with nine letters or nine colours instead. It is a pure logic puzzle about where each symbol can and cannot go.'
+  - q: 'Does every Sudoku have exactly one solution?'
+    a: 'A well-made Sudoku does, and on CardHearth every puzzle is checked by a solver to guarantee exactly one solution at every difficulty. A puzzle with two or more solutions is considered broken, because it can’t be finished by logic alone.'
+  - q: 'Do you ever have to guess in Sudoku?'
+    a: 'Not on CardHearth. Because every puzzle has a single unique solution, there is always a logical deduction available — even on Expert. If you feel stuck, it means a deduction is waiting to be spotted, not that you need to guess.'
+howTo:
+  name: 'How to play Sudoku'
+  description: 'The rules of Sudoku and how to start solving, step by step.'
+  steps:
+    - name: 'Understand the grid'
+      text: 'Sudoku is a 9x9 grid divided into nine 3x3 boxes, partly filled with starting numbers.'
+    - name: 'Know the one rule'
+      text: 'Fill every empty cell so that each row, each column, and each 3x3 box contains the digits 1 to 9 exactly once.'
+    - name: 'Find forced cells'
+      text: 'Look for a cell where only one digit is possible because the others already appear in its row, column, or box.'
+    - name: 'Use pencil marks'
+      text: 'Note the candidate digits for tricky cells, then eliminate them as you place numbers elsewhere.'
+    - name: 'Solve by logic, never guess'
+      text: 'Every CardHearth puzzle has a single solution reachable by reasoning alone — if you are stuck, there is always a logical next step to find.'
+    - name: 'Finish the grid'
+      text: 'Complete every cell following the one-of-each rule to solve the puzzle.'
+cta: { href: '/sudoku/', label: 'Play Sudoku' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+Sudoku looks intimidating — a grid full of numbers — but it is one of the easiest puzzles to learn and one of the most satisfying to master. There is only a single rule, you never do any arithmetic, and every puzzle can be solved by reasoning alone. This guide takes you from a blank grid to confidently placing your first numbers. When you want to go further, our [advanced techniques guide](/guides/sudoku-solving-techniques/) picks up where this one leaves off.
+
+## What is Sudoku?
+
+Sudoku is a logic puzzle played on a **9&times;9 grid** — eighty-one squares in all. Some squares already contain numbers (the **clues**, or givens); the rest are blank, and your job is to fill them in. The digits 1 through 9 are used purely as nine different symbols, so **no math is needed**: you are not adding anything, just working out where each digit belongs. If you would rather see it in motion than read about it, you can [play a puzzle now](/sudoku/) and follow along.
+
+## The one rule
+
+Everything in Sudoku comes from a single rule: **fill the grid so that every row, every column, and every 3&times;3 box contains the digits 1 to 9 exactly once.** That is the whole game. To apply it, you need to picture the three kinds of group:
+
+- **Rows** — the nine horizontal lines running left to right. Each row holds nine squares and must contain each digit 1&ndash;9 once.
+- **Columns** — the nine vertical lines running top to bottom. Same deal: every digit once, no repeats.
+- **Boxes** — the grid is divided by heavier lines into nine 3&times;3 blocks. Each box must also contain each digit exactly once.
+
+Because of this, a digit can never repeat within the same row, column or box. Every square sits at the crossing of one row, one column and one box, so it must satisfy all three at the same time — and that overlap is exactly what lets you deduce the answer.
+
+## Getting started
+
+Begin by reading the clues already on the board — they are the foundation everything else is built on. Then look for squares whose value is **forced**: a square where only one digit can legally go, because every other digit already appears in its row, its column or its box. Filling one square often forces the next, and the puzzle unravels from there. New players do well to start on an [easy puzzle](/sudoku-easy/), where plenty of clues make these forced squares easy to spot.
+
+## The two beginner techniques
+
+Almost every easy puzzle can be finished with just two ideas, both found by **scanning** — sweeping your eye along rows, columns and boxes to see what is missing.
+
+### Naked single
+
+A **naked single** is a square that has only one possible digit left. Look at an empty square and check its row, column and box. If eight of the nine digits already appear somewhere in those three groups, the ninth digit is the only one that fits — so it must go there. The answer is &ldquo;naked&rdquo; because there is nothing to hide behind.
+
+### Hidden single
+
+A **hidden single** works the other way around. Pick a digit and a single group — say, a box — and ask where that digit can possibly go inside it. If every empty square but one is blocked (because the digit already sits in that square&rsquo;s row or column), then the one remaining square must take the digit, even if that square could in theory hold other numbers too. Scanning one digit at a time across all nine boxes is the fastest way to find these.
+
+## Pencil marks and candidates
+
+When scanning stops turning up easy placements, switch to **pencil marks** (also called notes or candidates). For each empty square you write small the digits that could still legally go there. With the candidates laid out, naked singles jump out as squares with only one note, and you can spot patterns you would miss in your head. On CardHearth, toggle **Notes** (the &#10070; button, or press **P**) and the board keeps your candidates tidy — placing a real digit automatically erases that candidate from every square it rules out.
+
+## The CardHearth promise: no guessing, ever
+
+This is the part that matters most for beginners. **Every CardHearth Sudoku has a single unique solution and is solvable by pure logic — you never have to guess.** Each puzzle is generated and then verified by a solver before you ever see it, at every difficulty from Easy to Expert. If you ever feel stuck, the answer is to look harder for a deduction, not to take a gamble: a logical step is always available. For more on how the clue counts and deduction lengths change as puzzles get harder, see our [Sudoku difficulty levels guide](/guides/sudoku-difficulty-levels/).
+
+## Tips for beginners
+
+- **Start with the most-filled groups.** The row, column or box with the fewest blanks is the easiest place to find a forced square.
+- **Scan one digit at a time.** Pick a digit that already appears often and hunt for hidden singles across the boxes.
+- **Pencil in candidates once scanning stalls** — and keep them current as you place digits.
+- **Never guess.** If nothing is obvious, the deduction is just hiding; re-check your notes rather than trying a number to &ldquo;see what happens.&rdquo;
+- **Use undo freely.** On CardHearth undo is unlimited, so exploring is safe.
+
+Once these basics feel natural and you move on to Hard and Expert puzzles, you will meet longer deduction chains that need a few more tools — pairs, pointing, X-Wings and the like. Our [Sudoku solving techniques guide](/guides/sudoku-solving-techniques/) walks through each of them in order.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+That is genuinely all the rules there are — the rest is practice. [Play Sudoku](/sudoku/) now to try naked and hidden singles for yourself, start gentle with an [easy puzzle](/sudoku-easy/), and when you are ready for harder boards, level up with the [advanced techniques guide](/guides/sudoku-solving-techniques/). Our [guides hub](/guides/) covers the rest of the CardHearth library too.

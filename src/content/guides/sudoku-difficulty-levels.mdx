@@ -1,0 +1,124 @@
+---
+title: 'Sudoku Difficulty Levels Explained: Easy to Expert | CardHearth'
+description: 'What Easy, Medium, Hard and Expert really mean on CardHearth: which logic techniques each level requires, how many clues you start with, and why no level ever needs guessing.'
+heading: 'Sudoku Difficulty Levels Explained'
+subtitle: 'On CardHearth, difficulty is not about luck or guessing — it is about which solving techniques a puzzle demands. Here is exactly what each level asks of you.'
+updated: '2026-06-13'
+headline: 'Sudoku Difficulty Levels Explained: Easy to Expert'
+image: 'https://cardhearth.com/og/sudoku.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'Sudoku Difficulty Levels', href: '/guides/sudoku-difficulty-levels/' }
+faq:
+  - q: 'Do harder Sudoku puzzles require guessing?'
+    a: "No — never on CardHearth. Every puzzle at every level is generated with a single, unique solution and is verified to be solvable by pure logic within that level's technique budget. Harder levels demand more advanced deductions, not guesswork. If you are ever tempted to guess, there is always a logical move you have not spotted yet."
+  - q: 'What makes Expert harder than Hard?'
+    a: 'Hard puzzles top out at naked pairs. Expert puzzles can require two genuinely advanced techniques: hidden pairs and the X-Wing fish pattern. These ask you to reason about where a digit can go across whole rows and columns, not just which digits fit one cell — a real step up.'
+  - q: 'How many clues does each level start with?'
+    a: 'CardHearth aims for roughly 40 starting clues on Easy, 34 on Medium, 29 on Hard and 25 on Expert. Fewer clues generally means more empty cells to reason about, but the bigger driver of difficulty is which techniques the puzzle forces you to use.'
+cta: { href: '/sudoku/', label: 'Play Sudoku' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+Most Sudoku apps treat "difficulty" as a vague feeling, and many quietly hand you puzzles
+that can only be cracked by trial and error. CardHearth does it differently. Here,
+**difficulty means one specific thing: which logic techniques a puzzle requires you to
+use to solve it**. Every puzzle, at every level, has exactly one solution and is
+guaranteed solvable by pure reasoning — there is *never* a point where you have to
+guess. Harder levels simply demand more advanced techniques (and hand you fewer starting
+clues to work from).
+
+## How CardHearth defines difficulty
+
+When a puzzle is generated, CardHearth removes clues one at a time and keeps a removal only
+if two things stay true: the puzzle still has a **unique solution**, and it can
+still be **solved by deduction** using techniques no harder than that level
+allows. If a removal would force guessing, the clue is put back. That is the whole reason a
+CardHearth puzzle can always be solved with logic alone — the generator literally refuses to
+publish anything that can't be.
+
+Each level has a strictly higher technique ceiling than the one below it. Easy uses only the
+most basic deductions; each step up adds one more tool to the kit. If the techniques below
+are unfamiliar, our
+[Sudoku solving techniques guide](/guides/sudoku-solving-techniques/) walks
+through each one with examples.
+
+## The four levels
+
+### Easy — singles only (~40 clues)
+
+Easy puzzles can be solved entirely with **singles**: spotting a cell where only
+one digit can possibly fit (a "naked single"), or a digit that has only one place it can go
+within a row, column or box (a "hidden single"). With around 40 starting clues, there is
+always an obvious next move if you scan carefully. Easy is ideal for newcomers learning the
+rules, anyone wanting a relaxed solve, or warming up before a tougher board. You should never
+need pencil marks here.
+
+### Medium — adds locked candidates (~34 clues)
+
+Medium puzzles still rely mostly on singles, but some moves require
+[locked candidates](/guides/sudoku-solving-techniques/) (also called pointing and
+claiming). This is when a digit's only possible spots within one box all sit in the same row
+or column — letting you eliminate that digit from the rest of that row or column elsewhere.
+With about 34 clues, Medium suits players who know the basics and want to start thinking about
+candidate elimination rather than just scanning. The
+[Easy board](/sudoku-easy/) is the natural step below if this feels like a jump.
+
+### Hard — adds naked pairs (~29 clues)
+
+Hard puzzles can require [naked pairs](/guides/sudoku-solving-techniques/): two
+cells in the same unit that both hold exactly the same two candidates. Those two digits must
+occupy those two cells (in some order), so you can strike them out everywhere else in that
+unit. With roughly 29 clues, you'll want pencil marks switched on and a deliberate approach.
+Hard is the right home for confident solvers who enjoy a proper challenge but aren't ready for
+fish patterns. Play it on the [Hard board](/sudoku-hard/).
+
+### Expert — adds hidden pairs and X-Wing (~25 clues)
+
+Expert is where CardHearth brings out the advanced artillery. On top of everything above, an
+Expert puzzle may demand a **hidden pair** — two digits that can each only go in
+the same two cells of a unit, which lets you clear every *other* candidate from those
+two cells — and the **X-Wing**, a classic fish pattern spanning two rows and two
+columns. With only about 25 clues, the board is sparse and the deductions are deep. Expert is
+for experienced solvers who want to be genuinely tested. Take it on at the
+[Expert board](/sudoku-expert/), and brush up first with the
+[techniques guide](/guides/sudoku-solving-techniques/) if hidden pairs and X-Wing
+are new to you.
+
+## Which level should you play?
+
+- **New to Sudoku?** Start on [Easy](/sudoku-easy/). Learn to find
+  naked and hidden singles by scanning, and don't move up until that feels automatic.
+- **Comfortable with the basics?** Medium introduces locked candidates — your
+  first real elimination technique — without overwhelming you.
+- **Solving cleanly and want a challenge?** [Hard](/sudoku-hard/)
+  adds naked pairs and rewards careful pencil-marking.
+- **An experienced solver?** [Expert](/sudoku-expert/) requires
+  hidden pairs and X-Wing — the satisfying, brain-stretching end of the range.
+
+A good rule of thumb: if you finished a level without ever feeling stuck, move up. If you got
+stuck and reached for a guess, drop down a level and learn the technique that level was
+teaching — then come back.
+
+## No level ever requires guessing
+
+This is worth repeating because it sets CardHearth apart from many apps. Because every deal is
+checked for a unique solution *and* for logical solvability before you ever see it,
+there is always a deduction available — even on Expert. Getting stuck means there is a
+technique you haven't applied yet, not that the puzzle is unfair. If you truly cannot find the
+move, the in-game hint will reveal a correct cell so you can keep your streak honest and learn
+from where you got blocked.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Ready to pick a level? Jump straight to [Easy](/sudoku-easy/),
+[Hard](/sudoku-hard/) or [Expert](/sudoku-expert/), or just
+[play Sudoku](/sudoku/) and choose as you go. To master the techniques behind each
+tier, read the [Sudoku solving techniques guide](/guides/sudoku-solving-techniques/),
+and browse the [guides hub](/guides/) for the rest of the CardHearth library.

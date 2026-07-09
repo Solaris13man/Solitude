@@ -1,0 +1,134 @@
+---
+title: 'TriPeaks Solitaire Rules: How to Play (Complete Guide) | CardHearth'
+description: 'The complete rules of TriPeaks Solitaire: how the three peaks are laid out, which cards are legal to play, how rank wraps from King to Ace, how streak scoring works, and how to win.'
+heading: 'TriPeaks Solitaire Rules'
+subtitle: 'A clear, complete reference for how TriPeaks is dealt, which moves are legal, how scoring works, and exactly what it takes to win.'
+updated: '2026-06-13'
+headline: 'TriPeaks Solitaire Rules: How to Play (Complete Guide)'
+image: 'https://cardhearth.com/og/tripeaks.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'TriPeaks Solitaire Rules', href: '/guides/tripeaks-solitaire-rules/' }
+faq:
+  - q: 'Does the rank wrap around (King to Ace)?'
+    a: 'Yes. Rank wraps in both directions, so an Ace and a King count as adjacent: you can play a King onto an Ace and an Ace onto a King. Combined with the normal up-or-down rule, this lets long chains ride right through the wrap — for example Queen, King, Ace, 2.'
+  - q: 'How do streaks work?'
+    a: 'Each card you clear without drawing extends a streak, and the streak determines the points: the first card in a run scores 10, the next 20, the next 30, and so on, increasing by 10 each time. Drawing a card from the stock resets the streak back to zero, so the next clear starts again at 10. That makes long, unbroken chains far more valuable than the same cards cleared one at a time.'
+  - q: 'How many cards are in the three peaks?'
+    a: 'The tableau holds 28 cards arranged as three peaks: one card at each apex, then a row of six, a row of nine, and a fully exposed base row of ten. The remaining 24 cards become the first waste card plus a 23-card stock.'
+howTo:
+  name: 'How to play TriPeaks Solitaire'
+  description: 'The complete rules of TriPeaks Solitaire, step by step.'
+  steps:
+    - name: 'Set up three peaks'
+      text: 'Deal 28 cards into three overlapping pyramids — the three peaks — with face-up cards available along the base, and keep the rest as a stock.'
+    - name: 'Know the goal'
+      text: 'Clear every card from all three peaks.'
+    - name: 'Play one rank up or down'
+      text: 'Take any exposed peak card that is exactly one rank above or below the top card of your waste pile. Rank wraps, so an Ace can follow a King and a King can follow an Ace.'
+    - name: 'Chain long streaks'
+      text: 'Each card you clear becomes the new base for the next, so consecutive plays build a streak that scores more the longer it runs.'
+    - name: 'Draw from the stock'
+      text: 'When no exposed card fits, turn a card from the stock to the waste to continue.'
+    - name: 'Win the game'
+      text: 'Remove all 28 peak cards to clear the board.'
+cta: { href: '/tripeaks/', label: 'Play TriPeaks Solitaire' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+TriPeaks Solitaire is a fast, single-deck game built around chains: you clear
+cards one at a time by stepping up or down in rank, trying to knock down three
+pyramids before the stock runs out. The rules are simple enough to learn in a
+minute, but a few details — how the cards overlap, when rank "wraps," and how
+scoring rewards long runs — are worth getting exactly right. This page is a
+complete reference. When you're ready, [play a hand](/tripeaks/) to
+see it in motion.
+
+## What is TriPeaks Solitaire?
+
+TriPeaks (also written Tri-Peaks or Three Peaks) is a single-deck
+**open-style** solitaire. Most of the tableau is dealt face up, so
+there's little hidden information — the challenge is sequencing your moves to
+keep a chain going rather than uncovering secrets. Each turn you remove one
+exposed tableau card whose rank is adjacent to the card on top of the waste pile,
+and the goal is to clear the whole tableau.
+
+## The setup
+
+The tableau is dealt as **three peaks of 28 cards**, stacked in four
+rows so that each row overlaps the one above it by half a card:
+
+- **Row 1 (the peaks):** three single cards, one at the top of each peak.
+- **Row 2:** six cards — two tucked beneath each peak.
+- **Row 3:** nine cards spanning the bases of the peaks.
+- **Row 4 (the base):** ten cards, dealt **face up**.
+
+That's 28 cards in the formation. One more card is turned face up to start the
+**waste pile** (the active card you build from), and the remaining
+**23 cards form the stock** you draw from when you get stuck. Only the
+base row begins face up; the cards above it are revealed as the two cards covering
+them are cleared. A tableau card is **available** (playable) only when
+nothing overlaps it from the row below — that is, when both cards directly covering
+it have been removed.
+
+## The objective
+
+Your goal is to **clear all three peaks** — every one of the 28 tableau
+cards. There are no foundations to build and no suits to sort; success is simply an
+empty formation. If the stock runs dry and no legal move remains while cards are
+still on the peaks, the deal is lost.
+
+## Legal moves
+
+On your turn you may remove any **available** tableau card whose rank is
+exactly **one higher or one lower** than the card currently on top of
+the waste. Suit and colour never matter — only rank. The card you play moves onto the
+waste and becomes the new card to build from, which may expose fresh cards behind it.
+
+Rank **wraps around**: Ace connects to both King and 2. So onto a 2 you
+can play an Ace or a 3; onto an Ace you can play a King or a 2; onto a King you can
+play a Queen or an Ace. This wrap is what makes long chains possible — a run can climb
+or fall straight through the King-Ace boundary, such as Queen → King → Ace → 2.
+
+When no available card is adjacent to the waste, **draw from the stock**.
+The drawn card flips face up onto the waste and becomes the new build card. Drawing is
+always legal as long as stock remains, but it comes at a cost: each draw
+**resets your streak** (see below). There is no recycling in TriPeaks — once
+the 23-card stock is exhausted, that's all the help you get.
+
+## Scoring and streaks
+
+TriPeaks rewards momentum. Every card you clear without drawing builds a
+**streak**, and the streak sets the value of each clear. The first card in
+a run is worth **10 points**, the second **20**, the third
+**30**, and so on — the score added always equals the current streak length
+times ten. A four-card chain therefore scores 10 + 20 + 30 + 40 = 100 points, far more
+than the same four cards cleared with draws in between.
+
+The catch is the reset: the moment you **draw from the stock**, the streak
+drops back to zero and the next clear starts again at 10. That single rule is the heart
+of TriPeaks strategy — every draw you can avoid keeps a bigger multiplier alive.
+
+## How you win
+
+You win when **all three peaks are cleared** — every tableau card removed to
+the waste. Because you only ever draw 23 stock cards and there's no recycle, you can't
+simply grind through the deck; you have to keep finding playable cards before the stock
+empties. Like most solitaires, **not every deal is winnable**: some shuffles
+leave a card stranded with no legal path to it. Skilful play — chaining efficiently and
+prioritising the cards that unblock the peaks — is what turns a winnable deal into a win.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Now that the rules are clear, the next step is playing well. Our
+[TriPeaks strategy guide](/guides/tripeaks-solitaire-strategy/) covers how to
+plan chains, ride the wrap, and decide when to draw, and the
+[solitaire glossary](/guides/solitaire-glossary/) defines any term you're unsure
+about. Browse the full [guides hub](/guides/) for more, or jump straight in and
+[play TriPeaks Solitaire](/tripeaks/).

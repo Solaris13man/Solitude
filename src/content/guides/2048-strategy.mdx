@@ -1,0 +1,71 @@
+---
+title: '2048 Strategy: How to Reach 2048 (and Beyond) | CardHearth'
+description: 'Learn a reliable 2048 strategy: anchor your biggest tile in a corner, build a monotonic snake, favour two directions, and keep your anchor row full so you reach 2048 — and keep climbing.'
+heading: '2048 Strategy: How to Reach 2048 (and Beyond)'
+subtitle: 'The corner-and-snake method that turns 2048 from a lucky scramble into a game you can win on purpose — with the reasoning behind each rule.'
+updated: '2026-06-13'
+headline: '2048 Strategy: How to Reach 2048 (and Beyond)'
+image: 'https://cardhearth.com/og/2048.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: '2048 Strategy', href: '/guides/2048-strategy/' }
+faq:
+  - q: "What's the best corner strategy for 2048?"
+    a: 'Pick one corner — bottom-right and bottom-left are the most popular — and keep your single largest tile there for the entire game. Then build a descending "snake" of tiles leading into that corner and only swipe in the two directions that push tiles toward it (for a bottom-right anchor, that means down and right). The corner gives your biggest tile a permanent home so it never gets shuffled into the middle, and the snake lets smaller merges cascade up into it.'
+  - q: 'Can I keep playing after I reach 2048?'
+    a: 'Yes. Reaching the 2048 tile is the official win, but the board does not end there — you can keep going to build 4096, 8192 and higher. The exact same strategy applies: keep your biggest tile anchored in its corner and keep feeding the snake. The board just gets tighter, so planning matters even more.'
+  - q: 'How do you lose at 2048?'
+    a: 'You lose when the board is completely full and no two adjacent tiles can merge in any direction — there is simply no legal move left. It usually happens after you swipe in a "forbidden" direction that pulls your anchor tile out of its corner, or after you fill the board with mismatched values that have nowhere to combine. Planning merges before the board gets tight is how you avoid it.'
+cta: { href: '/2048/', label: 'Play 2048' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+2048 looks like a game of luck — tiles spawn at random, the board fills up, and one bad swipe ends a run that felt like it was going well. But the players who hit 2048 again and again aren't luckier; they follow a handful of rules that turn the random spawns into something predictable. This guide explains that method and, just as importantly, *why* each rule works. The fastest way to follow along is to [play a round](/2048/) while you read.
+
+## How 2048 works
+
+Every move, you slide **all** the tiles in one of four directions — up, down, left or right. When two tiles with the same number collide, they **merge** into a single tile worth their sum: two 2s become a 4, two 4s become an 8, and so on up the chain. After each move a new tile (usually a 2, occasionally a 4) **spawns** on a random empty square. You win when you build the **2048** tile — and you can keep going for higher tiles afterwards. You lose only when the board is completely full and no merge is possible in any direction.
+
+## The strategy that wins games
+
+### 1. Pick a corner and never let your biggest tile leave it
+
+This is the single most important habit. Choose one corner — most strong players use **bottom-right or bottom-left** — and treat it as the permanent home for your largest tile. Why a corner? A tile in the middle of the board can be pushed in four directions and constantly gets separated from the tiles it needs to merge with. A tile in a corner only moves when you swipe toward the two walls it's already touching, so it stays put while everything else organises around it.
+
+### 2. Build a monotonic chain — the "snake"
+
+Keep your tiles in **decreasing order** along the row or column that leads into your anchor corner. Imagine a snake winding back and forth: the biggest tile in the corner, the next-biggest beside it, then the next, all the way down to your small new tiles. When the values descend in order, a merge at one end **cascades** — your 256 merges into your 512, freeing the space that lets the next pair combine, and the whole row collapses upward into the big tile. A jumbled board can't do that.
+
+### 3. Favour two directions and avoid the move that frees your anchor
+
+If your anchor is in the bottom-right, build using mostly **down and right**. Those two swipes keep pressing everything toward the corner and maintaining the snake. The move you must guard against is the opposite one — never swipe **up** when your anchor sits on the bottom unless you have genuinely no other legal move. A single careless "up" can rip your largest tile out of its corner and undo the whole structure in one swipe.
+
+### 4. Keep your anchor row full
+
+Try to keep the bottom row (or whichever row holds your anchor) **completely filled**. An empty square in that row is an invitation for a stray 2 to spawn *underneath* your big tiles, wedging a useless small value into the structure that you then have to dig out. A full anchor row also means a downward swipe doesn't disturb it — your foundation stays locked while you work the rows above.
+
+### 5. Plan merges before the board gets tight
+
+Don't swipe on autopilot. Look at the board and think about which row is about to collapse into the next size up, and which swipe sets that up without breaking the snake. The time to think is *before* you're down to one or two empty squares — once the board is crowded, your choices vanish and you're forced into the move you've been avoiding. A little planning early keeps you out of that corner (the bad kind).
+
+## Common mistakes that end runs
+
+- **Swiping all four directions at random** — the fastest way to scatter your tiles and lose the snake.
+- **Moving the anchor out of its corner** — one stray "up" can cost you the whole game.
+- **Chasing small merges in the wrong direction**, pulling tiles away from the corner just to combine a couple of 4s.
+- **Filling the board with no plan**, leaving mismatched tiles that can never merge.
+- **Forgetting undo exists** — on CardHearth you can take back a bad swipe, so a single mistake doesn't have to end the run.
+
+## Practise the right way
+
+CardHearth gives every board a number, so you can **replay the exact same start** to test a different line or share it with a friend to see who climbs higher. Use *Undo* to take back a swipe that broke your snake and learn from it — that's how the corner-and-snake method becomes second nature far faster than grinding random boards.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Ready to put it into practice? [Play 2048](/2048/) now, or sharpen a different kind of thinking: our [Sudoku solving techniques](/guides/sudoku-solving-techniques/) guide trains pure logic, and [the best free solitaire and puzzle games](/guides/best-free-solitaire-and-puzzle-games/) rounds up more to play. Our [guides hub](/guides/) covers the whole CardHearth library.

@@ -1,0 +1,72 @@
+---
+title: 'Eight Off Solitaire Rules: How to Play (Complete Guide) | CardHearth'
+description: 'Learn the rules of Eight Off Solitaire: eight free cells, building down in suit, the supermove limit, and why almost every deal is winnable.'
+heading: 'Eight Off Solitaire Rules: How to Play'
+subtitle: 'Everything you need to play Eight Off correctly — the setup with eight free cells, the same-suit building that sets it apart from FreeCell, and the arithmetic behind moving several cards at once.'
+updated: '2026-06-14'
+headline: 'Eight Off Solitaire Rules: How to Play (Complete Guide)'
+image: 'https://cardhearth.com/og/eight-off.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'Eight Off Rules', href: '/guides/eight-off-rules/' }
+faq:
+  - q: 'How many free cells does Eight Off have?'
+    a: 'Eight. Each cell holds exactly one card, so you have eight temporary parking spaces in total — twice as many as FreeCell. Four of them start the game already filled with the four cards left over after the deal; the other four start empty and ready to use.'
+  - q: 'How is Eight Off different from FreeCell?'
+    a: 'Two things. First, the tableau builds down in suit, not down in alternating colours — a Six of Hearts only goes on a Seven of Hearts. Second, there are eight free cells instead of four, with four of them pre-filled at the deal. The extra cells make Eight Off more forgiving even though the same-suit rule is stricter.'
+  - q: 'Are most Eight Off deals winnable?'
+    a: 'Yes. Eight Off is one of the more forgiving open solitaires: starting with eight cells (four of them free) gives you a lot of room to manoeuvre, so a very high share of deals can be won with good play. If you get stuck, unlimited undo lets you back up and try a different line.'
+cta: { href: '/eight-off/', label: 'Play Eight Off' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+Eight Off is FreeCell's roomier cousin: everything is dealt face up, nothing is hidden, and you get a generous eight free cells to work with. The trade-off is a stricter building rule on the tableau — same suit instead of alternating colours — but the extra space more than makes up for it, and most deals come out with careful play. This page is a complete reference to how Eight Off is played. If you'd rather learn by doing, you can [play Eight Off](/eight-off/) straight away with unlimited undo and hints.
+
+## What is Eight Off Solitaire?
+
+Eight Off is a solitaire game played with a single standard 52-card deck. Every card is dealt **face up**, so you can see the whole deal from the first move — there is no stock to draw from and nothing concealed. The table has three kinds of pile: eight **free cells** (single-card holding spaces), four **foundations** (where you build winning piles), and eight **tableau columns** where the cards start out. Your job is to use the free cells and the tableau to unpack the deal and feed every card onto the foundations.
+
+## The deal
+
+The 52 cards are dealt across **eight tableau columns of six cards each**, all face up — that is 8&nbsp;&times;&nbsp;6 = **48 cards**. The remaining **four cards** go straight into the free cells: Eight Off has **eight free cells**, and **four of them start the game already filled** with those leftover cards. The other four cells start empty, and all four **foundations** start empty too. Because nothing is face down, the position you see at the start is the position you have to solve — no surprises arrive later.
+
+## The objective
+
+You win by building all four **foundations** up by suit, each running from **Ace to King**. Each foundation takes one suit: you start it with that suit's Ace, then add the Two, the Three, and so on up to the King. When all four foundations hold a complete Ace-to-King suit — 13 cards each, 52 in total — the game is won.
+
+## Legal moves
+
+Eight Off has a small, strict set of rules for where a card may go. Everything else follows from these.
+
+- **Tableau builds down in suit.** You may place a card on a tableau column only if it is one rank lower than the column's top card and the *same suit* — a Six of Hearts on a Seven of Hearts, a Four of Spades on a Five of Spades, and so on. This same-suit rule is the key difference from FreeCell, which builds down in alternating colours.
+- **A free cell holds exactly one card.** You may move any single card into an empty free cell, and move it back out later when it fits somewhere. A cell that is already occupied — including the four filled at the deal — is unavailable until you empty it.
+- **Foundations build up by suit from the Ace.** A card goes to a foundation only if it is the Ace of an empty foundation, or the next rank up in the same suit as the foundation's top card.
+- **An empty column accepts only a King.** When a tableau column is cleared, you may place a King there — or the lead of a King-headed run you can relay — but no other rank.
+
+Officially, every move is a **single card** moving between a tableau column, a free cell, and a foundation. There is no separate rule for moving a group.
+
+## The supermove: moving several cards at once
+
+Like FreeCell, most apps — CardHearth included — let you drag a whole descending, same-suit run in one gesture. This is the **supermove**, and it is purely a convenience: it automates a series of legal single moves that shuffle cards through your empty free cells and back. Because of that, the number of cards you can move at once is limited by how much temporary space you have. The rule is:
+
+**1 + empty free cells**
+
+In words: one card, plus one more for each empty free cell. Eight Off starts with four cells free, so right off the deal you can move five cards (1 + 4 = 5); with all eight cells free the limit is nine. Unlike FreeCell, empty columns don't raise the limit here: an empty Eight Off column accepts only a King, so it can't act as a relay space for the cards being shuffled through.
+
+## Eight Off vs FreeCell
+
+The two games look almost identical on the table, but three differences shape how they play. First, **Eight Off builds down in suit** — same-suit runs only — whereas FreeCell builds down in alternating colours; this makes runs harder to assemble in Eight Off. Second, **Eight Off has eight free cells to FreeCell's four**, giving you far more room to park cards. Third, **four of those eight cells start pre-filled** with the four cards left over after the deal, so you begin with four cells in use and four free. The net effect is a gentler game: the extra holding space outweighs the stricter building rule, and empty columns are reserved for Kings.
+
+## How you win
+
+The game is won the moment every card sits on a foundation — all four suits built up cleanly from Ace to King. Free cells and tableau columns end up empty. Once the remaining position is provably safe to finish, an auto-complete option appears so you don't have to click every last card up by hand.
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+Now that you know the rules, [play Eight Off](/eight-off/) and put them to use. Browse everything in our [guides hub](/guides/), or try the game's better-known relative — [FreeCell](/freecell/) — to feel the difference between same-suit and alternating-colour building for yourself.

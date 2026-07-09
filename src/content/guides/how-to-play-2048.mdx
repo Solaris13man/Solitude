@@ -1,0 +1,80 @@
+---
+title: 'How to Play 2048: Rules & Controls for Beginners | CardHearth'
+description: 'New to 2048? Learn the rules in two minutes: slide tiles, merge matching numbers, and build up to the 2048 tile. A clear beginner guide to the controls, the goal, and how the game ends.'
+heading: 'How to Play 2048'
+subtitle: 'The complete beginner reference: the rules, the controls, the goal, and how a game ends — explained simply.'
+updated: '2026-06-13'
+headline: 'How to Play 2048: Rules & Controls for Beginners'
+image: 'https://cardhearth.com/og/2048.png'
+breadcrumb:
+  - { name: 'CardHearth', href: '/' }
+  - { name: 'Guides', href: '/guides/' }
+  - { name: 'How to Play 2048', href: '/guides/how-to-play-2048/' }
+faq:
+  - q: "What's the goal of 2048?"
+    a: 'The goal is to combine tiles until you create a single tile with the number 2048. You do that by repeatedly sliding the board so that matching tiles collide and merge into their sum — two 2s become a 4, two 4s become an 8, and so on, all the way up to 2048.'
+  - q: 'Can you keep playing after reaching 2048?'
+    a: 'Yes. Reaching the 2048 tile is the official win, but the game does not force you to stop. You can keep sliding and merging to chase 4096, 8192 and beyond — the only thing that ends the game is filling the board with no merges left.'
+  - q: 'How do you lose at 2048?'
+    a: 'You lose when the board is completely full and no two adjacent tiles share the same number, so no move can merge anything or open space for a new tile. At that point no slide changes the board, and the game is over.'
+howTo:
+  name: 'How to play 2048'
+  description: 'The rules of 2048 and how to reach the 2048 tile, step by step.'
+  steps:
+    - name: 'Understand the board'
+      text: '2048 is played on a 4x4 grid that starts with two numbered tiles.'
+    - name: 'Slide the tiles'
+      text: 'Use the arrow keys or swipe to slide every tile in one direction until it hits a wall or another tile.'
+    - name: 'Merge matching tiles'
+      text: 'When two tiles of the same number collide they merge into one of double the value, and a new tile appears after each move that changes the board.'
+    - name: 'Aim for the 2048 tile'
+      text: 'Keep merging upward — 2, 4, 8, 16 and so on — until you create the 2048 tile to win.'
+    - name: 'Keep your biggest tile cornered'
+      text: "Build toward one corner so your largest tiles stay together and the board doesn't clog."
+    - name: 'Avoid filling the board'
+      text: 'The game ends when no moves remain, so leave room to keep merging — and you can play on past 2048 for a higher score.'
+cta: { href: '/2048/', label: 'Play 2048' }
+---
+
+import Faq from '../../components/Faq.astro';
+
+2048 is one of those games that takes about thirty seconds to learn and a lot longer to master. If you've watched someone swiping tiles around a grid and wondered what's going on, this guide is for you. We'll cover exactly what 2048 is, the handful of rules that govern every move, how you win, and how a game ends — no strategy jargon, just the basics. When you're ready, you can [play 2048](/2048/) right here in your browser.
+
+## What is 2048?
+
+2048 is a **sliding tile puzzle** played on a 4×4 grid — sixteen cells in total. Each cell is either empty or holds a numbered tile, and every number is a power of two: 2, 4, 8, 16, and on up. You start with two low tiles already on the board, and your job is to keep combining them into bigger numbers. It's a single-player game with no timer and no opponent — just you, the grid, and a steadily filling board.
+
+## The rules
+
+There are only three things to know, and they apply on every single turn:
+
+- **Every move slides the whole board.** When you swipe or press an arrow key, *all* the tiles slide as far as they can in that one direction at once. You don't move a single tile — you shift the entire grid left, right, up, or down.
+- **Matching tiles merge.** When two tiles with the same number slide into each other, they **merge into one tile equal to their sum**: 2 + 2 → 4, 4 + 4 → 8, 8 + 8 → 16, and so on. A tile can only merge once per move, so a row of four 2s becomes two 4s, not a single 8.
+- **A new tile appears after every move.** As long as a move actually changes the board, a new tile — usually a **2**, occasionally a **4** — spawns in a random empty cell. If a swipe wouldn't move or merge anything, it doesn't count, and no new tile appears.
+
+## The goal
+
+The objective is right there in the name: combine tiles until you create a single tile showing **2048**. Getting there means stacking merges on top of merges — two 1024s make the 2048, two 512s make a 1024, and so on down the chain. Reaching 2048 is the official win, but it isn't the end of the road: you can **keep playing for higher tiles** like 4096 and 8192 if you want to push your score as far as it will go.
+
+## How you lose
+
+There's only one way to lose. The board fills up over time because a fresh tile arrives after almost every move, and the game ends when **the board is full and no merges remain** — meaning no two neighbouring tiles share a number. At that point, no swipe in any direction can change anything, so the game is over. The trick to staying alive is keeping matching tiles next to each other so you always have a merge available to free up space.
+
+## The controls
+
+Moving is as simple as it gets. On a computer you use the **arrow keys** (or WASD); on a phone or tablet you **swipe** in the direction you want the tiles to go. CardHearth supports both keyboard and touch, so the game feels natural whether you're at a desk or on the couch. Two extras make CardHearth's version friendlier for learning:
+
+- **Undo.** Made a swipe you regret? Take it back. Undo lets you reverse a move and try a different direction — perfect while you're still getting a feel for how the board reacts.
+- **Numbered, shareable boards.** Every game has a number that fixes the exact sequence of tiles, so you can replay the same board or share it with a friend and compare how you each handled the identical run.
+
+## Getting started
+
+Once the rules click, one habit makes an immediate difference: **keep your biggest tile parked in a corner** and build toward it, rather than letting your high numbers drift around the middle. That's the heart of the "corner strategy," and it's the foundation almost every strong 2048 player relies on. For the full version — including the snake build and which directions to avoid — see our [2048 strategy guide](/guides/2048-strategy/).
+
+## Frequently asked questions
+
+<Faq items={frontmatter.faq} />
+
+## Keep going
+
+That's everything you need to start. [Play 2048](/2048/) now and get a feel for how the tiles slide and merge — then, when you want to start chasing bigger numbers, read the [2048 strategy guide](/guides/2048-strategy/) for the corner and snake tactics. Our [guides hub](/guides/) covers the rest of the CardHearth library too.
