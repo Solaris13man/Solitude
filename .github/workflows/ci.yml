@@ -30,15 +30,11 @@ jobs:
       - run: npm test
       - run: npm run build
 
-  # Dependency vulnerability audit. Kept as its own job and non-blocking for
-  # now: the current tree has a HIGH advisory in astro@5 (define:vars XSS et al.)
-  # whose only published fix is astro@7 — a breaking major upgrade that needs
-  # its own PR. Until that lands, this surfaces findings without wedging every
-  # PR red. To make it merge-blocking once the tree is clean, delete the
-  # `continue-on-error: true` line.
+  # Dependency vulnerability audit — merge-blocking. The astro@5 HIGH advisory
+  # (define:vars XSS et al.) was resolved by upgrading to astro@7; the tree is
+  # clean at the `high` level, so a new high/critical advisory should fail CI.
   audit:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
