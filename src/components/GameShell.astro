@@ -151,18 +151,20 @@ const {
   <!-- aria-hidden: the live region above already announces the same text -->
   <div id="toast" class="toast" aria-hidden="true" hidden></div>
 
-  <details id="instructions" class="instructions mx-auto w-full max-w-2xl">
+  <details id="instructions" class="instructions mx-auto w-full max-w-2xl" open>
     <summary class="instructions-summary">How to play, tips &amp; FAQ</summary>
     <div class="instructions-body text-sm leading-relaxed opacity-90">
       <slot />
     </div>
   </details>
   <script is:inline>
-    // Welcome new players with the rules expanded; once they've seen them on
-    // any game, keep instructions collapsed so returning players aren't nagged.
+    // The rules render expanded by default so search engines and first-time
+    // players see the full how-to/FAQ prose. Once a player has seen it on any
+    // game, collapse it on later visits so returning players aren't nagged.
     try {
-      if (!localStorage.getItem('cardhearth:instructions-seen')) {
-        document.getElementById('instructions')?.setAttribute('open', '');
+      if (localStorage.getItem('cardhearth:instructions-seen')) {
+        document.getElementById('instructions')?.removeAttribute('open');
+      } else {
         localStorage.setItem('cardhearth:instructions-seen', '1');
       }
     } catch (e) {}
