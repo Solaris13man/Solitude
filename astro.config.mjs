@@ -10,10 +10,14 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      // Keep noindex utility pages out of the sitemap so we don't send Google
-      // the mixed signal of "index this" (sitemap) + "don't" (robots meta).
+      // Keep noindex pages out of the sitemap so we don't send Google the
+      // mixed signal of "index this" (sitemap) + "don't" (robots meta). This
+      // covers the utility pages plus the dated Daily Challenge archive
+      // (/daily/YYYY-MM-DD/), which is noindexed as thin, near-duplicate
+      // content — the /daily-challenge/ hub itself stays indexed.
       filter: (page) =>
-        !['/account/', '/profile/', '/404/'].some((p) => page.endsWith(p)),
+        !['/account/', '/profile/', '/404/'].some((p) => page.endsWith(p)) &&
+        !/\/daily\/\d{4}-\d{2}-\d{2}\/$/.test(page),
     }),
   ],
   // The guides were authored with straight quotes/apostrophes; SmartyPants
