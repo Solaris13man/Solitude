@@ -155,6 +155,7 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
   <dialog id="spades-over-dialog" aria-labelledby="spades-over-title">
     <p id="spades-over-title" class="dialog-title dialog-title-lg">Game over</p>
     <dl id="spades-over-body" class="stats-grid"></dl>
+    <p class="win-daily-cta mt-1 mb-2 text-sm opacity-90" data-daily-cta hidden></p>
     <div class="mt-4 flex justify-end">
       <button id="btn-spades-again" class="btn btn-primary" type="button">New game</button>
     </div>
