@@ -731,7 +731,13 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
   outline-offset: 2px;
 }
 .daily-strip-icon { font-size: 1.35rem; line-height: 1; flex: none; }
-.daily-strip-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+/* The live title ('Today's Daily Challenge: Sudoku (Medium)') is longer
+   than the static default and wraps on a phone. Hold the taller box from
+   the start so filling it in shifts nothing below. */
+.daily-strip-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; min-height: 2.9rem; justify-content: center; }
+@media (min-width: 34rem) {
+  .daily-strip-body { min-height: 2.5rem; }
+}
 .daily-strip-title { font-weight: var(--weight-bold); font-size: 0.95rem; }
 .daily-strip-status { font-size: 0.82rem; opacity: 0.8; }
 .daily-strip-go {
@@ -743,6 +749,12 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
 }
 .daily-strip-solved .daily-strip-link { border-color: rgb(127 200 150 / 0.45); }
 .daily-strip-solved .daily-strip-go { color: #8fd7a8; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Colour still changes on hover/focus — only the easing goes away, which is
+     the part that reads as motion. Matches how .menu-card is handled. */
+  .daily-strip-link { transition: none; }
+}
 
 @media (max-width: 26rem) {
   /* Keep the whole row on one line on a narrow phone. */
@@ -928,7 +940,14 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
   opacity: 0.85;
 }
 .game-related-label { font-weight: var(--weight-semibold); opacity: 0.7; }
-.game-related a { text-decoration: underline; text-underline-offset: 2px; }
+/* WCAG 2.2 AA Target Size (Minimum) is 24x24 CSS px; these sat at 22. */
+.game-related a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
 
 .key-facts {
   display: flex;
@@ -1840,7 +1859,10 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .hcard-red { color: var(--card-text-red); }
 .hcard-black { color: var(--card-text-black); }
 
-.opp-hand { display: flex; }
+/* Reserve the height a dealt fan will occupy. These render empty in the
+   HTML and are filled by the controller, so without a floor the whole
+   table — and everything below it — jumps once the deal lands. */
+.opp-hand { display: flex; min-height: 2.25rem; }
 .opp-hand .hcard { --hc-w: clamp(1.6rem, 5.2vw, 2.8rem); margin-left: calc(var(--hc-w) * -0.62); }
 .opp-hand .hcard:first-child { margin-left: 0; }
 
@@ -1848,9 +1870,11 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
    table". This keeps the side columns narrow so the centre trick and the
    player's hand get the horizontal room, and stops the 13-card fans from
    crowding the table on phones. North stays a horizontal fan across the top. */
+/* The side fans stack vertically, so their reserved height is taller. */
 .seat-west .opp-hand,
 .seat-east .opp-hand {
   flex-direction: column;
+  min-height: 6rem;
 }
 .seat-west .opp-hand .hcard,
 .seat-east .opp-hand .hcard {
@@ -1867,7 +1891,13 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   margin-top: 0;
 }
 
-.my-hand { display: flex; justify-content: center; padding-top: 0.4rem; }
+.my-hand {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.4rem;
+  /* Matches the dealt card height: clamp(2.5rem,12vw,6.5rem) * 1.4 aspect. */
+  min-height: calc(clamp(2.5rem, 12vw, 6.5rem) * 1.4);
+}
 .my-hand .hcard {
   --hc-w: clamp(2.5rem, 12vw, 6.5rem);
   margin-left: calc(var(--hc-w) * -0.52);
@@ -1896,6 +1926,10 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
 .hearts-trick .trick-east { transform: translate(-8%, -50%); }
 .hearts-status { text-align: center; margin-top: 0.6rem; font-size: 0.9rem; min-height: 1.3rem; opacity: 0.92; }
 .pass-bar { margin-top: 0.7rem; display: flex; justify-content: center; }
+/* Both action bars start [hidden] and are revealed on the player's first
+   turn, a fraction of a second after load. Holding their row open from
+   the start costs a little dead space and saves a full-page reflow. */
+.seat-south { min-height: 10.5rem; justify-content: flex-start; }
 
 /* spades extras (bidding + team scoreboard); reuses the hearts table layout */
 .spades-scoreboard {
@@ -1911,6 +1945,11 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   border-radius: var(--radius-pill);
 }
 .spades-scoreboard b { color: #ffd95e; }
+/* Populated by the controller; two lines once it wraps on a phone. */
+.spades-scoreboard { min-height: 3.75rem; align-items: center; }
+@media (min-width: 30rem) {
+  .spades-scoreboard { min-height: 2.1rem; }
+}
 .bid-bar {
   display: flex;
   flex-wrap: wrap;
