@@ -22,6 +22,12 @@ interface Props {
 
 const { title, description, heading, subtitle, updated, schema, breadcrumb, cta } =
   Astro.props;
+
+// Attribute guide -> game clicks without every guide having to declare it:
+// the CTA always points at a game page, so its slug is the destination, and
+// this guide's own slug is the origin.
+const ctaGameId = cta ? cta.href.replace(/^\/|\/$/g, '') : '';
+const guideId = Astro.url.pathname.replace(/^\/|\/$/g, '');
 ---
 
 <Layout title={title} description={description} schema={schema}>
@@ -53,7 +59,13 @@ const { title, description, heading, subtitle, updated, schema, breadcrumb, cta 
       {
         cta && (
           <p class="mt-5">
-            <a class="guide-cta" href={cta.href}>▶ {cta.label}</a>
+            <a
+              class="guide-cta"
+              href={cta.href}
+              data-ch-track="related_game"
+              data-ch-game={guideId}
+              data-ch-to={ctaGameId}
+            >▶ {cta.label}</a>
           </p>
         )
       }
@@ -66,7 +78,13 @@ const { title, description, heading, subtitle, updated, schema, breadcrumb, cta 
     {
       cta && (
         <p class="py-6">
-          <a class="guide-cta" href={cta.href}>▶ {cta.label}</a>
+          <a
+            class="guide-cta"
+            href={cta.href}
+            data-ch-track="related_game"
+            data-ch-game={guideId}
+            data-ch-to={ctaGameId}
+          >▶ {cta.label}</a>
         </p>
       )
     }
