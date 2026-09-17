@@ -1,0 +1,39 @@
+---
+import { SITE_CONFIG } from '../lib/site-config';
+
+/**
+ * A low-friction "support the site" link.
+ *
+ * Provider-agnostic on purpose: it renders whatever URL `support.url` holds,
+ * and renders NOTHING when that is empty — which is the default. No popup, no
+ * interstitial, no countdown, no fake urgency, and never anywhere it could sit
+ * on top of a control or interrupt a game in progress.
+ */
+interface Props {
+  /** Where this instance lives — reported as the support_click placement. */
+  placement: string;
+  /** Include the explanatory line. Off in tight spots like a dialog. */
+  blurb?: boolean;
+}
+
+const { placement, blurb = true } = Astro.props;
+const { url, label, blurb: blurbText } = SITE_CONFIG.support;
+---
+
+{
+  url && (
+    <p class="support-cta postgame-line">
+      {blurb && <span class="support-cta-blurb">{blurbText} </span>}
+      <a
+        class="support-cta-link"
+        href={url}
+        rel="noopener noreferrer"
+        target="_blank"
+        data-ch-track="support"
+        data-ch-placement={placement}
+      >
+        {label} →
+      </a>
+    </p>
+  )
+}

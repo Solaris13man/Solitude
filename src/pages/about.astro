@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
+import SupportCta from '../components/SupportCta.astro';
 import { GAMES } from '../games/registry';
 import { PARENT_ORG } from '../lib/site-config';
 
@@ -131,6 +132,8 @@ const schema = [
         Thanks for being here. If you have a game you'd love to see, or something I've gotten wrong,
         I genuinely want to hear it — <a href="mailto:hello@cardhearth.com">hello@cardhearth.com</a>.
       </p>
+
+      <SupportCta placement="about" />
 
       <p class="opacity-75">
         — Jared Waterworth, CardHearth ·

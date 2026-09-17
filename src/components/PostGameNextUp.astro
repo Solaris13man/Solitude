@@ -1,5 +1,6 @@
 ---
 import { recommendedGame } from '../games/registry';
+import SupportCta from './SupportCta.astro';
 
 /**
  * The shared "what now?" block for an end-of-game dialog.
@@ -52,3 +53,7 @@ const next = recommendedGame(gameId);
     </p>
   )
 }
+
+{/* Last in the stack, so replay and the next game always come first.
+    Renders nothing until a support URL is configured. */}
+<SupportCta placement="postgame" />

@@ -69,6 +69,23 @@ export interface SiteConfig {
     /** VAPID application-server public key (base64url) — safe in the browser. */
     vapidPublicKey: string;
   };
+  support: {
+    /**
+     * Where the "support the site" link points — a Ko-fi page, a GitHub
+     * Sponsors page, a Stripe payment link, anything with a URL.
+     *
+     * EMPTY BY DEFAULT, and empty means the CTA renders nothing at all. This
+     * is the single external configuration step: create an account with
+     * whichever provider you prefer, paste the public URL here, and the CTA
+     * appears in the post-game state and on the About page. Nothing secret
+     * goes here — it is a public link, shipped to the browser like any other.
+     */
+    url: string;
+    /** Link text. Kept short and honest; no urgency, no guilt. */
+    label: string;
+    /** One line of context shown above the link in the post-game state. */
+    blurb: string;
+  };
   /** Show ad placeholders even when ads are disabled (handy in development). */
   showAdPlaceholders: boolean;
 }
@@ -95,6 +112,11 @@ export const SITE_CONFIG: SiteConfig = {
   push: {
     enabled: true,
     vapidPublicKey: 'BPyH1wGhE0WOa42W7Pra1t_3MEICY4hD3QaqE5gEVTizxbVsx_Fg1JkBafWVuVAzg-WmxtBBv83GpxP8x8PYRFE',
+  },
+  support: {
+    url: '',
+    label: 'Support CardHearth',
+    blurb: 'Enjoying CardHearth? It is free, ad-light and has no sign-up.',
   },
   showAdPlaceholders: false,
 };

@@ -1068,6 +1068,12 @@ dialog .btn-primary:hover:not(:disabled) { background: #36945c; }
   opacity: 0.9;
 }
 .postgame-line[hidden] { display: none; }
+
+/* Support CTA. Deliberately the quietest thing in the block — a plain link,
+   no button chrome, no colour shouting for attention. */
+.support-cta { opacity: 0.78; }
+.support-cta-blurb { opacity: 0.85; }
+.support-cta-link { white-space: nowrap; }
 .postgame-line a {
   font-weight: var(--weight-semibold);
   text-decoration: underline;
