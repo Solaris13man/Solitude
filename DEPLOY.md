@@ -65,9 +65,12 @@ performance and the apex-domain handling "just works").
 4. Back in the Pages project → **Custom domains** → **Set up a custom domain**
    → add `cardhearth.com` and `www.cardhearth.com`. Cloudflare creates the DNS
    records and TLS certificate automatically.
-5. Add a redirect so one is canonical: Pages → the `www` domain → set it to
-   redirect to the apex (or vice-versa). Match whichever you prefer; the site's
-   canonical URLs use the bare apex `https://cardhearth.com/`.
+5. Host canonicalisation is enforced in code — `worker/index.js` permanently
+   redirects anything that is not `https://cardhearth.com` (both `www.` and
+   plain `http://`) to the apex, and the tests fail if that host ever drifts
+   from Astro's `site` or the sitemap in `robots.txt`. No dashboard redirect
+   rule is required; enabling Cloudflare's **Always Use HTTPS** as well is
+   harmless belt-and-braces.
 
 ### Option B — keep DNS at Namecheap
 
