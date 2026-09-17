@@ -3,6 +3,7 @@ import GameNav from './GameNav.astro';
 import Footer from './Footer.astro';
 import AdSlot from './AdSlot.astro';
 import PostGameNextUp from './PostGameNextUp.astro';
+import DailyStrip from './DailyStrip.astro';
 
 interface VariantOption {
   value: number;
@@ -205,6 +206,8 @@ const {
       </nav>
     )
   }
+
+  <DailyStrip />
 
   <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
     <h2 class="more-games-title">More games</h2>

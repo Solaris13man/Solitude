@@ -1,0 +1,32 @@
+---
+/**
+ * A restrained Daily Challenge entry point for game pages.
+ *
+ * The post-game dialog already nudges players who finish a deal; this catches
+ * the much larger group who never reach an end state. It renders below the
+ * board with static, always-true copy, then `initDailyStrip()` fills in the
+ * day's actual game and the player's streak — same box either way, so there is
+ * no layout shift and no flash of wrong state.
+ *
+ * Hidden entirely while the player is already playing the daily.
+ */
+---
+
+<aside class="daily-strip" data-daily-strip aria-label="Daily Challenge">
+  <a
+    class="daily-strip-link"
+    href="/daily-challenge/"
+    data-daily-strip-link
+    data-ch-track="daily"
+    data-ch-placement="game_page"
+  >
+    <span class="daily-strip-icon" aria-hidden="true">⭐</span>
+    <span class="daily-strip-body">
+      <span class="daily-strip-title" data-daily-strip-title>Daily Challenge</span>
+      <span class="daily-strip-status" data-daily-strip-status>
+        One puzzle a day, the same for everyone — build a streak.
+      </span>
+    </span>
+    <span class="daily-strip-go" aria-hidden="true">Play →</span>
+  </a>
+</aside>

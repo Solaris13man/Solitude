@@ -56,6 +56,10 @@ function render(): void {
     link.href = href;
     link.className = 'underline';
     link.textContent = label;
+    // Also reported as daily_challenge_click by the delegated listener, which
+    // is what the Daily funnel counts; daily_cta_clicked is kept for history.
+    link.dataset.chTrack = 'daily';
+    link.dataset.chPlacement = solved ? 'postgame_solved' : 'postgame';
     link.addEventListener('click', () => {
       track('daily_cta_clicked', { game: entry.game, solved });
     });

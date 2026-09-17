@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import GameNav from '../components/GameNav.astro';
 import PostGameNextUp from '../components/PostGameNextUp.astro';
+import DailyStrip from '../components/DailyStrip.astro';
 
 const title = 'Hearts — Play Free Online vs Computer | CardHearth';
 const description =
@@ -147,6 +148,8 @@ const schema = [
         <a href="/guides/hearts-vs-spades/" data-ch-track="rules">Hearts vs Spades</a>
         <a href="/guides/hearts-vs-euchre/" data-ch-track="rules">Hearts vs Euchre</a>
     </nav>
+
+    <DailyStrip />
 
     <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
       <h2 class="more-games-title">More games</h2>

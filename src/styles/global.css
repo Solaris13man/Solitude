@@ -700,6 +700,55 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
   .games-menu-panel { left: auto; right: 0; }
 }
 
+/* Daily Challenge entry point on game pages. Sits below the board, between
+   the guide links and the games grid — discoverable without costing the
+   board any first-screen room. */
+.daily-strip {
+  width: 100%;
+  max-width: 42rem;
+  margin: 1.25rem auto 0;
+  padding: 0 0.25rem;
+}
+.daily-strip[hidden] { display: none; }
+.daily-strip-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-xl, 0.9rem);
+  text-decoration: none;
+  color: inherit;
+  background: rgb(255 255 255 / 0.07);
+  border: 1px solid rgb(255 217 94 / 0.35);
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+.daily-strip-link:hover {
+  background: rgb(255 255 255 / 0.12);
+  border-color: rgb(255 217 94 / 0.6);
+}
+.daily-strip-link:focus-visible {
+  outline: 3px solid #ffd95e;
+  outline-offset: 2px;
+}
+.daily-strip-icon { font-size: 1.35rem; line-height: 1; flex: none; }
+.daily-strip-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.daily-strip-title { font-weight: var(--weight-bold); font-size: 0.95rem; }
+.daily-strip-status { font-size: 0.82rem; opacity: 0.8; }
+.daily-strip-go {
+  margin-left: auto;
+  flex: none;
+  font-weight: var(--weight-semibold);
+  font-size: 0.88rem;
+  color: #ffd95e;
+}
+.daily-strip-solved .daily-strip-link { border-color: rgb(127 200 150 / 0.45); }
+.daily-strip-solved .daily-strip-go { color: #8fd7a8; }
+
+@media (max-width: 26rem) {
+  /* Keep the whole row on one line on a narrow phone. */
+  .daily-strip-go { display: none; }
+}
+
 .more-games {
   margin: 1.5rem auto 0;
   text-align: center;

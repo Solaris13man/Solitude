@@ -176,6 +176,7 @@ if(document.readyState==='complete')setTimeout(go,2500);else window.addEventList
       import { initAdRefresh } from '../lib/ads';
       import { initDailyReminder } from '../lib/daily-reminder';
       import { initDailyCta } from '../lib/daily-cta';
+      import { initDailyStrip } from '../lib/daily-strip';
       import { syncDailySolvedCache } from '../lib/push';
 
       initAnalytics();
@@ -187,6 +188,7 @@ if(document.readyState==='complete')setTimeout(go,2500);else window.addEventList
       void initAccount();
       initDailyReminder();
       initDailyCta();
+      initDailyStrip();
       void syncDailySolvedCache();
 
       // Celebrate badges the moment they unlock, after any game result.

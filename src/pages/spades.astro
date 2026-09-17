@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import GameNav from '../components/GameNav.astro';
 import PostGameNextUp from '../components/PostGameNextUp.astro';
+import DailyStrip from '../components/DailyStrip.astro';
 
 const title = 'Spades — Play Free Online vs Computer | CardHearth';
 const description =
@@ -152,6 +153,8 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
         <a href="/guides/hearts-vs-spades/" data-ch-track="rules">Hearts vs Spades</a>
         <a href="/guides/euchre-vs-spades/" data-ch-track="rules">Euchre vs Spades</a>
     </nav>
+
+    <DailyStrip />
 
     <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
       <h2 class="more-games-title">More games</h2>
