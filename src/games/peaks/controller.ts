@@ -1,6 +1,8 @@
 import { History } from '../../lib/history';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
+import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import {
   type Settings,
   applySettings,
@@ -42,6 +44,7 @@ class PeaksController {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  private readonly session = pageGameSession();
   private toastTimer = 0;
 
   private daily: DailyMode;
@@ -117,6 +120,8 @@ class PeaksController {
       });
     }
     this.state = this.rules.deal(seed ?? (this.daily.active ? this.daily.seed : randomSeed()));
+    track('game_started', { game: this.rules.id, variant: 0 });
+    this.session?.deal();
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -157,6 +162,8 @@ class PeaksController {
   // ----- play ----------------------------------------------------------------
 
   private handleTap(target: Target | 'stock'): void {
+    this.session?.markStarted(0);
+    this.daily.markStarted();
     if (this.finished) return;
     if (target === 'stock') {
       if (this.rules.canDraw(this.state)) {
@@ -266,6 +273,7 @@ class PeaksController {
     this.pauseTimer();
     this.persist();
     const elapsed = this.elapsedMs();
+    this.session?.complete({ won: true, durationSeconds: elapsed / 1000, variant: 0 });
     const stats = recordResult({
       game: this.rules.id,
       variant: 0,
@@ -306,10 +314,12 @@ class PeaksController {
     $('btn-hint').addEventListener('click', () => this.hint());
     $('btn-play-again').addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame(false);
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('same_deal');
       this.newGame(false, this.state.seed);
       this.announce('Replaying the same deal.', true);
     });

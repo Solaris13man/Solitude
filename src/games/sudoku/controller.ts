@@ -1,5 +1,6 @@
 import { History } from '../../lib/history';
 import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -50,6 +51,7 @@ class SudokuController {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  private readonly session = pageGameSession();
   private toastTimer = 0;
   private daily = new DailyMode(GAME_ID);
   private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
@@ -130,6 +132,7 @@ class SudokuController {
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.difficulty());
     this.state = deal(dealSeed, dealVariant);
     track('game_started', { game: GAME_ID, variant: dealVariant });
+    this.session?.deal();
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -184,6 +187,8 @@ class SudokuController {
   }
 
   private enterDigit(v: number): void {
+    this.session?.markStarted(this.state.variant);
+    this.daily.markStarted();
     if (this.finished || this.selected === null) return;
     if (isGiven(this.state, this.selected)) {
       this.announce('That square is part of the puzzle.');
@@ -266,6 +271,11 @@ class SudokuController {
     this.pauseTimer();
     this.persist();
     const elapsed = this.elapsedMs();
+    this.session?.complete({
+      won: true,
+      durationSeconds: elapsed / 1000,
+      variant: this.state.variant,
+    });
     const stats = recordResult({
       game: GAME_ID,
       variant: this.state.variant,
@@ -307,10 +317,12 @@ class SudokuController {
     $('btn-hint').addEventListener('click', () => this.hint());
     $('btn-play-again').addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame(false);
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('same_deal');
       this.newGame(false, this.state.seed, this.state.variant);
       this.announce('Replaying the same puzzle.', true);
     });

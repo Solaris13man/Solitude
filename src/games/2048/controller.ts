@@ -1,5 +1,6 @@
 import { History } from '../../lib/history';
 import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -45,6 +46,7 @@ class G2048Controller {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  private readonly session = pageGameSession();
   /** A win (2048) or loss has been recorded for this game. */
   private resultRecorded = false;
   private toastTimer = 0;
@@ -122,6 +124,7 @@ class G2048Controller {
     }
     this.state = deal(seed ?? (this.daily.active ? this.daily.seed : randomSeed()));
     track('game_started', { game: GAME_ID, variant: 0 });
+    this.session?.deal();
     this.dailyRecorded = false;
     this.history.clear();
     this.finished = false;
@@ -163,6 +166,8 @@ class G2048Controller {
   }
 
   private handleMove(dir: Direction): void {
+    this.session?.markStarted(0);
+    this.daily.markStarted();
     if (this.finished) return;
     const before = cloneState(this.state);
     const events = move(this.state, dir);
@@ -190,6 +195,7 @@ class G2048Controller {
 
   private recordOutcome(won: boolean): void {
     this.resultRecorded = true;
+    this.session?.complete({ won, durationSeconds: this.elapsedMs() / 1000 });
     recordResult({
       game: GAME_ID,
       variant: 0,
@@ -282,10 +288,12 @@ class G2048Controller {
         this.announce('Keep going — chase 4096!', true);
         return;
       }
+      this.session?.replay('new_deal');
       this.newGame(false);
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('same_deal');
       this.newGame(false, this.state.seed);
       this.announce('Replaying the same tile sequence.', true);
     });

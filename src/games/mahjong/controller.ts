@@ -1,5 +1,6 @@
 import { History } from '../../lib/history';
 import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -48,6 +49,7 @@ class MahjongController {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  private readonly session = pageGameSession();
   private toastTimer = 0;
   private daily = new DailyMode(GAME_ID);
   private saveKey = `${SAVE_KEY}${this.daily.saveSuffix}`;
@@ -125,6 +127,7 @@ class MahjongController {
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.layoutVariant());
     this.state = deal(dealSeed, dealVariant);
     track('game_started', { game: GAME_ID, variant: dealVariant });
+    this.session?.deal();
     this.history.clear();
     this.finished = false;
     this.selected = null;
@@ -165,6 +168,8 @@ class MahjongController {
   }
 
   private handleTap(index: number): void {
+    this.session?.markStarted(this.state.variant);
+    this.daily.markStarted();
     if (this.finished) return;
     const before = cloneState(this.state);
     const result = tap(this.state, index, this.selected);
@@ -251,6 +256,11 @@ class MahjongController {
     this.pauseTimer();
     this.persist();
     const elapsed = this.elapsedMs();
+    this.session?.complete({
+      won: true,
+      durationSeconds: elapsed / 1000,
+      variant: this.state.variant,
+    });
     const stats = recordResult({
       game: GAME_ID,
       variant: this.state.variant,
@@ -289,10 +299,12 @@ class MahjongController {
     $('btn-hint').addEventListener('click', () => this.hintMove());
     $('btn-play-again').addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame(false);
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('same_deal');
       this.newGame(false, this.state.seed, this.state.variant);
       this.announce('Replaying the same deal.', true);
     });

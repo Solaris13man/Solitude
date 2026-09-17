@@ -28,6 +28,8 @@ const sections = [
               class:list={['game-nav-link', { active: game.id === current }]}
               aria-current={game.id === current ? 'page' : undefined}
               title={game.tagline}
+              data-ch-track="related_game"
+              data-ch-to={game.id}
             >
               {game.name}
             </a>

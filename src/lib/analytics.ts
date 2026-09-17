@@ -58,3 +58,70 @@ export function track(event: string, props?: Record<string, string | number | bo
     // analytics must never break gameplay
   }
 }
+
+/**
+ * Events emitted by `data-ch-track` elements. Keeping the map here means a
+ * link opts into tracking with markup alone — no page or game ever imports
+ * an analytics module just to measure a click.
+ */
+const LINK_EVENTS: Record<string, string> = {
+  related_game: 'related_game_click',
+  rules: 'rules_click',
+  daily: 'daily_challenge_click',
+  support: 'support_click',
+};
+
+/**
+ * One delegated listener for every tracked link on the page.
+ *
+ * Markup contract:
+ *   data-ch-track="related_game" data-ch-to="hearts"   -> related_game_click
+ *   data-ch-track="rules"                              -> rules_click
+ *   data-ch-track="daily" data-ch-placement="postgame" -> daily_challenge_click
+ *   data-ch-track="support" data-ch-placement="about"  -> support_click
+ *
+ * `from_game` / `game` default to the page's `data-game-id`, so game pages
+ * get correct attribution for free; `data-ch-game` overrides it on guide
+ * pages, which have no game of their own.
+ */
+let linkClickHandler: ((e: Event) => void) | null = null;
+
+export function initLinkTracking(): void {
+  if (typeof document === 'undefined') return;
+  // One listener per document, ever. A second call must not double every click.
+  if (linkClickHandler) return;
+  linkClickHandler = (e: Event) => {
+    try {
+      const target = e.target as HTMLElement | null;
+      const el = target?.closest<HTMLElement>('[data-ch-track]');
+      if (!el) return;
+      const event = LINK_EVENTS[el.dataset.chTrack ?? ''];
+      if (!event) return;
+      const pageGame = document.querySelector<HTMLElement>('[data-game-id]')?.dataset.gameId ?? '';
+      const from = el.dataset.chGame || pageGame;
+      const props: Record<string, string> = {};
+      if (event === 'related_game_click') {
+        if (from) props.from_game = from;
+        if (el.dataset.chTo) props.to_game = el.dataset.chTo;
+      } else if (event === 'support_click' || event === 'daily_challenge_click') {
+        props.placement = el.dataset.chPlacement || 'unknown';
+        if (from) props.game = from;
+      } else if (from) {
+        props.game = from;
+      }
+      track(event, props);
+    } catch {
+      // a tracked click must still navigate
+    }
+  };
+  // Capture, so the event is recorded even if a handler stops propagation.
+  document.addEventListener('click', linkClickHandler, true);
+}
+
+/** Test seam — detaches the delegated listener so a suite can rebind cleanly. */
+export function resetLinkTracking(): void {
+  if (typeof document !== 'undefined' && linkClickHandler) {
+    document.removeEventListener('click', linkClickHandler, true);
+  }
+  linkClickHandler = null;
+}

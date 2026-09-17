@@ -35,6 +35,8 @@ export class DailyMode {
   readonly date: Date | null;
   /** True when this is a past day's challenge rather than today's. */
   readonly isArchive: boolean;
+  /** Guards daily_challenge_start to one event per page load. */
+  private startTracked = false;
 
   constructor(gameId: string) {
     this.date = requestedDailyDate();
@@ -62,8 +64,29 @@ export class DailyMode {
     return this.active && this.date !== null && isDailySolved(this.date);
   }
 
+  /**
+   * The player opened a game page in daily mode. Emitted here rather than on
+   * /daily-challenge/ so the funnel measures challenges actually reached,
+   * not just hub pageviews.
+   */
+  trackView(): void {
+    if (!this.active) return;
+    track('daily_challenge_view', { game: this.entry.game, archive: this.isArchive });
+  }
+
+  /**
+   * The player made their first move on the daily. Once per page load, so a
+   * rerender or a resumed save can never inflate starts.
+   */
+  markStarted(): void {
+    if (!this.active || this.startTracked) return;
+    this.startTracked = true;
+    track('daily_challenge_start', { game: this.entry.game, archive: this.isArchive });
+  }
+
   /** Reveal and populate the banner host that GameShell always renders. */
   mountBanner(): void {
+    this.trackView();
     const host = document.getElementById('daily-banner');
     if (!host) return;
     host.hidden = false;
@@ -115,6 +138,11 @@ export class DailyMode {
     const record = recordDailyWin(dateKey, { timeMs, moves, score, game });
     if (firstSolve) {
       track('daily_solved', { game, seconds: Math.round(timeMs / 1000), archive: this.isArchive });
+      track('daily_challenge_complete', {
+        game,
+        duration_seconds: Math.round(timeMs / 1000),
+        archive: this.isArchive,
+      });
     }
     // Post to the public leaderboard (no-op for guests / when accounts are off).
     void submitDailyScore(dateKey);

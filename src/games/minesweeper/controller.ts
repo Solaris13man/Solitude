@@ -1,5 +1,6 @@
 import { History } from '../../lib/history';
 import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import { SoundPlayer } from '../../lib/sound';
 import { formatTime, loadStats, recordResult, variantStats, winRate } from '../../lib/stats';
 import {
@@ -48,6 +49,7 @@ class MinesweeperController {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  private readonly session = pageGameSession();
   // Stats are recorded at most once per board — undoing a loss resumes play,
   // but the loss already counted.
   private resultRecorded = false;
@@ -147,6 +149,7 @@ class MinesweeperController {
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.difficulty());
     this.state = deal(dealSeed, dealVariant);
     track('game_started', { game: GAME_ID, variant: dealVariant });
+    this.session?.deal();
     this.history.clear();
     this.finished = false;
     this.resultRecorded = false;
@@ -187,6 +190,7 @@ class MinesweeperController {
   }
 
   private handleReveal(i: number): void {
+    this.session?.markStarted(this.state.variant);
     if (this.finished) return;
     if (this.flagMode) {
       this.handleFlag(i);
@@ -299,6 +303,11 @@ class MinesweeperController {
       stats = loadStats(GAME_ID);
     } else {
       this.resultRecorded = true;
+      this.session?.complete({
+        won,
+        durationSeconds: elapsed / 1000,
+        variant: this.state.variant,
+      });
       stats = recordResult({
         game: GAME_ID,
         variant: this.state.variant,
@@ -338,10 +347,12 @@ class MinesweeperController {
     $('btn-hint').addEventListener('click', () => this.hint());
     $('btn-play-again').addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame(false);
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('same_deal');
       this.newGame(false, this.state.seed, this.state.variant);
       this.announce('Replaying the same board.', true);
     });

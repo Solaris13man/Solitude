@@ -169,7 +169,8 @@ if(document.readyState==='complete')setTimeout(go,2500);else window.addEventList
     </div>
     <div id="badge-toast" class="badge-toast" role="status" aria-live="polite"></div>
     <script>
-      import { initAnalytics, track } from '../lib/analytics';
+      import { initAnalytics, initLinkTracking, track } from '../lib/analytics';
+      import { pageGameSession } from '../lib/game-session';
       import { checkForNewBadges } from '../lib/achievements';
       import { initAccount, syncUp } from '../lib/account';
       import { initAdRefresh } from '../lib/ads';
@@ -178,6 +179,10 @@ if(document.readyState==='complete')setTimeout(go,2500);else window.addEventList
       import { syncDailySolvedCache } from '../lib/push';
 
       initAnalytics();
+      initLinkTracking();
+      // One game_view per page load, driven purely by the shell's
+      // data-game-id — no game has to opt in.
+      pageGameSession()?.view();
       initAdRefresh();
       void initAccount();
       initDailyReminder();

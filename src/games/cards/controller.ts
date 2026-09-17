@@ -17,6 +17,7 @@ import {
 } from '../../lib/settings';
 import { DailyMode } from '../../lib/daily-mode';
 import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import {
   type GameState,
   type Move,
@@ -65,6 +66,7 @@ class CardGameController {
   private accumulatedMs = 0;
   private runningSince: number | null = null;
   private finished = false;
+  private readonly session = pageGameSession();
   private autoFinishing = false;
 
   constructor(ruleset: Ruleset, options: StartOptions = {}) {
@@ -183,6 +185,9 @@ class CardGameController {
     const dealVariant = variantOverride ?? (this.daily.active ? this.daily.variant : this.variant());
     this.state = this.ruleset.deal(dealSeed, dealVariant);
     track('game_started', { game: this.ruleset.id, variant: dealVariant });
+    // Dealing is not starting: arm the per-deal guards, but wait for a real
+    // move before claiming the player began playing.
+    this.session?.deal();
     this.history.clear();
     this.finished = false;
     this.autoFinishing = false;
@@ -242,6 +247,9 @@ class CardGameController {
 
   private doMove(move: Move, announceText?: string): void {
     if (this.finished) return;
+    // The first move of a deal is the real "started playing" signal.
+    this.session?.markStarted(this.state.variant);
+    this.daily.markStarted();
     if (this.state.moves === 0) this.resumeTimer();
     this.history.push(this.state);
     try {
@@ -369,6 +377,11 @@ class CardGameController {
       const streak = this.daily.recordSolve(elapsed, this.state.moves, this.state.score, this.ruleset.name);
       rows.push(`<dt>Daily streak</dt><dd>${streak} 🔥</dd>`);
     }
+    this.session?.complete({
+      won: true,
+      durationSeconds: elapsed / 1000,
+      variant: this.state.variant,
+    });
     $('win-summary').innerHTML = rows.join('');
     this.sound.play('win');
     this.announce(`You won in ${formatTime(elapsed)} with ${this.state.moves} moves!`);
@@ -447,10 +460,12 @@ class CardGameController {
     $('btn-autofinish').addEventListener('click', () => this.autoFinish());
     $('btn-play-again').addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame(false);
     });
     $opt('btn-replay-deal')?.addEventListener('click', () => {
       ($('win-dialog') as HTMLDialogElement).close();
+      this.session?.replay('same_deal');
       this.newGame(false, this.state.seed, this.state.variant);
       this.announce('Replaying the same deal.', true);
     });
