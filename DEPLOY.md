@@ -107,8 +107,10 @@ analytics: { provider: 'plausible', domain: 'cardhearth.com' },
 ```
 
 Create the matching site at <https://plausible.io> (or self-host Umami).
-Commit, push, redeploy. Pageviews and `game_won`/`game_lost` events start
-flowing — now you can see which games get traffic.
+Commit, push, redeploy. Pageviews and the full event taxonomy start flowing —
+now you can see not just which games get traffic, but how far players get
+through them. See `docs/analytics-events.md` for every event, the goal/key-event
+setup each provider needs, and how to verify locally.
 
 ---
 
@@ -153,5 +155,7 @@ See the **Accounts, badges & the business layer** section in `README.md` and
 | Output dir | `dist` |
 | Sitemap | `https://cardhearth.com/sitemap-index.xml` |
 | Config switches | `src/lib/site-config.ts` |
-| Analytics events | `game_won`, `game_lost` (per game/variant) |
+| Analytics events | `docs/analytics-events.md` |
+| Support CTA setup | `docs/support-setup.md` |
+| Canonical host | enforced in `worker/index.js` (tested) |
 | Ad unit | in-content, one per game page |

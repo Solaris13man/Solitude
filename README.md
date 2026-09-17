@@ -134,8 +134,12 @@ turn it on — the site ships fully private and guest-only.
   Supabase's REST/auth endpoints — no SDK dependency — protected by row-level
   security.
 - **Analytics & ads** are likewise one config switch each (`analytics.provider`
-  / `ads.enabled`), with `game_won`/`game_lost` events already wired through the
-  shared result hook and an `AdSlot` placed in every game page.
+  / `ads.enabled`), with an `AdSlot` placed in every game page. Product events go
+  through `track()` and, for the per-game funnel, `GameSession` — see
+  [`docs/analytics-events.md`](docs/analytics-events.md) for the full taxonomy
+  and how to verify events locally.
+- **Support CTA** is provider-agnostic and renders nothing until you set
+  `support.url` — see [`docs/support-setup.md`](docs/support-setup.md).
 - **PWA**: a manifest + service worker make the site installable.
 
 ## License & assets
