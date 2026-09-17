@@ -170,3 +170,45 @@ export const GAMES: GameInfo[] = [
     category: 'cards',
   },
 ];
+
+/**
+ * "You just finished X — try Y." One hand-picked neighbour per game, chosen so
+ * the suggestion is a genuine next step (same family, or the same skill at a
+ * different difficulty) rather than a random shuffle of the catalogue.
+ *
+ * Kept next to GAMES so a new entry gets a recommendation in the same edit.
+ */
+const RECOMMENDED: Record<string, string> = {
+  klondike: 'spider',
+  spider: 'freecell',
+  freecell: 'eightoff',
+  eightoff: 'fortythieves',
+  fortythieves: 'freecell',
+  pyramid: 'tripeaks',
+  tripeaks: 'golf',
+  golf: 'pyramid',
+  yukon: 'scorpion',
+  scorpion: 'yukon',
+  hearts: 'spades',
+  spades: 'hearts',
+  gin: 'euchre',
+  euchre: 'spades',
+  sudoku: 'minesweeper',
+  mahjong: 'sudoku',
+  minesweeper: '2048',
+  '2048': 'mahjong',
+};
+
+/** Look up a game by id. */
+export function gameById(id: string): GameInfo | undefined {
+  return GAMES.find((g) => g.id === id);
+}
+
+/**
+ * The game to suggest after finishing `id`, or undefined when there is no
+ * sensible neighbour (the Daily Challenge hub, an unknown id).
+ */
+export function recommendedGame(id: string): GameInfo | undefined {
+  const target = RECOMMENDED[id];
+  return target ? gameById(target) : undefined;
+}

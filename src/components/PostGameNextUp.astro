@@ -1,0 +1,54 @@
+---
+import { recommendedGame } from '../games/registry';
+
+/**
+ * The shared "what now?" block for an end-of-game dialog.
+ *
+ * Sits *below* the replay buttons every game already owns, so the hierarchy
+ * the sprint asked for holds without any game giving up control of its own
+ * primary action:
+ *
+ *   [Play again]  — each game's own primary button (not rendered here)
+ *   Daily Challenge — filled in at runtime by initDailyCta()
+ *   Related game recommendation
+ *   Strategy / rules link
+ *
+ * Plain prose links, not buttons: this is a set of offers, not a wall between
+ * the player and the board. Every link is tagged for analytics via markup.
+ */
+interface Props {
+  /** The game that just finished — drives the recommendation. */
+  gameId: string;
+  /** This game's in-depth guide, when it has one. */
+  guide?: { href: string; label: string };
+}
+
+const { gameId, guide } = Astro.props;
+const next = recommendedGame(gameId);
+---
+
+{/* Filled by initDailyCta(); stays hidden while playing the daily itself. */}
+<p class="win-daily-cta postgame-line" data-daily-cta hidden></p>
+
+{
+  next && (
+    <p class="postgame-line">
+      Enjoyed that? Try{' '}
+      <a href={next.href} data-ch-track="related_game" data-ch-to={next.id}>
+        {next.name}
+      </a>{' '}
+      — {next.tagline.toLowerCase()}.
+    </p>
+  )
+}
+
+{
+  guide && (
+    <p class="postgame-line">
+      Want to win more often?{' '}
+      <a href={guide.href} data-ch-track="rules">
+        {guide.label} →
+      </a>
+    </p>
+  )
+}
