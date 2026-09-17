@@ -1,6 +1,8 @@
 import { type Settings, applySettings, loadSettings, saveSettings } from '../../lib/settings';
 import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
+import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import { cardArt, cardArtById } from '../cards/board';
 import { activateOnKey, markHandCard } from '../cards/a11y';
 import { RANK_LABELS, SUIT_SYMBOLS, type Card, cardName, isRed } from '../cards/deck';
@@ -82,8 +84,12 @@ class SpadesController {
   // Wall-clock start of the current game, for the best-time stat.
   private startedAt = Date.now();
 
+  private readonly session = pageGameSession();
+
   private newGame(): void {
     this.startedAt = Date.now();
+    track('game_started', { game: 'spades', variant: 0 });
+    this.session?.deal();
     this.state = S.newGame((Date.now() ^ (Math.random() * 0xffffffff)) >>> 0);
     this.render();
     void this.advance();
@@ -147,6 +153,7 @@ class SpadesController {
   private onPlaceBid(bid: number): void {
     const s = this.state;
     if (this.busy || s.phase !== 'bidding' || s.turn !== 0) return;
+    this.session?.markStarted(0);
     S.placeBid(s, 0, bid);
     this.showBidBar(false);
     this.sound.play('flip');
@@ -162,6 +169,7 @@ class SpadesController {
       this.setStatus("You can't play that card.");
       return;
     }
+    this.session?.markStarted(0);
     S.playCard(s, 0, card);
     this.sound.play('place');
     this.render();
@@ -174,6 +182,11 @@ class SpadesController {
       const winner = S.gameWinner(s);
       const youWon = winner === S.teamOf(0);
       if (youWon) this.sound.play('win');
+      this.session?.complete({
+        won: youWon,
+        durationSeconds: (Date.now() - this.startedAt) / 1000,
+        variant: 0,
+      });
       recordResult({
         game: 'spades',
         variant: 0,
@@ -272,12 +285,14 @@ class SpadesController {
     $opt('btn-new')?.addEventListener('click', () => this.newGame());
     $opt('btn-round-continue')?.addEventListener('click', () => {
       ($('round-dialog') as HTMLDialogElement).close();
+      this.session?.replay('next_round');
       S.startNextRound(this.state);
       this.render();
       void this.advance();
     });
     $opt('btn-spades-again')?.addEventListener('click', () => {
       ($('spades-over-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame();
     });
     $opt('btn-settings')?.addEventListener('click', () =>

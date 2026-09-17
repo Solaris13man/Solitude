@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
+import GameNav from '../components/GameNav.astro';
+import PostGameNextUp from '../components/PostGameNextUp.astro';
 
 const title = 'Spades — Play Free Online vs Computer | CardHearth';
 const description =
@@ -60,7 +62,7 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <main class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4">
+  <main class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4" data-game-id="spades">
     <header class="flex flex-wrap items-center justify-between gap-2 py-3">
       <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
         Spades
@@ -73,11 +75,11 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
       </nav>
     </header>
 
-    <p class="game-intro mx-auto mb-2 w-full max-w-2xl text-sm opacity-80">
-      Play Spades online, free — you and a computer partner versus two AI
-      opponents. Bid your tricks, break spades, go nil, and race your team to
-      500. No download, no sign-up.
-    </p>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Spades</span>
+    </nav>
 
     <div class="spades-scoreboard" id="spades-scoreboard"></div>
 
@@ -109,6 +111,12 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
       </div>
     </section>
 
+    <p class="game-intro mx-auto mb-2 w-full max-w-2xl text-sm opacity-80">
+      Play Spades online, free — you and a computer partner versus two AI
+      opponents. Bid your tricks, break spades, go nil, and race your team to
+      500. No download, no sign-up.
+    </p>
+
     <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
       <h2 class="mb-2 text-lg font-bold">How to play Spades</h2>
       <p class="mb-3">
@@ -132,13 +140,22 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
           </details>
         ))
       }
-      <p class="mt-4 opacity-75">
-        Want more detail? Read the <a class="underline" href="/guides/spades-rules/">Spades rules</a>
-        and the <a class="underline" href="/guides/spades-strategy/">Spades strategy guide</a>.
-      </p>
-      <p class="mt-4 opacity-75">
-        Like trick-taking? Try <a class="underline" href="/hearts/">Hearts</a>.
-      </p>
+    </section>
+
+    <p class="game-guide-link">
+      <a class="guide-cta" href="/guides/spades-rules/" data-ch-track="rules">📖 Spades rules, bidding &amp; scoring</a>
+    </p>
+
+    <nav class="game-related mx-auto w-full max-w-2xl" aria-label="Related guides">
+      <span class="game-related-label">Related:</span>
+        <a href="/guides/spades-strategy/" data-ch-track="rules">Spades strategy</a>
+        <a href="/guides/hearts-vs-spades/" data-ch-track="rules">Hearts vs Spades</a>
+        <a href="/guides/euchre-vs-spades/" data-ch-track="rules">Euchre vs Spades</a>
+    </nav>
+
+    <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
+      <h2 class="more-games-title">More games</h2>
+      <GameNav current="spades" />
     </section>
 
     <Footer />
@@ -155,7 +172,9 @@ const bids = [{ v: 0, label: 'Nil' }, ...Array.from({ length: 13 }, (_, i) => ({
   <dialog id="spades-over-dialog" aria-labelledby="spades-over-title">
     <p id="spades-over-title" class="dialog-title dialog-title-lg">Game over</p>
     <dl id="spades-over-body" class="stats-grid"></dl>
-    <p class="win-daily-cta mt-1 mb-2 text-sm opacity-90" data-daily-cta hidden></p>
+    <div class="postgame-next">
+      <PostGameNextUp gameId="spades" guide={{ href: '/guides/spades-strategy/', label: 'Spades strategy guide' }} />
+    </div>
     <div class="mt-4 flex justify-end">
       <button id="btn-spades-again" class="btn btn-primary" type="button">New game</button>
     </div>

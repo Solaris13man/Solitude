@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
+import GameNav from '../components/GameNav.astro';
+import PostGameNextUp from '../components/PostGameNextUp.astro';
 
 const title = 'Hearts — Play Free Online vs Computer | CardHearth';
 const description =
@@ -58,7 +60,7 @@ const schema = [
 ---
 
 <Layout title={title} description={description} schema={schema}>
-  <main class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4">
+  <main class="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-2 sm:px-4" data-game-id="hearts">
     <header class="flex flex-wrap items-center justify-between gap-2 py-3">
       <h1 class="text-xl font-extrabold tracking-tight sm:text-2xl">
         Hearts
@@ -70,6 +72,12 @@ const schema = [
         <button id="btn-settings" class="btn" type="button"><span class="btn-label">Settings</span></button>
       </nav>
     </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">CardHearth</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Hearts</span>
+    </nav>
 
     <section class="hearts-table" aria-label="Hearts table">
       <div class="seat seat-north">
@@ -97,6 +105,12 @@ const schema = [
       </div>
     </section>
 
+    <p class="game-intro mx-auto mb-2 w-full max-w-2xl text-sm opacity-80">
+      Play Hearts online, free — against three computer opponents. Pass three
+      cards, follow suit, dodge every heart and the Queen of Spades, or take
+      them all and shoot the moon. No download, no sign-up.
+    </p>
+
     <section class="mx-auto max-w-2xl py-10 text-sm leading-relaxed opacity-90">
       <h2 class="mb-2 text-lg font-bold">How to play Hearts</h2>
       <p class="mb-3">
@@ -121,14 +135,22 @@ const schema = [
           </details>
         ))
       }
-      <p class="mt-4 opacity-75">
-        Want more detail? Read the <a class="underline" href="/guides/hearts-rules/">Hearts rules</a>
-        and the <a class="underline" href="/guides/hearts-strategy/">Hearts strategy guide</a>.
-      </p>
-      <p class="mt-4 opacity-75">
-        Prefer solitaire? Try <a class="underline" href="/klondike/">Klondike</a> or
-        <a class="underline" href="/freecell/">FreeCell</a>.
-      </p>
+    </section>
+
+    <p class="game-guide-link">
+      <a class="guide-cta" href="/guides/hearts-rules/" data-ch-track="rules">📖 Hearts rules &amp; scoring</a>
+    </p>
+
+    <nav class="game-related mx-auto w-full max-w-2xl" aria-label="Related guides">
+      <span class="game-related-label">Related:</span>
+        <a href="/guides/hearts-strategy/" data-ch-track="rules">Hearts strategy</a>
+        <a href="/guides/hearts-vs-spades/" data-ch-track="rules">Hearts vs Spades</a>
+        <a href="/guides/hearts-vs-euchre/" data-ch-track="rules">Hearts vs Euchre</a>
+    </nav>
+
+    <section class="more-games mx-auto w-full max-w-2xl" aria-label="More games">
+      <h2 class="more-games-title">More games</h2>
+      <GameNav current="hearts" />
     </section>
 
     <Footer />
@@ -145,7 +167,9 @@ const schema = [
   <dialog id="hearts-over-dialog" aria-labelledby="hearts-over-title">
     <p id="hearts-over-title" class="dialog-title dialog-title-lg">Game over</p>
     <dl id="hearts-over-body" class="stats-grid"></dl>
-    <p class="win-daily-cta mt-1 mb-2 text-sm opacity-90" data-daily-cta hidden></p>
+    <div class="postgame-next">
+      <PostGameNextUp gameId="hearts" guide={{ href: '/guides/hearts-strategy/', label: 'Hearts strategy guide' }} />
+    </div>
     <div class="mt-4 flex justify-end">
       <button id="btn-hearts-again" class="btn btn-primary" type="button">New game</button>
     </div>

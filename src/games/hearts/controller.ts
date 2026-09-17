@@ -1,6 +1,8 @@
 import { type Settings, applySettings, loadSettings, saveSettings } from '../../lib/settings';
 import { SoundPlayer } from '../../lib/sound';
 import { recordResult } from '../../lib/stats';
+import { track } from '../../lib/analytics';
+import { pageGameSession } from '../../lib/game-session';
 import { cardArt, cardArtById } from '../cards/board';
 import { activateOnKey, markHandCard } from '../cards/a11y';
 import { RANK_LABELS, SUIT_SYMBOLS, type Card, cardName, isRed } from '../cards/deck';
@@ -79,8 +81,12 @@ class HeartsController {
   // Wall-clock start of the current game, for the best-time stat.
   private startedAt = Date.now();
 
+  private readonly session = pageGameSession();
+
   private newGame(): void {
     this.startedAt = Date.now();
+    track('game_started', { game: 'hearts', variant: 0 });
+    this.session?.deal();
     this.state = H.newGame((Date.now() ^ (Math.random() * 0xffffffff)) >>> 0, this.queenBreaksHearts());
     this.selectedPass.clear();
     this.render();
@@ -105,6 +111,7 @@ class HeartsController {
   }
 
   private confirmPass(): void {
+    this.session?.markStarted(0);
     if (this.selectedPass.size !== 3 || this.state.phase !== 'passing') return;
     const mine = this.state.hands[0]!.filter((c) => this.selectedPass.has(c.id));
     const passes: Card[][] = [mine, H.aiPass(this.state, 1), H.aiPass(this.state, 2), H.aiPass(this.state, 3)];
@@ -181,6 +188,7 @@ class HeartsController {
       this.setStatus("You can't play that card.");
       return;
     }
+    this.session?.markStarted(0);
     H.playCard(s, 0, card);
     this.sound.play('place');
     this.render();
@@ -191,6 +199,11 @@ class HeartsController {
     if (this.state.phase === 'gameOver') {
       const winner = H.gameWinner(this.state);
       if (winner === 0) this.sound.play('win');
+      this.session?.complete({
+        won: winner === 0,
+        durationSeconds: (Date.now() - this.startedAt) / 1000,
+        variant: 0,
+      });
       recordResult({
         game: 'hearts',
         variant: 0,
@@ -304,6 +317,7 @@ class HeartsController {
     $opt('btn-pass')?.addEventListener('click', () => this.confirmPass());
     $opt('btn-round-continue')?.addEventListener('click', () => {
       ($('round-dialog') as HTMLDialogElement).close();
+      this.session?.replay('next_round');
       H.startNextRound(this.state);
       this.selectedPass.clear();
       this.render();
@@ -311,6 +325,7 @@ class HeartsController {
     });
     $opt('btn-hearts-again')?.addEventListener('click', () => {
       ($('hearts-over-dialog') as HTMLDialogElement).close();
+      this.session?.replay('new_deal');
       this.newGame();
     });
     $opt('btn-settings')?.addEventListener('click', () =>
