@@ -2,11 +2,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { mergePlayerData, collectLocalData, applyLocalData, type PlayerData } from './account';
 import { recordResult } from './stats';
+import { normalizeDaily } from './daily';
 
 beforeEach(() => localStorage.clear());
 
 function pd(over: Partial<PlayerData>): PlayerData {
-  return { stats: {}, daily: { days: {} }, badges: [], updatedAt: 0, ...over };
+  return { stats: {}, daily: normalizeDaily({}), badges: [], updatedAt: 0, ...over };
 }
 
 describe('account merge (never lose progress)', () => {
@@ -40,11 +41,11 @@ describe('account merge (never lose progress)', () => {
   it('unions badges and keeps the faster daily solve per day', () => {
     const a = pd({
       badges: ['first-win', 'win-10'],
-      daily: { days: { '2026-06-13': { timeMs: 300000, moves: 5, score: 1 } } },
+      daily: normalizeDaily({ days: { '2026-06-13': { timeMs: 300000, moves: 5, score: 1 } } }),
     });
     const b = pd({
       badges: ['win-10', 'streak-5'],
-      daily: { days: { '2026-06-13': { timeMs: 200000, moves: 9, score: 2 }, '2026-06-14': { timeMs: 100000, moves: 3, score: 3 } } },
+      daily: normalizeDaily({ days: { '2026-06-13': { timeMs: 200000, moves: 9, score: 2 }, '2026-06-14': { timeMs: 100000, moves: 3, score: 3 } } }),
     });
     const m = mergePlayerData(a, b);
     expect(new Set(m.badges)).toEqual(new Set(['first-win', 'win-10', 'streak-5']));

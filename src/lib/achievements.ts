@@ -39,8 +39,10 @@ export interface PlayerSnapshot {
   playedGames: Set<string>;
   /** Best single-game win streak across everything. */
   bestStreak: number;
+  /** Streak of days SHOWN UP FOR — playing counts, freezes bridge gaps. */
   dailyCurrentStreak: number;
   dailyBestStreak: number;
+  /** Days actually FINISHED. Deliberately stricter than the streak. */
   dailySolved: number;
   /** Solved every daily of a fully-elapsed calendar year. */
   completedFullYear: boolean;
@@ -103,6 +105,11 @@ export const BADGES: Badge[] = [
   { id: 'completionist', name: 'Completionist', description: 'Win every game at least once.', icon: '👑', earned: (s) => GAME_IDS.every((g) => s.wonGames.has(g)) },
   { id: 'streak-5', name: 'On a Roll', description: 'Win 5 in a row in one game.', icon: '🔥', earned: (s) => s.bestStreak >= 5 },
   { id: 'streak-10', name: 'Unstoppable', description: 'Win 10 in a row in one game.', icon: '⚡', earned: (s) => s.bestStreak >= 10 },
+  // The three streak badges follow the play streak — they are attendance
+  // awards ("Regular", "Dedicated", "Devoted"), and attendance is exactly what
+  // the streak now measures. The mastery awards below stay solve-gated: Daily
+  // Habit needs 50 real solves and Perfect Year needs a whole year of them, so
+  // nothing that was hard to earn got easier.
   { id: 'daily-3', name: 'Regular', description: 'A 3-day daily streak.', icon: '📅', earned: (s) => s.dailyBestStreak >= 3 },
   { id: 'daily-7', name: 'Dedicated', description: 'A 7-day daily streak.', icon: '🗓️', earned: (s) => s.dailyBestStreak >= 7 },
   { id: 'daily-30', name: 'Devoted', description: 'A 30-day daily streak.', icon: '💎', earned: (s) => s.dailyBestStreak >= 30 },

@@ -8,7 +8,7 @@ function mount(): HTMLElement {
     <aside class="daily-strip" data-daily-strip>
       <a href="/daily-challenge/" data-daily-strip-link data-ch-placement="game_page">
         <span data-daily-strip-title>Daily Challenge</span>
-        <span data-daily-strip-status>One puzzle a day, the same for everyone — build a streak.</span>
+        <span data-daily-strip-status>One puzzle a day, the same for everyone. Playing counts — winning is a bonus.</span>
       </a>
     </aside>`;
   return document.querySelector<HTMLElement>('[data-daily-strip]')!;
@@ -70,7 +70,10 @@ describe('initDailyStrip', () => {
     expect(() => initDailyStrip()).not.toThrow();
   });
 
-  it('leaves the server-rendered copy alone when storage is unusable', () => {
+  it('degrades to the zero-streak state when storage is unusable', () => {
+    // loadDaily() absorbs the throw and hands back an empty record, so the
+    // strip still renders correct copy for a player with no history rather
+    // than an empty box or a crash.
     const strip = mount();
     const before = statusOf(strip);
     const getItem = Storage.prototype.getItem;
@@ -79,7 +82,10 @@ describe('initDailyStrip', () => {
     };
     try {
       expect(() => initDailyStrip()).not.toThrow();
+      expect(strip.hidden).toBe(false);
+      // Identical to the server-rendered default, so there is no flicker.
       expect(statusOf(strip)).toBe(before);
+      expect(titleOf(strip)).toContain(dailyGame().label);
     } finally {
       Storage.prototype.getItem = getItem;
     }

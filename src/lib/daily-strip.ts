@@ -1,6 +1,8 @@
 import {
+  bankedFreezes,
   currentDailyStreak,
   dailyGame,
+  isDailyPlayed,
   isDailyRequest,
   isDailySolved,
   loadDaily,
@@ -34,20 +36,28 @@ function render(): void {
   }
 
   try {
+    const record = loadDaily();
     const entry = dailyGame();
     const solved = isDailySolved();
-    const streak = currentDailyStreak(loadDaily());
+    const played = isDailyPlayed();
+    const streak = currentDailyStreak(record);
+    const freezes = bankedFreezes(record);
+    const shield = freezes > 0 ? ` · ${'🛡️'.repeat(freezes)}` : '';
 
     const title = solved
       ? streak > 0
-        ? `Daily Challenge · ${streak}-day streak 🔥`
+        ? `Daily Challenge · ${streak}-day streak 🔥${shield}`
         : 'Daily Challenge · done for today ✓'
-      : `Today's Daily Challenge: ${entry.label}`;
+      : played
+        ? `Daily Challenge · ${streak}-day streak 🔥${shield}`
+        : `Today's Daily Challenge: ${entry.label}`;
     const status = solved
       ? 'Solved. Come back tomorrow to keep it going.'
-      : streak > 0
-        ? `Keep your ${streak}-day streak alive — the same puzzle for everyone.`
-        : 'One puzzle a day, the same for everyone — build a streak.';
+      : played
+        ? 'Today already counts — finish it to log your time.'
+        : streak > 0
+          ? `Keep your ${streak}-day streak alive — just playing it counts.`
+          : 'One puzzle a day, the same for everyone. Playing counts — winning is a bonus.';
     const href = solved ? '/daily-challenge/' : `${entry.path}?daily=1`;
 
     for (const strip of strips) {
@@ -62,6 +72,7 @@ function render(): void {
         link.dataset.chPlacement = solved ? 'game_page_solved' : 'game_page';
       }
       strip.classList.toggle('daily-strip-solved', solved);
+      strip.classList.toggle('daily-strip-played', played && !solved);
     }
   } catch {
     // Leave the server-rendered copy in place — it is already correct.

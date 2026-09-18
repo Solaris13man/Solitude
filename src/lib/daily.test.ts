@@ -141,23 +141,23 @@ describe('daily rotation', () => {
 
 describe('daily archive year completion', () => {
   it('reports per-year progress bounded by epoch and today', async () => {
-    const { dailyYearProgress } = await import('./daily');
+    const { dailyYearProgress, normalizeDaily } = await import('./daily');
     // 2026 dailies run from the epoch (Jun 13) to "today" (Jun 15) = 3 days.
     const today = at('2026-06-15T12:00:00Z');
-    const record = { days: { '2026-06-13': { timeMs: 1, moves: 1, score: 0 } } };
+    const record = normalizeDaily({ days: { '2026-06-13': { timeMs: 1, moves: 1, score: 0 } } });
     const p = dailyYearProgress(record, 2026, today);
     expect(p.available).toBe(3);
     expect(p.solved).toBe(1);
   });
 
   it('only awards a full year once it is fully elapsed and complete', async () => {
-    const { hasCompletedDailyYear } = await import('./daily');
+    const { hasCompletedDailyYear, normalizeDaily } = await import('./daily');
     const dayMs = 86_400_000;
     const days: Record<string, { timeMs: number; moves: number; score: number }> = {};
     for (let t = Date.UTC(2026, 5, 13); t <= Date.UTC(2026, 11, 31); t += dayMs) {
       days[new Date(t).toISOString().slice(0, 10)] = { timeMs: 1, moves: 1, score: 0 };
     }
-    const record = { days };
+    const record = normalizeDaily({ days });
     // Still inside 2026: not fully elapsed, so no badge yet.
     expect(hasCompletedDailyYear(record, at('2026-12-30T00:00:00Z'))).toBe(false);
     // In 2027: 2026 is complete and fully past.

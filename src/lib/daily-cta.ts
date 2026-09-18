@@ -1,6 +1,7 @@
 import {
   currentDailyStreak,
   dailyGame,
+  isDailyPlayed,
   isDailyRequest,
   isDailySolved,
   loadDaily,
@@ -36,17 +37,21 @@ function render(): void {
 
   const entry = dailyGame();
   const solved = isDailySolved();
+  const played = isDailyPlayed();
   const streak = currentDailyStreak(loadDaily());
 
   const text = solved
     ? streak > 0
       ? `Today's Daily Challenge is done — ${streak}-day streak. 🔥`
       : "Today's Daily Challenge is done. ✓"
-    : streak > 0
-      ? `Keep your ${streak}-day streak alive — today's challenge is ${entry.label}.`
-      : `Today's Daily Challenge is ${entry.label} — the same deal for everyone.`;
+    : played
+      ? `Today's challenge already counts for your ${streak}-day streak — finish it for the time.`
+      : streak > 0
+        ? `Keep your ${streak}-day streak alive — just playing today's ${entry.label} counts.`
+        : `Today's Daily Challenge is ${entry.label} — playing it is enough to start a streak.`;
+  // Played-not-solved still points back at the puzzle, so "finish it" works.
   const href = solved ? '/daily-challenge/' : `${entry.path}?daily=1`;
-  const label = solved ? 'See your streak →' : 'Play it →';
+  const label = solved ? 'See your streak →' : played ? 'Finish it →' : 'Play it →';
 
   for (const slot of slots) {
     // Rebuilt from scratch each time, so the click handler never stacks.

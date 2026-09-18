@@ -40,8 +40,16 @@ const faq = [
     a: 'Yes. The game and its shuffle are generated from the calendar date, so your challenge is identical to everyone else’s. That makes times directly comparable — share yours and see who finishes faster.',
   },
   {
+    q: 'Do I have to solve the puzzle to keep my streak?',
+    a: 'No. Your streak counts every day you played — make a single move on the day\'s challenge and the day counts, whether or not you finish. Solving still matters: it records your time, puts you on the leaderboard, fills in your calendar with a solid mark, and counts toward the Perfect Year badge. But the streak is about showing up.',
+  },
+  {
     q: 'What happens to my streak if I miss a day?',
-    a: 'Your current streak resets when a day passes without a solve, but your best streak and your full history are kept. Your streak survives until midnight UTC, so there is always time to keep it alive today.',
+    a: 'You may not lose it. Every 7 days of an unbroken streak earns a streak freeze, and you can hold up to 3. Come back after a short absence and your banked freezes are spent automatically to cover the days you missed — up to 3 days in one gap. Beyond that the streak ends, and your best streak and full history are kept either way. Your streak also survives until midnight UTC, so there is always time to keep it alive today.',
+  },
+  {
+    q: 'How do streak freezes work?',
+    a: 'You earn one freeze for every 7 consecutive days on your streak, up to 3 banked at a time. They are spent for you: if you miss a day or two and then come back, the freezes cover the gap and your streak carries on, with the covered days marked on your calendar. A gap longer than the freezes you have banked ends the streak instead, and the freezes stay in the bank for next time.',
   },
 ];
 
@@ -134,14 +142,17 @@ const schema = [
         <button id="cal-next" class="btn" type="button" aria-label="Next year">›</button>
       </div>
       <p class="cal-intro">
-        Missed a day? Play any past Daily Challenge to fill in your calendar. Complete every day of
-        a calendar year to earn the <strong>Perfect Year</strong> badge. Future days stay locked
-        until their date.
+        Your streak counts every day you <strong>played</strong> — finishing is not required.
+        Missed a day? Play any past Daily Challenge to fill in your calendar, or let a
+        <strong>streak freeze</strong> cover it. Solving every day of a calendar year still earns
+        the <strong>Perfect Year</strong> badge. Future days stay locked until their date.
       </p>
       <p id="cal-progress" class="cal-progress"></p>
       <div id="cal-grid" class="cal-months"></div>
       <ul class="cal-legend">
         <li><span class="cal-key cal-key-solved"></span> Solved</li>
+        <li><span class="cal-key cal-key-played"></span> Played</li>
+        <li><span class="cal-key cal-key-frozen"></span> Streak freeze</li>
         <li><span class="cal-key cal-key-open"></span> Playable</li>
         <li><span class="cal-key cal-key-today"></span> Today</li>
         <li><span class="cal-key cal-key-locked"></span> Locked</li>
@@ -210,6 +221,9 @@ const schema = [
       bestDailyStreak,
       totalDailySolves,
       isDailySolved,
+      isDailyPlayed,
+      bankedFreezes,
+      MAX_STREAK_FREEZES,
       utcDateKey,
     } from '../lib/daily';
     import { formatTime } from '../lib/stats';
@@ -239,19 +253,25 @@ const schema = [
     function renderHero() {
       const record = loadDaily();
       const solved = isDailySolved();
+      const played = isDailyPlayed();
       const today = record.days[utcDateKey()];
+      const countdown = formatCountdown(msUntilNextDaily());
       set(
         'daily-hero-status',
         solved && today
-          ? `Solved in ${formatTime(today.timeMs)} ✓ — next game in ${formatCountdown(msUntilNextDaily())}`
-          : `The same for everyone — next game in ${formatCountdown(msUntilNextDaily())}`,
+          ? `Solved in ${formatTime(today.timeMs)} ✓ — next game in ${countdown}`
+          : played
+            ? `Played today — your streak is safe. Next game in ${countdown}`
+            : `The same for everyone — next game in ${countdown}`,
       );
       if (play) play.textContent = solved ? 'Play again →' : "Play today's challenge →";
       const stats = document.getElementById('daily-hero-stats');
       if (stats) {
+        const freezes = bankedFreezes(record);
         stats.innerHTML = [
           `<dt>Current streak</dt><dd>${currentDailyStreak(record)} 🔥</dd>`,
           `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
+          `<dt>Streak freezes</dt><dd>${'🛡️'.repeat(freezes) || '—'} ${freezes}/${MAX_STREAK_FREEZES}</dd>`,
           `<dt>Days solved</dt><dd>${totalDailySolves(record)}</dd>`,
         ].join('');
       }
@@ -264,6 +284,7 @@ const schema = [
     import {
       dailyGame,
       dailyYearProgress,
+      dailyDayState,
       loadDaily,
       utcDateKey,
       DAILY_EPOCH_UTC,
@@ -304,12 +325,24 @@ const schema = [
             cells += `<span class="cal-day cal-future" title="Unlocks ${key}" aria-label="${name} ${d}: locked">${d}</span>`;
           } else {
             const entry = dailyGame(new Date(dayUTC));
-            const solved = !!calRecord.days[key];
+            const state = dailyDayState(calRecord, key);
+            const STATE_CLASS = {
+              solved: ' cal-solved',
+              played: ' cal-played',
+              frozen: ' cal-frozen',
+              missed: '',
+            };
+            const STATE_LABEL = {
+              solved: ' — solved ✓',
+              played: ' — played, streak kept',
+              frozen: ' — streak freeze used 🛡️',
+              missed: '',
+            };
             const cls =
               'cal-day cal-open' +
-              (solved ? ' cal-solved' : '') +
+              STATE_CLASS[state] +
               (key === todayKey ? ' cal-today' : '');
-            const label = `${entry.label}${solved ? ' — solved ✓' : ''}`;
+            const label = `${entry.label}${STATE_LABEL[state]}`;
             cells += `<a class="${cls}" href="${entry.path}?daily=${key}" title="${esc(label)}" aria-label="${name} ${d}: ${esc(label)}">${d}</a>`;
           }
         }

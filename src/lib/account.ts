@@ -7,7 +7,13 @@ import {
   loadStats,
   saveStats,
 } from './stats';
-import { type DailyRecord, loadDaily, replaceDaily } from './daily';
+import {
+  type DailyRecord,
+  MAX_STREAK_FREEZES,
+  loadDaily,
+  normalizeDaily,
+  replaceDaily,
+} from './daily';
 import { earnedBadgeIds, loadUnlocked, saveUnlocked } from './achievements';
 import {
   type Settings,
@@ -134,13 +140,37 @@ function mergeStats(a: Stats, b: Stats): Stats {
 }
 
 function mergeDaily(a: DailyRecord, b: DailyRecord): DailyRecord {
-  const days = { ...a.days };
-  for (const [day, res] of Object.entries(b.days)) {
+  // Either side may predate `played`/`freezes` — a record synced from an older
+  // build, or from a device that has not updated yet.
+  const left = normalizeDaily(a);
+  const right = normalizeDaily(b);
+
+  const days = { ...left.days };
+  for (const [day, res] of Object.entries(right.days)) {
     const existing = days[day];
     // keep the faster solve for any day solved on either device
     if (!existing || res.timeMs < existing.timeMs) days[day] = res;
   }
-  return { days };
+
+  // Showing up on either device is showing up, so participation is a union —
+  // the same "never lose progress" rule the rest of this merge follows.
+  const played = { ...left.played, ...right.played };
+  // Spent freezes are history, not a balance: a day one device paid to bridge
+  // stays bridged, or the merged streak would break at a day both sides agree
+  // was covered.
+  const spent = { ...left.freezes.spent, ...right.freezes.spent };
+
+  // The bank itself is not monotonic — spending lowers it — so max() can
+  // refund a freeze that was already used. That is the friendly direction to
+  // err in (this is a free, cosmetic mechanic with no payment attached) and it
+  // keeps the promise that signing in on a new device never costs you
+  // anything. The cap still bounds the total.
+  const banked = Math.min(MAX_STREAK_FREEZES, Math.max(left.freezes.banked, right.freezes.banked));
+  // The earn ledger is history like `spent` — union it, or a threshold already
+  // paid out on one device would pay out again after a merge.
+  const earnedOn = { ...left.freezes.earnedOn, ...right.freezes.earnedOn };
+
+  return { days, played, freezes: { banked, earnedOn, spent } };
 }
 
 /** Combine two snapshots so the result is the best of both — symmetric. */

@@ -268,6 +268,22 @@ a.cal-open {
 a.cal-open:hover { background: rgb(255 255 255 / 0.22); transform: scale(1.08); }
 a.cal-solved { background: #2e8b57; color: #fff; font-weight: var(--weight-bold); }
 a.cal-solved:hover { background: #36a266; }
+/* Played but not finished: the streak counted, the puzzle did not. Deliberately
+   a lighter, hollower treatment than a solve so the calendar still reads at a
+   glance as "what did I actually beat". */
+a.cal-played {
+  background: rgb(46 139 87 / 0.28);
+  box-shadow: inset 0 0 0 1.5px rgb(46 139 87 / 0.85);
+  color: #fff;
+}
+a.cal-played:hover { background: rgb(46 139 87 / 0.42); }
+/* Covered by a streak freeze — the player was away, the run survived. */
+a.cal-frozen {
+  background: rgb(125 185 232 / 0.22);
+  box-shadow: inset 0 0 0 1.5px rgb(125 185 232 / 0.75);
+  color: #dff0ff;
+}
+a.cal-frozen:hover { background: rgb(125 185 232 / 0.36); }
 a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var(--weight-extra); }
 .cal-open:focus-visible { outline: 3px solid #ffd95e; outline-offset: 1px; }
 .cal-legend {
@@ -284,6 +300,8 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
 .cal-legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
 .cal-key { width: 0.9rem; height: 0.9rem; border-radius: 4px; display: inline-block; }
 .cal-key-solved { background: #2e8b57; }
+.cal-key-played { background: rgb(46 139 87 / 0.28); box-shadow: inset 0 0 0 1.5px rgb(46 139 87 / 0.85); }
+.cal-key-frozen { background: rgb(125 185 232 / 0.22); box-shadow: inset 0 0 0 1.5px rgb(125 185 232 / 0.75); }
 .cal-key-open { background: rgb(255 255 255 / 0.18); }
 .cal-key-today { outline: 2px solid #ffd95e; outline-offset: -2px; }
 .cal-key-locked { background: rgb(255 255 255 / 0.06); }
@@ -747,6 +765,8 @@ a.cal-today { outline: 2px solid #ffd95e; outline-offset: -2px; font-weight: var
   font-size: 0.88rem;
   color: #ffd95e;
 }
+.daily-strip-played .daily-strip-link { border-color: rgb(46 139 87 / 0.55); }
+.daily-strip-played .daily-strip-go { color: #8fd7a8; }
 .daily-strip-solved .daily-strip-link { border-color: rgb(127 200 150 / 0.45); }
 .daily-strip-solved .daily-strip-go { color: #8fd7a8; }
 

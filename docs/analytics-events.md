@@ -83,10 +83,20 @@ Emitted by `DailyMode` (`src/lib/daily-mode.ts`).
 | `daily_challenge_view` | A game page opened in daily mode (`?daily=…`) | `game`, `archive` |
 | `daily_challenge_start` | First move on the daily, once per page load | `game`, `archive` |
 | `daily_challenge_complete` | First solve of a given day | `game`, `duration_seconds`, `archive` |
+| `daily_freeze_earned` | A 7-day threshold banked a streak freeze | `streak`, `freezes` |
+| `daily_streak_frozen` | Banked freezes bridged an absence | `days_covered`, `freezes_left` |
 
 `daily_challenge_view` fires on the **game** page, not the `/daily-challenge/`
 hub, so it counts challenges actually reached rather than hub pageviews. The
 hub's own pageview is `daily_viewed`.
+
+`daily_challenge_start` is also the moment participation is recorded — the
+streak counts days played, not days solved — so `daily_challenge_start` and
+"days that kept a streak alive" are the same number.
+
+Watch `daily_streak_frozen` against `daily_challenge_start`: freezes are a
+retention safety net, and if a large share of returns are being carried by
+freezes rather than genuine daily play, the earn rate is too generous.
 
 ## Pre-existing events (unchanged)
 
@@ -116,6 +126,7 @@ The ratios to watch, and how to compute them:
 | Cross-game flow | `related_game_click` / `game_complete` |
 | Guide pull-through | `rules_click` / `game_view` |
 | Daily funnel | `daily_challenge_start` / `daily_challenge_view`, then `_complete` / `_start` |
+| Streak rescue rate | `daily_streak_frozen` / `daily_challenge_start` |
 | Support intent | `support_click` / `game_complete` |
 
 ### Configuring goals

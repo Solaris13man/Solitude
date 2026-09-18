@@ -1,13 +1,17 @@
 import {
   type DailyEntry,
+  MAX_STREAK_FREEZES,
+  bankedFreezes,
   bestDailyStreak,
   currentDailyStreak,
   dailyGame,
   dailyNumber,
   dailySeed,
   formatCountdown,
+  isDailyPlayed,
   isDailySolved,
   loadDaily,
+  recordDailyPlay,
   msUntilNextDaily,
   recordDailyWin,
   requestedDailyDate,
@@ -82,6 +86,11 @@ export class DailyMode {
     if (!this.active || this.startTracked) return;
     this.startTracked = true;
     track('daily_challenge_start', { game: this.entry.game, archive: this.isArchive });
+    // Showing up is what keeps the streak — one real move is enough. Solving
+    // is still recorded separately by recordSolve().
+    const refDate = this.date ?? new Date();
+    recordDailyPlay(utcDateKey(refDate), this.entry.game);
+    this.refreshBanner();
   }
 
   /** Reveal and populate the banner host that GameShell always renders. */
@@ -121,9 +130,14 @@ export class DailyMode {
       } else {
         const countdown = formatCountdown(msUntilNextDaily());
         const streak = currentDailyStreak(record);
+        const played = isDailyPlayed(this.date);
+        const freezes = bankedFreezes(record);
+        const shield = freezes > 0 ? ` · ${'🛡️'.repeat(freezes)}` : '';
         statusEl.textContent = solved
-          ? `Solved in ${formatTime(solved.timeMs)} ✓ · Streak ${streak} 🔥 · Next in ${countdown}`
-          : `Today's challenge for everyone · Streak ${streak} · Next in ${countdown}`;
+          ? `Solved in ${formatTime(solved.timeMs)} ✓ · Streak ${streak} 🔥${shield} · Next in ${countdown}`
+          : played
+            ? `Streak ${streak} 🔥 — counted, keep going for the solve${shield} · Next in ${countdown}`
+            : `Today's challenge for everyone · Streak ${streak}${shield} · Next in ${countdown}`;
       }
     }
   }
@@ -158,9 +172,11 @@ export class DailyMode {
       : `${window.location.origin}/daily-challenge/`;
     const num = dailyNumber(ref);
     if (!solved) {
+      const streak = currentDailyStreak(loadDaily());
+      const streakBit = streak > 1 ? ` I'm ${streak} days in.` : '';
       return {
         url,
-        text: `CardHearth Daily Challenge #${num}: ${this.entry.label}, the same for everyone. Can you solve it?`,
+        text: `CardHearth Daily Challenge #${num}: ${this.entry.label}, the same for everyone.${streakBit} Can you solve it?`,
       };
     }
     // A compact, "Wordle-style" brag: game, time, and the streak as social proof.
@@ -183,10 +199,12 @@ export class DailyMode {
     const recent = Object.entries(record.days)
       .sort(([a], [b]) => (a < b ? 1 : -1))
       .slice(0, 5);
+    const freezes = bankedFreezes(record);
     return [
       '<dt class="stats-section">Daily Challenge</dt><dd class="stats-section"></dd>',
       `<dt>Current streak</dt><dd>${currentDailyStreak(record)}</dd>`,
       `<dt>Best streak</dt><dd>${bestDailyStreak(record)}</dd>`,
+      `<dt>Streak freezes</dt><dd>${freezes} / ${MAX_STREAK_FREEZES}</dd>`,
       `<dt>Dailies solved</dt><dd>${totalDailySolves(record)}</dd>`,
       ...recent.map(
         ([day, r]) =>

@@ -3,6 +3,12 @@
  * seed both derive from the date, so every player worldwide gets the identical
  * challenge, and completion/streak history is tracked locally per day.
  *
+ * Streak rule: the streak counts DAYS YOU SHOWED UP, not days you won. Making
+ * a single move on the day's challenge keeps it alive; solving is still
+ * tracked, still shown, and still what the leaderboard, the solve count and
+ * the Perfect Year badge are made of. Missing a day need not end a run
+ * either — see the streak-freeze ledger below.
+ *
  * Fairness rule: because the daily is shared and carries a streak, every deal
  * MUST be completable — an unsolvable shared deal would break everyone's streak
  * through no fault of their own. So the rotation is limited to games where every
@@ -18,6 +24,8 @@
  * not in it either.
  */
 
+import { track } from './analytics';
+
 export interface DailyResult {
   timeMs: number;
   moves: number;
@@ -26,9 +34,83 @@ export interface DailyResult {
   game?: string;
 }
 
+/** A day the player showed up for but did not necessarily finish. */
+export interface DailyPlay {
+  /** Which game that day's challenge was (for the history display). */
+  game?: string;
+}
+
+/**
+ * Streak-freeze ledger. A freeze is earned for every `FREEZE_EARN_EVERY` days
+ * of an unbroken run, banked up to `MAX_STREAK_FREEZES`, and spent
+ * automatically when the player comes back from a short absence.
+ *
+ * Spending is *recorded*, not recomputed — `spent` marks the days a freeze
+ * covered, so re-deriving the streak later walks straight over them instead
+ * of charging for the same gap again.
+ */
+export interface DailyFreezes {
+  /** Freezes in hand, 0..MAX_STREAK_FREEZES. */
+  banked: number;
+  /**
+   * Days that have already granted a freeze.
+   *
+   * A ledger rather than a counter, because a player can fill in ARCHIVE days
+   * in any order: back-filling a gap lengthens runs retroactively, which mints
+   * threshold days that a forward-only counter would miss. Recomputing the
+   * threshold set on every touch and granting only for days not in this ledger
+   * makes the result order-independent and self-healing, while still making
+   * spending a real decrement that refills only as new thresholds are crossed.
+   */
+  earnedOn: Record<string, true>;
+  /** UTC days a freeze was spent on. Presence makes the day count as kept. */
+  spent: Record<string, true>;
+}
+
 export interface DailyRecord {
-  /** Keyed by UTC date, e.g. "2026-06-13". Presence means solved. */
+  /**
+   * Keyed by UTC date, e.g. "2026-06-13". Presence means SOLVED.
+   *
+   * Do not widen this to mean "played". The leaderboard, the solve count, the
+   * Perfect Year badge, the calendar's solve marks and DailyMode's
+   * re-solve guard all read it as "finished it", and participation lives in
+   * `played` precisely so none of them have to change.
+   */
   days: Record<string, DailyResult>;
+  /** Keyed by UTC date. Presence means PLAYED — at least one real move. */
+  played: Record<string, DailyPlay>;
+  freezes: DailyFreezes;
+}
+
+/** Days of unbroken streak that earn one freeze. */
+export const FREEZE_EARN_EVERY = 7;
+/** Most freezes that can be banked at once — also the longest bridgeable gap. */
+export const MAX_STREAK_FREEZES = 3;
+
+export function emptyDaily(): DailyRecord {
+  return { days: {}, played: {}, freezes: { banked: 0, earnedOn: {}, spent: {} } };
+}
+
+/**
+ * Coerce anything record-shaped into a complete DailyRecord.
+ *
+ * Records written before freezes existed have only `days`, and a record
+ * arriving from cloud sync can be any vintage — so every read goes through
+ * here rather than trusting the stored shape.
+ */
+export function normalizeDaily(raw: Partial<DailyRecord> | null | undefined): DailyRecord {
+  const f = raw?.freezes;
+  return {
+    days: { ...(raw?.days ?? {}) },
+    played: { ...(raw?.played ?? {}) },
+    freezes: {
+      // Clamped on the way in: a corrupt or hand-edited bank cannot hand out
+      // more protection than the cap allows.
+      banked: Math.max(0, Math.min(MAX_STREAK_FREEZES, Math.trunc(Number(f?.banked) || 0))),
+      earnedOn: { ...(f?.earnedOn ?? {}) },
+      spent: { ...(f?.spent ?? {}) },
+    },
+  };
 }
 
 /** One day's challenge: a game, its variant, where it lives, and a label. */
@@ -136,11 +218,24 @@ export function formatCountdown(ms: number): string {
 export function loadDaily(): DailyRecord {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return { days: {} };
-    const parsed = JSON.parse(raw) as Partial<DailyRecord>;
-    return { days: { ...(parsed.days ?? {}) } };
+    if (!raw) return emptyDaily();
+    return normalizeDaily(JSON.parse(raw) as Partial<DailyRecord>);
   } catch {
-    return { days: {} };
+    return emptyDaily();
+  }
+}
+
+function saveDaily(record: DailyRecord): void {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(record));
+  } catch {
+    // storage unavailable (private mode); the session still works
+  }
+}
+
+function announceResult(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('cardhearth:result'));
   }
 }
 
@@ -157,18 +252,36 @@ export function replaceDaily(record: DailyRecord): void {
  *  only if faster. Returns the updated record. */
 export function recordDailyWin(dateKey: string, result: DailyResult): DailyRecord {
   const record = loadDaily();
+  bridgeGapWithFreezes(record, dateKey);
   const existing = record.days[dateKey];
   if (!existing || result.timeMs < existing.timeMs) {
     record.days[dateKey] = result;
-    try {
-      localStorage.setItem(KEY, JSON.stringify(record));
-    } catch {
-      // storage unavailable
-    }
   }
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('cardhearth:result'));
-  }
+  // Solving implies showing up, so the day counts for the streak even if the
+  // player's very first interaction was the winning move.
+  record.played[dateKey] ??= { game: result.game };
+  earnFreezes(record);
+  saveDaily(record);
+  announceResult();
+  return record;
+}
+
+/**
+ * Records that the player showed up for a day's challenge — one real move is
+ * enough. This is what keeps a streak alive; solving is a separate, stricter
+ * record (`days`) that the leaderboard and the Perfect Year badge read.
+ *
+ * Idempotent: repeat calls for the same day are a no-op, so a rerender or a
+ * second move can never inflate anything.
+ */
+export function recordDailyPlay(dateKey: string, game?: string): DailyRecord {
+  const record = loadDaily();
+  if (record.played[dateKey]) return record;
+  bridgeGapWithFreezes(record, dateKey);
+  record.played[dateKey] = game === undefined ? {} : { game };
+  earnFreezes(record);
+  saveDaily(record);
+  announceResult();
   return record;
 }
 
@@ -177,40 +290,158 @@ export function isDailySolved(date = new Date()): boolean {
   return !!loadDaily().days[utcDateKey(date)];
 }
 
+/** Has the player made at least one move on this day's challenge? */
+export function isDailyPlayed(date = new Date()): boolean {
+  const key = utcDateKey(date);
+  const record = loadDaily();
+  return !!record.played[key] || !!record.days[key];
+}
+
 function previousDateKey(key: string): string {
   const d = new Date(`${key}T00:00:00Z`);
   return utcDateKey(new Date(d.getTime() - DAY_MS));
 }
 
+/** What a given day contributes to the streak, for display and for the walk. */
+export type DailyDayState = 'solved' | 'played' | 'frozen' | 'missed';
+
+export function dailyDayState(record: DailyRecord, key: string): DailyDayState {
+  if (record.days[key]) return 'solved';
+  if (record.played[key]) return 'played';
+  if (record.freezes.spent[key]) return 'frozen';
+  return 'missed';
+}
+
+/** True when a day counts toward an unbroken run — played, solved, or frozen. */
+function isKept(record: DailyRecord, key: string): boolean {
+  return dailyDayState(record, key) !== 'missed';
+}
+
 /**
- * Streak of consecutive solved days ending today — or ending yesterday if
- * today isn't solved yet (the streak is still alive until UTC midnight).
+ * Streak of consecutive kept days ending today — or ending yesterday if today
+ * hasn't been touched yet (the streak is still alive until UTC midnight).
+ *
+ * "Kept" means played, solved, or covered by a spent freeze.
  */
 export function currentDailyStreak(record: DailyRecord, date = new Date()): number {
   let key = utcDateKey(date);
-  if (!record.days[key]) {
+  if (!isKept(record, key)) {
     key = previousDateKey(key);
-    if (!record.days[key]) return 0;
+    if (!isKept(record, key)) return 0;
   }
   let streak = 0;
-  while (record.days[key]) {
+  while (isKept(record, key)) {
     streak++;
     key = previousDateKey(key);
   }
   return streak;
 }
 
+/** Every day that counts toward a run, oldest first. */
+function keptKeys(record: DailyRecord): string[] {
+  return [
+    ...new Set([
+      ...Object.keys(record.days),
+      ...Object.keys(record.played),
+      ...Object.keys(record.freezes.spent),
+    ]),
+  ].sort();
+}
+
 export function bestDailyStreak(record: DailyRecord): number {
-  const keys = Object.keys(record.days).sort();
   let best = 0;
   let run = 0;
   let prev: string | null = null;
-  for (const key of keys) {
+  for (const key of keptKeys(record)) {
     run = prev !== null && previousDateKey(key) === prev ? run + 1 : 1;
     best = Math.max(best, run);
     prev = key;
   }
   return best;
+}
+
+/** Freezes the player has in hand right now. */
+export function bankedFreezes(record: DailyRecord): number {
+  return record.freezes.banked;
+}
+
+/**
+ * Spend banked freezes to cover a short absence, immediately before `dateKey`
+ * is recorded as kept.
+ *
+ * Only ever called for a day the player is actively touching, and only bridges
+ * a gap it can pay for in full — a half-covered gap would break the run
+ * anyway, so the freezes are better kept in the bank.
+ */
+function bridgeGapWithFreezes(record: DailyRecord, dateKey: string): void {
+  if (record.freezes.banked <= 0) return;
+  if (isKept(record, dateKey)) return; // already counted; nothing to bridge
+
+  // The bank, bounded by the longest gap we are willing to bridge at all.
+  const reach = Math.min(record.freezes.banked, MAX_STREAK_FREEZES);
+  const gap: string[] = [];
+  let key = previousDateKey(dateKey);
+
+  // Walk back looking for the end of the previous run. Note the anchor day sits
+  // one step BEYOND the last day we could pay for, so this examines reach + 1
+  // days while only ever collecting reach of them.
+  for (;;) {
+    if (isKept(record, key)) {
+      for (const missed of gap) record.freezes.spent[missed] = true;
+      record.freezes.banked -= gap.length;
+      if (gap.length > 0) {
+        track('daily_streak_frozen', {
+          days_covered: gap.length,
+          freezes_left: record.freezes.banked,
+        });
+      }
+      return;
+    }
+    // Nothing kept within reach: the gap is wider than the bank can pay for.
+    // Bridging it halfway would break the run anyway, so keep the freezes.
+    if (gap.length >= reach) return;
+    gap.push(key);
+    key = previousDateKey(key);
+  }
+}
+
+/** Length of the unbroken run of kept days ending exactly at `key`. */
+function runLengthEndingAt(record: DailyRecord, key: string): number {
+  let len = 0;
+  let k = key;
+  while (isKept(record, k)) {
+    len++;
+    k = previousDateKey(k);
+  }
+  return len;
+}
+
+/**
+ * Grant a freeze for every day that completes a multiple of FREEZE_EARN_EVERY,
+ * skipping days already in the ledger.
+ *
+ * Recomputed across the whole history rather than incrementally, so filling in
+ * archive days out of order still awards what the player has actually earned.
+ */
+function earnFreezes(record: DailyRecord): void {
+  const f = record.freezes;
+  if (f.banked >= MAX_STREAK_FREEZES) {
+    // Still record the thresholds, or they would all pay out at once the
+    // moment a freeze is spent.
+    for (const key of keptKeys(record)) {
+      if (runLengthEndingAt(record, key) % FREEZE_EARN_EVERY === 0) f.earnedOn[key] = true;
+    }
+    return;
+  }
+  for (const key of keptKeys(record)) {
+    if (f.earnedOn[key]) continue;
+    if (runLengthEndingAt(record, key) % FREEZE_EARN_EVERY !== 0) continue;
+    f.earnedOn[key] = true;
+    if (f.banked < MAX_STREAK_FREEZES) {
+      f.banked++;
+      track('daily_freeze_earned', { streak: runLengthEndingAt(record, key), freezes: f.banked });
+    }
+  }
 }
 
 export function totalDailySolves(record: DailyRecord): number {
